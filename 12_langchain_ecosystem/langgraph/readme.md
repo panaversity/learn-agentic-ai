@@ -4,7 +4,7 @@
 
 [Report: What Are AI Agents?](https://www.oreilly.com/library/view/what-are-ai/9781098159726/)
 
-[Watch: What is AI Agent? | Simple Explanation of an AI Agent](https://www.youtube.com/watch?v=2-JV8UxegWE)Thi
+[Watch: What is AI Agent? | Simple Explanation of an AI Agent](https://www.youtube.com/watch?v=2-JV8UxegWE)
 
 [What are AI Agents? By AWS](https://aws.amazon.com/what-is/ai-agents/)
 
