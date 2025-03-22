@@ -1,0 +1,17 @@
+[project]
+name = "uv-project2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Sir Qasim", email = "m.qasim077@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+uit = "uv_project2.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

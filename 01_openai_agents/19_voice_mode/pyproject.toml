@@ -1,0 +1,21 @@
+[project]
+name = "alertli4"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Sir Qasim", email = "m.qasim077@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "openai-agents[voice]>=0.0.6",
+    "python-dotenv>=1.0.1",
+    "textual>=2.1.2",
+]
+
+[project.scripts]
+alertli4 = "alertli4:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

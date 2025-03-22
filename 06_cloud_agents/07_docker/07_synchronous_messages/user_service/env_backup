@@ -1,0 +1,11 @@
+# .env
+# Don't commit this to source control
+# Eg. Include ".env" in your `.gitignore` file.
+
+# This is the connection string for the main container Database URL
+DATABASE_URL=postgresql://ziakhan:my_password@postgres:5432/mydatabase
+
+
+
+# This is the connection string for the test branch of Neon Database URL
+TEST_DATABASE_URL=postgresql://ziaukhan:oSUELz91i@ep-polished-waterfall-a50jz332.us-east-2.aws.neon.tech/neondb?sslmode=require

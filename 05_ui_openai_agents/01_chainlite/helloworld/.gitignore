@@ -1,0 +1,4 @@
+.venv
+.chainlit
+.files
+.mypy_cache

@@ -1,6 +1,0 @@
-syntax = "proto3";
-
-message Todo {
-  int32 id = 1;
-  string content = 2;
-}

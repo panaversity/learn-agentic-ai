@@ -19,6 +19,9 @@ We will be following this approach to teach Agentic AI Engineering:
 
 https://docs.google.com/document/d/1vgdGpda2YknjPRKnRi9qHgDbGX_kWSjct_V6Up3ed80/edit?usp=sharing 
 
+This is our roadmap to become a master agentic ai engineer, must read:
+https://g.co/gemini/share/062723b02a7d
+
 
 ### AI-201: Fundamentals of Agentic AI  -  From Foundations to Autonomous Agents
 

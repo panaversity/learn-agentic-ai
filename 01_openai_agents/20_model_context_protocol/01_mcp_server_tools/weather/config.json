@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "ziaweather": {
+            "command": "uv",
+            "args": [
+                "--directory",
+                "/Users/ZiaKhan/Documents/GitHub/learn-agentic-ai/06c_model_context_protocol/01_mcp_server/weather",
+                "run",
+                "weather.py"
+            ]
+        }
+    }
+}

@@ -1,0 +1,6 @@
+.venv
+.env
+.mypy_cache
+.files
+.chainlit
+__pycache___

@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "test-poetry"
+version = "0.1.0"
+description = ""
+authors = ["Zia Khan <ziaukhan@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

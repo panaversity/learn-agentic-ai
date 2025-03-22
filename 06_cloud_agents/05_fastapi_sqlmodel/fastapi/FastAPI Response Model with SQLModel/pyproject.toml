@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "heroapi-uit"
+version = "0.1.0"
+description = ""
+authors = ["Sir Qasim <m.qasim077@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.0"
+sqlmodel = "^0.0.16"
+uvicorn = "^0.29.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

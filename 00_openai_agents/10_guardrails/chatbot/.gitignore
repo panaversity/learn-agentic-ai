@@ -1,5 +1,0 @@
-.venv
-.env
-.mypy_cache
-.chainlit
-__pycache__
