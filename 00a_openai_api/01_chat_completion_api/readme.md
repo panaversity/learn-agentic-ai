@@ -80,15 +80,18 @@ The OpenAI Chat Completion API has become an industry standard, and APIs from Go
 ```python
 import openai
 
-openai.api_key = "YOUR_GOOGLE_API_KEY"
-openai.api_base = "https://generativelanguage.googleapis.com/v1beta"
+client = openai.Client(
+    api_key="YOUR_GOOGLE_API_KEY",  # Set your Google API key
+    base_url="https://generativelanguage.googleapis.com/v1beta"  # Google Gemini API base
+)
 
-response = openai.ChatCompletion.create(
+response = client.chat.completions.create(
     model="gemini-1.5-flash",
     messages=[{"role": "user", "content": "Explain AI in simple terms."}]
 )
 
 print(response.choices[0].message.content)
+
 ```
 
 ### Anthropic (Claude 3)
@@ -96,10 +99,12 @@ print(response.choices[0].message.content)
 ```python
 import openai
 
-openai.api_key = "YOUR_ANTHROPIC_API_KEY"
-openai.api_base = "https://api.anthropic.com/v1"
+client = openai.Client(
+    api_key="YOUR_ANTHROPIC_API_KEY",  # Set your Anthropic API key
+    base_url="https://api.anthropic.com/v1"  # Anthropic API base
+)
 
-response = openai.ChatCompletion.create(
+response = client.chat.completions.create(
     model="claude-3-haiku-20240307",
     messages=[{"role": "user", "content": "Summarize the plot of Hamlet in a paragraph."}],
     temperature=0.5,
@@ -107,6 +112,7 @@ response = openai.ChatCompletion.create(
 )
 
 print(response.choices[0].message.content)
+
 ```
 
 ### DeepSeek
@@ -114,15 +120,18 @@ print(response.choices[0].message.content)
 ```python
 import openai
 
-openai.api_key = "YOUR_DEEPSEEK_API_KEY"
-openai.api_base = "https://api.deepseek.com"
+client = openai.Client(
+    api_key="YOUR_DEEPSEEK_API_KEY",  # Set your DeepSeek API key
+    base_url="https://api.deepseek.com"  # DeepSeek API base
+)
 
-response = openai.ChatCompletion.create(
+response = client.chat.completions.create(
     model="deepseek-chat",
     messages=[{"role": "user", "content": "Describe Quantum Computing."}]
 )
 
 print(response.choices[0].message.content)
+
 ```
 
 ## Tips for Cross-Provider Compatibility
