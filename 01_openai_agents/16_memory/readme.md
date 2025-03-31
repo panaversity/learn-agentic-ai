@@ -1,11 +1,41 @@
 # Long Term Memory with OpenAI Agents SDK 
 
+Memory is a foundational element for creating truly intelligent and adaptive AI Agents, and we are actively exploring the best ways to implement it. To effectively master the Memory Layer, adopting an AI Researcher's mindset is key.
+
 [Different Types of Memories in Agentic Framework](https://www.linkedin.com/pulse/different-types-memories-agentic-framework-gourav-g--shdxc/)
 
 [Core Concepts](https://langchain-ai.github.io/langmem/concepts/conceptual_guide/)
 
+## Learning Plan
+
+We will focus on building conceptual understanding and then applying it through specific, powerful frameworks like LangMem and Zep.
+
+### - Phase 1: Foundational Understanding (Thinking Like a Researcher)
+- Understand Core Memory Concepts:
+- Dive deep into the different types of memory crucial for agents: Episodic (experiences), Semantic (facts, knowledge), Procedural (how-to, rules), and Temporal (time-awareness).
+- Use human memory as an analogy to grasp the nuances and importance of each type.
+- Study memory mechanisms: Hot Path/Short-Term (immediate context) vs. Background/Long-Term (persistent storage and asynchronous updates).
+**Goal:** Build a strong theoretical framework for why and what an agent needs to remember.
+
 We will use this course to learn concepts: [Course: Long-Term Agentic Memory with LangGraph](https://www.deeplearning.ai/short-courses/long-term-agentic-memory-with-langgraph/)
 
+### - Phase 2: Practical Implementation with LangMem
+
+- Implement Concepts with LangMem:
+- Why LangMem first? LangMem is designed with a strong conceptual alignment to human memory types and features a clear separation between its Core API (memory operations) and Storage, aiding foundational understanding.
+- Implement basic memory operations: Storing facts, recalling past interactions, and managing procedural rules using LangMem's tools (create_manage_memory_tool, create_search_memory_tool).
+- **Goal:** Gain hands-on experience implementing different memory types and understand LangMem's specific approach to memory management.
+
+### - Phase 3: Exploring Advanced Concepts with Zep
+
+- Explore Temporal and Graph-Based Memory with Zep:
+- Why Zep next? Zep offers a different, powerful approach centered around a temporal knowledge graph, known for strong performance (especially low latency) and features suited for complex, evolving contexts often seen in enterprise applications. Learning Zep provides exposure to alternative state-of-the-art memory architectures.
+
+### -Phase 4: Broaden Research, Synthesis and Mastery
+- Investigate other frameworks like MemGPT and Mem0. Study how memory influences agent response generation (e.g., relevant APIs or patterns)."
+- Think about "Responses API". Compare, Contrast, and Apply
+
+## Memory Concepts and Implementation with OpenAI Agents SDK
 
 Let's clarify and refine the understanding of memory types within the context of agentic frameworks, specifically with an eye towards how they might be implemented using tools like the OpenAI Agents SDK.
 

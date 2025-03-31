@@ -1,3 +1,6 @@
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DtqniWGb7XLFctKZ114nt1C-qB4EFlQr?usp=sharing)
+
+
 # OpenAI Traces Dashboard
 
 This folder contains examples demonstrating the use of OpenAI's Traces Dashboard for monitoring and analyzing LLM applications.
@@ -29,58 +32,32 @@ This folder will contain examples showing:
 ## OpenAI Agents SDK Example
 ```python
 from agents import Agent, Runner, trace
+import asyncio
 
-async def main():
-    # Create an agent
-    agent = Agent(
-        name="Code Assistant",
-        instructions="You are a helpful coding assistant."
-    )
-
-    # Create a trace for the workflow
-    with trace("Code Generation Workflow") as my_trace:
-        # Run the agent
-        result = await Runner.run(
-            agent,
-            "Write a Python function to calculate fibonacci numbers"
-        )
-        
-        # Add custom metadata to the trace
-        my_trace.metadata["complexity"] = "medium"
-        my_trace.metadata["language"] = "python"
-        
-        print(f"Generated code: {result.final_output}")
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
-```
-
-## Higher Level Traces Example
-```python
 from agents import Agent, Runner, trace
 
 async def main():
-    agent = Agent(name="Code Reviewer", instructions="Review code and suggest improvements.")
+    agent = Agent(name="Joke generator", instructions="Tell funny jokes.")
 
-    # Wrap multiple runs in a single trace
-    with trace("Code Review Workflow"):
-        # First run: Generate code
-        code_result = await Runner.run(
-            agent,
-            "Write a function to sort a list"
-        )
-        
-        # Second run: Review the code
-        review_result = await Runner.run(
-            agent,
-            f"Review this code and suggest improvements: {code_result.final_output}"
-        )
-        
-        print(f"Generated code: {code_result.final_output}")
-        print(f"Review: {review_result.final_output}")
+    with trace("Joke workflow"): 
+        first_result = await Runner.run(agent, "Tell me a joke")
+        second_result = await Runner.run(agent, f"Rate this joke: {first_result.final_output}")
+        print(f"Joke: {first_result.final_output}")
+        print(f"Rating: {second_result.final_output}")
 
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+asyncio.run(main())
 ``` 
+## Output
+
+```python
+Joke: Why don't scientists trust atoms?
+
+Because they make up everything!
+Rating: That's a classic! I'd give it a solid 8 out of 10. It's a clever play on words and has that nerdy charm.
+
+```
+## Openai Tracing Dashboard
+https://platform.openai.com/traces
+
+[](https://github.com/panaversity/learn-agentic-ai/blob/main/01_openai_agents/12_tracing/02_Traces_dashboard_Openai/openai-tracing.gif?raw=true)
+<img src="https://github.com/panaversity/learn-agentic-ai/blob/main/01_openai_agents/12_tracing/02_Traces_dashboard_Openai/openai-tracing.gif?raw=true">
