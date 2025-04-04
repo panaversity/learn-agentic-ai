@@ -1,7 +1,5 @@
 # From LLMs to Stateful Long Running Multi-Agent Systems
 
-**Note: This article was manually crafted by our team.**
-
 ## From LLMs to Multi-Agent Systems
 
 2025 is being considered the year of Agentic AI. It is during this year enterprises will start developing and deploying AI Agents for automating their workflows. It can thought of as the Evalution or next iteration of SaaS (Software As A Service). AI agents could indeed be seen as an evolution of SaaS, where instead of merely providing software tools for humans to use, the software itself (via agents) takes on tasks autonomously. However, this framing might oversimplify the complexity of agentic AI, which goes much beyond SaaS by incorporating reasoning, adaptability, and autonomy. Now the question is what features and capabilities these AI Agents will have?
@@ -130,7 +128,7 @@ Not necessarily. In agentic RAG, long-term memory retrieval can be:
 * **Implicit:** Built into the agent’s pipeline, where retrieval happens automatically (e.g., a retriever runs before the LLM processes the prompt) without the LLM explicitly calling a tool.
 * **Explicit (Tool Call):** The LLM decides to invoke a tool (e.g., `search_memory` or `retrieve_context`) to fetch long-term memory, treating retrieval as an action in its reasoning loop.
 
-In modern agentic RAG systems (e.g., built with LangChain or LangGraph), it’s common for retrieval to be a tool call when the agent has control over when and what to retrieve, aligning with the agent’s ability to dynamically choose actions.
+In modern agentic RAG systems, it’s common for retrieval to be a tool call when the agent has control over when and what to retrieve, aligning with the agent’s ability to dynamically choose actions.
 
 However, some implementations pre-fetch relevant long-term memory and inject it into the prompt without requiring the LLM to call a tool, especially in simpler RAG setups.
 
@@ -139,6 +137,8 @@ With more agentic designs, long-term memory retrieval has increasingly been trea
 **Example:** An agent might call `retrieve_past_interactions` as a tool to fetch long-term memory only when relevant, instead of having it always injected.
 
 To sum up, in modern agentic RAG, long-term memory is often implemented as a tool call to give the agent flexibility (e.g., "Should I check past data?"). But it’s not always a tool call—some systems still retrieve memory implicitly and inject it into the context. Previously in LangChain, retrieval was more commonly a built-in step rather than an explicit tool call, though the shift toward agentic designs has made tool calls more prevalent.
+
+**[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction)** standardizes tool calling. 
 
 ## Multi-Agent Systems
 
@@ -277,39 +277,27 @@ I hypothesize that a more optimal design paradigm for agentic frameworks would b
 
 ---
 
-### Our Development Principles for Agentic Systems
+### Our Guiding Principles for Crafting Agentic AI
 
-When building agentic systems, we prioritize simplicity, empowerment, and adaptability. Our guiding philosophy is to enable users and developers to explore the universe with minimal friction and maximum control. Here’s how we define this approach:
+When designing agentic AI, we focus on simplicity, empowerment, and versatility to create systems that are both powerful and approachable. Our philosophy centers on equipping users and developers with the tools to explore the universe freely, with minimal obstacles and maximum autonomy. Here’s how we bring this vision to life:
 
-1. **Embrace Minimal Abstractions**  
-   - We provide direct access to the core capabilities of our agents, avoiding unnecessary layers that obscure functionality. Rather than burying the system’s power in complex wrappers, we expose what’s essential—letting users and developers interact with the AI’s reasoning, tools, and outputs in a straightforward way.  
-   - **Why**: This ensures our agents remain transparent and customizable, allowing users to shape interactions to their specific goals—whether it’s answering a cosmic question or analyzing without being constrained by rigid interfaces.
+1. **Streamline with Minimal Abstractions**  
+   - We grant direct access to the core strengths of our agents—their reasoning, tools, and outputs—without burying them under convoluted layers. By peeling back unnecessary complexity, we offer a clear and open interface for users and developers to engage with the AI’s full potential.  
+   - **Why It Matters**: Transparency and customizability empower users to tailor the AI to their needs, whether they’re unraveling cosmic mysteries or diving into detailed analysis, free from restrictive frameworks.
 
-2. **Limit Predefined Constructs**  
-   - We supply only the foundational building blocks needed to harness the agent’s potential, steering clear of heavy-handed templates or workflows. Our systems don’t dictate how you *must* use them; instead, they offer a lightweight starting point for creating tailored solutions.  
-   - **Why**: By keeping constructs minimal, we reduce bloat and empower users to craft their own approaches—whether they’re scripting a quick query or building a sophisticated multi-agent pipeline—aligned with their unique needs.
+2. **Provide Essential Building Blocks, Not Rigid Blueprints**  
+   - We deliver only the foundational elements required to unlock the agent’s capabilities, avoiding prescriptive templates or overbearing workflows. Our systems serve as a flexible launchpad, not a fixed path, inviting users to design solutions that fit their vision.  
+   - **Why It Matters**: Minimal structure cuts down on clutter, giving users the freedom to craft anything from a quick query to a complex multi-agent system, perfectly aligned with their goals.
 
-3. **Prioritize Flexibility and Clarity**  
-   - Our agentic systems are designed to be versatile tools, not one-size-fits-all solutions. We strip away unnecessary overhead to keep the system lean, ensuring it’s easy to understand, debug, and extend.  
-   - **Why**: A clear, flexible foundation accelerates experimentation and innovation, letting users push the boundaries of what’s possible—whether exploring scientific mysteries or integrating with external tools like web searches or content analysis.
+3. **Champion Adaptability and Transparency**  
+   - Our agents are built as agile, intuitive tools rather than rigid, all-in-one packages. We eliminate excess baggage to keep the system lean, making it simple to understand, troubleshoot, and enhance.  
+   - **Why It Matters**: A lightweight, adaptable core fuels rapid experimentation and innovation, enabling users to push limits—whether integrating with tools like web searches or tackling scientific breakthroughs.
 
-4. **Empower Through Simplicity**  
-   - We trust our users—be they developers or curious minds—with the raw capabilities of our agents. By minimizing complexity, we hand over the equivalent of a cosmic toolkit: powerful, unadorned, and ready for action.  
-   - **Why**: Simplicity amplifies capability. Users can iterate quickly, adapt the system to diverse contexts, and focus on their objectives without wrestling with an over-engineered framework.
+4. **Unlock Power Through Simplicity**  
+   - We place trust in our users—whether developers or inquisitive explorers—by handing them the unfiltered capabilities of our agents. Think of it as a cosmic Swiss Army knife: straightforward, potent, and ready to be wielded creatively.  
+   - **Why It Matters**: Simplicity magnifies impact. Users can iterate swiftly, adapt to diverse scenarios, and focus on their pursuits without battling an overly intricate system.
 
-In essence, these principles reflect "less is more" philosophy, trusting developers with the raw power of the AI while avoiding unnecessary hand-holding or complexity. It’s akin to handing over a Swiss Army knife rather than a bulky, specialized machine—versatile, direct, and up to the user to wield effectively.
+At its heart, our approach embodies a “less is more” ethos—delivering the raw strength of AI while sidestepping unnecessary constraints or coddling. It’s about offering a versatile, no-nonsense toolkit that users can master and mold to their will.
 
 ---
-## Our Minimal Abstractions (Limited Predefined Constructs) for Developing Agentic AI
-
-By keeping constructs minimal, we reduce bloat and empower developers to craft their own approaches for building sophisticated multi-agent pipeline—aligned with their unique needs:
-
-1. Simple Agents with guardrails, tool calling, and handoffs.
-2. Rest APIs for user to agent crews, and agent crew to agent crew communication.
-3. Stateless Serverless Docker containers for computing.
-4. Async Message Passing between containers.
-5. Contain invocation through http requests and/or CronJobs.
-6. Relational managed database services.
-
-Using these basic constructs we can deploy any kind of agentic workflows.
 

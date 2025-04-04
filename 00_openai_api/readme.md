@@ -1,4 +1,4 @@
-# OpenAI APIS
+# OpenAI APIs
 
 OpenAI offers two primary APIs for integrating AI language capabilities into applications: the Chat Completions API and the Responses API.
 

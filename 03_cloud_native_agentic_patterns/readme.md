@@ -1,8 +1,14 @@
-# Agentic Design Patterns with OpenAI Agents SDK
+# Agentic Design Patterns and Cloud Native Design Patterns
 
-[Orchestrating multiple agents using OpenAI Agents SDK ](https://openai.github.io/openai-agents-python/multi_agent/)
+## Agentic Design Patterns
+
+Agentic design patterns, as introduced by Anthropic, are architectural and behavioral templates for building effective AI systems powered by large language models (LLMs). The focus is on simplicity, transparency, and practical composability over complex frameworks.
+
+These patterns aim to make AI systems modular, scalable, and adaptable, emphasizing simple designs that can be enhanced only when needed, as informed by Anthropic’s experience with real-world implementations.
 
 [Building effective agents By Anthropic](https://www.anthropic.com/research/building-effective-agents)
+
+[Orchestrating multiple agents using OpenAI Agents SDK ](https://openai.github.io/openai-agents-python/multi_agent/)
 
 [OpenAI Agents SDK Design Patterns Examples](https://github.com/openai/openai-agents-python/tree/main/examples/agent_patterns)
 
@@ -12,9 +18,19 @@
 
 [An Analysis of Anthropic's Guide to Building Effective Agents](https://www.agentsdecoded.com/p/an-analysis-of-anthropics-guide-to)
 
+This detailed analysis of [Anthropic’s guide](https://www.anthropic.com/research/building-effective-agents) should serve as a comprehensive overview and critical appraisal of the strategies for building effective agents. Each point is well grounded in practical considerations, and while some trade-offs (like the cost of complexity) exist, the emphasis on simplicity and iterative improvement is sound engineering advice.Building effective AI agents involves understanding and implementing foundational patterns that enable systems to perform tasks autonomously or semi-autonomously. Leveraging insights from Anthropic's research on building effective agents and utilizing OpenAI's recently released Agents SDK, developers can create robust AI systems tailored to specific needs.
 
+## Cloud-Native Design Patterns
 
-This detailed analysis of Anthropic’s guide should serve as a comprehensive overview and critical appraisal of the strategies for building effective agents. Each point is well grounded in practical considerations, and while some trade-offs (like the cost of complexity) exist, the emphasis on simplicity and iterative improvement is sound engineering advice.Building effective AI agents involves understanding and implementing foundational patterns that enable systems to perform tasks autonomously or semi-autonomously. Leveraging insights from Anthropic's research on building effective agents citeturn0search1 and utilizing OpenAI's recently released Agents SDK citeturn0search0, developers can create robust AI systems tailored to specific needs.
+They are a set of architectural and design principles and practices optimized for building and running applications in modern, distributed cloud environments. They aim to leverage the characteristics of the cloud, such as scalability, resilience, agility, and cost-effectiveness.
+
+**In Essence**:
+
+Cloud-native design patterns provide the **"how"** for building and deploying agentic systems in a scalable, resilient, and manageable way. They offer the technical building blocks and best practices for running complex software in the cloud.   
+
+The "agentic principles" (inspired by Anthropic's focus) define the **"what"** – the desired characteristics and capabilities of the software agent itself.
+
+Therefore, a team aiming to build an effective software agent in a cloud environment would likely leverage many of the established cloud-native design patterns to implement the agent's desired autonomous, goal-oriented, and adaptive behaviors. The cloud-native patterns provide the robust and scalable infrastructure needed to support the complexities of intelligent agents.
 
 **1. Defining Agents and Workflows**
 

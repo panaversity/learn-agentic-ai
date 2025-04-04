@@ -4,6 +4,8 @@ Memory is a foundational element for creating truly intelligent and adaptive AI 
 
 [Different Types of Memories in Agentic Framework](https://www.linkedin.com/pulse/different-types-memories-agentic-framework-gourav-g--shdxc/)
 
+[AI Agent Memory Simplified](https://www.linkedin.com/posts/rakeshgohel01_these-explanations-will-clarify-your-ai-agent-activity-7313175951243190273-hZl_)
+
 [Core Concepts](https://langchain-ai.github.io/langmem/concepts/conceptual_guide/)
 
 ## Learning Plan
