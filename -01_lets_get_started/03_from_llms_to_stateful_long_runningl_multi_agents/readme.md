@@ -16,7 +16,20 @@ Insha Allah, we aim to revolutionize Pakistan and the world through Agentic AI, 
 
 We have developed detailed documentation outlining Multi-Agent Systems, including their architecture, which will enable us to build AI Agents on a global scale. Most notably, it highlights the key vertical sectors that our thousands of students will initially target:
 
-Here’s a comprehensive list of all the agents we’ve explored, spanning various domains and showcasing the application of **event-driven architecture (EDA)**, **three-tier architecture**, **stateless computing**, **scheduled computing (CronJobs)**, **human-in-the-loop (HITL)**, and, in some cases, **LLM intelligence**. Each agent addresses a unique use case within its domain:
+Here’s a comprehensive list of all the agents we’ve explored, spanning various domains and showcasing the application of **event-driven architecture (EDA)**, **three-tier architecture**, **stateless computing**, **scheduled computing (CronJobs)**, **human-in-the-loop (HITL)**, and, in some cases, **LLM intelligence**. 
+
+## Dapr Agentic Cloud Ascent (DACA) Design Pattern
+
+Let's understand and learn about ""Dapr Agentic Cloud Ascent" (DACA)", our winning design pattern for developing and deploying planet scale multi-agent systems:
+
+https://grok.com/share/bGVnYWN5_c41dc0f7-8fcb-4d31-bbc0-1414d0a4e294
+
+![DACA](./architecture.png)
+
+
+## Agent Domains
+
+Each agent addresses a unique use case within its domain:
 
 1. **Email Agent** (Email Management Domain)
    - **Purpose**: Monitors incoming emails, filters them, suggests responses, and sends replies after user approval; also checks and corrects new emails composed by the user.

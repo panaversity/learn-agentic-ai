@@ -1,6 +1,10 @@
-# AgentiaCloud Stacks: Free Scalable Intelligence, Simplified
+# Dapr Agentic Cloud Ascent (DACA) Stacks: Free Scalable Intelligence, Simplified
 
 Agentic AI is reshaping how we approach problem-solving, we’re harnessing its power to deliver scalable, adaptable intelligence solutions. Our focus is on providing developers with the tools to create tailored AI Agent-driven workflows without unnecessary complexity. By leveraging a minimalist yet powerful architecture, we enable everything from simple queries to sophisticated multi-agent systems.
+
+![daca](./architecture.png)
+
+**[Comprehensive Guide to Dapr Agentic Cloud Ascent (DACA) Design Pattern](https://github.com/panaversity/learn-agentic-ai/blob/main/comprehensive_guide_daca.md)**
 
 By keeping predefined constructs to a minimum, we eliminate excess and empower developers to forge custom agentic solutions—whether that’s a simple query or an intricate multi-agent workflow—tailored to our specific needs. Here’s the streamlined tools we use, in our layered architecture:
 
@@ -17,7 +21,7 @@ By keeping predefined constructs to a minimum, we eliminate excess and empower d
 
 With these core components, we enable the deployment of virtually any agentic workflow—striking a balance between simplicity and limitless potential.
 
-### The Foundations
+### The DACA Foundations
  
 The OpenAI Responses API serves as a key foundation for developing agentic AI systems, offering advanced capabilities for autonomous task execution. The OpenAI Agents SDK complements this by providing a powerful framework to orchestrate multi-agent workflows using the Responses API. Together, these two components form the core pillars of our technology stack for building agentic AI.
 
@@ -26,7 +30,7 @@ The OpenAI Responses API serves as a key foundation for developing agentic AI sy
 
 ---
 
-## Detailed Explanation of AgentiaCloud Framework Constructs
+## Detailed Explanation of DACA Framework Constructs
 
 1. **LLM APIs**  
    - **Purpose**: These serve as the core interface for interacting with large language models (LLMs), enabling agents to perform tasks ranging from simple queries to complex multi-step reasoning. They are standardized, robust, and widely supported.  
@@ -87,7 +91,7 @@ The OpenAI Responses API serves as a key foundation for developing agentic AI sy
 
 6. **Scheduled Container Invocation**  
    - **Purpose**: This allows containers to be triggered either on-demand (via HTTP requests) or on a schedule (via cron-like jobs), offering versatility in execution patterns.  
-   - **Choice**: For development we use [python-crontab](https://pypi.org/project/python-crontab/) on Linux and Mac. [APSchedule](https://pypi.org/project/APScheduler/) for Windows. Or [Schedule](https://pypi.org/project/schedule/) for inprocess scheduling on any system.  For prototyping, we’re using **[cron-job.org](https://cron-job.org/en/)**, a free online scheduling service.  For production, we’re opting for **[Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)**, which integrates with Kubernetes for robust scheduling. Dapr also provides scheduling services in its recent update. 
+   - **Choice**: We will use [Dapr Scheduler](https://docs.dapr.io/concepts/dapr-services/scheduler/). Alternatively, we can use [Dapr Scheduler](https://docs.dapr.io/concepts/dapr-services/scheduler/). Alternative for development are [python-crontab](https://pypi.org/project/python-crontab/) on Linux and Mac. [APSchedule](https://pypi.org/project/APScheduler/) for Windows. Or [Schedule](https://pypi.org/project/schedule/) for inprocess scheduling on any system.  For prototyping, we’re using **[cron-job.org](https://cron-job.org/en/)**, a free online scheduling service.  For production, we’re opting for **[Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)**, which integrates with Kubernetes for robust scheduling. Dapr also provides scheduling services in its recent update. 
    - **Why It Matters**: Flexible invocation supports both real-time and batch processing, accommodating diverse use cases efficiently.
 
 7. **Relational Managed Database Services**  
@@ -107,7 +111,7 @@ The OpenAI Responses API serves as a key foundation for developing agentic AI sy
 
 ---
 
-### Two Main Constructs Enabling the AgentiaCloud Framework
+### Two Main Constructs Enabling the DACA Framework
 
 The entire framework hinges on two key constructs, which make both prototyping and production deployments possible:  
 - **Event-Driven Container Invocation**: Containers triggered by events, such as HTTP requests, enable real-time responsiveness. This is the backbone of user-initiated workflows or agent interactions.  
@@ -116,7 +120,7 @@ Together, these constructs provide the versatility to handle virtually any agent
 
 ---
 
-### Development Stack (Local): Open Source
+### DACA Development Stack (Local): Open Source
 
 The development, prototype and production stacks are identical in terms of the tools and technologies used. The only difference lies in how they are deployed. This unified development approach ensures developers can build and test locally or in a cloud environment using the same stack, transitioning seamlessly to either prototyping or production deployment.  
 - **LLM APIs**: OpenAI Chat Completion (Google Gemini - Free Tier), Responses API 
@@ -131,7 +135,9 @@ The development, prototype and production stacks are identical in terms of the t
 - **Developing inside a Container** [Visual Studio Code Dev Containers Extension](https://code.visualstudio.com/docs/devcontainers/containers) (Open Source)
 - **Run Darp Locally** [Run using Docker-Compose](https://docs.dapr.io/getting-started/install-dapr-selfhost/) (Open Source) Optionally, you can use [Dapr Agents](https://dapr.github.io/dapr-agents/) and [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/)
 
-### Prototype Stack: Free Deployment
+**[State of Dapr 2025 Research Report](https://pages.diagrid.io/download-the-state-of-dapr-2025-report)**
+
+### DACA Prototype Stack: Free Deployment
 
 The prototype stack is designed for rapid iteration and is completely free of charge or uses free tiers, leveraging cost-effective tools for testing and validation.  
 - **LLM APIs**: OpenAI Chat Completion Compatible Google Gemini APIs which has a generious free tier, and Responses API  
@@ -146,13 +152,13 @@ The prototype stack is designed for rapid iteration and is completely free of ch
 - **Darp** Treat Dapr Like Any Container. The daprio/daprd image is just a standard container you deploy alongside your app i.e. Dapr Sidecar (Open Source). Optionally, you can use [Dapr Agents](https://dapr.github.io/dapr-agents/) and [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/)
 - **Cost**: Fully free for prototyping, minimizing financial barriers during development.
 
-### Serverless Alternative for both Prototyping and Production 
+### DACA Serverless Alternative for both Prototyping and Production 
 
 Those developer who have credit card and can register for the Azure free tier, have a option to use the serverless platform which are basically managed Kubernetes for both prototyping and production. Like [Azure Container Apps (ACA)](https://azure.microsoft.com/en-us/products/container-apps) (with [Dapr](https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview) support) and [Jobs in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/jobs?tabs=azure-cli). 
 
 They can get started with the [free tier](https://azure.microsoft.com/en-us/pricing/free-services): The first 180,000 vCPU per second, 360,000 GiB/s, and 2 million requests each month are free.
 
-**Real-World Example**
+**DACA Real-World Example**
 
 Imagine a FastAPI Service running on ACA:
 
@@ -162,7 +168,7 @@ If traffic spikes, ACA’s autoscaling could spin up another 0.5 vCPU replica ra
 
 ---
 
-### Production Stack: Cloud Native and Open Source
+### DACA Production Stack: Cloud Native and Open Source
 
 The production stack is optimized for scalability, reliability, and performance, using enterprise-grade tools while maintaining the same development stack, differing only in deployment.  
 - **LLM APIs**: Any LLM which is compatible with OpenAI Chat Completion API (most are), Responses API  
@@ -176,13 +182,13 @@ The production stack is optimized for scalability, reliability, and performance,
 - **In Memory Data Store**: Redis on Kubernetes 
 - **Darp on Kubernetes** [Deploy Dapr on a Kubernetes cluster](https://docs.dapr.io/operations/hosting/kubernetes/) (Open Source). Optionally, you can use [Dapr Agents](https://dapr.github.io/dapr-agents/) and [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/)
 
-### Serverless Alternative for both Prototyping and Production 
+### DACA Serverless Alternative for both Prototyping and Production 
 
 Those developer who have credit card and can register for the Azure free tier, have a option to use the serverless platform which are basically managed Kubernetes for both prototyping and production. Like [Azure Container Apps (ACA)](https://azure.microsoft.com/en-us/products/container-apps) (with [Dapr](https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview) support) and [Jobs in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/jobs?tabs=azure-cli). 
 
 They can get started with the [free tier](https://azure.microsoft.com/en-us/pricing/free-services): The first 180,000 vCPU per second, 360,000 GiB/s, and 2 million requests each month are free.
 
-**Real-World Example**
+**DACA Real-World Example**
 
 Imagine a FastAPI Service running on ACA:
 
@@ -192,7 +198,7 @@ If traffic spikes, ACA’s autoscaling could spin up another 0.5 vCPU replica ra
   
 ---
 
-### Training Developers for Production Deployment
+### Training Developers for DACA Production Deployment
 
 To equip developers with Kubernetes DevOps skills for production deployment, we leverage **Oracle Cloud Infrastructure (OCI)**, which offers a "free forever" tier which Offers 2 AMD VMs (1/8 OCPU, 1 GB RAM each) or up to 4 Arm-based VMs (24 GB RAM total). [These VMs are used to deploy our own Kubernetes cluster](https://github.com/nce/oci-free-cloud-k8s), providing a hands-on environment to learn cluster management, scaling, and deployment. Once developers master these skills, they can confidently deploy our agentic workflows to any cloud Kubernetes platform (e.g., AWS, GCP, Azure), ensuring portability and flexibility. This training bridges the gap between prototyping and production, empowering developers to handle real-world deployments.
 
@@ -206,4 +212,4 @@ https://medium.com/@Phoenixforge/a-weekend-project-with-k3s-and-oracle-cloud-fre
 
 ### Summary
 
-This AgentiaCloud framework balances simplicity and power, with a unified development stack that adapts to free prototyping (via Hugging Face Docker Spaces, cron-job.org) or robust production (via Kubernetes, OCI-trained DevOps). The two core constructs—event-driven and scheduled container invocation—underpin its versatility, enabling any short-term or long-term workflow in any environment. 
+This DACA framework balances simplicity and power, with a unified development stack that adapts to free prototyping (via Hugging Face Docker Spaces, cron-job.org) or robust production (via Kubernetes, OCI-trained DevOps). The two core constructs—event-driven and scheduled container invocation—underpin its versatility, enabling any short-term or long-term workflow in any environment. 

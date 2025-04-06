@@ -1,13 +1,17 @@
 # AgentiaCloud: Simplified, Scalable AI for Prototyping and Production
 
-Below is the deployment strategy for AI agents using the OpenAI Agents SDK, refined to address both prototyping and production phases. This strategy considers scalability, maintainability, vendor lock-in, and the distinct needs of short-term (session-based) and long-term (persistent) agents.
+![daca](./architecture.png)
+
+**[Comprehensive Guide to Dapr Agentic Cloud Ascent (DACA) Design Pattern](https://github.com/panaversity/learn-agentic-ai/blob/main/comprehensive_guide_daca.md)**
+
+Below is the deployment strategy for AI agents using the DACA design pattern, refined to address both prototyping and production phases. This strategy considers scalability, maintainability, vendor lock-in, and the distinct needs of short-term (session-based) and long-term (persistent) agents.
 
 ---
 
 ## Deployment Strategy for AI Agents
 
 ### Objective
-Provide a clear, actionable deployment strategy for AI agents built with the OpenAI Agents SDK, enabling seamless progression from prototyping to production. The strategy ensures support for both short-term agents (active for minutes to hours) and long-term agents (persistent for weeks to months), while prioritizing scalability, maintainability, and minimizing vendor lock-in.
+Provide a clear, actionable deployment strategy for AI agents built with the DACA, enabling seamless progression from prototyping to production. The strategy ensures support for both short-term agents (active for minutes to hours) and long-term agents (persistent for weeks to months), while prioritizing scalability, maintainability, and minimizing vendor lock-in.
 
 ### Core Libraries
 - **OpenAI Agents SDK**
@@ -19,7 +23,7 @@ Provide a clear, actionable deployment strategy for AI agents built with the Ope
 - **Dapr**
 
 ### Target User
-- **Agentic AI Developer**
+- **Agentic AI Developer and AgentOps Professionals**
 
 ---
 
