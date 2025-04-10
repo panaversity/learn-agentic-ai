@@ -18,7 +18,7 @@ LLMs API rate limits are measured across several dimensions:
 2. Tokens per minute (TPM)   
 3. Requests per day (RPD)
 
-### OpenRouters Free Models Rata Limits
+### OpenRouters Free Models Rate Limits
 
 OpenRouter’s free models typically have a global limit of 200 requests per day (RPD) across all free models, with some also capped at 20 requests per minute (RPM), as noted in their documentation. These limits apply to models with IDs ending in :free.
 
