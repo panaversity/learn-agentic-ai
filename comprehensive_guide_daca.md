@@ -244,7 +244,7 @@ DACA’s “ascent” refers to its progressive deployment pipeline, scaling fro
 3. **Self-Managed Services**:
    - **Native Kubernetes**: Provides full control and flexibility, but requires significant management effort, including setup, scaling, updates, and maintenance.
 
-Choosing the right Kubernetes-powered platform depends on your needs for management and control. Fully managed services like Google Cloud Run, Azure Container Apps (ACA), and GKE Autopilot offer ease of use and scalability, ideal for teams focusing on application development without worrying about infrastructure. Semi-managed services like AWS Karpenter offer a balance, with some automation while allowing for more customization. Native Kubernetes provides maximum control and customization at the cost of increased management overhead. We have chossen Azure Container Apps (AKA) because it offers a perfect balance, with native Dapr support.
+Choosing the right Kubernetes-powered platform depends on your needs for management and control. Fully managed services like Google Cloud Run, Azure Container Apps (ACA), and GKE Autopilot offer ease of use and scalability, ideal for teams focusing on application development without worrying about infrastructure. Semi-managed services like AWS Karpenter offer a balance, with some automation while allowing for more customization. Native Kubernetes provides maximum control and customization at the cost of increased management overhead. We have chossen Azure Container Apps (ACA) because it offers a perfect balance, with native Dapr support.
 
 #### Azure Container Apps (ACA)
 
