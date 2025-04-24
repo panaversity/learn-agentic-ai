@@ -59,6 +59,7 @@ agent = Agent(
     name="Assistant",
     instructions="You only respond in haikus.",
     model=LitellmModel(model=MODEL, api_key=GEMINI_API_KEY),
+    tools=[get_weather]
 )
 
 result = Runner.run_sync(agent, "What's the weather in Tokyo?")
