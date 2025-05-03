@@ -97,32 +97,33 @@ Here we are using same endpoints that we tried with CURL before.
 
    - `kubernetes/deployment.yaml`:
      ```yaml
-  apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: dapr-fastapi-hello
-    namespace: default
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        app: dapr-fastapi-hello
-    template:
+      apiVersion: apps/v1
+      kind: Deployment
       metadata:
-        labels:
-          app: dapr-fastapi-hello
-        annotations:
-          dapr.io/enabled: "true"
-          dapr.io/app-id: "dapr-fastapi-hello"
-          dapr.io/app-port: "8000"
-          dapr.io/enable-api-logging: "true"
-      spec:
-        containers:
-          - name: app
-            image: dapr-fastapi-hello:latest
-            ports:
-              - containerPort: 8000
-            imagePullPolicy: Never
+        name: dapr-fastapi-hello
+        namespace: default
+        spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: dapr-fastapi-hello
+        template:
+          metadata:
+            labels:
+              app: dapr-fastapi-hello
+            annotations:
+              dapr.io/enabled: "true"
+              dapr.io/app-id: "dapr-fastapi-hello"
+              dapr.io/app-port: "8000"
+              dapr.io/enable-api-logging: "true"
+          spec:
+            containers:
+              - name: app
+                image: dapr-fastapi-hello:latest
+                ports:
+                  - containerPort: 8000
+                imagePullPolicy: Never
+           
      ```
 
    - `kubernetes/service.yaml`:
