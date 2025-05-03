@@ -37,7 +37,7 @@ Dapr’s **control plane** includes services (operator, placement, scheduler, se
 
    **For Windows**
    ```bash
-   helm upgrade --install dapr dapr/dapr --version=1.15 --namespace dapr-system --create-namespace --wait
+   helm upgrade --install dapr dapr/dapr --version 1.15 --namespace dapr-system --create-namespace --wait
    ```
   
 
