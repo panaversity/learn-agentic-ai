@@ -102,7 +102,7 @@ Here we are using same endpoints that we tried with CURL before.
       metadata:
         name: dapr-fastapi-hello
         namespace: default
-        spec:
+      spec:
         replicas: 1
         selector:
           matchLabels:
