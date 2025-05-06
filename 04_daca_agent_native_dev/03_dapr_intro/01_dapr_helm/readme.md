@@ -23,8 +23,10 @@ Dapr’s **control plane** includes services (operator, placement, scheduler, se
    helm repo add dapr https://dapr.github.io/helm-charts/
    helm repo update
    ```
-
+  
 2. **Install Dapr Control Plane**:
+   
+   **For MacOS**
    ```bash
    helm upgrade --install dapr dapr/dapr \
    --version=1.15 \
@@ -33,7 +35,13 @@ Dapr’s **control plane** includes services (operator, placement, scheduler, se
    --wait
    ```
 
-3. **Verify Dapr Pods**:
+   **For Windows**
+   ```bash
+   helm upgrade --install dapr dapr/dapr --version 1.15 --namespace dapr-system --create-namespace --wait
+   ```
+  
+
+4. **Verify Dapr Pods**:
    ```bash
    kubectl get pods -n dapr-system
    ```
@@ -157,9 +165,9 @@ We’ll deploy Redis as the backend for state and pub/sub, and configure Dapr co
    ```
    - Expected:
      ```bash
-    NAME         AGE
-    pubsub       112s
-    statestore   2m25s
+       NAME         AGE
+       pubsub       112s
+       statestore   2m25s
      ```
 
 Open http://localhost:8080/components and see the components there.
@@ -225,10 +233,26 @@ Dapr’s sidecar exposes HTTP APIs on port 3500 for state (saving/retrieving dat
    
 
 3. **Port-Forward to Sidecar**:
+
+   **For MacOS**
+   
    ```bash
    kubectl get pods | grep dapr-test-app
+   ```
+
+    ```bash
    kubectl port-forward pod/dapr-test-app-<pod-suffix> 3500:3500 -n default
    ```
+
+   **For Windows**
+   ```bash
+   kubectl get pods
+   ```
+   
+   ```bash
+   kubectl port-forward pod/dapr-test-app-<pod-suffix> 3500:3500 -n default
+   ```
+   
    - Example:
      ```bash
      kubectl port-forward pod/dapr-test-app-79469c967b-stlgj 3500:3500 -n default
@@ -239,7 +263,7 @@ Dapr’s sidecar exposes HTTP APIs on port 3500 for state (saving/retrieving dat
      Forwarding from [::1]:3500 -> 3500
      ```
 
-4. **Test State Store**:
+5. **Test State Store**:
    - Save State:
      ```bash
      curl -X POST http://localhost:3500/v1.0/state/statestore \
@@ -256,7 +280,7 @@ Dapr’s sidecar exposes HTTP APIs on port 3500 for state (saving/retrieving dat
        {"user_id": "user123", "message": "Hello, Dapr!"}
        ```
 
-5. **Test Pub/Sub**:
+6. **Test Pub/Sub**:
    ```bash
    curl -X POST http://localhost:3500/v1.0/publish/pubsub/message-updated \
    -H "Content-Type: application/json" \
@@ -264,7 +288,7 @@ Dapr’s sidecar exposes HTTP APIs on port 3500 for state (saving/retrieving dat
    ```
    - Expected: No output (200 OK).
 
-6. **Stop Port-Forwarding**:
+7. **Stop Port-Forwarding**:
    - Press `Ctrl+C`.
 
 ## 5: Verify Redis Data
@@ -272,24 +296,35 @@ Dapr’s sidecar exposes HTTP APIs on port 3500 for state (saving/retrieving dat
 We saved a state key (`test-key`) in Redis via Dapr’s `statestore`. Let’s confirm the data is stored in Redis.
 
 1. **Run Redis Client Pod**:
+   
+   **For MacOS**
    ```bash
    kubectl run redis-client --namespace default --restart='Never' --image docker.io/bitnami/redis:7.4.2-debian-12-r11 --command -- sleep infinity
    ```
-
-   Wait for the container to start
-
+   **For Windows**
    ```bash
-    mjs@Muhammads-MacBook-Pro-3 learn-agentic-ai % kubectl get pods
-    NAME                             READY   STATUS              RESTARTS   AGE
-    redis-client                     0/1     ContainerCreating   0          48s
+   kubectl run redis-client --namespace default --restart="Never" --image=docker.io/bitnami/redis:7.4.2-debian-12-r11 --command -- sleep infinity
    ```
 
-2. **Connect to Redis**:
+   Wait for the container to start
+   
+   ```bash
+   kubectl get pods
+   ```
+
+    - Expeted Output:
+      
+      ```bash
+       NAME                             READY   STATUS              RESTARTS   AGE
+       redis-client                     0/1     ContainerCreating   0          48s
+      ```
+
+3. **Connect to Redis**:
    ```bash
    kubectl exec -it redis-client --namespace default -- redis-cli -h redis-master
    ```
 
-3. **Check Keys**:
+4. **Check Keys**:
    ```
    KEYS *
    ```
@@ -299,7 +334,7 @@ We saved a state key (`test-key`) in Redis via Dapr’s `statestore`. Let’s co
      2) "dapr-test-app||test-key"
      ```
 
-4. **Retrieve Value**:
+5. **Retrieve Value**:
    ```
    HGETALL dapr-test-app||test-key
    ```
@@ -312,7 +347,7 @@ We saved a state key (`test-key`) in Redis via Dapr’s `statestore`. Let’s co
      ```
 
 
-5. **Inspect the type of a key in Redis**:
+6. **Inspect the type of a key in Redis**:
   ```bash
   redis-master:6379> TYPE dapr-test-app||test-key
   hash
