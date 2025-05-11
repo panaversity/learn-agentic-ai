@@ -14,6 +14,19 @@ Pydantic is a data validation and settings management library that uses Python t
 - **Default Values and Optional Fields**: Simplifies schema definitions.
 - **Custom Validators**: Allows custom validation logic.
 
+##  Pydantic Features
+
+| Feature                 | Description                                                      |
+|-------------------------|------------------------------------------------------------------|
+| **Data validation**     | Automatically checks if data matches the types you declared      |
+| **Data parsing**        | Converts data (e.g. from string `"123"` to integer `123`)        |
+| **Type hints support**  | Uses Python’s type hints (`int`, `str`, etc.) to validate        |
+| **Easy errors**         | Gives helpful error messages when data is invalid                |
+| **FastAPI integration** | Works perfectly with FastAPI for API request/response validation |
+
+
+
+
 ## Step 1: Getting Started with Pydantic
 
 Let’s explore Pydantic with examples before integrating it into our FastAPI app.
