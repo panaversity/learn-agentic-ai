@@ -1,6 +1,4 @@
-# S1: Hello, Dapr Workflow! - A DACA AgentCore Introduction
-
-**Workflows aren’t just fancy—they **save you from losing users** when things go wrong (e.g., network drops) and **cut dev time** when you scale up.**
+# M1: Hello, Dapr Workflow! - A DACA AgentCore Introduction
 
 This guide introduces the foundational concepts of Dapr Workflow by implementing a simple "Hello, Workflow!" example. It demonstrates how to define, run, and interact with workflows and activities using the Dapr Python SDK and FastAPI. This serves as an initial step in understanding how DACA utilizes Dapr Workflows for building resilient agentic patterns.
 

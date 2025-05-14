@@ -1,10 +1,8 @@
 # [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/)
 
-In the Dapr Agentic Cloud Ascent (DACA) architecture, Dapr Workflow is a crucial building block. It empowers developers to orchestrate complex, AI-driven processes and coordinate multiple DACA agents effectively. Dapr Workflow is designed for building and managing stateful, long-running, and fault-tolerant applications, which are essential for sophisticated, production-grade AI systems.
+In the DACA architecture, Dapr Workflow is a crucial building block. It empowers developers to orchestrate complex, AI-driven processes and coordinate multiple DACA agents effectively. Dapr Workflow is designed for building and managing stateful, long-running, and fault-tolerant applications, which are essential for sophisticated, production-grade AI systems. It is particularly well-suited for orchestrating complex interactions between ai-apps and other Dapr building blocks like service invocation, pub/sub, state management, and bindings.
 
 ![Dapr Workflow](./public/hello-workflow.png)
-
-Dapr Workflow provides a robust way to author and manage stateful, long-running, and fault-tolerant applications. It is particularly well-suited for orchestrating complex interactions between ai-apps and other Dapr building blocks like service invocation, pub/sub, state management, and bindings.
 
 With Dapr Workflow, you can define business logic and integration processes that are resilient to failures and can run for extended periods.
 
@@ -18,8 +16,6 @@ By default, Dapr Workflow supports the Actors backend, which is stable and scala
 We will study details in workflows architecture.
 
 ![Dapr Engine Actors](./public/Workflow%20Engine%20Actors.png)
-
-Dapr Workflows are particularly adept at defining the logic for multi-step AI tasks, managing the lifecycle of agent operations, and ensuring the reliable execution of business processes that involve AI agents and other microservices. This capability aligns directly with DACA's primary goal of creating scalable, resilient, and maintainable agentic AI systems capable of operating at a planetary scale.
 
 ## Module Structure & Learning Path
 
@@ -37,8 +33,11 @@ This module is designed to guide you through Dapr Workflows, from foundational c
 
 Follow these sections sequentially to build a comprehensive understanding of Dapr Workflows and their application in the Dapr Agentic Cloud Ascent (DACA) architecture.
 
-
-Learning Resources:
+## Extra Reading
+- [Workflow Overview](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/)
+- [Workflow Patterns](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-patterns/)
+- [Workflow Architecture](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-architecture/)
+- [Agentic Patterns Implementations Code Inspiration](https://github.com/dapr/python-sdk/tree/main/examples/workflow)
 - https://github.com/dapr/python-sdk/tree/main/examples/demo_workflow
 - https://github.com/dapr/python-sdk/tree/main/ext/dapr-ext-workflow
 - https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/
