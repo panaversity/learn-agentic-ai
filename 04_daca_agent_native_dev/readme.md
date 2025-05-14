@@ -9,11 +9,11 @@ This module trains **Agentic AI Developers** to build planet-scale, multi-AI age
 - **03_dapr_intro/**: Intro to Dapr with Helm, configuring Pub/Sub (`pubsub.yaml`) and state stores (`statestore.yaml`) for distributed agent logic.
 - **04_security_fundamentals** establishes security basics for DACA agents.
 - **05_agent_actors** progresses on Dapr Virtual Actors for building DACA agents
-- **06_security_advanced** explores advanced security techniques for production-grade security.
-- **07_daca_workflows**: Learn to orchestrate complex, AI-driven workflows for long running production systems.
+- **06_daca_workflows**: Learn to orchestrate complex, AI-driven workflows for long running production systems.
+- **07_security_advanced** explores advanced security techniques for production-grade security.
 
 ## Getting Started
-Follow core modules sequentially or skip based on expertise. Hands-on exercises (e.g., chat API, multi-agent system) build DACA agents. Explore `05_daca_advanced_experimental/` for depth. See module-specific `readme.md` files for details.
+Follow core modules sequentially or skip based on expertise. Hands-on exercises (e.g., chat API, multi-agent system) build DACA agents.
 
 ## Kubernetes Cluster
 
