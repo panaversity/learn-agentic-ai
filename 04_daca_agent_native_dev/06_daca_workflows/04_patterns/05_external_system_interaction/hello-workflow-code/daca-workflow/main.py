@@ -1,38 +1,3 @@
-# [Pattern 5: External System Interaction (and Human Interaction)](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-patterns/#external-system-interaction)
-
-This pattern addresses scenarios where a workflow needs to pause its execution and wait for a signal or data from an external system, which could be another microservice, a third-party API, or often, a human user.
-
-## Understanding External System Interaction
-
-Common use cases include:
-
-*   **Human Approvals**: Purchase order approvals, leave requests, content moderation where a human decision is needed.
-*   **Payment Gateways**: Waiting for confirmation that a payment has been processed successfully.
-*   **Callback Mechanisms**: Interacting with systems that operate asynchronously and provide results via a callback.
-*   **Long-running external tasks**: Triggering a task in another system and waiting for its completion signal.
-
-The typical flow involves:
-1.  The workflow initiates a request or sends a notification to an external entity.
-2.  The workflow pauses, waiting for a specific external event (e.g., "approval_received", "payment_confirmed").
-3.  Often, a timeout is also associated with this wait period.
-4.  The workflow resumes based on whichever occurs first: the external event or the timeout.
-5.  An external component (another service, an API endpoint responding to a user action, an event subscriber) uses Dapr's capabilities to send the named event to the specific workflow instance.
-
-## External Interaction with Dapr Workflows
-
-Dapr Workflows provide robust support for this pattern through:
-
-*   **`ctx.wait_for_external_event(event_name: str)`**: The workflow calls this and yields, effectively pausing its execution until an event with the specified `event_name` is raised against its instance.
-*   **`ctx.create_timer(timedelta(...))`**: Used to create a timer. This is often used in conjunction with `wait_for_external_event` to implement timeouts.
-*   **`wf.when_any([task1, task2, ...])`**: This powerful construct allows the workflow to wait for any one of a list of pending tasks (like an external event or a timer) to complete. The workflow then proceeds based on which task completed first.
-*   **`DaprClient().raise_workflow_event(instance_id: str, workflow_component: str, event_name: str, event_data: any)`**: This method, used *outside* the workflow code itself (e.g., in a separate FastAPI endpoint or an event handler), is how the external signal is delivered to the waiting workflow instance.
-
-## Conceptual Code Example (Adapted from Dapr Docs for `main.py`)
-
-The following Python code illustrates the pattern for a purchase order approval.
-
-**Workflow and Activity Definitions (in `main.py`):**
-```python
 import time # For activity simulation
 import logging
 
@@ -200,36 +165,3 @@ async def get_status_endpoint(instance_id: str):
     except Exception as e:
         if "not found" in str(e).lower(): raise HTTPException(status_code=404, detail="Not found")
         raise HTTPException(status_code=500, detail=str(e)) 
-```
-
-## Setup
-
-1.  **Starter Code**: Copy contents of `00_starter-code/daca-workflow/` to `05_external_system_interaction/hello-workflow-code/daca-workflow/`.
-2.  **Run**: `tilt up`
-
-## Access Points
-
-*   **Tilt UI**: [http://localhost:10350](http://localhost:10350)
-*   **App API Docs (Swagger UI)**: [http://localhost:30080/docs](http://localhost:30080/docs) (for `/start-purchase-order` and `/signal-approval`)
-*   **Jaeger/Dapr Dashboard**: As usual.
-
-## Implementing and Running the Example
-
-1.  **Modify `main.py`**: Implement the dataclasses, workflow, activities, and the two FastAPI endpoints (`/start-purchase-order` and `/signal-approval/{instance_id}`) based on the conceptual code.
-2.  **Test Scenario 1 (Approval)**:
-    a.  Call `/start-purchase-order` with an order where `cost * quantity >= 1000` (e.g., `{"order_id": "order123", "cost": 500, "product": "Widget", "quantity": 2}`). Note the `instance_id`.
-    b.  Observe logs: `send_approval_request_activity` runs. Workflow pauses.
-    c.  **Before the timeout (30s in demo)**, call `/signal-approval/{instance_id}` with `{"approver_name": "ManagerX", "approved": true}`.
-    d.  Observe logs: Workflow receives event, `place_order_activity` runs, workflow completes with "Approved" status.
-3.  **Test Scenario 2 (Rejection)**:
-    a.  Start another order: `/start-purchase-order` (e.g., `{"order_id": "order456", "cost": 600, "product": "Gadget", "quantity": 2}`). Note `instance_id`.
-    b.  Call `/signal-approval/{instance_id_of_order456}` with `{"approver_name": "ManagerY", "approved": false}`.
-    d.  Observe logs: Workflow receives event, completes with "Rejected" status.
-4.  **Test Scenario 3 (Timeout)**:
-    a.  Start another order: `/start-purchase-order` (e.g., `{"order_id": "order789", "cost": 700, "product": "Gizmo", "quantity": 2}`). Note `instance_id`.
-    b.  **Do not** call `/signal-approval`.
-    c.  Observe logs: After the timeout (30s), workflow resumes, completes with "Cancelled due to timeout" status.
-
-## Next Steps
-
-Implement the full logic in your `main.py` for this pattern. This one is more involved due to the external interaction simulation but demonstrates a very powerful Dapr Workflow capability.

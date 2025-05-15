@@ -1,1 +1,0 @@
-[WorkFlows with Transactional Outbox Pattern](https://docs.dapr.io/developing-applications/building-blocks/state-management/howto-outbox/)

@@ -1,4 +1,4 @@
-# 04: [Authoring Dapr Workflows & Activities](https://docs.dapr.io/developing-applications/building-blocks/workflow/howto-author-workflow/)
+# 03: [Authoring Dapr Workflows & Activities](https://docs.dapr.io/developing-applications/building-blocks/workflow/howto-author-workflow/)
 
 This module provides a hands-on guide to the Dapr Python SDK (`dapr-ext-workflow`) for authoring robust and complex workflow logic. We will start with the basic "Hello, Workflow!" example and incrementally add advanced features to it. You will learn to define workflows and activities, manage data flow, orchestrate tasks, handle time, integrate external events, and more.
 

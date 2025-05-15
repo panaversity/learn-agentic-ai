@@ -1,0 +1,14 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: tracing
+  namespace: default # Sentry runs in dapr-system
+spec:
+  tracing:
+    samplingRate: "1"
+    otel:
+      endpointAddress: "jaeger.default.svc.cluster.local:4317"
+      isSecure: false
+      protocol: grpc
+  metrics:
+    enabled: true

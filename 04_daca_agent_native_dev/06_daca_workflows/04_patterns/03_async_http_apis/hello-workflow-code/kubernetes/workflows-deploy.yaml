@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daca-workflow-deployment
+  namespace: default # Consider using a dedicated namespace for your app
+  labels: # Added top-level labels for better organization/selection
+    app: daca-workflow
+    environment: development # Example: useful for different configs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: daca-workflow
+  # Strategy for updates, useful even with 1 replica for future scaling
+  # and ensures zero-downtime updates if configured properly with probes
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0 # Or 25% if replicas > 1
+      maxSurge: 1       # Or 25% if replicas > 1
+  template:
+    metadata:
+      labels:
+        app: daca-workflow # Pod Label matches selector
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "daca-workflow"
+        dapr.io/app-port: "8000"
+        dapr.io/log-level: "info" # Change to "debug" for more verbose Dapr logs during troubleshooting
+        dapr.io/config: "tracing" # Ensure 'tracing' Dapr Configuration CRD exists and is correct
+    spec:
+      # Optional: Specify a service account if you use RBAC
+      # serviceAccountName: <your-service-account>
+      containers:
+      - name: daca-workflow-container
+        image: daca-workflow # Must Match Your Image (e.g., from tiltfile nerdctl_build)
+        imagePullPolicy: IfNotPresent # Good for local dev with Tilt. For prod, consider "Always" with specific tags.
+        ports:
+        - name: http # Naming the port is good practice
+          containerPort: 8000
+          protocol: TCP
+        resources:
+          requests: # Amount of resources reserved for your pod
+            cpu: "200m" # 0.2 CPU core
+            memory: "256Mi" # 256 Megabytes
+          limits:   # Maximum amount of resources your pod can consume
+            cpu: "700m" # 0.7 CPU core
+            memory: "1024Mi" # 1024 Megabytes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: daca-workflow-service
+  namespace: default # Match the Deployment namespace
+  labels: # Consistent labels
+    app: daca-workflow
+spec:
+  selector:
+    app: daca-workflow # Must match the Pod labels defined in the Deployment template
+  ports:
+    - name: http-svc # Naming the port
+      protocol: TCP
+      port: 80 # Port the service is available on *within* the cluster
+      targetPort: http # Name of the port on the Pod (containerPort name) or the port number (8000)
+      nodePort: 30080 # NodePort is okay for local dev/testing or specific needs.
+                      # For production or general internal access, ClusterIP (default if 'type' is omitted) is often better.
+                      # If external access is needed in prod, consider an Ingress controller.
+  type: NodePort # Or ClusterIP / LoadBalancer as needed

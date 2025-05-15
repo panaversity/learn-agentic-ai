@@ -11,19 +11,44 @@ logger = logging.getLogger(__name__)
 
 wfr = WorkflowRuntime()
 
-@wfr.activity(name="hello_activity")
-def hello_activity(ctx: WorkflowActivityContext, name: str):
-    logger.info(f"Activity (for WF '{ctx.workflow_id}' and Task '{ctx.task_id}'): Greeting '{name}'")
-    time.sleep(10) # Simulate work - EXPERIMENT BY INCREASING THIS TIME
-    return f"Hello, {name}!"
+@wfr.workflow(name='random_workflow')
+def task_chain_workflow(ctx: DaprWorkflowContext, wf_input: int):
+    try:
+        result1 = yield ctx.call_activity(step1, input=wf_input)
+        result2 = yield ctx.call_activity(step2, input=result1)
+        result3 = yield ctx.call_activity(step3, input=result2)
+    except Exception as e:
+        yield ctx.call_activity(error_handler, input=str(e))
+        raise
+    # TODO update to set custom status
+    return [result1, result2, result3]
 
-@wfr.workflow(name="hello_workflow")
-def hello_workflow(ctx: DaprWorkflowContext, name: str):
-    logger.info(f"WF '{ctx.instance_id}': Starting with '{name}'")
-    greeting = yield ctx.call_activity(hello_activity, input=name)
-    logger.info(f"WF '{ctx.instance_id}': Activity said '{greeting}'")
-    return {"final_greeting": greeting}
 
+@wfr.activity(name='step10')
+def step1(ctx, activity_input):
+    print(f'Step 1: Received input: {activity_input}.')
+    # Do some work
+    return activity_input + 1
+
+
+@wfr.activity
+def step2(ctx, activity_input):
+    print(f'Step 2: Received input: {activity_input}.')
+    # Do some work
+    return activity_input * 2
+
+
+@wfr.activity
+def step3(ctx, activity_input):
+    print(f'Step 3: Received input: {activity_input}.')
+    # Do some work
+    return activity_input - 2
+
+
+@wfr.activity
+def error_handler(ctx, error):
+    print(f'Executing error handler: {error}.')
+    # Do some compensating work
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     wfr.start()
@@ -34,11 +59,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Hello Workflow", lifespan=lifespan)
 
-@app.post("/start/{user_name}")
-async def start_wf_endpoint(user_name: str):
+@app.post("/start-chaining-workflow")
+async def start_wf_endpoint(number: int):
     client = DaprWorkflowClient()
     try:
-        instance_id = client.schedule_new_workflow(workflow=hello_workflow, input=user_name)
+        instance_id = client.schedule_new_workflow(workflow=task_chain_workflow, input=number)
         return {"instance_id": instance_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
