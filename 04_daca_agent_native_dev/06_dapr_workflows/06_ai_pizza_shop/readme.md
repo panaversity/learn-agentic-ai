@@ -85,6 +85,8 @@ Your primary task is to implement the main order processing workflow and its ass
     - `BakePizzaActivity`
     - `NotifyCustomerActivity`
 
+We highly encourage you to dive in and build your solution to this challenge from scratch – that's where the deepest learning happens! However, if you get stuck, need a little inspiration, or want to compare your approach after you're done, a [reference implementation is available here](https://github.com/mjunaidca/ai-pizza-challenge-dapr-workflows). Use it to spark ideas and enhance your own unique version!
+
 ## 🌟 Bonus Challenges / Advanced Features
 
 Once the MVP is working, try to extend it with these features:
