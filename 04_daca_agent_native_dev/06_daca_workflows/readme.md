@@ -24,9 +24,9 @@ This module is designed to guide you through Dapr Workflows, from foundational c
 *   **`00_lab_starter_code/`**: Contains starter code, templates, and common utilities for the hands-on labs in this module.
 *   **`01_hello_workflow/`**: Your first step into Dapr Workflows. Learn to set up, define, register, and run a basic workflow.
 *   **`02_architecture_theory/`**: Delve into the underlying architecture of Dapr Workflows, understanding how the Dapr sidecar, workflow engine, and SDKs interact.
-*   **`03_patterns/`**: Explore common and effective workflow design patterns (e.g., chaining, fan-out/fan-in, sagas, human interaction) and how to apply them.
-*   **`04_author_workflows/`**: Focus on the practical aspects of writing workflow and activity logic using the Dapr Workflow SDK, including data passing, timers, and child workflows.
-*   **`05_manage_workflows/`**: Learn how to interact with and manage workflow instances using the Dapr Workflow HTTP API (start, query, pause, resume, terminate, raise events, purge).
+*   **`03_author_workflows/`**: Focus on the practical aspects of writing workflow and activity logic using the Dapr Workflow SDK, including data passing, timers, and child workflows.
+*   **`04_manage_workflows/`**: Learn how to interact with and manage workflow instances using the Dapr Workflow HTTP API (start, query, pause, resume, terminate, raise events, purge).
+*   **`05_patterns/`**: Explore common and effective workflow design patterns (e.g., chaining, fan-out/fan-in, sagas, human interaction) and how to apply them.
 *   **`06_ai_pizza_shop/`**: A challenge to apply Dapr Workflows to build an AI-driven application (the "AI Pizza Shop"), integrating various concepts learned.
 *   **`07_advanced_features/`**: Dive into advanced configurations, observability (metrics, tracing), in-depth error handling, testing strategies, and SDK-specific nuances for production-ready workflows.
 *   **`08_a2a_daca/`**: Explore how Dapr Workflows can orchestrate complex Agent-to-Agent (A2A) communication and sophisticated interactions within the DACA ecosystem.

@@ -1,0 +1,45 @@
+load('ext://helm_remote', 'helm_remote')
+load('ext://nerdctl', 'nerdctl_build')
+
+update_settings(k8s_upsert_timeout_secs=1800)
+
+# 1. Build the FastAPI image using nerdctl
+nerdctl_build(
+    ref='daca-workflow',
+    context='./daca-workflow',
+    dockerfile='./daca-workflow/Dockerfile',
+    live_update=[
+        sync('./daca-workflow', '/code'),
+    ]
+)
+
+helm_remote(
+    chart='dapr',
+    repo_url='https://dapr.github.io/helm-charts/',
+    repo_name='dapr',
+    version='1.15',
+    release_name='dapr',
+    namespace='dapr-system',
+    create_namespace=True,
+    set=['global.mtls.enabled=false', 'global.ha.enabled=false', 'dapr_scheduler.ha=true', 'dapr_placement.ha=true']
+)
+
+helm_remote(
+    chart='redis',
+    repo_url='https://charts.bitnami.com/bitnami',
+    repo_name='bitnami',
+    release_name='redis',
+    namespace='default',
+    set=['auth.enabled=false']
+)
+
+k8s_yaml(['./components/statestore.yaml', './components/observability.yaml'])
+
+# Above Dapr setup is Completed
+k8s_yaml(['kubernetes/workflows-deploy.yaml'])
+# k8s_yaml(['kubernetes/jaeger.yaml'])
+
+# k8s_resource(
+#     'jaeger',
+#     port_forwards='16686:16686'
+# )
