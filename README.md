@@ -169,4 +169,4 @@ Quizzes + Hackathons (Everything is Onsite)
 7. Dapr-1 - State, PubSub, Bindings, Invocation [04_daca_agent_native_dev = 03 ]
 8. Dapr-2 - Workflows, Virtual Actors [04_agent_native = 04, 05, 06]
 9. Hackathon2 - 8 Hours (Agent Native Startup) 
-10. CKAD + DAPR + ArgoCD (Stimulations) [06_daca_deployment_guide + 07_ckad]
+10. CKAD + DAPR + ArgoCD (Simulations) [06_daca_deployment_guide + 07_ckad]
