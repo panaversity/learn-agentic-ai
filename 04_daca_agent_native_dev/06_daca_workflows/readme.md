@@ -28,8 +28,6 @@ This module is designed to guide you through Dapr Workflows, from foundational c
 *   **`04_manage_workflows/`**: Learn how to interact with and manage workflow instances using the Dapr Workflow HTTP API (start, query, pause, resume, terminate, raise events, purge).
 *   **`05_patterns/`**: Explore common and effective workflow design patterns (e.g., chaining, fan-out/fan-in, sagas, human interaction) and how to apply them.
 *   **`06_ai_pizza_shop/`**: A challenge to apply Dapr Workflows to build an AI-driven application (the "AI Pizza Shop"), integrating various concepts learned.
-*   **`07_advanced_features/`**: Dive into advanced configurations, observability (metrics, tracing), in-depth error handling, testing strategies, and SDK-specific nuances for production-ready workflows.
-*   **`08_a2a_daca/`**: Explore how Dapr Workflows can orchestrate complex Agent-to-Agent (A2A) communication and sophisticated interactions within the DACA ecosystem.
 
 Follow these sections sequentially to build a comprehensive understanding of Dapr Workflows and their application in the Dapr Agentic Cloud Ascent (DACA) architecture.
 
