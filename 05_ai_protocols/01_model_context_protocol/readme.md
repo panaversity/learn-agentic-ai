@@ -4,6 +4,8 @@
 
 **It’s a protocol to allow Claude (or other LLMs) to interface with external tools (databases, web servers, file systems etc)**
 
+**[DeepLearning MCP Course](https://learn.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic/lesson/fkbhh/introduction)**
+
 **[How did the MCP change the process of tool calling in AI Agents?](https://www.linkedin.com/posts/rakeshgohel01_how-did-the-mcp-change-the-process-of-tool-activity-7312816588267614210-LlK8?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAEcz6oB-KbLJt9GRA1bGQ0NvibVq6_0wBY)**
 
 [Watch: Building Agents with Model Context Protocol - Full Workshop with Mahesh Murag of Anthropic](https://www.youtube.com/watch?v=kQmXtrmQ5Zg)

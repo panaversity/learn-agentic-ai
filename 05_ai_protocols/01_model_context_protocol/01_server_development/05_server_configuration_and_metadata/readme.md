@@ -1,0 +1,1 @@
+Covering how to configure server details like name, version, description, and potentially icons (addressing your "mcp server images" idea if it pertains to server branding/identification). This could involve config.json or SDK-specific methods.
