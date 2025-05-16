@@ -1,6 +1,6 @@
 # MCP Protocol Lifecycle and Capability Negotiation
 
-A critical aspect of the Model Context Protocol (MCP) is its defined lifecycle for communication sessions between a Client and a Server. This lifecycle ensures that both parties establish a clear understanding of supported features before any substantive interaction occurs. This process is centered around **capability negotiation**.
+A critical aspect of the Model Context Protocol (MCP) is its defined lifecycle for communication sessions between a Client and a Server. This lifecycle ensures that both parties establish a clear understanding of supported features before any substantive interaction occurs. This process is centered around **capability negotiation**. For remote communication, particularly over HTTP, the **Streamable HTTP transport** (part of the 2025-03-26 specification) plays a crucial role in facilitating this lifecycle robustly and efficiently. It supports the establishment and maintenance of MCP sessions, even allowing servers that are operationally stateless to fully participate in the defined lifecycle.
 
 ## 1. Connection Initialization
 

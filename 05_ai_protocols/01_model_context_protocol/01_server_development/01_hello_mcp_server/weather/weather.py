@@ -1,10 +1,7 @@
-from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Initialize FastMCP server
 mcp = FastMCP("weather")
-
-    
 
 @mcp.tool()
 async def get_forecast(city: str) -> str:

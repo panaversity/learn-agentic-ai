@@ -1,86 +1,95 @@
 # MCP Architecture Deep Dive
 
-The Model Context Protocol (MCP) is built upon a flexible client-server architecture designed to facilitate standardized communication between AI applications and various data sources or tools. Understanding these components is key to leveraging MCP effectively.
+_(Based on the [MCP Specification 2025-03-26 Architecture](https://modelcontextprotocol.io/specification/2025-03-26/architecture) and the [Streamable HTTP Transport Merged PR Discussion](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/206))_
 
-## Core Architectural Components
+The Model Context Protocol (MCP) utilizes a **Client-Host-Server architecture**. Built on JSON-RPC, MCP defines a **session-based protocol** focused on context exchange, capability negotiation, and sampling coordination between Clients and Servers. The introduction of the **Streamable HTTP transport** (part of the 2025-03-26 specification) provides significant flexibility, **allowing MCP Servers (especially HTTP-based ones) to be implemented in a fully stateless manner if desired**, while still enabling stateful operations for servers that require them.
 
-### 1. MCP Hosts
+## Core Components
 
-- **Definition:** MCP Hosts are applications that initiate the need to access external data or tools. They are the primary interface for the end-user or the AI model itself.
-- **Examples:**
-  - AI Assistants (e.g., Claude Desktop)
-  - Integrated Development Environments (IDEs) with AI capabilities (e.g., Zed, Sourcegraph Cody)
-  - Custom AI-powered applications or workflows.
-- **Role:** The Host discovers and manages connections to MCP Servers (often via an embedded or associated MCP Client). It translates user/model intent into requests that can be fulfilled by MCP Servers.
+### 1. MCP Host
+
+The Host process acts as the primary container and central coordinator for MCP interactions.
+
+- **Role & Responsibilities:**
+  - Creates and manages multiple MCP Client instances.
+  - Controls Client connection permissions and their lifecycle (e.g., when a client connects or disconnects from a server).
+  - Enforces security policies and manages user consent requirements for accessing servers or data.
+  - Handles user authorization decisions related to MCP operations.
+  - Coordinates the integration with AI/LLM models, including managing AI "sampling" requests (i.e., requests for the AI to generate text or make decisions).
+  - Manages context aggregation from various clients/servers to provide a unified view for the AI model or end-user.
+  - Acts as the main interface for the end-user or the AI model.
+- **Examples:** AI Assistants (e.g., Claude Desktop), IDEs with AI features (e.g., Zed, Sourcegraph Cody), custom AI-powered applications.
 
 ### 2. MCP Clients
 
-- **Definition:** MCP Clients are protocol clients that act as intermediaries, maintaining one-to-one connections with MCP Servers. A single MCP Host can manage multiple MCP Clients, each connected to a different MCP Server.
-- **Role:**
-  - Establishes and manages the communication session with an MCP Server.
-  - Handles the specifics of the MCP protocol (e.g., message formatting, capability negotiation).
-  - Forwards requests from the Host to the Server and responses from the Server back to the Host.
-  - Can be embedded within the Host application or run as a separate process.
-- **Key Interaction:** The Client is responsible for the actual protocol-level communication.
+Each MCP Client is created by the Host and manages a connection to a single MCP Server.
+
+- **Role & Responsibilities:**
+  - Initiates connections and performs the **`initialize` handshake** with Servers, including capability exchange.
+  - Routes MCP messages bidirectionally.
+  - Manages resource subscriptions and notifications.
+  - Maintains security boundaries between Servers.
 
 ### 3. MCP Servers
 
-- **Definition:** MCP Servers are lightweight programs (processes) that expose specific capabilities (tools, resources, prompt templates) from a particular data source or service.
-- **Examples:**
-  - A server for accessing a local file system.
-  - A server for interacting with the GitHub API.
-  - A server for querying a Postgres database.
-  - A server providing weather information.
-- **Role:**
-  - Connects directly to a data source or tool.
-  - Implements the MCP protocol to respond to requests from an MCP Client.
-  - Advertises its available tools, resources, and prompt templates to connected Clients.
-- **Deployment:** Can run locally as a subprocess managed by the Host/Client (stdio server) or remotely, accessible via a URL (HTTP/SSE server, now evolving to streamable HTTP).
+MCP Servers provide context, tools, or capabilities. With the Streamable HTTP transport, their operational statefulness is flexible.
 
-## Communication Backbone
+- **Role & Responsibilities:**
+  - Respond to the `initialize` handshake.
+  - Expose **resources**, **tools**, and **prompt templates**.
+  - Can request AI/LLM "sampling" through the Client.
+  - Must respect security constraints.
+- **Operational Models (enabled by Streamable HTTP Transport):**
+  - **Stateless Server:**
+    - A server can acknowledge the `initialize` request (fulfilling the protocol step) but choose not to persist any session-specific state if its operations are inherently stateless (e.g., a server offering simple, idempotent tools).
+    - Each incoming request (e.g., `tool/execute`) is processed independently.
+    - This model eliminates the need for long-lived connections or shared session stores for such servers, simplifying deployment (e.g., on serverless platforms).
+  - **Stateless Server with Streaming:**
+    - Even a stateless server can leverage streaming for operations like sending progress notifications during a tool call. The server indicates the response will be SSE for that specific operation and closes the stream upon completion.
+  - **Stateful Server:**
+    - Servers that require session context (e.g., for resource subscriptions, complex multi-step interactions) can establish a session ID during/after initialization.
+    - The client includes this session ID in subsequent requests, allowing the server to retrieve and use the session state. This is similar to traditional stateful MCP operations.
+- **Deployment:**
+  - **Local (Stdio):** Can run as a subprocess.
+  - **Remote (Streamable HTTP):** Runs as an independent network service, leveraging the flexibility of the Streamable HTTP transport for stateless or stateful operation.
 
-### The Role of JSON-RPC 2.0
+## Communication Backbone: JSON-RPC 2.0 & Streamable HTTP
 
-- **Standardization:** All messages exchanged between MCP Clients and Servers **MUST** adhere to the [JSON-RPC 2.0 specification](https://www.jsonrpc.org/specification).
-- **Message Types:** This defines three fundamental message types:
-  - **Requests:** Sent to initiate an operation (e.g., call a tool, get a resource). Must include an `id` and `method`.
-  - **Responses:** Sent in reply to requests. Must include the same `id`. Can be a successful `result` or an `error` (with `code` and `message`).
-  - **Notifications:** One-way messages with no reply expected (e.g., a server notifying a client about a resource update). Must not include an `id`.
-- **Benefits:** JSON-RPC is lightweight, human-readable (as it's JSON), and widely supported, making it a good choice for a standardized protocol.
+- All MCP messages **MUST** adhere to JSON-RPC 2.0.
+- For remote communication, the **Streamable HTTP transport** is key. It uses a single `/message` endpoint for client-server messages and allows servers to optionally upgrade responses to SSE for streaming. This transport is designed for robustness, resumability, and compatibility with standard HTTP infrastructure, and it underpins the possibility of stateless server implementations.
 
-## Communication Models
+## Key MCP Design Principles
 
-### 1. Local Communication (Stdio Servers)
+The architecture of MCP is guided by several core principles outlined in the specification:
 
-- **Mechanism:** The MCP Server runs as a subprocess of the Host/Client application. Communication typically occurs over standard input/output (stdin/stdout) pipes.
-- **Characteristics:**
-  - **Simplicity:** Easier to set up for local tools or data.
-  - **Security:** Data often doesn't leave the user's machine, enhancing privacy for local resources.
-  - **Lifecycle Management:** The Host/Client often manages the lifecycle (start/stop) of the stdio server.
-- **Use Cases:** Accessing local files, interacting with local databases, running local scripts as tools.
+1.  **Servers should be extremely easy to build:**
+    - Host applications handle complex orchestration responsibilities.
+    - Servers focus on specific, well-defined capabilities.
+    - Simple interfaces minimize implementation overhead.
+    - Clear separation enables maintainable code.
+2.  **Servers should be highly composable:**
+    - Each server provides focused functionality in isolation.
+    - Multiple servers can be combined seamlessly by a Host.
+    - Shared protocol enables interoperability.
+    - Modular design supports extensibility.
+3.  **Servers should not be able to read the whole conversation, nor "see into" other servers:**
+    - Servers receive only necessary contextual information from the Host.
+    - Full conversation history stays with the Host.
+    - Each server connection maintains isolation.
+    - Cross-server interactions are controlled by the Host.
+    - The Host process enforces security boundaries.
+4.  **Features can be added to servers and clients progressively:**
+    - The core protocol provides minimal required functionality.
+    - Additional capabilities can be negotiated as needed.
+    - Servers and clients evolve independently.
+    - The protocol is designed for future extensibility.
+    - Backwards compatibility is maintained.
 
-### 2. Remote Communication (HTTP Servers)
+## Capability Negotiation: A Cornerstone
 
-- **Mechanism:** The MCP Server runs as an independent process, potentially on a different machine, and is accessible via a URL. The communication typically uses HTTP(S). The MCP spec is evolving from HTTP+SSE to a more general "streamable HTTP" transport.
-- **Characteristics:**
-  - **Scalability:** Remote servers can be scaled independently.
-  - **Accessibility:** Can provide access to cloud services, web APIs, or shared resources.
-  - **Complexity:** May involve more setup regarding networking, security (HTTPS, authentication), and discovery.
-- **Use Cases:** Connecting to web APIs (e.g., Google Drive, Slack), accessing shared databases, providing enterprise-wide toolsets.
+A fundamental aspect of MCP is its capability-based negotiation system.
 
-## Client-Server Interaction Patterns (High-Level)
-
-1.  **Initialization & Capability Negotiation:**
-    - Client connects to Server.
-    - They exchange capabilities to agree on what features will be used during the session (e.g., what tools the server offers, whether the client can handle server-initiated requests like sampling). This is a crucial first step.
-2.  **Client-Initiated Requests:**
-    - Host (via Client) requests a list of available tools/resources from the Server.
-    - Host (via Client) invokes a specific tool on the Server with arguments.
-    - Server processes the request and sends a response (result or error) back to the Client, which forwards it to the Host.
-3.  **Server-Initiated Interactions (if supported and negotiated):**
-    - **Resource Subscriptions & Notifications:** Client subscribes to a resource on the Server. Server sends asynchronous notifications to the Client when the resource changes.
-    - **Sampling Requests:** Server requests the Client (Host/AI) to perform a "sampling" operation (e.g., generate text based on context provided by the server).
-4.  **Session Termination:**
-    - Client or Server initiates session termination.
-
-This deep dive should provide a solid understanding of the moving parts within the MCP architecture and how they interact.
+- During session initialization, Clients and Servers explicitly declare their supported features (e.g., server declares tool support and what tools are available; client declares sampling support).
+- This process determines which protocol features and primitives are available for that specific session.
+- It ensures both parties have a clear understanding of supported functionality, maintaining protocol extensibility and robustness.
+  _(This is detailed further in `03_protocol_lifecycle_and_capabilities.md`)_
