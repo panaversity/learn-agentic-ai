@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: server
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: mcp[cli]>=1.9.0
+Requires-Dist: uvicorn>=0.34.2

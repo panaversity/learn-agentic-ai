@@ -67,3 +67,9 @@ async def get_project_readme() -> str:
     # with open("path/to/your/project/README.md", "r") as f:
     #     return f.read()
     return SIMULATED_README_CONTENT
+
+# Resource Template
+@mcp.resource("users://{user_id}/profile")
+def get_user_profile(user_id: str) -> str:
+    """Dynamic user data"""
+    return f"Profile data for user {user_id}"
