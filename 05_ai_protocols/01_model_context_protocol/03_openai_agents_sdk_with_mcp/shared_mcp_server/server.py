@@ -52,12 +52,13 @@ def get_welcome_message() -> str:
 
 # --- Main entry point to run the server ---
 
+streamable_http_app = mcp_app.streamable_http_app()
+logger.info(f"Starting {streamable_http_app}")
+
 if __name__ == "__main__":
     port = 8001
-    streamable_http_app = mcp_app.streamable_http_app()
-    logger.info(f"Starting {streamable_http_app}")
     import uvicorn
     # uvicorn.run(streamable_http_app, host="0.0.0.0", port=port)
     # start with hot reload
-    uvicorn.run("server:mcp_app.streamable_http_app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("server:streamable_http_app", host="0.0.0.0", port=port, reload=True)
 
