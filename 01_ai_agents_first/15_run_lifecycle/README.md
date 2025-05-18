@@ -1,6 +1,6 @@
 # Agent Loop
-![Agent Loop](agent_loop.png)
-[Agent Loop](agent_loop.pdf)
+![Agent Loop](Agent_loop.png)
+[Agent Loop](Agent_loop.pdf)
 
 
 # LifeCycle
