@@ -1,3 +1,8 @@
+# Agent Loop
+![Agent Loop](agent_loop.png)
+[Agent Loop](agent_loop.pdf)
+
+
 # LifeCycle
 
 In general terms, a lifecycle refers to the complete sequence of stages that an object, process, or entity goes through from its creation to its termination. 
