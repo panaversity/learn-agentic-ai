@@ -37,3 +37,9 @@ OpenAI's **Agents Tracing** provides a way to monitor and debug agent interactio
 - Logging and analyzing agent actions for compliance or auditing.
 
 By utilizing tracing in OpenAI's agent framework, developers can gain deeper insights into their AI systems, ensuring robustness, reliability, and transparency in operations.
+
+### **Tracing Flow Diagram**
+![Tracing Flow](tracing_flow.png)
+[Tracing Flow](tracing_flow.pdf)
+
+The diagram above illustrates the flow of tracing in the OpenAI Agents framework. It shows how tracing data is collected, processed, and analyzed throughout an agent's execution lifecycle - from initial function calls to final outputs. This visualization helps developers understand how the tracing system captures and tracks agent interactions, making it easier to debug, optimize, and monitor agent behavior.
