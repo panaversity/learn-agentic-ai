@@ -1,0 +1,11 @@
+[project]
+name = "http-code"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.115.12",
+    "httpx[http2]>=0.28.1",
+    "hypercorn>=0.17.3",
+]

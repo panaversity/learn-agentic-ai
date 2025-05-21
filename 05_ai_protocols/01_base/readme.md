@@ -10,33 +10,33 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 
 ## Learning Path Overview
 
-| Order | Directory             | Description/Focus                           |
-| ----- | --------------------- | ------------------------------------------- |
-| 00    | IP                    | Network addressing/routing                  |
-| 01    | TCP                   | Reliable transport                          |
-| 02    | UDP                   | Fast, connectionless transport              |
-| 03    | QUIC                  | Modern UDP-based transport (HTTP/3)         |
-| 04    | HTTP_Basics           | HTTP/1.1 essentials                         |
-| 05    | HTTP2                 | Multiplexing, server push                   |
-| 06    | HTTP3                 | HTTP over QUIC                              |
-| 07    | REST                  | Resource-oriented APIs                      |
-| 08    | Streamable_HTTP       | Streaming over HTTP                         |
-| 09    | SSE                   | Server-sent events                          |
-| 10    | JSON_RPC              | JSON-based RPC                              |
-| 11    | gRPC                  | High-performance RPC (HTTP/2, Protobuf)     |
-| 12    | Serialization_Formats | Protobuf, JSON, Apache Arrow (subdirs)      |
-| 13    | WebRTC                | Real-time, P2P, multi-modal                 |
-| 14    | WebTransport          | Modern real-time transport (HTTP/3, QUIC)   |
-| 15    | WebCodecs             | Low-level media encoding/decoding           |
-| 16    | WebSockets            | Bidirectional, persistent connections       |
-| 17    | MQTT                  | Lightweight pub/sub                         |
-| 18    | Future_AI_Protocols   | Research, proposals, and emerging standards |
+| Order | Directory                | Description/Focus                           |
+| ----- | ------------------------ | ------------------------------------------- |
+| 01    | 01_IP                    | Network addressing/routing                  |
+| 02    | 02_TCP                   | Reliable transport                          |
+| 03    | 03_UDP                   | Fast, connectionless transport              |
+| 04    | 04_QUIC                  | Modern UDP-based transport (HTTP/3)         |
+| 05    | 05_HTTP_Theory           | HTTP/1.1 essentials                         |
+| 06    | 06_HTTP2                 | Multiplexing, server push                   |
+| 07    | 07_HTTP3                 | HTTP over QUIC                              |
+| 08    | 08_REST                  | Resource-oriented APIs                      |
+| 09    | 09_Streamable_HTTP       | Streaming over HTTP                         |
+| 10    | 10_SSE                   | Server-sent events                          |
+| 11    | 11_JSON_RPC              | JSON-based RPC                              |
+| 12    | 12_gRPC                  | High-performance RPC (HTTP/2, Protobuf)     |
+| 13    | 13_WebRTC                | Real-time, P2P, multi-modal                 |
+| 14    | 14_WebTransport          | Modern real-time transport (HTTP/3, QUIC)   |
+| 15    | 15_WebCodecs             | Low-level media encoding/decoding           |
+| 16    | 16_WebSockets            | Bidirectional, persistent connections       |
+| 17    | 17_MQTT                  | Lightweight pub/sub                         |
+| 19    | 19_Serialization_Formats | Protobuf, JSON, Apache Arrow (subdirs)      |
+| 20    | 20_Future_AI_Protocols   | Research, proposals, and emerging standards |
 
 ## How to Use This Directory
 
 - **Start at the top** and work your way down for a solid foundation in network and application protocols.
-- **Serialization_Formats** is a key section for understanding how complex, multi-modal data is efficiently encoded and exchanged between agents.
-- **Future_AI_Protocols** is a living area for tracking and contributing to the next generation of AI communication standards.
+- **19_Serialization_Formats** is a key section for understanding how complex, multi-modal data is efficiently encoded and exchanged between agents.
+- **20_Future_AI_Protocols** is a living area for tracking and contributing to the next generation of AI communication standards.
 
 ## Protocol Summaries
 
@@ -44,10 +44,10 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 - **HTTP (1.1/2/3), REST**: The web's lingua franca, powering APIs and agent-to-agent/service communication.
 - **Streamable_HTTP, SSE**: Techniques for real-time and event-driven data flows over HTTP.
 - **JSON_RPC, gRPC**: The two most important RPC paradigms for agent-to-agent and agent-to-service calls, with gRPC leveraging Protobuf for efficiency.
-- **Serialization_Formats**: Covers Protobuf, JSON, and Apache Arrow—critical for structuring and exchanging AI data packets, embeddings, and multi-modal content.
+- **19_Serialization_Formats**: Covers Protobuf, JSON, and Apache Arrow—critical for structuring and exchanging AI data packets, embeddings, and multi-modal content.
 - **WebRTC, WebTransport, WebCodecs**: Advanced protocols for real-time, peer-to-peer, and multi-modal streaming, essential for next-gen agentic and immersive systems.
 - **WebSockets, MQTT**: Event-driven, persistent, and lightweight communication for distributed and IoT-style agentic systems.
-- **Future_AI_Protocols**: A space for research, proposals, and tracking the evolution of AI-native communication standards.
+- **20_Future_AI_Protocols**: A space for research, proposals, and tracking the evolution of AI-native communication standards.
 
 ---
 
