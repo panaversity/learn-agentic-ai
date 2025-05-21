@@ -12,7 +12,9 @@ gRPC is a high-performance, open-source RPC framework developed by Google. It le
 ### Installation
 
 ```bash
-pip install grpcio grpcio-tools
+uv init hello_grpc
+cd hello_grpc
+uv add grpcio grpcio-tools
 ```
 
 ### Example 1: Basic gRPC Server & Client
@@ -40,7 +42,7 @@ message HelloReply {
 #### 2. Generate Python code:
 
 ```bash
-python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. helloworld.proto
+uv run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. helloworld.proto
 ```
 
 #### 3. gRPC Server (`server.py`):
