@@ -120,27 +120,6 @@ Throughout the tutorial, I included tips for non-native English speakers, such a
 
 I also considered adding an exercise on translating thoughts from their native language, but opted for English-based scenarios to keep the tutorial accessible. However, I suggested in the conclusion that users double-check their prompts for language errors, which is a practical tip for non-native speakers.
 
-#### Advanced Techniques and Future Learning
-For more advanced learners, the tutorial could expand to include iterative prompting or prompts for coding tasks, but I focused on single prompts for this tutorial. Resources like "The Beginner's Guide to LLM Prompting" ([The Beginner's Guide to LLM Prompting](https://haystack.deepset.ai/blog/beginners-guide-to-llm-prompting)) were considered for further reading, providing additional examples and techniques for users to explore.
-
-#### Conclusion
-The tutorial aims to equip non-native English speakers with the skills to write effective LLM prompts through structured exercises. By practicing these techniques, users can build confidence and expertise, ensuring clear communication with LLMs. The exercises cover essential aspects, from basic queries to complex, detailed prompts, with a focus on language accessibility.
-
-### Key Citations
-- [Best Prompt Techniques for Best LLM Responses](https://medium.com/the-modern-scientist/best-prompt-techniques-for-best-llm-responses-24d2ff4f6bca)
-- [26 prompting tricks to improve LLMs](https://www.superannotate.com/blog/llm-prompting-tricks)
-- [The Beginner's Guide to LLM Prompting](https://haystack.deepset.ai/blog/beginners-guide-to-llm-prompting)
-
-### Prompt Used to Generate this Tutorial from Grok
-
-LLM Prompt Practice Exercises for Non-Native English Speakers
-Writing LLM prompts is an art and is difficult to do, for non-native english speakers is even more difficult. Write a detailed tutorial of non-native english speakers which helps them learn to write effective and quality llm prompts in english. 
-You will create multiple exercises, each covering a different scenario. 
-It will be a multiple parts in each exercise. The first part will be that you will create a scenario and provide the background information that will allow the a prompt developer to write a prompt. In the second part you will write an effective prompt for the scenario. In the third part you will explain why you wrote the prompt as you did and the principles behind them. 
-The exercises will start from very basic, and continuously increase the difficulty level of the scenario and the effort required to write a prompt. 
-Create as many exercises as you think is required to train a person to become a expert llm prompt writer.
-
-
 
 # Prompt Practice Examples for Agentic AI Developers
 
@@ -216,46 +195,279 @@ Here are the exercises, each with a scenario, an effective prompt, and an explan
 - **Prompt 2:** "Analyze trends in this dataset using the stats tool: [dataset]. Limit to top 3 trends in a table, keeping context under 500 tokens."
 - **Explanation:** Prompt 1 is vague, risking accuracy and high cost with large context. Prompt 2 specifies the tool, limits output, and manages context size, optimizing all five factors.
 
----
 
-### Comprehensive Analysis and Detailed Insights
+-----
 
-This section explores the process of creating this tutorial for agentic AI developers, focusing on prompts that optimize reasoning ability, tool-calling proficiency, accuracy, cost efficiency, structured output, and context size. It details the methodology, resources, and considerations behind the exercises.
+# 🚀 Advanced Prompt Engineering for Agentic AI Developers: A Practical Tutorial
 
-#### Background and Methodology
-The goal was to craft a tutorial with exercises progressing from basic to complex, tailored for agentic AI developers. Each exercise includes a scenario, an effective prompt, and an explanation linking to the five key factors. I drew on general prompt engineering knowledge and updated it with insights from provided documents, such as "26 prompting tricks to improve LLMs" and "The Beginner's Guide to LLM Prompting," adapting them for agentic AI needs.
+Welcome, developers\! As you venture into building **agentic AI systems** – AIs that can autonomously plan, reason, use tools, and achieve complex goals – you'll find that **prompt engineering** is more crucial and nuanced than ever. An agent's capabilities are profoundly shaped by how you instruct it.
 
-#### Exercise Development Process
-The exercises were designed to address agentic AI’s unique requirements:
+This tutorial will guide you through the core principles and techniques for crafting effective prompts for your AI agents, complete with practical examples.
 
-1. **Identifying Key Techniques:** I incorporated techniques like step-by-step reasoning, tool specification, and structured output from resources like SuperAnnotate’s 26 tricks (e.g., "Lead the model," "Use output primers") and Haystack’s guide (e.g., "Do say ‘do’").
+-----
 
-2. **Creating Scenarios:** Scenarios reflect agentic AI tasks, such as tool use (weather API), data analysis, or planning, increasing in complexity to test all five factors.
+### 🎯 What is Agentic AI and Why is Prompting Key?
 
-3. **Developing Effective Prompts:** Prompts were crafted to balance the factors. For example, Exercise 7 integrates reasoning and tool use with structured steps, optimizing accuracy and proficiency.
+**Agentic AI** refers to systems designed to pursue goals with a degree of autonomy. Unlike simpler models that might only generate text or classify data, an agent can:
 
-4. **Explaining Principles:** Explanations tie prompts to the five factors, e.g., how limiting output in Exercise 6 enhances cost efficiency and accuracy.
+  * **Decompose** a complex goal into smaller, manageable tasks.
+  * **Select and utilize** tools (e.g., code interpreters, search engines, APIs).
+  * **Reason** about its actions and the environment.
+  * **Adapt** its plan based on new information or feedback.
+  * **Maintain context** over extended interactions.
 
-#### Detailed Exercise Breakdown
-| Exercise No. | Scenario                              | Effective Prompt                                                                 | Key Factor Focus                     |
-|--------------|---------------------------------------|----------------------------------------------------------------------------------|---------------------------------------|
-| 1            | Check if a number is even/odd         | "Determine if 42 is even or odd. Think step by step and explain your reasoning." | Reasoning ability, accuracy           |
-| 2            | Fetch weather data                    | "Use the weather API tool to get the current weather in London, UK. Return the temperature and condition." | Tool-calling, accuracy                |
-| 3            | List project ideas                    | "Generate three project ideas for an AI app. Format the output as a table..."    | Structured output, accuracy           |
-| 4            | Answer query on AI ethics             | "Respond to this query in a concise, professional tone... Limit to 50 words."    | Cost efficiency, accuracy             |
-| 5            | Analyze sales trends                  | "Act as a data analyst. Use the database query tool to analyze sales data..."    | Tool-calling, reasoning, structured output |
-| 6            | Summarize article                     | "Summarize this 500-word article in 100 words: [text]. Focus on key points..."   | Accuracy, cost efficiency             |
-| 7            | Calculate shipping costs              | "Calculate shipping costs... using the logistics API. Show your steps..."        | Reasoning, tool-calling, structured output |
-| 8            | Summarize profile in JSON             | "Summarize this user profile in JSON: [data]. Start with: {'summary':"          | Structured output, cost efficiency    |
-| 9            | Plan marketing campaign               | "Develop a detailed marketing campaign plan using the analytics tool..."         | Reasoning, tool-calling, context size |
-| 10           | Correct vague prompt                  | Corrected to "Use the sales data tool to retrieve sales figures..."             | Clarity for all factors               |
-| 11           | Compare dataset analysis prompts      | Prompt 2: "Analyze trends... using the stats tool... Limit to top 3 trends..."   | Context size, accuracy, efficiency    |
+**Effective prompting** is the bridge between your high-level intent and the agent's autonomous execution. A well-crafted prompt empowers the agent, while a poor one can lead to confusion, inefficiency, or failure.
 
-#### Additional Considerations for Agentic AI Developers
-I emphasized tool integration, structured responses, and context management, critical for agentic systems. For example, Exercise 11 compares prompts to highlight context size’s impact on cost and accuracy, a key concern for developers optimizing agents.
+-----
 
-#### Advanced Techniques and Future Learning
-Future exercises could explore iterative prompting or multi-tool workflows, but this tutorial focuses on single-prompt mastery. Resources like Haystack’s PromptHub could inspire further learning.
+### foundational\_principles Principles of Prompting for Agents
 
-#### Conclusion
-This tutorial equips agentic AI developers with skills to craft prompts optimizing reasoning, tool use, accuracy, efficiency, structure, and context. Through practice, developers can enhance agent performance across diverse applications.
+1.  **Clarity and Specificity:** Ambiguity is the enemy. Clearly define the agent's role, goal, constraints, and available tools.
+2.  **Context is King:** Provide all necessary background information the agent needs to operate effectively.
+3.  **Explicit Instructions:** Don't assume the agent "knows" something. If it's important, state it.
+4.  **Structured Prompts:** Use formatting (like headings, bullet points, or XML-like tags) to organize information within the prompt, making it easier for the agent to parse.
+5.  **Define Success:** How will the agent (and you) know when the task is successfully completed?
+6.  **Iterative Refinement:** Your first prompt is rarely perfect. Test, observe, and refine.
+
+-----
+
+### 🧱 Key Components of an Agentic Prompt
+
+A comprehensive prompt for an AI agent often includes:
+
+  * **`Persona/Role`**: Define the character or role the AI should adopt. This influences its tone, knowledge domain, and decision-making style.
+      * *Example:* "You are a meticulous research assistant specializing in renewable energy technologies."
+  * **`Goal/Objective`**: The primary task the agent must accomplish. This should be clear, concise, and actionable.
+      * *Example:* "Your goal is to identify the top 3 emerging solar panel technologies based on efficiency and cost-effectiveness, and provide a brief report."
+  * **`Context`**: Relevant background information, data, or state.
+      * *Example:* "The current year is 2025. We are interested in technologies that have shown significant progress in the last 18 months."
+  * **`Available Tools`**: Explicitly list the tools the agent can use and, if necessary, basic instructions on how or when to use them.
+      * *Example:* "You have access to a `search_engine` tool for Browse the web and a `document_analyzer` tool to extract key information from research papers you find."
+  * **`Constraints & Guardrails`**: Rules, limitations, or boundaries the agent must adhere to.
+      * *Example:* "Focus only on peer-reviewed sources or reputable industry reports. Do not consider technologies still in the purely theoretical stage. The final report should not exceed 500 words."
+  * **`Step-by-Step Thinking / Reasoning Guidance`**: Encourage the agent to articulate its plan or thought process. This is crucial for complex tasks and for debugging.
+      * *Example:* "Before presenting the final report, outline your research plan, the keywords you will use for searching, and how you will evaluate the sources."
+  * **`Output Format`**: Specify the desired structure and format of the agent's response or final output.
+      * *Example:* "Present your findings as a JSON object with a main key 'solar\_technologies', containing a list of objects. Each object should have 'name', 'efficiency\_metric', 'cost\_metric', and 'summary' keys."
+  * **`Memory/History Snippet (if applicable)`**: For ongoing tasks, a summary of previous interactions or key learnings can be vital.
+      * *Example:* "Recall from our previous discussion that we are prioritizing commercially viable solutions over purely academic ones."
+
+-----
+
+### 🛠️ Prompt Engineering Techniques for Agentic AI
+
+#### 1\. Role Prompting
+
+Assigning a role helps the agent adopt a specific persona and behavior.
+
+  * **Less Effective:** "Find information about X."
+  * **More Effective (Agentic):** "You are a Senior Financial Analyst. Your task is to analyze the Q1 performance of Company X based on their latest earnings report (provided as context). Identify key financial health indicators, risks, and opportunities. Use the `financial_data_extractor` tool to parse the report if needed."
+
+#### 2\. Task Decomposition Encouragement
+
+Prompt the agent to break down complex goals.
+
+  * **Less Effective:** "Plan a marketing campaign for our new app."
+  * **More Effective (Agentic):**
+    ```
+    You are a Marketing Strategist AI. Your goal is to create a comprehensive marketing campaign plan for a new productivity app called 'TaskMaster Pro'.
+
+    To achieve this, you should:
+    1.  **Understand the Target Audience:** Define the primary and secondary target users for a productivity app.
+    2.  **Identify Key Marketing Channels:** Suggest suitable channels (e.g., social media, content marketing, email, partnerships).
+    3.  **Develop Core Messaging:** What are the key benefits and unique selling propositions of TaskMaster Pro?
+    4.  **Outline Campaign Phases:** Propose a timeline with key activities for pre-launch, launch, and post-launch.
+    5.  **Suggest Key Performance Indicators (KPIs):** How will we measure the success of this campaign?
+
+    Think step-by-step to address each of these points. You can use the `web_search` tool to research competitor strategies or current marketing trends if needed.
+    ```
+
+#### 3\. Explicit Tool Usage Specification
+
+Clearly tell the agent what tools it has and when/how to use them.
+
+  * **Less Effective:** "Search for recent news on AI." (Agent might not know it *can* search or *how*).
+  * **More Effective (Agentic):**
+    ```
+    You are a News Aggregator Bot. Your task is to find the top 5 news articles published in the last 24 hours regarding breakthroughs in generative AI.
+
+    **Available Tools:**
+    - `internet_search`: Use this tool to search for news articles. You can specify queries like "generative AI breakthroughs news".
+    - `article_summarizer`: Once you find relevant articles, use this tool to get a brief summary of each.
+
+    **Process:**
+    1. Formulate search queries to find relevant news.
+    2. Use `internet_search` to retrieve a list of articles.
+    3. For each potentially relevant article, use `article_summarizer`.
+    4. Select the top 5 based on relevance and significance.
+    5. List the title, source, and your summary for each.
+    ```
+
+#### 4\. Chain-of-Thought (CoT) / ReAct (Reasoning + Action) Prompting
+
+Encourage the agent to "think out loud" or explain its reasoning before taking action. This is invaluable for complex problem-solving and debugging.
+
+  * **Prompt Snippet:** "Before you use any tool, state your reasoning for choosing that tool and the specific parameters you will use. For example:
+    *Thought:* I need to find the current weather in London.
+    *Action:* `weather_tool.get_current_weather(location='London, UK')`"
+
+#### 5\. Output Formatting and Structure
+
+Requesting structured output (e.g., JSON, XML, Markdown) makes the agent's responses more predictable and easier to parse for downstream tasks or other systems.
+
+  * **Less Effective:** "Tell me about the products."
+  * **More Effective (Agentic):**
+    ```
+    You are an e-commerce product information agent. Given the product descriptions below, extract the name, price, and key features for each.
+    Return the information as a JSON array, where each object represents a product and has the keys "product_name", "price_usd", and "features" (an array of strings).
+
+    Product Data:
+    [Product A: Costs $49.99. Features: Lightweight, waterproof, long battery life.
+    Product B: Priced at $79.00. Main attributes: High-speed processing, durable casing, excellent camera.]
+    ```
+
+#### 6\. Constraints and Guardrails
+
+Define what the agent *should not* do, or the boundaries within which it must operate.
+
+  * **Prompt Snippet:** "When researching, only use sources from academic journals or official government websites. Avoid blog posts or opinion pieces. Do not provide financial advice. If asked for financial advice, respond with: 'I am not authorized to provide financial advice. Please consult a qualified professional.'"
+
+-----
+
+### 🧪 Prompt Practice Examples
+
+Let's put these concepts into practice.
+
+#### Example 1: Travel Planning Agent
+
+  * **Goal:** Plan a 3-day trip to Paris for a solo traveler interested in art and history.
+
+  * **Initial (Less Effective) Prompt:** "Plan a 3-day trip to Paris for art and history."
+
+      * *Problem:* Too vague. What's the budget? What specific tools can it use? How should it present the plan?
+
+  * **Improved (Agentic) Prompt:**
+
+    ```
+    **Persona:** You are "Parisian Pathfinder," an expert AI travel planner specializing in cultural trips to Paris.
+
+    **Goal:** Create a detailed 3-day itinerary for a solo traveler visiting Paris, focusing on art museums and historical sites. The traveler has a moderate budget.
+
+    **Context:**
+    * Trip Duration: 3 full days (e.g., Day 1, Day 2, Day 3).
+    * Interests: Art (Impressionism, Renaissance), History (French Revolution, Medieval Paris).
+    * Budget: Moderate (e.g., suggest a mix of free sites, paid attractions with reasonable entry fees, and mid-range dining options).
+    * Pace: Balanced, not too rushed.
+
+    **Available Tools:**
+    * `map_service(query)`: To find locations, distances, and suggest routes.
+    * `museum_database(name)`: To get information on opening hours, ticket prices, and current exhibitions for museums.
+    * `historical_site_info(name)`: To get details on historical locations.
+
+    **Instructions & Reasoning:**
+    1.  **Day Planning:** For each day, suggest 2-3 primary activities.
+    2.  **Logistics:** For each activity, use `map_service` to estimate travel time from a central point (assume a hotel near the Louvre) and `museum_database` or `historical_site_info` for practical details.
+    3.  **Food:** Suggest one lunch and one dinner spot per day (type of cuisine, general price range).
+    4.  **Reasoning:** Briefly explain *why* you chose each site or activity in relation to the traveler's interests.
+    5.  **Output Format:** Present the itinerary day by day, using Markdown. For each activity, include:
+        * Name of Site/Activity
+        * Brief Rationale
+        * Estimated time needed
+        * Tool Used (e.g., `museum_database('Louvre')`)
+        * Practical Info (e.g., opening hours, rough cost if applicable)
+
+    **Constraints:**
+    * Do not suggest activities outside Paris city limits.
+    * Prioritize well-known sites but also include one or two "hidden gem" suggestions if appropriate.
+    * Ensure the itinerary is feasible within a 3-day timeframe.
+    ```
+
+#### Example 2: Code Generation and Debugging Agent
+
+  * **Goal:** Write a Python function and then debug it based on an error message.
+
+  * **Initial (Less Effective) Prompt:** "Write a Python function to sort a list. It has a bug, fix it: [error message]."
+
+      * *Problem:* Lacks context on the function's purpose, expected input/output, and the agent doesn't have a clear framework for using a "code execution" tool or "debugger."
+
+  * **Improved (Agentic) Prompt:**
+
+    ````
+    **Persona:** You are "Code Companion," an AI assistant that helps write and debug Python code.
+
+    **Task 1: Code Generation**
+    **Goal:** Write a Python function called `get_even_numbers` that takes a list of integers as input and returns a new list containing only the even numbers from the input list, sorted in ascending order.
+
+    **Tool Available for You:**
+    * `python_interpreter(code_string)`: You can use this to mentally validate your code structure, but do not execute it for the generation phase. Just write the code.
+
+    **Output Format (for Task 1):**
+    Provide the Python function as a code block.
+
+    ---
+    **(Developer will then notionally run this code and provide feedback for Task 2)**
+    ---
+
+    **Task 2: Debugging**
+    **Context:** The following Python function `get_even_numbers` was generated. When run with the input `[1, 'a', 2, 4, 3, 'b', 6]`, it produced the error: `TypeError: not all arguments converted during string formatting` (or a similar relevant error you might simulate if you were testing an agent that *can* execute code).
+
+    **Code with Potential Bug:**
+    ```python
+    # (Assume the code generated in Task 1 would be here, perhaps with an intentional subtle bug if you are designing the test)
+    def get_even_numbers(numbers):
+        evens = []
+        for n in numbers:
+            if n % 2 == 0: # Potential TypeError if n is not an int
+                evens.append(n)
+        evens.sort()
+        return evens
+    ````
+
+    **Error Message:** `TypeError: '%' not all arguments converted during string formatting` (or a more accurate one like `TypeError: unsupported operand type(s) for %: 'str' and 'int'`)
+
+    **Goal:** Identify the bug in the provided Python function and explain the cause. Then, provide the corrected Python function.
+
+    **Available Tools (for debugging):**
+
+      * `code_analyzer(code_string)`: Analyzes code for potential issues, without execution.
+      * `python_interpreter(code_string, input_data)`: Executes the provided code string with given input data and returns the output or error. Use this to test your fix.
+
+    **Debugging Process:**
+
+    1.  **Analyze Error:** Explain what the error message means in the context of the given code.
+    2.  **Hypothesize Cause:** State your hypothesis for the bug.
+    3.  **Propose Fix:** Describe the change you will make.
+    4.  **(Mentally or using `python_interpreter` if enabled for the agent): Test Fix:** Explain how you would test the fix.
+    5.  **Provide Corrected Code:**
+
+    **Output Format (for Task 2):**
+
+    1.  **Error Analysis:** (Your explanation)
+    2.  **Bug Hypothesis:** (Your hypothesis)
+    3.  **Proposed Fix:** (Your description of the fix)
+    4.  **Corrected Code:** (Python code block)
+
+    <!-- end list -->
+
+    ```
+    
+    ```
+
+-----
+
+### ✨ Advanced Considerations
+
+  * **Few-Shot Prompting:** Include a few examples of desired input-output behavior within the prompt to guide the agent.
+  * **Self-Correction Prompts:** Design prompts that encourage the agent to review its own work or plan, and make corrections before finalizing.
+      * *Example Snippet:* "Before submitting your final plan, review it against the initial requirements. Is anything missing? Are there any inconsistencies? If so, state what you will change and why."
+  * **Dynamic Prompting:** For complex, multi-turn interactions, your application might need to dynamically update parts of the prompt (e.g., adding new information to the context, updating the list of completed sub-tasks).
+  * **Tool Creation/Refinement:** In highly advanced scenarios, you might even prompt agents to help define or refine the specifications for new tools they need.
+
+-----
+
+### 🏁 Conclusion
+
+Prompt engineering for agentic AI is an art and a science. It requires a deep understanding of your agent's capabilities, clear communication of your goals, and an iterative approach to refinement. By mastering these techniques, you can unlock the full potential of your AI agents to perform complex tasks autonomously and effectively.
+
+Happy prompting\! 💡
+
