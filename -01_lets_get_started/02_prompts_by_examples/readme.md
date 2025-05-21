@@ -1,4 +1,4 @@
-# Prompt Practice Examples for Non-Native English Speakers
+# Prompt By Examples for Agentic AI Developers (non-native English speakers)
 
 [GPT-4.1 Prompting Guide](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
 
