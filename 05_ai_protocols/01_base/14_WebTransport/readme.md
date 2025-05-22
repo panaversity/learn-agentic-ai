@@ -1,8 +1,38 @@
-# WebTransport: Modern Low-Latency Bidirectional Communication
+# WebTransport: Modern Low-Latency Bidirectional Communication for AI Systems
 
 WebTransport is a modern web API and protocol framework that enables low-latency, bidirectional, client-server messaging. It is built on top of **HTTP/3** (and therefore **QUIC**), leveraging QUIC's capabilities for efficient, secure, and multiplexed transport. WebTransport is designed to support a variety of use cases, from unreliable datagram messaging to reliable, ordered streams, making it a flexible alternative to WebSockets and a successor to some older P2P technologies for client-server interactions.
 
 Key features include the ability to send data unreliably (like UDP, via datagrams) or reliably (like TCP, via streams), and to open multiple independent streams over a single connection without the head-of-line blocking issues inherent in TCP-based protocols like HTTP/1.1 or WebSockets (which are typically over TCP).
+
+---
+
+## WebTransport for AI Systems
+
+WebTransport offers several unique benefits for AI applications, particularly in scenarios requiring real-time communication between models, agents, or services:
+
+### 1. AI Agent Communication
+
+- **Real-time Agent Collaboration**: Enables multiple AI agents to exchange information with minimal latency
+- **Mixed Reliability Requirements**: Some agent messages need guaranteed delivery (model updates, critical decisions) while others benefit from lower latency even with occasional loss (sensor data, partial observations)
+- **Stream Multiplexing**: Agents can maintain multiple concurrent communication channels without interference
+
+### 2. AI Model Serving
+
+- **Efficient Model Inference**: Stream large inputs to models and receive outputs with minimal latency
+- **Streaming Inference**: Begin processing before complete input is available, and stream partial results back
+- **Batching Control**: Fine-grained control over batching with independent streams for different requests
+
+### 3. Multimodal AI Applications
+
+- **Parallel Data Streams**: Send text, audio, and video streams simultaneously without blocking
+- **Prioritized Communication**: Critical control data on reliable streams, high-bandwidth media on unreliable datagrams
+- **Progressive Enhancement**: Start with low-resolution data and progressively enhance as more data arrives
+
+### 4. Edge AI Deployment
+
+- **Resilient Connections**: Better performance on variable network conditions (mobile, IoT devices)
+- **Connection Migration**: Maintain sessions as devices move between networks
+- **Efficient Resource Usage**: Lower overhead compared to maintaining multiple WebSocket connections
 
 ---
 
@@ -41,484 +71,162 @@ Key features include the ability to send data unreliably (like UDP, via datagram
 
 ---
 
-## Working with WebTransport in Python: `aioquic`
+## Setting Up a WebTransport Project with Python
 
-The [`aioquic`](https://github.com/aiortc/aioquic) library is a Python implementation of QUIC, HTTP/3, and WebTransport. It allows you to build both WebTransport servers and clients in Python.
+Let's set up a WebTransport project using `uv`, a modern Python package manager that's faster than pip.
 
-### Installation
+### Project Initialization
 
 ```bash
-# Using pip
-pip install aioquic cryptography
-# cryptography is needed for generating self-signed certificates for the server
+# Create a new project
+uv init hello_webtransport
+cd hello_webtransport
 
-# Or using uv
-# uv pip install aioquic cryptography
+uv add aioquic cryptography
 ```
 
-### Example: WebTransport Server & Client with `aioquic`
+### Project Structure
 
-Setting up a fully operational WebTransport example with `aioquic` involves handling QUIC and HTTP/3 connections, including TLS certificate setup. The examples below illustrate the core API usage for establishing a session and exchanging stream/datagram data. For full, runnable examples, refer to the [`aioquic` examples directory](https://github.com/aiortc/aioquic/tree/main/examples), particularly `webtransport_server.py` and `webtransport_client.py`.
+A basic WebTransport project for AI applications might look like:
 
-The server script will generate self-signed SSL certificates (`ssl_cert.pem` and `ssl_key.pem`) if they don't exist. The client will be configured to accept this self-signed certificate for local testing (this is insecure for production).
+```
+hello_webtransport/
+├── pyproject.toml
+├── README.md
+│   server.py        # WebTransport server
+│   client.py        # WebTransport client
+│   ai_handler.py    # AI processing logic
+│   utils.py         # Utility functions
+```
 
-#### 1. Conceptual Server (`webtransport_server.py`):
+### Hello WebTransport for AI
 
-This server listens for HTTP/3 connections, handles WebTransport session negotiation, and echoes data received on WebTransport streams and datagrams.
+See the code in hello_webtransport directory.
 
-**File:** `14_WebTransport/webtransport_server.py`
+This project demonstrates using WebTransport for real-time AI model communication. WebTransport enables low-latency, bidirectional communication that's ideal for AI applications requiring real-time data exchange.
+
+### Features
+
+- WebTransport server for AI model inference
+- Real-time streaming of results
+- Mixed reliability modes (reliable streams and unreliable datagrams)
+- Support for parallel request handling
+
+### Running the Application
+
+## WebTransport in Agentic AI Frameworks
+
+WebTransport offers unique capabilities for building distributed, real-time AI agent systems:
+
+### 1. Agent Swarm Communication
+
+WebTransport enables efficient communication in AI agent swarms, where multiple specialized agents collaborate to solve complex problems:
 
 ```python
-import asyncio
-import logging
-import os
-from typing import Dict, Optional, cast
+class AgentNode:
+    def __init__(self, agent_id, capabilities):
+        self.agent_id = agent_id
+        self.capabilities = capabilities
+        self.connections = {}  # connections to other agents
 
-from cryptography import x509
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import ec #, rsa (can also use rsa)
+    async def connect_to_agent(self, agent_id, url):
+        """Establish WebTransport connection to another agent"""
+        # Connection code similar to client example above
 
-from aioquic.asyncio import QuicConnectionProtocol, serve
-from aioquic.quic.configuration import QuicConfiguration
-from aioquic.quic.events import (QuicEvent, StreamDataReceived, WebTransportStreamDataReceived, DatagramFrameReceived, ConnectionTerminated)
-from aioquic.quic.logger import QuicLogger
-from aioquic.h3.connection import H3_ALPN, H3Connection
-from aioquic.h3.events import H3Event, HeadersReceived, DataReceived, ConnectionShutdownInitiated, StreamReset
-from aioquic.webtransport import WebTransportSession
+    async def broadcast_observation(self, observation_data):
+        """Share an observation with all connected agents via datagrams"""
+        encoded_data = json.dumps({
+            "type": "observation",
+            "agent_id": self.agent_id,
+            "data": observation_data
+        }).encode('utf-8')
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebTransport_SERVER - %(levelname)s - %(message)s')
+        for agent_id, connection in self.connections.items():
+            if connection.webtransport_ready_event.is_set():
+                connection._webtransport.send_datagram(encoded_data)
 
-SERVER_CERTIFICATE_FILE = "ssl_cert.pem" # Generated certificate
-SERVER_PRIVATE_KEY_FILE = "ssl_key.pem"  # Generated private key
+    async def request_assistance(self, agent_id, problem_data):
+        """Request help from a specific agent via reliable stream"""
+        if agent_id not in self.connections:
+            raise ValueError(f"Not connected to agent {agent_id}")
 
-# --- Helper to generate self-signed cert if not present (for demo purposes) ---
-def generate_self_signed_cert(cert_path, key_path, common_name="localhost"):
-    if os.path.exists(cert_path) and os.path.exists(key_path):
-        logging.info(f"Using existing certificate '{cert_path}' and key '{key_path}'.")
-        return
+        conn = self.connections[agent_id]
+        if not conn.webtransport_ready_event.is_set():
+            raise RuntimeError(f"Connection to agent {agent_id} not ready")
 
-    logging.info(f"Generating self-signed certificate for {common_name}...")
-    # private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    private_key = ec.generate_private_key(ec.SECP256R1())
+        # Create a stream for this specific request
+        stream_id = conn._webtransport.create_stream(is_unidirectional=False)
 
-    subject = issuer = x509.Name([
-        x509.NameAttribute(x509.oid.NameOID.COMMON_NAME, common_name)
-    ])
+        # Send request
+        encoded_request = json.dumps({
+            "type": "assistance_request",
+            "problem": problem_data
+        }).encode('utf-8')
 
-    builder = (
-        x509.CertificateBuilder()
-        .subject_name(subject)
-        .issuer_name(issuer)
-        .public_key(private_key.public_key())
-        .serial_number(x509.random_serial_number())
-        .not_valid_before(x509.datetime.datetime.now(x509.datetime.timezone.utc))
-        .not_valid_after(x509.datetime.datetime.now(x509.datetime.timezone.utc) + x509.datetime.timedelta(days=30))
-        .add_extension(x509.BasicConstraints(ca=True, path_length=None), critical=True)
-    )
-    # For WebTransport/HTTP3, Subject Alternative Name (SAN) is important.
-    # Typically for localhost, you might use DNS:localhost or an IP address.
-    builder = builder.add_extension(
-        x509.SubjectAlternativeName([x509.DNSName(common_name)]),
-        critical=False,
-    )
-    certificate = builder.sign(private_key, hashes.SHA256())
+        conn._webtransport.send_stream_data(stream_id, encoded_request, end_stream=False)
 
-    with open(key_path, "wb") as f:
-        f.write(
-            private_key.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.PKCS8,
-                encryption_algorithm=serialization.NoEncryption(),
+        # Wait for response on the same stream
+        # Implementation depends on how you handle stream data in your connection class
+```
+
+### 2. Real-time Collaborative Inference
+
+Multiple models can collaborate on complex tasks with different components streaming partial results:
+
+```python
+async def collaborative_inference(image_data, text_prompt):
+    """Run distributed inference across multiple specialized AI services"""
+    # Connect to image analysis service
+    img_client = await connect_to_service("https://image-model.example.com:4433/analyze")
+
+    # Connect to text understanding service
+    text_client = await connect_to_service("https://text-model.example.com:4433/understand")
+
+    # Connect to multimodal reasoning service
+    reasoning_client = await connect_to_service("https://reasoning.example.com:4433/process")
+
+    # Start parallel processing
+    img_stream = await img_client.start_processing_stream(image_data)
+    text_stream = await text_client.start_processing_stream(text_prompt)
+
+    # Create bidirectional stream with reasoning service
+    reasoning_stream_id = reasoning_client._webtransport.create_stream(is_unidirectional=False)
+
+    # Forward partial results as they become available
+    async def forward_image_results():
+        async for chunk in img_stream:
+            reasoning_client._webtransport.send_stream_data(
+                reasoning_stream_id,
+                json.dumps({"type": "image_feature", "data": chunk}).encode('utf-8'),
+                end_stream=False
             )
-        )
-        logging.info(f"Private key saved to {key_path}")
-    with open(cert_path, "wb") as f:
-        f.write(certificate.public_bytes(serialization.Encoding.PEM))
-        logging.info(f"Certificate saved to {cert_path}")
 
+    async def forward_text_results():
+        async for chunk in text_stream:
+            reasoning_client._webtransport.send_stream_data(
+                reasoning_stream_id,
+                json.dumps({"type": "text_feature", "data": chunk}).encode('utf-8'),
+                end_stream=False
+            )
 
-class WebTransportEchoServerProtocol(QuicConnectionProtocol):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._http: Optional[H3Connection] = None
-        self._webtransport_sessions: Dict[int, WebTransportSession] = {}
-
-    def quic_event_received(self, event: QuicEvent) -> None:
-        # logging.debug(f"QUIC Event: {event}")
-        if isinstance(event, ConnectionTerminated):
-            logging.info(f"Connection terminated from {self._quic.remote_address}. Reason: {event.reason_phrase}")
-
-        if self._http is None and self._quic.configuration.alpn_protocols[0] == H3_ALPN[0]:
-            # Initialize H3 connection upon QUIC connection establishment
-            self._http = H3Connection(self._quic, enable_webtransport=True)
-
-        if self._http is not None:
-            # Pass QUIC events to the H3 connection
-            for h3_event in self._http.handle_event(event):
-                self._h3_event_received(h3_event)
-
-        # WebTransport specific stream data (outside H3 framing, for accepted WebTransport sessions)
-        if isinstance(event, WebTransportStreamDataReceived):
-            session = self._webtransport_sessions.get(event.session_id)
-            if session:
-                message = event.data.decode("utf-8")
-                logging.info(f"WT Session {event.session_id} - Stream {event.stream_id} - Received data: {message}")
-                response = f"Server echoes (WT Stream {event.stream_id}): {message}"
-                session.send_stream_data(event.stream_id, response.encode("utf-8"), end_stream=False)
-                # session.send_stream_data(event.stream_id, b"", end_stream=True) # If you want to close stream after echo
-            else:
-                logging.warning(f"Received WT data for unknown session ID: {event.session_id}")
-
-        if isinstance(event, DatagramFrameReceived):
-            session_id = self._quic.get_session_id_for_datagram(event.data)
-            if session_id is not None and session_id in self._webtransport_sessions:
-                payload = self._quic.decrypt_datagram_payload(event.data, session_id)
-                logging.info(f"WT Session {session_id} - Received datagram: {payload.decode()}")
-                response_datagram = f"Server echoes (Datagram): {payload.decode()}".encode("utf-8")
-                self._webtransport_sessions[session_id].send_datagram(response_datagram)
-            else:
-                logging.info(f"Received datagram (可能是H3): {event.data.hex()}")
-
-
-    def _h3_event_received(self, event: H3Event) -> None:
-        # logging.debug(f"H3 Event: {event}")
-        if isinstance(event, HeadersReceived):
-            headers = dict(event.headers)
-            method = headers.get(b":method", b"").decode()
-            path = headers.get(b":path", b"").decode()
-            logging.info(f"H3 Request: Stream {event.stream_id} - Method {method}, Path {path}")
-
-            if method == "CONNECT" and headers.get(b":protocol") == b"webtransport":
-                # This is a WebTransport session negotiation request
-                logging.info(f"WebTransport session negotiation request on stream {event.stream_id}")
-                session = WebTransportSession(self._http, event.stream_id, self._quic.configuration)
-                self._webtransport_sessions[session.session_id] = session # Store the session
-                logging.info(f"WebTransport session {session.session_id} established for H3 stream {event.stream_id}")
-                # Server accepts the WebTransport session by sending HTTP 200
-                self._http.send_headers(event.stream_id, [(b":status", b"200")])
-                # The client will now be able to open streams and send datagrams for this session.
-            else:
-                # Handle other H3 requests (e.g., GET for a simple webpage)
-                if method == "GET" and path == "/":
-                    body = b"<html><body><h1>Hello from aioquic WebTransport/H3 server!</h1></body></html>"
-                    self._http.send_headers(event.stream_id, [(b":status", b"200"), (b"content-type", b"text/html")],)
-                    self._http.send_data(event.stream_id, body, end_stream=True)
-                else:
-                    # Generic 404 for other paths/methods
-                    self._http.send_headers(event.stream_id, [(b":status", b"404")])
-                    self._http.send_data(event.stream_id, b"Not Found", end_stream=True)
-
-        elif isinstance(event, DataReceived):
-            logging.info(f"H3 Data on stream {event.stream_id}: {event.data.decode() if event.data else ''} (End: {event.stream_ended})")
-            # For regular H3 streams (not WebTransport session stream itself)
-            if event.stream_ended:
-                # Example: Echo back data on a regular H3 POST stream (not WebTransport)
-                # headers = dict(self._http.get_headers(event.stream_id))
-                # if headers.get(b':method') == b'POST':
-                #     self._http.send_headers(event.stream_id, [(b':status', b'200')])
-                #     self._http.send_data(event.stream_id, event.data, end_stream=True)
-                pass # No specific action here for this demo for generic H3 data
-
-        elif isinstance(event, ConnectionShutdownInitiated):
-            logging.info("H3 Connection shutdown initiated by client.")
-            # self.close() # This would close the QUIC connection
-
-        elif isinstance(event, StreamReset):
-            logging.info(f"H3 Stream {event.stream_id} was reset. Error code: {event.error_code}")
-
-async def main_server():
-    generate_self_signed_cert(SERVER_CERTIFICATE_FILE, SERVER_PRIVATE_KEY_FILE)
-
-    configuration = QuicConfiguration(
-        alpn_protocols=H3_ALPN, # Specify ALPN for HTTP/3
-        is_client=False,
-        max_datagram_frame_size=65536, # Enable datagrams
-        quic_logger=QuicLogger() if os.environ.get("AIOQUIC_LOG_LEVEL") else None
+    # Run forwarding tasks concurrently
+    await asyncio.gather(
+        forward_image_results(),
+        forward_text_results()
     )
-    configuration.load_cert_chain(SERVER_CERTIFICATE_FILE, SERVER_PRIVATE_KEY_FILE)
 
-    host = "0.0.0.0"
-    port = 4433
-
-    logging.info(f"Starting WebTransport/HTTP3 server on https://{host}:{port}")
-    logging.info("Make sure your client trusts the self-signed certificate or is configured to ignore errors for localhost.")
-    logging.info("AIOQUIC_LOG_LEVEL=info can be set for detailed QUIC logs (qlog format).")
-
-    try:
-        await serve(
-            host,
-            port,
-            configuration=configuration,
-            create_protocol=WebTransportEchoServerProtocol,
-            # Example for session_ticket_fetcher and session_ticket_handler if needed:
-            # session_ticket_fetcher=lambda: None, # Implement if client sends session tickets
-            # session_ticket_handler=lambda ticket: None, # Implement to store session tickets
-        )
-        await asyncio.Future() # Run forever
-    except KeyboardInterrupt:
-        logging.info("Server shutting down...")
-    except Exception as e:
-        logging.error(f"Server main error: {e}", exc_info=True)
-
-if __name__ == "__main__":
-    # Note: Running this server requires aioquic and cryptography.
-    # pip install aioquic cryptography
-    # The server will generate self-signed certificates (ssl_cert.pem, ssl_key.pem) on first run.
-    # Clients (browsers or Python client) need to be configured to trust this cert or ignore errors for localhost.
-    asyncio.run(main_server())
-```
-
-**To run this server:**
-
-1. Save the code as `14_WebTransport/webtransport_server.py`.
-2. Install dependencies: `pip install aioquic cryptography` (or `uv pip install ...`).
-3. Run from your terminal: `python 14_WebTransport/webtransport_server.py`.
-   The server will generate `ssl_cert.pem` and `ssl_key.pem` in the same directory on its first run.
-
-#### 2. Conceptual Client (`webtransport_client.py`):
-
-This client connects to the server, attempts to establish a WebTransport session, and then sends data on a bidirectional stream and as a datagram.
-
-**File:** `14_WebTransport/webtransport_client.py`
-
-```python
-import asyncio
-import logging
-import os
-from typing import Optional, cast
-from urllib.parse import urlparse
-import ssl # For ssl.CERT_NONE
-
-from aioquic.asyncio import QuicConnectionProtocol, connect
-from aioquic.quic.configuration import QuicConfiguration
-from aioquic.quic.events import QuicEvent, StreamDataReceived, DatagramFrameReceived, ConnectionTerminated, HandshakeCompleted
-from aioquic.quic.logger import QuicLogger
-from aioquic.h3.connection import H3_ALPN
-from aioquic.h3.events import H3Event # For type hinting if deeper H3 handling was needed
-from aioquic.webtransport import WebTransportSession, SessionID
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebTransport_CLIENT - %(levelname)s - %(message)s')
-
-# Path to the server's self-signed certificate for verification (optional but recommended for local dev)
-# If this is not provided, client will need to run with `insecure=True` in QuicConfiguration.
-SERVER_CERTIFICATE_FILE = "ssl_cert.pem" # Assumes server generated this in the same directory
-
-class WebTransportEchoClientProtocol(QuicConnectionProtocol):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._session_id: Optional[SessionID] = None
-        self._webtransport: Optional[WebTransportSession] = None
-        self._acknowledged_webtransport_support = False
-        self.handshake_event = asyncio.Event()
-        self.webtransport_ready_event = asyncio.Event()
-        self.received_stream_data = []
-        self.received_datagram_data = []
-
-    async def wait_handshake_completion(self):
-        await self.handshake_event.wait()
-
-    async def wait_webtransport_ready(self):
-        await self.webtransport_ready_event.wait()
-
-    def quic_event_received(self, event: QuicEvent) -> None:
-        # logging.debug(f"QUIC Event: {event}")
-        if isinstance(event, HandshakeCompleted):
-            logging.info("QUIC handshake completed.")
-            if event.alpn_protocol == H3_ALPN[0]: # Check if H3 was negotiated
-                self._acknowledged_webtransport_support = True
-                logging.info("HTTP/3 ALPN negotiated. WebTransport should be supported.")
-            else:
-                logging.warning(f"HTTP/3 ALPN not negotiated (got {event.alpn_protocol}). WebTransport may not work.")
-            self.handshake_event.set()
-
-        elif isinstance(event, ConnectionTerminated):
-            logging.info(f"Connection terminated. Reason: {event.reason_phrase}")
-            self.webtransport_ready_event.set() # Unblock if waiting
-
-        if self._webtransport:
-            self._webtransport.handle_event(event)
-            if isinstance(event, WebTransportStreamDataReceived):
-                data_str = event.data.decode('utf-8')
-                logging.info(f"WT Client: Received on stream {event.stream_id} (session {event.session_id}): {data_str}")
-                self.received_stream_data.append(data_str)
-
-            if isinstance(event, DatagramFrameReceived):
-                # This is a raw datagram, WebTransportSession handles decryption if it's a WT datagram
-                # For this client, we assume handle_event in WebTransportSession will trigger its own datagram_received.
-                pass
-
-    # Method to be called by WebTransportSession when it receives a datagram
-    def datagram_received(self, data: bytes, session_id: SessionID) -> None:
-        data_str = data.decode("utf-8")
-        logging.info(f"WT Client: Received datagram (session {session_id}): {data_str}")
-        self.received_datagram_data.append(data_str)
-
-    async def establish_webtransport_session(self, url: str):
-        await self.wait_handshake_completion()
-        if not self._acknowledged_webtransport_support:
-            logging.error("Cannot establish WebTransport session: HTTP/3 not confirmed.")
-            return False
-
-        logging.info(f"Attempting to establish WebTransport session with {url}")
-        self._webtransport = WebTransportSession(
-            connection=self._quic,
-            protocol=self # The QuicConnectionProtocol itself to handle callbacks
-        )
-        self._session_id = self._webtransport.connect(authority=urlparse(url).netloc, path=urlparse(url).path)
-        if self._session_id is not None:
-            logging.info(f"WebTransport session negotiation started (H3 Stream ID: {self._session_id}). Waiting for server 200 OK...")
-            # In aioquic, the session is considered ready after the CONNECT request is made.
-            # The actual confirmation comes when the server responds with 200 OK on that H3 stream.
-            # We'll use an event that the H3 layer (if we were parsing it here) or app logic would set.
-            # For this demo, we assume it will be ready shortly if connect() succeeds.
-            self.webtransport_ready_event.set()
-            return True
-        else:
-            logging.error("Failed to initiate WebTransport connection (connect returned None).")
-            return False
-
-    async def send_webtransport_stream_data(self, data: str, end_stream: bool = False):
-        if self._webtransport and self._webtransport.can_create_stream() and self.webtransport_ready_event.is_set():
-            stream_id = self._webtransport.create_stream(is_unidirectional=False) # Create a bidi stream
-            if stream_id is not None:
-                logging.info(f"WT Client: Sending on new stream {stream_id}: {data}")
-                self._webtransport.send_stream_data(stream_id, data.encode("utf-8"), end_stream=end_stream)
-                return stream_id
-            else:
-                logging.warning("WT Client: Could not create new stream.")
-        else:
-            logging.warning("WT Client: WebTransport session not ready or cannot create stream.")
-        return None
-
-    async def send_webtransport_datagram(self, data: str):
-        if self._webtransport and self.webtransport_ready_event.is_set():
-            logging.info(f"WT Client: Sending datagram: {data}")
-            self._webtransport.send_datagram(data.encode("utf-8"))
-        else:
-            logging.warning("WT Client: WebTransport session not ready to send datagram.")
-
-async def main_client():
-    # The URL for the WebTransport endpoint
-    # Note: Browsers typically require `https://` and a specific path.
-    # aioquic examples often use the authority and path from the URL in `_webtransport.connect()`
-    url = "https://localhost:4433/webtransport_echo" # Path must be handled by server
-    parsed_url = urlparse(url)
-    host = parsed_url.hostname
-    port = parsed_url.port or 4433
-
-    # QUIC configuration
-    configuration = QuicConfiguration(
-        is_client=True,
-        alpn_protocols=H3_ALPN, # Important for WebTransport
-        quic_logger=QuicLogger() if os.environ.get("AIOQUIC_LOG_LEVEL") else None,
-        # To trust the server's self-signed certificate:
-        # You can load the CA cert if it's different from the server cert itself,
-        # or for a self-signed server cert, you might need to add it to a trust store
-        # or run in `insecure=True` mode for local testing (NOT FOR PRODUCTION).
-        # cafile=SERVER_CERTIFICATE_FILE, # if server cert is its own CA for self-signed
+    # Signal end of input
+    reasoning_client._webtransport.send_stream_data(
+        reasoning_stream_id,
+        json.dumps({"type": "end_of_input"}).encode('utf-8'),
+        end_stream=False
     )
-    # For local testing with self-signed cert, often easier to bypass verification:
-    configuration.verify_mode = ssl.CERT_NONE # Insecure, for local demo only!
-    # Or load the specific self-signed cert if you have it as a CA
-    # if os.path.exists(SERVER_CERTIFICATE_FILE):
-    #     configuration.load_verify_locations(cafile=SERVER_CERTIFICATE_FILE)
-    # else:
-    #     logging.warning(f"Server certificate {SERVER_CERTIFICATE_FILE} not found. Client may fail TLS if verify_mode is not CERT_NONE.")
 
-    logging.info(f"Attempting to connect to WebTransport server at {host}:{port} for URL {url}")
-    logging.info("If using self-signed certs, ensure client is configured to trust it or ignore TLS errors.")
-
-    try:
-        async with connect(
-            host,
-            port,
-            configuration=configuration,
-            create_protocol=WebTransportEchoClientProtocol,
-            # session_ticket_handler=lambda ticket: None, # To handle session resumption tickets
-        ) as client_protocol:
-            client_protocol = cast(WebTransportEchoClientProtocol, client_protocol) # For type hinting
-
-            if not await client_protocol.establish_webtransport_session(url):
-                logging.error("Failed to establish WebTransport session with server.")
-                return
-
-            await client_protocol.wait_webtransport_ready()
-            logging.info("WebTransport session should be ready.")
-
-            # Test sending data on a stream
-            stream_msg1 = "Hello via WebTransport Stream!"
-            sent_stream_id = await client_protocol.send_webtransport_stream_data(stream_msg1)
-
-            await asyncio.sleep(1) # Give time for echo
-
-            # Test sending a datagram
-            datagram_msg1 = "Hello via WebTransport Datagram!"
-            await client_protocol.send_webtransport_datagram(datagram_msg1)
-
-            # Wait for a few seconds to receive echoes
-            logging.info("Waiting for 5 seconds to receive echoes...")
-            await asyncio.sleep(5)
-
-            logging.info(f"Received stream messages: {client_protocol.received_stream_data}")
-            logging.info(f"Received datagram messages: {client_protocol.received_datagram_data}")
-
-            logging.info("Client operations complete.")
-
-    except ConnectionRefusedError:
-        logging.error(f"Connection refused by server at {host}:{port}. Is it running?")
-    except asyncio.TimeoutError:
-        logging.error("Connection or operation timed out.")
-    except Exception as e:
-        logging.error(f"Client main error: {e}", exc_info=True)
-    finally:
-        logging.info("Client shutting down.")
-
-if __name__ == "__main__":
-    # Note: Running this client requires aioquic, cryptography, and the server to be running.
-    # The server (webtransport_server.py) should generate ssl_cert.pem.
-    # This client is set to insecurely skip TLS verification for local demo with self-signed certs.
-    import ssl # For ssl.CERT_NONE, should be at top ideally
-    asyncio.run(main_client())
+    # Collect and return final results
+    results = []
+    # Implementation of result collection from reasoning service
+    return results
 ```
-
-**To run this example:**
-
-1. Save the server code as `14_WebTransport/webtransport_server.py` and the client code as `14_WebTransport/webtransport_client.py`.
-2. Install dependencies: `pip install aioquic cryptography`.
-3. Start the server: `python 14_WebTransport/webtransport_server.py`.
-4. In another terminal, run the client: `python 14_WebTransport/webtransport_client.py`.
-   Observe the logs to see the connection establishment, stream/datagram sending, and echo reception.
-
----
-
-## Strengths of WebTransport
-
-- **Low Latency**: Inherits QUIC's benefits like 0-RTT/1-RTT connection establishment and reduced HOL blocking.
-- **Flexible Reliability**: Supports both reliable streams (like TCP) and unreliable datagrams (like UDP) within the same connection, allowing applications to choose the right mode per data type.
-- **Multiple Streams**: Natively supports multiple independent streams (uni- and bidirectional) over a single connection without head-of-line blocking between streams.
-- **Avoids TCP Head-of-Line Blocking**: QUIC's stream multiplexing means packet loss on one stream doesn't stall others, a significant improvement over WebSockets over TCP.
-- **Built on HTTP/3**: Aligns with the future direction of the web and can leverage HTTP/3 features. Proxies and network infrastructure are increasingly supporting HTTP/3.
-- **Connection Migration**: QUIC connections can survive changes in the client's IP address or port (e.g., switching from Wi-Fi to cellular), providing a more stable connection for mobile clients.
-- **Always Secure**: Uses TLS 1.3 by default (via QUIC).
-
-## Weaknesses and Considerations
-
-- **Newer Technology**: Browser and server-side support is still maturing compared to WebSockets. While major browsers have good support, older ones or certain environments might not.
-- **Complexity**: The API and underlying QUIC/HTTP/3 concepts are more complex than WebSockets. Setting up an HTTP/3 server often involves more configuration (e.g., UDP port, certificates).
-- **UDP Blocking**: QUIC runs over UDP. Some restrictive corporate firewalls or networks might block UDP traffic, potentially hindering WebTransport connectivity (though this is becoming less common).
-- **Resource Usage**: Managing multiple QUIC streams and an HTTP/3 connection can be more resource-intensive than a simple WebSocket connection, though often more efficient for its capabilities.
-- **Server-Side Libraries**: Fewer mature server-side libraries compared to WebSockets, though `aioquic` is robust for Python.
-
-## Common Use Cases
-
-- **Real-time Online Gaming**: For sending game state updates (datagrams for speed, streams for critical events like chat).
-- **Live Video/Audio Streaming**: Low-latency streaming, potentially with unreliable streams for media frames.
-- **Interactive Applications**: Collaborative whiteboards, remote desktop/control applications needing responsive, mixed-reliability data transfer.
-- **Real-time Data Feeds**: Financial data, sensor networks, live telemetry where some data can be dropped if stale.
-- **Replacement for TCP-based Custom Protocols**: For applications that need more than what WebSockets offer but want to stay within the web protocol family.
-- **VPN-like Tunnels over HTTP/3**.
 
 ## WebTransport in DACA and A2A Communication
 
@@ -547,14 +255,6 @@ WebTransport offers compelling advantages for certain Agent-to-Agent (A2A) commu
 
 **Conclusion for DACA:**
 WebTransport is a forward-looking technology that could significantly enhance A2A communication in DACA for specific use cases. Its ability to multiplex different types of data flows with varying reliability requirements over a single, efficient QUIC connection makes it a powerful tool. While Dapr integration is not as direct as for HTTP/1.1 or gRPC currently, agents can independently leverage WebTransport, with Dapr potentially aiding in discovery or other supporting roles.
-
----
-
-## Place in the Protocol Stack
-
-- **Layer**: Application Layer API, built on top of HTTP/3.
-- **Transport**: Uses QUIC (which runs over UDP) as its underlying transport protocol.
-- **Security**: Relies on TLS 1.3, integrated into QUIC.
 
 ---
 

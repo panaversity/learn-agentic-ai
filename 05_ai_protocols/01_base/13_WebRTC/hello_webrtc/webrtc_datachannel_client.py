@@ -1,14 +1,15 @@
 import asyncio
 import logging
+import json
 from aiortc import RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.signaling import TcpSocketSignaling, object_from_string, object_to_string
+from aiortc.contrib.signaling import object_from_string, object_to_string
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebRTC_CLIENT - %(levelname)s - %(message)s')
 
-async def run_client(pc, signaling, data_channel_label="chat"):
+async def run_client(pc, reader, writer, data_channel_label="chat"):
     """Handles the WebRTC connection and data channel for the client side."""
-    
+
     @pc.on("track")
     def on_track(track):
         logging.info(f"Track {track.kind} received")
@@ -17,7 +18,7 @@ async def run_client(pc, signaling, data_channel_label="chat"):
         @track.on("ended")
         async def on_ended():
             logging.info(f"Track {track.kind} ended")
-        
+
     # Create data channel
     try:
         channel = pc.createDataChannel(data_channel_label)
@@ -36,7 +37,7 @@ async def run_client(pc, signaling, data_channel_label="chat"):
             channel.send(full_msg)
             await asyncio.sleep(1) # Small delay between sends
         # After sending all messages, could send a "bye" or just close
-        # channel.send("Client says: bye!") 
+        # channel.send("Client says: bye!")
         # await asyncio.sleep(1) # ensure it's sent before closing pc
 
     @channel.on("message")
@@ -49,30 +50,32 @@ async def run_client(pc, signaling, data_channel_label="chat"):
     def on_close():
         logging.info(f"Data channel '{channel.label}' closed.")
 
-    # Connect signaling
-    try:
-        await signaling.connect()
-        logging.info("Signaling connected.")
-    except Exception as e:
-        logging.error(f"Signaling connection failed: {e}", exc_info=True)
-        return
-
     # Send offer
     try:
         logging.info("Creating offer...")
         offer = await pc.createOffer()
         await pc.setLocalDescription(offer)
         logging.info("Sending offer to server.")
-        await signaling.send(pc.localDescription)
+        
+        # Send the offer to the server
+        writer.write(object_to_string(pc.localDescription).encode() + b'\n')
+        await writer.drain()
     except Exception as e:
         logging.error(f"Error creating/sending offer: {e}", exc_info=True)
-        await signaling.close()
+        writer.close()
         return
 
     # Consume signaling messages
     try:
         while True:
-            obj = await signaling.receive()
+            # Read response from server
+            data = await reader.readline()
+            if not data:  # Connection closed
+                logging.info("Signaling channel closed by server or network issue.")
+                break
+                
+            # Parse the response
+            obj = object_from_string(data.decode())
 
             if isinstance(obj, RTCSessionDescription):
                 logging.info("Received session description from server.")
@@ -80,15 +83,9 @@ async def run_client(pc, signaling, data_channel_label="chat"):
                 if obj.type == "answer":
                     logging.info("Received answer. Peer connection established.")
                     # Connection is now set up, data channel should open soon if not already.
-                    # We can break the signaling loop for this simple client if we don't expect ICE candidates via signaling.
-                    # For a more robust client, you might continue to handle ICE candidates if they were part of your signaling.
-                    # break 
-            elif obj is None: # Signaling channel closed
-                logging.info("Signaling channel closed by server or network issue.")
-                break
             else:
                 logging.warning(f"Received unexpected object: {obj}")
-        
+
         # Keep client alive for a bit to allow data channel messages to flow
         # In a real app, this would be event-driven or user-controlled.
         logging.info("Client will stay active for 10 seconds to exchange data channel messages.")
@@ -102,20 +99,24 @@ async def run_client(pc, signaling, data_channel_label="chat"):
     finally:
         logging.info("Closing the peer connection.")
         await pc.close()
-        logging.info("Closing the signaling channel.")
-        await signaling.close()
+        logging.info("Closing the connection.")
+        writer.close()
+        await writer.wait_closed()
 
 async def main():
     SIGNALING_HOST = "127.0.0.1"
     SIGNALING_PORT = 12345 # Must match the server's port
 
-    signaling = TcpSocketSignaling(SIGNALING_HOST, SIGNALING_PORT)
-    pc = RTCPeerConnection()
-
     logging.info(f"Starting WebRTC client, trying to connect to signaling server at {SIGNALING_HOST}:{SIGNALING_PORT}")
 
+    pc = RTCPeerConnection()
+    
     try:
-        await run_client(pc, signaling)
+        # Directly connect to the server
+        reader, writer = await asyncio.open_connection(SIGNALING_HOST, SIGNALING_PORT)
+        logging.info("Signaling connected.")
+        
+        await run_client(pc, reader, writer)
     except KeyboardInterrupt:
         logging.info("Client shutting down due to KeyboardInterrupt.")
     except ConnectionRefusedError:
@@ -124,10 +125,8 @@ async def main():
         logging.error(f"Client main loop encountered an error: {e}", exc_info=True)
     finally:
         if not pc.signalingState == "closed":
-             await pc.close()
-        if signaling._reader is not None or signaling._writer is not None: # Check if signaling is open
-             await signaling.close()
+            await pc.close()
         logging.info("Client shutdown complete.")
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

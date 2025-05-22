@@ -1,98 +1,13 @@
 # gRPC
 
-gRPC is a high-performance, open-source RPC framework developed by Google. It leverages HTTP/2 and Protocol Buffers to enable efficient, strongly-typed communication between microservices and distributed systems.
-
----
-
-## Working with gRPC in Python: grpcio
-
-- [`grpcio`](https://grpc.io/docs/languages/python/) is the official Python library for gRPC.
-- [`grpcio-tools`](https://pypi.org/project/grpcio-tools/) is used to generate Python code from `.proto` files.
-
-### Installation
-
-```bash
-uv init hello_grpc
-cd hello_grpc
-uv add grpcio grpcio-tools
-```
-
-### Example 1: Basic gRPC Server & Client
-
-#### 1. Define the Protocol Buffers schema (`helloworld.proto`):
-
-```proto
-syntax = "proto3";
-
-package helloworld;
-
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
-}
-
-message HelloRequest {
-  string name = 1;
-}
-
-message HelloReply {
-  string message = 1;
-}
-```
-
-#### 2. Generate Python code:
-
-```bash
-uv run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. helloworld.proto
-```
-
-#### 3. gRPC Server (`server.py`):
-
-```python
-import grpc
-from concurrent import futures
-import helloworld_pb2
-import helloworld_pb2_grpc
-
-class Greeter(helloworld_pb2_grpc.GreeterServicer):
-    def SayHello(self, request, context):
-        return helloworld_pb2.HelloReply(message=f"Hello, {request.name}!")
-
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
-    server.add_insecure_port('[::]:50051')
-    server.start()
-    print("gRPC server running on port 50051")
-    server.wait_for_termination()
-
-if __name__ == "__main__":
-    serve()
-```
-
-#### 4. gRPC Client (`client.py`):
-
-```python
-import grpc
-import helloworld_pb2
-import helloworld_pb2_grpc
-
-def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
-        stub = helloworld_pb2_grpc.GreeterStub(channel)
-        response = stub.SayHello(helloworld_pb2.HelloRequest(name='Agentic AI'))
-        print(f"Greeter client received: {response.message}")
-
-if __name__ == "__main__":
-    run()
-```
-
----
-
 ## Conceptual Overview
 
-### What is gRPC?
+gRPC is a high-performance, open-source RPC framework developed by Google. It leverages HTTP/2 and Protocol Buffers to enable efficient, strongly-typed communication between microservices and distributed systems.
 
-gRPC is a modern, high-performance RPC framework that uses HTTP/2 for transport and Protocol Buffers for serialization. It enables strongly-typed, efficient, and scalable communication between distributed systems and microservices.
+> [!IMPORTANT] 
+> This Step is a Work In Progress!
+
+---
 
 ### Key Characteristics
 
@@ -125,15 +40,7 @@ gRPC is a modern, high-performance RPC framework that uses HTTP/2 for transport 
 - **Above:** Business logic, agent frameworks
 - **Below:** HTTP/2, TCP
 
-### Further Reading
-
-- [gRPC Python Docs](https://grpc.io/docs/languages/python/)
-- [Protocol Buffers Docs](https://developers.google.com/protocol-buffers)
-- [gRPC Tutorials](https://grpc.io/docs/)
-
----
-
-# Tutorial: Using Protocol Buffers and gRPC in Python with uv
+# Hands-On: Using Protocol Buffers and gRPC in Python with uv
 
 This tutorial provides a comprehensive guide to using Protocol Buffers (protobuf) and gRPC in Python, leveraging `uv` as a modern Python package manager and runner for efficient dependency management and project setup. By the end, you'll have a working client-server application using gRPC for communication and Protocol Buffers for data serialization.
 
@@ -144,10 +51,7 @@ gRPC adoption has grown significantly since its 2015 release, driven by its high
 ## Prerequisites
 
 - **Python**: Version 3.12 or higher.
-- **uv**: A fast Python package manager and project runner (install via `curl -LsSf https://astral.sh/uv/install.sh | sh` or follow instructions at [astral.sh/uv](https://astral.sh/uv)).
 - **Basic Knowledge**: Familiarity with Python and command-line tools.
-- **Protobuf Compiler**: `protoc` for generating Python code from `.proto` files.
-- **gRPC Tools**: Python packages for gRPC communication.
 
 ---
 
@@ -158,9 +62,8 @@ gRPC adoption has grown significantly since its 2015 release, driven by its high
 1. **Initialize the Project**:
 
    ```bash
-   mkdir grpc-tutorial
+   uv init grpc-tutorial
    cd grpc-tutorial
-   uv init
    ```
 
    This creates a basic project structure with a `pyproject.toml` file.
@@ -181,27 +84,7 @@ gRPC adoption has grown significantly since its 2015 release, driven by its high
    uv pip list
    ```
 
-   You should see `grpcio` and `grpcio-tools` listed.
-
-4. **Install `protoc`**:
-   The Protocol Buffers compiler (`protoc`) is required to compile `.proto` files. Install it based on your operating system:
-
-   - **Linux**:
-     ```bash
-     sudo apt-get install protobuf-compiler
-     ```
-   - **macOS**:
-     ```bash
-     brew install protobuf
-     ```
-   - **Windows**:
-     Download the binary from [GitHub](https://github.com/protocolbuffers/protobuf/releases) and add it to your PATH.
-
-   Verify installation:
-
-   ```bash
-   protoc --version
-   ```
+   You should see `grpcio`, `protobuf` and `grpcio-tools` listed.
 
 ---
 
@@ -556,107 +439,6 @@ Let's add more functionality to make the service more realistic.
    User: ID=1, Name=John Doe, Email=john@example.com
    User: ID=2, Name=Jane Smith, Email=jane@example.com
    ```
-
----
-
-## Step 6: Best Practices and Optimizations
-
-1. **Use `uv` Scripts**:
-   Add scripts to `pyproject.toml` for convenience:
-
-   ```toml
-   [project]
-   name = "grpc-tutorial"
-   version = "0.1.0"
-   dependencies = [
-       "grpcio",
-       "grpcio-tools",
-   ]
-
-   [project.scripts]
-   start-server = "python server.py"
-   start-client = "python client.py"
-   compile-proto = "python -m grpc_tools.protoc -Iproto --python_out=. --grpc_python_out=. proto/user.proto"
-   ```
-
-   Now you can run:
-
-   ```bash
-   uv run start-server
-   uv run start-client
-   uv run compile-proto
-   ```
-
-2. **Error Handling**:
-   Enhance error handling in the server by adding validation:
-
-   ```python
-   def GetUser(self, request, context):
-       if request.id <= 0:
-           context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-           context.set_details("Invalid user ID")
-           return user_pb2.GetUserResponse()
-       # ... rest of the code
-   ```
-
-3. **Secure gRPC**:
-   For production, use SSL/TLS:
-
-   - Generate certificates and configure the server with `server.add_secure_port`.
-   - Update the client to use `grpc.secure_channel`.
-
-4. **Performance**:
-
-   - Use connection pooling for clients in production.
-   - Optimize the thread pool size in `futures.ThreadPoolExecutor` based on your workload.
-
-5. **Organize Code**:
-   Move generated `.py` files to a `generated` directory and update imports:
-
-   ```bash
-   mkdir generated
-   mv user_pb2*.py generated/
-   ```
-
-   Update `server.py` and `client.py`:
-
-   ```python
-   import grpc
-   from concurrent import futures
-   from generated import user_pb2
-   from generated import user_pb2_grpc
-   ```
-
-   Update the `compile-proto` command in `pyproject.toml`:
-
-   ```toml
-   compile-proto = "python -m grpc_tools.protoc -Iproto --python_out=generated --grpc_python_out=generated proto/user.proto"
-   ```
-
----
-
-## Step 7: Deploying with uv
-
-To package and deploy the application:
-
-1. **Create a Wheel**:
-
-   ```bash
-   uv build
-   ```
-
-   This creates a `.whl` file in the `dist` directory.
-
-2. **Install on Another Machine**:
-   Copy the `.whl` file and install it:
-
-   ```bash
-   uv pip install grpc_tutorial-0.1.0-py3-none-any.whl
-   ```
-
-3. **Run in Production**:
-   Use a process manager like `gunicorn` or `systemd` to manage the gRPC server. Ensure `protoc` and dependencies are installed.
-
 ---
 
 ## Conclusion
@@ -675,4 +457,6 @@ Explore advanced gRPC features like streaming, authentication, or integrating wi
 
 - [gRPC Python Documentation](https://grpc.io/docs/languages/python/)
 - [Protocol Buffers Documentation](https://developers.google.com/protocol-buffers)
-- [uv Documentation](https://docs.astral.sh/uv/)
+- [gRPC Tutorials](https://grpc.io/docs/)
+- [`grpcio-tools`](https://pypi.org/project/grpcio-tools/) is used to generate Python code from `.proto` files.
+- [Remote Procedure Call (RPC) ](https://www.geeksforgeeks.org/remote-procedure-call-rpc-in-operating-system/)

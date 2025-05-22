@@ -1,10 +1,9 @@
 [project]
-name = "grpc-tutorial"
+name = "hello-webrtc"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "grpcio>=1.71.0",
-    "grpcio-tools>=1.71.0",
+    "aiortc>=1.12.0",
 ]

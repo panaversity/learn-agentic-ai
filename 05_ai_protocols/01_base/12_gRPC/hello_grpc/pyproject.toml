@@ -1,5 +1,5 @@
 [project]
-name = "grpc-tutorial"
+name = "hello-grpc"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

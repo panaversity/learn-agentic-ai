@@ -23,7 +23,7 @@ WebRTC is the foundation for many popular video conferencing services, live stre
 
     - **WebSockets**: A common choice for browser-based signaling.
     - **XMPP/SIP**: Traditional communication protocols.
-    - Any other method that allows two clients to exchange messages (e.g., HTTP polling, carrier pigeons - though not recommended for speed!).
+    - Any other method that allows two clients to exchange messages (e.g., HTTP polling, or basic TCP sockets).
       The signaling process involves exchanging:
     - **Session Description Protocol (SDP) Offers and Answers**: Describes the media capabilities of each peer (codecs, resolutions, etc.) and connection parameters.
     - **Interactive Connectivity Establishment (ICE) Candidates**: Information about network paths (IP addresses, ports) that a peer can be reached on.
@@ -34,6 +34,42 @@ WebRTC is the foundation for many popular video conferencing services, live stre
     - **TURN (Traversal Using Relays around NAT)**: Servers that act as relays when a direct P2P connection cannot be established (e.g., due to symmetric NATs or restrictive firewalls). Media traffic is relayed through the TURN server. This adds latency and server cost but ensures connectivity.
 
 6.  **Security**: WebRTC mandates end-to-end encryption for all components. Media streams are encrypted using SRTP (Secure Real-time Transport Protocol), and data channels use DTLS (Datagram Transport Layer Security).
+
+---
+
+## WebRTC Connection Flow
+
+Understanding how WebRTC connections are established is crucial. Here's a simplified flow:
+
+1. **Initial Setup**:
+
+   - Both peers create an `RTCPeerConnection` object.
+   - One peer (initiator) creates a data channel or adds media tracks.
+
+2. **Offer/Answer Exchange**:
+
+   - The initiator creates an "offer" (SDP) describing its capabilities.
+   - This offer is sent to the other peer through the signaling channel.
+   - The receiving peer sets this as the "remote description".
+   - The receiver creates an "answer" (SDP) and sets it as its "local description".
+   - The answer is sent back to the initiator through the signaling channel.
+   - The initiator sets this as its "remote description".
+
+3. **ICE Candidate Exchange**:
+
+   - Both peers gather ICE candidates (potential connection endpoints).
+   - Each candidate is sent to the other peer through the signaling channel.
+   - Peers add each other's candidates to their connection.
+
+4. **Connection Establishment**:
+
+   - The WebRTC stack tries various connection methods using the ICE candidates.
+   - Once a working connection is found, the P2P connection is established.
+   - Data channels become "open" and ready for communication.
+
+5. **Direct Communication**:
+   - After connection establishment, data flows directly between peers.
+   - The signaling server is no longer needed for ongoing communication.
 
 ---
 
@@ -49,36 +85,39 @@ While WebRTC is primarily a browser/mobile technology, the [`aiortc`](https://ai
 ### Installation
 
 ```bash
-# Using pip
-pip install aiortc
+uv init hello_webrtc
+cd hello_webrtc
 
-# Or using uv
-# uv pip install aiortc
+uv add aiortc
 ```
 
 ### Example: Basic WebRTC Data Channel (Echo)
 
-This example demonstrates a simple data channel echo between a Python server and client using `aiortc` and its `TcpSocketSignaling` for simplicity. In a real-world scenario, signaling might be more robust (e.g., over WebSockets to a dedicated signaling server).
+This example demonstrates a simple data channel echo between a Python server and client. We implement a custom TCP-based signaling mechanism for simplicity. In a real-world scenario, signaling might be more robust (e.g., over WebSockets to a dedicated signaling server).
 
-**Note:** These examples use `aiortc.contrib.signaling.TcpSocketSignaling`, which is a basic signaling mechanism suitable for local testing. For production, you'd typically use a more scalable signaling solution (often WebSocket-based).
+**Important Note About Signaling:** While aiortc provides a `TcpSocketSignaling` class, it has some confusing behavior - it doesn't clearly differentiate between client and server roles. Our example below implements a more straightforward custom signaling approach using direct TCP connections.
 
 #### 1. Server (`webrtc_datachannel_server.py`):
 
-This server waits for a client to connect via TCP signaling, then establishes a WebRTC peer connection and echoes back any messages received on the data channel.
-
-**File:** `13_WebRTC/webrtc_datachannel_server.py`
+This server waits for a client to connect via TCP, then establishes a WebRTC peer connection and echoes back any messages received on the data channel.
 
 ```python
 import asyncio
 import logging
+import socket
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.signaling import TcpSocketSignaling, object_from_string, object_to_string
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebRTC_SERVER - %(levelname)s - %(message)s')
 
-async def run_server(pc, signaling):
+async def run_server(pc, reader, writer):
     """Handles the WebRTC connection and data channel for the server side."""
+    # Create signaling instance for this connection
+    signaling = TcpSocketSignaling(None, None)
+    signaling._reader = reader
+    signaling._writer = writer
+
     @pc.on("datachannel")
     def on_datachannel(channel):
         logging.info(f"Data channel '{channel.label}' created by client.")
@@ -128,61 +167,108 @@ async def run_server(pc, signaling):
         logging.info("Closing the peer connection.")
         await pc.close()
         logging.info("Closing the signaling channel.")
-        await signaling.close()
+        writer.close()
+        await writer.wait_closed()
+
+async def listen_for_connections(host, port):
+    """Sets up a TCP server to listen for signaling connections."""
+    server = await asyncio.start_server(
+        handle_client, host, port
+    )
+
+    addr = server.sockets[0].getsockname()
+    logging.info(f'Serving on {addr}')
+
+    async with server:
+        await server.serve_forever()
+
+async def handle_client(reader, writer):
+    """Handles a new client connection."""
+    addr = writer.get_extra_info('peername')
+    logging.info(f"New client connection from {addr}")
+
+    # Create a new peer connection for this client
+    pc = RTCPeerConnection()
+
+    try:
+        await run_server(pc, reader, writer)
+    except Exception as e:
+        logging.error(f"Error handling client {addr}: {e}", exc_info=True)
+    finally:
+        if not pc.signalingState == "closed":
+            await pc.close()
+        if not writer.is_closing():
+            writer.close()
+            await writer.wait_closed()
+        logging.info(f"Connection closed with {addr}")
 
 async def main():
     SIGNALING_HOST = "127.0.0.1"
     SIGNALING_PORT = 12345 # Changed port to avoid conflict with other examples
 
-    signaling = TcpSocketSignaling(SIGNALING_HOST, SIGNALING_PORT)
-    pc = RTCPeerConnection()
-
     logging.info(f"Starting WebRTC server with TCP signaling on {SIGNALING_HOST}:{SIGNALING_PORT}")
-    logging.info("Waiting for client connection...")
-
-    # Connect signaling channel
-    await signaling.connect()
-    # Note: For TcpSocketSignaling, connect() on server side means starting to listen.
+    logging.info("Waiting for client connections...")
 
     try:
-        await run_server(pc, signaling)
+        await listen_for_connections(SIGNALING_HOST, SIGNALING_PORT)
     except KeyboardInterrupt:
         logging.info("Server shutting down due to KeyboardInterrupt.")
     except Exception as e:
         logging.error(f"Server main loop encountered an error: {e}", exc_info=True)
     finally:
-        if not pc.signalingState == "closed":
-            await pc.close()
-        if signaling._reader is not None or signaling._writer is not None: # Check if signaling is open
-             await signaling.close()
         logging.info("Server shutdown complete.")
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+**Code Explanation - Server:**
+
+1. **TCP Server Setup**:
+
+   - We create a standard asyncio TCP server using `asyncio.start_server`.
+   - Each new client connection gets its own handler with separate reader/writer streams.
+   - Each client connection gets its own `RTCPeerConnection` instance.
+
+2. **Signaling Implementation**:
+
+   - While we still use parts of the `TcpSocketSignaling` class, we initialize it with a custom approach.
+   - We directly connect the TCP streams to the signaling instance rather than having it create connections.
+   - This avoids port conflicts and confusion about client/server roles.
+
+3. **Data Channel Handling**:
+
+   - The server waits for the client to create a data channel (`@pc.on("datachannel")`).
+   - When messages arrive on the data channel, the server echoes them back.
+
+4. **WebRTC Connection Flow**:
+   - Server receives the client's offer via the TCP signaling channel.
+   - Server creates an answer and sends it back through the same channel.
+   - Once the connection is established, the data channel opens for direct communication.
+
 **To run this server:**
 
-1. Save the code as `13_WebRTC/webrtc_datachannel_server.py`.
-2. Run from your terminal: `python 13_WebRTC/webrtc_datachannel_server.py`
-   The server will start and wait for a client connection on port `12345`.
+```bash
+uv run python webrtc_datachannel_server.py
+```
+
+The server will start and wait for client connections on port `12345`.
 
 #### 2. Client (`webrtc_datachannel_client.py`):
 
-This client connects to the server via TCP signaling, establishes a WebRTC peer connection, creates a data channel, sends some messages, and receives echoes.
-
-**File:** `13_WebRTC/webrtc_datachannel_client.py`
+This client connects to the server via TCP, establishes a WebRTC peer connection, creates a data channel, sends some messages, and receives echoes.
 
 ```python
 import asyncio
 import logging
+import json
 from aiortc import RTCPeerConnection, RTCSessionDescription
-from aiortc.contrib.signaling import TcpSocketSignaling, object_from_string, object_to_string
+from aiortc.contrib.signaling import object_from_string, object_to_string
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - WebRTC_CLIENT - %(levelname)s - %(message)s')
 
-async def run_client(pc, signaling, data_channel_label="chat"):
+async def run_client(pc, reader, writer, data_channel_label="chat"):
     """Handles the WebRTC connection and data channel for the client side."""
 
     @pc.on("track")
@@ -225,30 +311,32 @@ async def run_client(pc, signaling, data_channel_label="chat"):
     def on_close():
         logging.info(f"Data channel '{channel.label}' closed.")
 
-    # Connect signaling
-    try:
-        await signaling.connect()
-        logging.info("Signaling connected.")
-    except Exception as e:
-        logging.error(f"Signaling connection failed: {e}", exc_info=True)
-        return
-
     # Send offer
     try:
         logging.info("Creating offer...")
         offer = await pc.createOffer()
         await pc.setLocalDescription(offer)
         logging.info("Sending offer to server.")
-        await signaling.send(pc.localDescription)
+
+        # Send the offer to the server
+        writer.write(object_to_string(pc.localDescription).encode() + b'\n')
+        await writer.drain()
     except Exception as e:
         logging.error(f"Error creating/sending offer: {e}", exc_info=True)
-        await signaling.close()
+        writer.close()
         return
 
     # Consume signaling messages
     try:
         while True:
-            obj = await signaling.receive()
+            # Read response from server
+            data = await reader.readline()
+            if not data:  # Connection closed
+                logging.info("Signaling channel closed by server or network issue.")
+                break
+
+            # Parse the response
+            obj = object_from_string(data.decode())
 
             if isinstance(obj, RTCSessionDescription):
                 logging.info("Received session description from server.")
@@ -256,12 +344,6 @@ async def run_client(pc, signaling, data_channel_label="chat"):
                 if obj.type == "answer":
                     logging.info("Received answer. Peer connection established.")
                     # Connection is now set up, data channel should open soon if not already.
-                    # We can break the signaling loop for this simple client if we don't expect ICE candidates via signaling.
-                    # For a more robust client, you might continue to handle ICE candidates if they were part of your signaling.
-                    # break
-            elif obj is None: # Signaling channel closed
-                logging.info("Signaling channel closed by server or network issue.")
-                break
             else:
                 logging.warning(f"Received unexpected object: {obj}")
 
@@ -278,20 +360,24 @@ async def run_client(pc, signaling, data_channel_label="chat"):
     finally:
         logging.info("Closing the peer connection.")
         await pc.close()
-        logging.info("Closing the signaling channel.")
-        await signaling.close()
+        logging.info("Closing the connection.")
+        writer.close()
+        await writer.wait_closed()
 
 async def main():
     SIGNALING_HOST = "127.0.0.1"
     SIGNALING_PORT = 12345 # Must match the server's port
 
-    signaling = TcpSocketSignaling(SIGNALING_HOST, SIGNALING_PORT)
-    pc = RTCPeerConnection()
-
     logging.info(f"Starting WebRTC client, trying to connect to signaling server at {SIGNALING_HOST}:{SIGNALING_PORT}")
 
+    pc = RTCPeerConnection()
+
     try:
-        await run_client(pc, signaling)
+        # Directly connect to the server
+        reader, writer = await asyncio.open_connection(SIGNALING_HOST, SIGNALING_PORT)
+        logging.info("Signaling connected.")
+
+        await run_client(pc, reader, writer)
     except KeyboardInterrupt:
         logging.info("Client shutting down due to KeyboardInterrupt.")
     except ConnectionRefusedError:
@@ -300,20 +386,102 @@ async def main():
         logging.error(f"Client main loop encountered an error: {e}", exc_info=True)
     finally:
         if not pc.signalingState == "closed":
-             await pc.close()
-        if signaling._reader is not None or signaling._writer is not None: # Check if signaling is open
-             await signaling.close()
+            await pc.close()
         logging.info("Client shutdown complete.")
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+**Code Explanation - Client:**
+
+1. **Direct TCP Connection**:
+
+   - The client uses `asyncio.open_connection` to connect directly to the server.
+   - This avoids the confusing behavior of `TcpSocketSignaling` trying to start its own server.
+
+2. **Data Channel Creation**:
+
+   - Unlike the server, the client proactively creates a data channel (`pc.createDataChannel`).
+   - This data channel will be received by the server via its "datachannel" event handler.
+
+3. **Offer/Answer Exchange**:
+
+   - Client creates an offer (SDP) and sets it as its local description.
+   - Client sends this offer to the server through the TCP connection.
+   - Client waits for the server's answer and sets it as the remote description.
+
+4. **Data Flow**:
+   - After the connection is established, the client sends a series of test messages.
+   - The server echoes these messages back, demonstrating bidirectional data channel communication.
+   - After 10 seconds, the client terminates the connection (in a real app, this would be event-driven).
+
 **To run this client:**
 
-1. Save the code as `13_WebRTC/webrtc_datachannel_client.py`.
-2. Ensure the `webrtc_datachannel_server.py` is already running.
-3. Run from your terminal: `python 13_WebRTC/webrtc_datachannel_client.py`
+```bash
+uv run python webrtc_datachannel_client.py
+```
+
+Ensure the server is already running before starting the client.
+
+---
+
+## Understanding the Flow and Troubleshooting
+
+### Complete Connection Flow
+
+1. **Server Setup**:
+
+   - Server creates a TCP socket and listens for connections on port 12345
+   - Waits for client connections
+
+2. **Client Connection**:
+
+   - Client creates an RTCPeerConnection
+   - Client creates a data channel
+   - Client connects to the server's TCP socket
+   - Client creates an SDP offer, sets it locally, and sends it to the server
+
+3. **Server Handling**:
+
+   - Server accepts the TCP connection
+   - Server creates its own RTCPeerConnection
+   - Server receives the client's SDP offer, sets it as remote description
+   - Server creates an SDP answer, sets it locally, and sends it to the client
+   - Server is now waiting for data channel events
+
+4. **Client Completion**:
+
+   - Client receives the server's SDP answer and sets it as remote description
+   - WebRTC connection is established
+   - Data channel becomes "open" state
+   - Client can now send/receive data directly through the data channel
+
+5. **Data Channel Communication**:
+   - Client sends messages through the data channel
+   - Server receives and echoes them back
+   - These messages no longer go through the TCP signaling channel - they use the direct P2P WebRTC connection
+
+### Common Issues and Solutions
+
+1. **"Address already in use" error**:
+
+   - Cause: TCP port is already in use, often by another instance of the server or another application
+   - Solution: Change the port number or ensure previous instances are closed
+
+2. **Connection refused error**:
+
+   - Cause: Server is not running when client tries to connect
+   - Solution: Start the server first, then run the client
+
+3. **Data channel not opening**:
+
+   - Cause: WebRTC connection failed to establish, possibly due to network issues
+   - Solution: Check ICE candidates, ensure firewall/NAT isn't blocking UDP traffic
+
+4. **No messages being exchanged**:
+   - Cause: Data channel might be open but event handlers aren't registered correctly
+   - Solution: Verify event handlers are properly set up, check console logs
 
 ---
 
@@ -366,15 +534,6 @@ WebRTC presents interesting possibilities for Agent-to-Agent (A2A) communication
 - **Complexity vs. Benefit**: For many A2A interactions where simple messaging or eventing suffices, lighter protocols like MQTT or WebSockets (with a broker/server) might be simpler to manage within DACA than full P2P WebRTC.
 - **Dapr's Role**: Dapr doesn't have a direct "WebRTC" building block. Its role would primarily be in supporting the signaling mechanism (e.g., by hosting a signaling service or providing pub/sub for signaling messages) and potentially in service discovery to find agents capable of WebRTC.
 
-**Potential DACA A2A Scenarios with WebRTC:**
-
-- **Agent A (e.g., on an edge device with a camera)** streams live video directly to **Agent B (a processing agent in the cloud)** for analysis.
-- **Agent C (a user-facing UI agent)** establishes a data channel with **Agent D (a backend task execution agent)** for rapid, interactive command and result exchange.
-- Two computational agents exchanging large intermediate datasets directly to speed up a distributed computation task.
-
-**Conclusion for DACA:**
-WebRTC is a specialized but powerful option for A2A communication in DACA when direct P2P media or high-performance data channels are needed. Its adoption would necessitate careful consideration of the signaling architecture and NAT traversal. It complements, rather than replaces, brokered communication patterns like MQTT or server-mediated streaming like WebSockets, offering a solution for specific high-bandwidth, low-latency P2P agent interactions.
-
 ---
 
 ## Place in the Protocol Stack
@@ -393,3 +552,5 @@ WebRTC is a specialized but powerful option for A2A communication in DACA when d
 - [`aiortc` Documentation](https://aiortc.readthedocs.io/en/stable/) (Python WebRTC library)
 - [High Performance Browser Networking: WebRTC](https://hpbn.co/webrtc/) (Detailed explanation by Ilya Grigorik)
 - [Getting Started with WebRTC (HTML5 Rocks - slightly dated but good concepts)](https://www.html5rocks.com/en/tutorials/webrtc/basics/)
+- https://www.fullstackpython.com/webrtc.html
+- https://www.youtube.com/watch?v=HVsvNGV_gg8
