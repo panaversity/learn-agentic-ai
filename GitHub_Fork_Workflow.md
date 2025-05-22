@@ -50,7 +50,7 @@ Here’s a simple, step-by-step guide to fork a repository on GitHub, work on it
 ### 4. **Contribute Back to the Original Repository (Optional)**
    - **What**: Share your changes with the original project by creating a pull request.
    - **How**:
-     1. Go to your fork’s GitHub page (e.g., `https://github.com/your-username/repository`).
+     1. Go to your fork’s GitHub page (e.g., `https://github.com/your-username/learn-agentic-ai`).
      2. You’ll see a prompt about your recent push to `my-new-feature`. Click **Compare & pull request**.
      3. Add a title and description for your pull request explaining your changes.
      4. Ensure the pull request is going from your fork’s branch (e.g., `your-username:my-new-feature`) to the original repository’s main branch (e.g., `original-username:main`).
@@ -62,7 +62,7 @@ Here’s a simple, step-by-step guide to fork a repository on GitHub, work on it
    - **How**:
      1. Add the original repository as a remote (do this once):
         ```bash
-        git remote add upstream https://github.com/original-username/repository.git
+        git remote add upstream https://github.com/original-username/learn-agentic-ai.git
         ```
      2. Fetch the latest changes from the original repository:
         ```bash
@@ -86,4 +86,4 @@ Here’s a simple, step-by-step guide to fork a repository on GitHub, work on it
 - **Use GitHub Desktop**: If the command line feels tricky, GitHub Desktop offers a visual interface for these steps.
 - **Read Contribution Guidelines**: If contributing, check the original repository’s `CONTRIBUTING.md` file for rules.
 
-That’s it! You’ve forked, cloned, edited, pushed, and optionally contributed or synced your fork. Let me know if you need help with any step!
+That’s it! You’ve forked, cloned, edited, pushed, and optionally contributed or synced your fork.
