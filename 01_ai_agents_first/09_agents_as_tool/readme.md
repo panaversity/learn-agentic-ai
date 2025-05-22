@@ -54,27 +54,27 @@ To utilize the `as_tool` method, you can follow these steps:
    ```
 
 
-3. **Create a Triage Agent:**
+3. **Create a orchestrator_agent:**
 
    Develop an agent responsible for routing user queries to the appropriate agent tool.
 
    ```python
-   # Define a triage agent that delegates tasks
-   triage_agent = Agent(
-       name="Triage Agent",
+   # Define a orchestrator_agentt that delegates tasks
+   orchestrator_agent = Agent(
+       name="orchestrator_agent",
        instructions="You route user queries to the appropriate department.",
        tools=[shopping_tool, support_tool]
    )
    ```
 
 
-4. **Run the Triage Agent:**
+4. **Run the orchestrator_agent:**
 
-   Execute the triage agent with a user query to see it in action.
+   Execute the orchestrator_agent with a user query to see it in action.
 
    ```python
-   # Run the triage agent with a sample input
-   result = Runner.run_sync(triage_agent, "I need help with a recent purchase.")
+   # Run the orchestrator_agent with a sample input
+   result = Runner.run_sync(orchestrator_agent, "I need help with a recent purchase.")
    print(result.final_output)
    ```
 
@@ -101,20 +101,20 @@ support_agent = Agent(
 shopping_tool = shopping_agent.as_tool()
 support_tool = support_agent.as_tool()
 
-# Define a triage agent that delegates tasks
-triage_agent = Agent(
-    name="Triage Agent",
+# Define a orchestrator_agent that delegates tasks
+orchestrator_agent = Agent(
+    name="orchestrator_agent",
     instructions="You route user queries to the appropriate department.",
     tools=[shopping_tool, support_tool]
 )
 
-# Run the triage agent with a sample input
-result = Runner.run_sync(triage_agent, "I need help with a recent purchase.")
+# Run the orchestrator_agent with a sample input
+result = Runner.run_sync(orchestrator_agent, "I need help with a recent purchase.")
 print(result.final_output)
 ```
 
 
-In this setup, the triage agent evaluates the user's input and delegates the task to the appropriate agent (either the shopping assistant or the support agent) using the tools created by the `as_tool` method.
+In this setup, the orchestrator_agent evaluates the user's input and delegates the task to the appropriate agent (either the shopping assistant or the support agent) using the tools created by the `as_tool` method.
 
 **Benefits of Using `as_tool`:**
 
