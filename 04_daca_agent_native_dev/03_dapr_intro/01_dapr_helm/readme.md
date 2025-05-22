@@ -220,7 +220,7 @@ Dapr's sidecar exposes HTTP APIs (typically on port 3500 by default) that applic
            annotations:
              dapr.io/enabled: "true"
              dapr.io/app-id: "dapr-test-app"
-             dapr.io/app-port: "8080"
+             dapr.io/app-port: "80"
              dapr.io/enable-api-logging: "true"
          spec:
            containers:
