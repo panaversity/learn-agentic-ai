@@ -2,6 +2,11 @@
 
 This module provides a future-proofed, pedagogically ordered learning path through the foundational protocols that underpin modern, scalable, and multi-modal agentic AI systems. Each protocol is presented in a sequence that builds conceptual understanding from the network layer up to advanced real-time and multi-modal communication, serialization, and emerging research.
 
+## Prerequisites
+
+- Introduction to FastAPI. Watch this [video for quick recap](https://www.youtube.com/watch?v=hpE9NlZ1X0A&list=PL0vKVrkG4hWrlP5uLUAr47uvSq1D7NCmc&index=2) if you are unfamiliar with FastAPI.
+- Modern Python ([including Asyncio](https://docs.python.org/3/library/asyncio.html))
+
 ## Why This Structure?
 
 - **Agentic AI systems** require robust, interoperable, and efficient communication at every layer.

@@ -4,6 +4,14 @@ Welcome to the sixth tutorial in our **Dapr Agentic Cloud Ascent (DACA)** series
 
 ---
 
+## Challenge Project
+
+Create the following Agentic System using Agents SDK and FastAPI Interface. Chainlit for UI is recommended but optional
+
+![FastAPI Agents SDK Challenge](./agent-fastapi.png)
+
+---
+
 ## What You’ll Learn
 - How to set up the OpenAI Agents SDK in a FastAPI project.
 - Creating an AI agent using the OpenAI Agents SDK to handle user messages.
