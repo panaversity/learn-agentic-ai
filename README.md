@@ -207,3 +207,21 @@ To excel in this quiz, focus on understanding the core components and philosophy
 **Preparation Guide for Beginner Students**
 
 This OpenAI Agents SDK quiz is designed for intermediate to advanced learners and requires substantial preparation to succeed. Before attempting this assessment, ensure you have a solid foundation in Python programming, including object-oriented concepts, async/await patterns, decorators, and error handling. You'll need to thoroughly study Pydantic models for data validation, understanding field definitions, default values, and validation behavior. Dedicate significant time to the OpenAI Agents SDK documentation (https://openai.github.io/openai-agents-python/), focusing on core concepts like Agents, Tools, Handoffs, context management, and the agent execution loop. Practice writing and analyzing code that uses the @function_tool decorator, Runner.run_sync(), agent cloning, and multi-agent orchestration patterns. Review prompt engineering techniques from the OpenAI cookbook, particularly Chain-of-Thought prompting, system message design, and handling sensitive data. Finally, familiarize yourself with basic Markdown syntax for links and images. Plan to spend at least 2-3 weeks studying these materials, complete hands-on coding exercises with the SDK. Consider this quiz a capstone assessment that requires comprehensive understanding rather than a beginner-level introduction to the concepts.
+
+**Quiz Covers**:
+
+https://openai.github.io/openai-agents-python/
+
+https://cookbook.openai.com/examples/gpt4-1_prompting_guide 
+
+https://www.markdownguide.org/basic-syntax/ 
+
+https://www.markdownguide.org/cheat-sheet/ 
+
+https://github.com/panaversity/learn-agentic-ai/tree/main/01_ai_agents_first
+
+**You Can Generate Mock Quizzes for Practice using LLMs from this Prompt:**
+
+Create a comprehensive quiz covering OpenAI Agents SDK. It should include as many MCQ Quiz Questions as required to test the material, the questions should be difficult and at the graduate level and should test both concepts and include code were required. From the following following documentation:
+
+https://openai.github.io/openai-agents-python/
