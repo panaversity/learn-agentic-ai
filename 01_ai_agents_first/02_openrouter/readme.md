@@ -28,7 +28,7 @@ https://ai.google.dev/gemini-api/docs/rate-limits
 
 Free Tier of Gemini 2.0 Flash and Gemini 2.0 Flash-Lite have a limit of 1,5OO requests per day (RPD), while the limit for request per minitue (RPM) is 15 for Flash and 30 for Flash lite. There is also a cap of 1,000,000 Tokens per minute (TPM) for both the models.
 
-For development and testing 1,5OO requests per day (RPD) is good enough, therefore **for development and test we will be using the Google Gemini 2.0 Flash and Gemini 2.0 Flash-Lite model**. Both these models are also compatiable with OpenAI Chat Completion API and OpenAI Agents SDK. OpenRountes rate limit of 200 requests per day (RPD) across all free models is too restrictive for development and testing. 
+For development and testing 1,5OO requests per day (RPD) is good enough, therefore **for development and test we will be using the Google Gemini 2.0 Flash and Gemini 2.0 Flash-Lite model**. Both these models are also compatible with OpenAI Chat Completion API and OpenAI Agents SDK. OpenRountes rate limit of 200 requests per day (RPD) across all free models is too restrictive for development and testing. 
 
 Google Gemini also now support OpenAI Chat Completion API, thus we can use it with OpenAI Agents SDK:
 
