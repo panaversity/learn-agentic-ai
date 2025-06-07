@@ -164,9 +164,9 @@ Quizzes + Hackathons (Everything is Onsite)
 2. OpenAI Agents SDK (48 MCQ in 2 hour) [01_ai_agents_first]
 3. Protocols & Design Patterns (A2A and MCP) [05_ai_protocols]
 4. Hackathon1 - 8 Hours (Using Above Quiz Stack)
-5. Containerization + FastAPI [04_daca_agent_native_dev = 01 + 02 ]
-6. Kubernetes (Rancher Desktop) [Stimulations] [04_daca_agent_native_dev = 02 ]
-7. Dapr-1 - State, PubSub, Bindings, Invocation [04_daca_agent_native_dev = 03 ]
+5. Containerization + FastAPI [05_daca_agent_native_dev = 01 + 02 ]
+6. Kubernetes (Rancher Desktop) [Stimulations] [05_daca_agent_native_dev = 02 ]
+7. Dapr-1 - State, PubSub, Bindings, Invocation [05_daca_agent_native_dev = 03 ]
 8. Dapr-2 - Workflows, Virtual Actors [04_agent_native = 04, 05, 06]
 9. Hackathon2 - 8 Hours (Agent Native Startup) 
 10. CKAD + DAPR + ArgoCD (Simulations) [06_daca_deployment_guide + 07_ckad]
