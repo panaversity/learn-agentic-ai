@@ -21,9 +21,8 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 | 02    | 02_HTTP2               | Multiplexing, server push                   |
 | 03    | 03_REST                | Resource-oriented APIs                      |
 | 04    | 04_Streamable_HTTP     | Streaming over HTTP                         |
-| 05    | 05_SSE                 | Server-sent events                          |
-| 06    | 06_JSON_RPC            | JSON-based RPC                              |
-| 07    | 07_gRPC                | High-performance RPC (HTTP/2, Protobuf)     |
+| 05    | 05_JSON_RPC            | JSON-based RPC                              |
+| 06    | 06_gRPC                | High-performance RPC (HTTP/2, Protobuf)     |
 
 ## How to Use This Directory
 
@@ -40,7 +39,8 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 | 08    | 08_WebCodecs           | Low-level media encoding/decoding           |
 | 09    | 09_WebSockets          | Bidirectional, persistent connections       |
 | 10    | 10_MQTT                | Lightweight pub/sub                         |
-| 11    | 11_Future_AI_Protocols | Research, proposals, and emerging standards |
+| 11    | 11_SSE                 | Server-sent events                          |
+| 12    | 12_Future_AI_Protocols | Research, proposals, and emerging standards |
 
 
 ## Protocol Summaries
