@@ -1,6 +1,6 @@
 # Getting Started with [FastAPI](https://fastapi.tiangolo.com), [UV](https://docs.astral.sh/uv/), and [Pydantic](https://docs.pydantic.dev/2.3/api/base_model/)
 
-Welcome to the first module in our **Dapr Agentic Cloud Ascent (DACA)** series! This module focuses on building robust APIs using FastAPI, the modern Python web framework, along with Pydantic for data validation and UV for efficient package management.
+This module focuses on building robust APIs using FastAPI, the modern Python web framework, along with Pydantic for data validation and UV for efficient package management.
 
 FastAPI serves as the REST API layer for our agentic AI system, enabling communication between users, agents, and microservices.
 

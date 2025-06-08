@@ -78,7 +78,6 @@ Modify `main.py` to integrate the OpenAI Agents SDK. We’ll create an agent, ad
 
 ```python
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from datetime import datetime, UTC
 from uuid import uuid4
@@ -91,15 +90,6 @@ app = FastAPI(
     title="DACA Chatbot API",
     description="A FastAPI-based API for a chatbot in the DACA tutorial series",
     version="0.1.0",
-)
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 # Pydantic models
