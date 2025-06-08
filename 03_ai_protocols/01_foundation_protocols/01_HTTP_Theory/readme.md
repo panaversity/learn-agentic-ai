@@ -79,6 +79,31 @@ Headers are crucial for HTTP, providing extensibility and conveying important me
 
 HTTP's story is one of constant improvement, driven by the web's hunger for speed, efficiency, and new capabilities. For Agentic AI engineers, grasping this evolution is key. It's not just history; it’s a masterclass in how protocols adapt to solve real-world bottlenecks like latency and concurrency. These lessons are directly applicable to designing the communication backbones for intelligent agents. Each HTTP version built upon the last, tackling limitations and paving the way for the complex interactions we see today.
 
+```ascii
++------------------------------------------------------+
+|                   Application Layer                  |
+| +---------------------+   +------------------------+ |
+| | HTTP (1.x, 2)       |   | HTTP/3 (over QUIC)     | |
+| | (Web, APIs)         |   | (Modern Web, Low-Latency)| |
+| +--------^------------+   +-----------^------------+ |
+|          |                            | (QUIC)       |
+|          |                            |              |
+| +--------|----------------------------|------------+ |
+| |        Transport Layer              |            | |
+| | +------V-----+        +-----------V----------+ | |
+| | | TCP        |        | UDP                  | | |
+| | | (Reliable) |        | (Fast, Connectionless)| | |
+| | +------^-----+        +-----------^----------+ | |
+| +--------|----------------------------|------------+ |
+|          |                            |              |
+| +--------|----------------------------|------------+ |
+| |        Network/Internet Layer       |            | |
+| | +------V-------------V--------------+            | |
+| | | IP (Addressing & Routing)         |            | |
+| | +-----------------------------------+            | |
++------------------------------------------------------+
+```
+
 ### [HTTP/0.9](https://http.dev/0.9): The Simple Start (Early 1990s)
 
 *   **The Need:** A basic way to fetch hypertext documents on the nascent World Wide Web.
@@ -132,7 +157,6 @@ HTTP's story is one of constant improvement, driven by the web's hunger for spee
 *   **Reference:** [RFC 9114 - HTTP/3](https://datatracker.ietf.org/doc/html/rfc9114)
 
 Understanding this progression—from simple document retrieval to highly optimized, multiplexed communication over a new transport protocol—provides invaluable context for designing and troubleshooting the communication layers in sophisticated Agentic AI systems. Each step was about solving real problems to make interactions faster and more reliable.
-
 ---
 
 ## HTTP and Security (HTTPS)
