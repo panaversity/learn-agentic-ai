@@ -8,7 +8,7 @@ import json
 
 from json_rpc_models import JsonRpcRequest_V2, JsonRpcResponse_V2, JsonRpcErrorObject_V2
 
-app = FastAPI(title="JSON-RPC Server (1.0 and 2.0)", openapi_url=None)
+app = FastAPI(title="JSON-RPC Server (1.0 and 2.0)")
 
 RPC_METHODS_REGISTRY: dict[str, Callable[..., Any]] = {}
 
