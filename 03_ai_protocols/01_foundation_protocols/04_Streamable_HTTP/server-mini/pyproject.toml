@@ -1,0 +1,16 @@
+[project]
+name = "mcp-server-mini"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Muhammad Junaid", email = "mr.junaidshaukat@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.3",
+]
+
+[project.scripts]
+mcp-server-mini = "mcp_server_mini:main"
