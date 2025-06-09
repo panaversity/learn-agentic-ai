@@ -4,7 +4,8 @@ This module trains **Agentic AI Developers** to build planet-scale, multi-AI age
 
 ## Core Modules
 
-- **01_concepts_strategies_technologies/**
+- **00_concepts_strategies_technologies/**
+- **01_intro_fastapi/**
 - **02_cloud_native_setup/**: Set up Kubernetes for DACA agents. Includes YAML basics, Rancher Desktop, containers, Kubernetes, and Helm for Dapr apps.
 - **03_dapr_intro/**: Intro to Dapr with Helm, configuring Pub/Sub (`pubsub.yaml`) and state stores (`statestore.yaml`) for distributed agent logic.
 - **04_security_fundamentals** establishes security basics for DACA agents.

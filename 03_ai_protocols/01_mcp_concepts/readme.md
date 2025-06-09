@@ -4,7 +4,7 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 
 ## Prerequisites
 
-- Introduction to FastAPI. Watch this [video for quick recap](https://www.youtube.com/watch?v=hpE9NlZ1X0A&list=PL0vKVrkG4hWrlP5uLUAr47uvSq1D7NCmc&index=2) if you are unfamiliar with FastAPI.
+- 01 AI Agents First Module
 - Modern Python ([including Asyncio](https://docs.python.org/3/library/asyncio.html))
 
 ## Why This Structure?
@@ -18,11 +18,10 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 | Order | Directory              | Description/Focus                           |
 | ----- | ---------------------- | ------------------------------------------- |
 | 01    | 01_HTTP_Theory         | HTTP/1.1 essentials                         |
-| 02    | 02_HTTP2               | Multiplexing, server push                   |
-| 03    | 03_REST                | Resource-oriented APIs                      |
-| 04    | 04_Streamable_HTTP     | Streaming over HTTP                         |
-| 05    | 05_JSON_RPC            | JSON-based RPC                              |
-| 06    | 06_gRPC                | High-performance RPC (HTTP/2, Protobuf)     |
+| 02    | 02_REST                | Resource-oriented APIs                      |
+| 03    | 03_Streamable_HTTP     | Streaming over HTTP                         |
+| 04    | 04_JSON_RPC            | JSON-based RPC                              |
+| 05    | 05_mcp_streamable_http_spec                | MCP Streamable HTTP Transport Spec     |
 
 ## How to Use This Directory
 
@@ -41,20 +40,21 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 | 09    | 09_WebSockets          | Bidirectional, persistent connections       |
 | 10    | 10_MQTT                | Lightweight pub/sub                         |
 | 11    | 11_SSE                 | Server-sent events                          |
-| 12    | 12_Future_AI_Protocols | Research, proposals, and emerging standards |
+| 12    | 12_GRPC | Next Gen AI Communication Potential standard |
+| 13    | 13_Future_AI_Protocols | Research, proposals, and emerging standards |
 
 ## Protocol Summaries
 
 **Core:**
 - **HTTP (1.1/2/3), REST**: The web's lingua franca, powering APIs and agent-to-agent/service communication.
 - **Streamable_HTTP, SSE**: Techniques for real-time and event-driven data flows over HTTP.
-- **JSON_RPC, gRPC**: The two most important RPC paradigms for agent-to-agent and agent-to-service calls, with gRPC leveraging Protobuf for efficiency.
+- **JSON_RPC**: An important RPC paradigms for agent-to-agent and agent-to-service calls.
 
 **Extra:**
 - **IP, TCP, UDP, QUIC**: The backbone of all networked communication, from addressing to reliable and fast data transfer.
 - **WebRTC, WebTransport, WebCodecs**: Advanced protocols for real-time, peer-to-peer, and multi-modal streaming, essential for next-gen agentic and immersive systems.
 - **WebSockets, MQTT**: Event-driven, persistent, and lightweight communication for distributed and IoT-style agentic systems.
-- **extra/19_Future_AI_Protocols**: A space for research, proposals, and tracking the evolution of AI-native communication standards.
+- **Future_AI_Protocols**: A space for research, proposals, and tracking the evolution of AI-native communication standards.
 
 ---
 
