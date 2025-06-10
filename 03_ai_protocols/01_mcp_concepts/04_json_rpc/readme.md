@@ -1,5 +1,8 @@
 # JSON-RPC: A Lightweight Remote Procedure Call Protocol
 
+> **JSON-RPC is a stateless, light-weight remote procedure call (RPC) protocol. It is transport agnostic and uses JSON as its data format. It is designed to be simple!**  
+> — [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
+
 JSON-RPC is a stateless, light-weight remote procedure call (RPC) protocol. It allows for notifications (data sent to the server that does not require a response) and for multiple calls to be sent to the server which may be answered out of order. The protocol uses JSON (JavaScript Object Notation) for its data format, making it human-readable and easy to work with across many programming languages.
 
 This guide covers the widely adopted JSON-RPC 2.0 specification, highlighting its structure, and providing hands-on Python examples using FastAPI and Pydantic.
