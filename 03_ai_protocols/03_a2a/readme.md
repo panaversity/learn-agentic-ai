@@ -65,6 +65,98 @@ Tasks are created to handle requests, with states like `working`, `completed`, o
 Outputs (file, text, data) streamed or returned when complete
 
 ---
+## Example: Full Agent Card JSON
+
+The **Agent Card** is a JSON document hosted at a well-known URI (e.g., `/.well-known/agent.json`) that enables agent discovery by advertising an agent’s identity, capabilities, and connection details. Below is an example of a complete Agent Card JSON, including all possible fields as defined by the A2A protocol.
+
+### Agent Card Structure
+- **`name`**: A human-readable name for the agent.
+- **`url`**: The base URL for the agent’s A2A endpoint (e.g., where `message/send` or `message/stream` requests are sent).
+- **`capabilities`**: An object describing supported features, such as streaming or push notifications.
+- **`skills`**: An array of specific tasks or functions the agent can perform (e.g., "weather_forecast", "document_summary").
+- **`defaultInputModes`**: An array of MIME types the agent accepts as input (e.g., `text/plain`, `application/json`).
+- **`defaultOutputModes`**: An array of MIME types the agent can produce as output.
+- **`authenticationMethods`**: An array of supported authentication schemes (e.g., OAuth2, JWT, API Key).
+- **`uiHints`**: Optional rendering preferences for client-side interfaces (e.g., iframe, video player).
+- **`version`**: The A2A protocol version supported by the agent.
+- **`contact`**: Optional contact information for the agent’s maintainer (e.g., email or website).
+- **`description`**: A brief description of the agent’s purpose or functionality.
+
+### Example Agent Card
+This example represents a weather forecasting agent with comprehensive capabilities and configuration.
+
+```json
+{
+  "name": "Weather Forecasting Agent",
+  "url": "https://weather-agent.example.com/a2a/v1",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "longRunningTasks": true,
+    "humanInLoop": true
+  },
+  "skills": [
+    "weather_forecast",
+    "climate_analysis",
+    "historical_weather_data"
+  ],
+  "defaultInputModes": [
+    "text/plain",
+    "application/json",
+    "text/csv"
+  ],
+  "defaultOutputModes": [
+    "application/json",
+    "text/plain",
+    "text/html"
+  ],
+  "authenticationMethods": [
+    {
+      "type": "oauth2",
+      "authorizationUrl": "https://auth.example.com/oauth/authorize",
+      "tokenUrl": "https://auth.example.com/oauth/token",
+      "scopes": ["weather:read", "weather:forecast"]
+    },
+    {
+      "type": "bearer",
+      "jwksUrl": "https://weather-agent.example.com/.well-known/jwks.json"
+    },
+    {
+      "type": "apiKey",
+      "headerName": "X-Api-Key"
+    }
+  ],
+  "uiHints": {
+    "preferredRenderModes": [
+      "text",
+      "iframe",
+      "video"
+    ],
+    "iframeOptions": {
+      "width": "100%",
+      "height": "400px",
+      "allow": "fullscreen"
+    }
+  },
+  "version": "0.2.2",
+  "contact": {
+    "email": "support@weather-agent.example.com",
+    "website": "https://weather-agent.example.com"
+  },
+  "description": "A specialized agent for providing real-time weather forecasts, climate analysis, and historical weather data for global locations."
+}
+```
+
+### Usage
+- **Discovery**: A client agent fetches this Agent Card via a GET request to `https://weather-agent.example.com/.well-known/agent.json` to learn how to interact with the weather agent.
+- **Interoperability**: The `skills` and `defaultInputModes`/`defaultOutputModes` fields help the client determine if the agent can handle specific tasks (e.g., JSON-based weather forecasts).
+- **Security**: The `authenticationMethods` field guides the client on how to authenticate requests (e.g., using OAuth2 or a bearer token).
+- **UI Rendering**: The `uiHints` field suggests how outputs should be displayed, such as rendering forecast data in an iframe or as plain text.
+
+This Agent Card ensures that client agents can discover and collaborate with the weather agent efficiently, securely, and with optimal user experience integration.
+
+
+---
 
 ## 🛠️ How A2A Works
 
@@ -273,7 +365,6 @@ Agent A then polls for updates:
 }
 ```
 
----
 ---
 
 ## Why This Matters
