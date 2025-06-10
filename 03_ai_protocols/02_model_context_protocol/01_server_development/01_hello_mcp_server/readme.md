@@ -29,79 +29,61 @@ This initial step focuses on the bare essentials: setting up the server, making 
 
       ```bash
 
-      uv add "mcp[cli]"
+      uv add mcp uvicorn
       ```
-
-    - Test MCP CLI
-
-    ```bash
-    uv run mcp --help
-    ```
-
-    Output:
-
-    ```bash
-    Usage: mcp [OPTIONS] COMMAND [ARGS]...
-
-    MCP development tools
-
-    ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-    │ --help          Show this message and exit.                                                                      │
-    ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-    ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────────╮
-    │ version   Show the MCP version.                                                                                  │
-    │ dev       Run a MCP server with the MCP Inspector.                                                               │
-    │ run       Run a MCP server.                                                                                      │
-    │ install   Install a MCP server in the Claude desktop app.                                                        │
-    ╰───────────────────────────────────────────
-    ```
 
 3.  Update (`main.py`):
 
-    - We will import `FastMCP` and create a simple tool
+    - We will import `FastMCP` and create a simple tool with stateless http protocol
 
-    ```python
-    from mcp.server.fastmcp import FastMCP
+```python
+from mcp.server.fastmcp import FastMCP
 
-    # Initialize FastMCP server
-    mcp = FastMCP("weather")
+# Initialize FastMCP server
+mcp = FastMCP("weather", stateless_http=True)
 
-    @mcp.tool()
-    async def get_forecast(city: str) -> str:
-        """Get weather forecast for a city.
 
-        Args:
-            city(str): The name of the city
-        """
-        return f"The weather in {city} will be warm and sunny"
-    ```
+@mcp.tool()  # Using this mcp instance
+async def get_forecast(city: str) -> str:
+    """Get weather forecast for a city.
+
+    Args:
+        city(str): The name of the city
+    """
+    return f"The weather in {city} will be warm and sunny"
+
+mcp_stateless = mcp.streamable_http_app()
+```
 
 4.  **Run the Server:**
 
     - Execute the command:
 
       ```bash
-      uv run mcp dev main.py
+      uv run uvicorn main:mcp_stateless --port 8000 --reload
       ```
 
     - This will start:
-      - MCP server at: http://localhost:6277
-      - MCP Inspector: http://127.0.0.1:6274
+      - MCP server at: http://localhost:8000
+      
 
-5.  **Verification:**
+5.  **Run MCP Client:**
+    We have a simple HTTP client in python
+
+    ```bash
+    uv run python 
+    ```
+
+    We can use MCP inspector to test our MCP Server
+
+    ```bash
+    npx @modelcontextprotocol/inspector
+    ```
+    
+    - MCP Inspector: http://127.0.0.1:6274
+
     - At this stage, the server will be running. It won't do much yet, but it will be capable of responding to an MCP `initialize` request.
-    - Open MCP Inspector i.e: http://127.0.0.1:6274 in browser and try it out.
-      - Open the url in browser: http://localhost:5173
+    - Open MCP Inspector i.e: http://127.0.0.1:6274 in browser and try it out. 
       - Select Tools Tab and list and run the tool.
 
 This "Hello, MCP Server!" example lays the groundwork. In subsequent sections, we'll build upon this to add tools, resources, and prompt templates, making our server progressively more useful to AI agents.
-
-## Optional Client Integration Exercise (We will not cover in class)
-
-Install [Claude Desktop](https://claude.ai/download)
-
-You can install this weather server in Claude Desktop and interact with it right away by running:
-
-    mcp install main.py
-
-If you are a Mac user facing the error to integrate MCP with Claude desktop, then the chat below will help you. [ChatGPT 03](https://chatgpt.com/share/67c64692-9374-8007-bedc-ca1cde76c95e)
