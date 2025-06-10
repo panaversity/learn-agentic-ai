@@ -14,21 +14,7 @@ MCP operates on a client-server architecture:
 - **MCP Clients**: These sit within the host and manage secure, one-to-one connections to servers.
 - **MCP Servers**: These are lightweight programs that expose specific tools, data, or resources (e.g., a GitHub server might provide repository access) to the AI.
 
-The protocol uses JSON-RPC 2.0 for communication, allowing dynamic, two-way interactions—such as fetching real-time data or executing actions—while incorporating security features like access controls. It also supports dynamic tool discovery, meaning the AI can figure out what tools or data are available without hard-coded knowledge.
-
-In practice, MCP empowers AI to be more than just a text generator—it can act as an agent that interacts with the world. Developers benefit from reduced integration overhead, and the open-source nature of MCP fosters a growing ecosystem of reusable servers for platforms like Slack, GitHub, or even local file systems. It’s a step toward making AI more practical and connected in real-world applications.
-
-### The Context
-This serverless capability, combined with the OAuth 2.1 authentication, streamable HTTP transport, JSON-RPC batching, and tool annotations, makes the MCP update a holistic leap forward. It’s clear the spec is evolving to support a wider range of deployment models—persistent servers for heavy, consistent workloads and serverless for lightweight, on-demand tasks. This duality strengthens MCP’s position as a versatile standard, catering to both resource-intensive enterprise needs and lean, agile projects.
-
-The serverless shift also reinforces MCP’s ethos of reducing friction: just as it aims to standardize AI-tool integration, it now minimizes the operational overhead of running those integrations. Expect this to fuel a wave of experimentation, with developers potentially releasing serverless MCP servers as open-source templates, further enriching the ecosystem. 
-
-### Broader Context and Future Outlook
-These updates, reflect MCP’s rapid evolution since its introduction by Anthropic in November 2024. They address practical challenges identified by early adopters—like Block, Zed, and Sourcegraph—while aligning with the protocol’s promise of a “USB-C-like” standard for AI integrations. The shift to streamable HTTP and batching suggests a focus on real-time, high-throughput use cases, while OAuth 2.1 signals a maturing security framework. Together, these changes position MCP as a more robust and versatile protocol, capable of supporting sophisticated, context-aware AI agents that seamlessly interact with diverse tools and data sources.
-
-Looking ahead, the implications point to a growing ecosystem where MCP could become a default standard for AI-tool integration, reducing reliance on fragmented, vendor-specific solutions. However, challenges remain—such as ensuring broad adoption and refining the spec further (e.g., finalizing webhooks or event-driven features)—but these updates mark a significant step toward making AI systems more connected, efficient, and accessible.
-
-## MCP Architecture
+### MCP Architecture
 
 MCP uses a **Host → Client → Server** architecture:
 
@@ -44,11 +30,19 @@ MCP uses a **Host → Client → Server** architecture:
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-| Component | Role | Examples |
-|-----------|------|----------|
-| **Host** | LLM applications that initiate connections | Claude, ChatGPT, Cursor, Agentic Systems |
-| **Client** | Connectors within host managing server connections | MCP client libraries |
-| **Server** | Services providing context and capabilities | Database, GitHub, file system |
+The protocol uses JSON-RPC 2.0 for communication, allowing dynamic, two-way interactions—such as fetching real-time data or executing actions—while incorporating security features like access controls. It also supports dynamic tool discovery, meaning the AI can figure out what tools or data are available without hard-coded knowledge.
+
+In practice, MCP empowers AI to be more than just a text generator—it can act as an agent that interacts with the world. Developers benefit from reduced integration overhead, and the open-source nature of MCP fosters a growing ecosystem of reusable servers for platforms like Slack, GitHub, or even local file systems. It’s a step toward making AI more practical and connected in real-world applications.
+
+### The Context
+This serverless capability, combined with the OAuth 2.1 authentication, streamable HTTP transport, JSON-RPC batching, and tool annotations, makes the MCP update a holistic leap forward. It’s clear the spec is evolving to support a wider range of deployment models—persistent servers for heavy, consistent workloads and serverless for lightweight, on-demand tasks. This duality strengthens MCP’s position as a versatile standard, catering to both resource-intensive enterprise needs and lean, agile projects.
+
+The serverless shift also reinforces MCP’s ethos of reducing friction: just as it aims to standardize AI-tool integration, it now minimizes the operational overhead of running those integrations. Expect this to fuel a wave of experimentation, with developers potentially releasing serverless MCP servers as open-source templates, further enriching the ecosystem. 
+
+### Broader Context and Future Outlook
+These updates, reflect MCP’s rapid evolution since its introduction by Anthropic in November 2024. They address practical challenges identified by early adopters—like Block, Zed, and Sourcegraph—while aligning with the protocol’s promise of a “USB-C-like” standard for AI integrations. The shift to streamable HTTP and batching suggests a focus on real-time, high-throughput use cases, while OAuth 2.1 signals a maturing security framework. Together, these changes position MCP as a more robust and versatile protocol, capable of supporting sophisticated, context-aware AI agents that seamlessly interact with diverse tools and data sources.
+
+Looking ahead, the implications point to a growing ecosystem where MCP could become a default standard for AI-tool integration, reducing reliance on fragmented, vendor-specific solutions. However, challenges remain—such as ensuring broad adoption and refining the spec further (e.g., finalizing webhooks or event-driven features)—but these updates mark a significant step toward making AI systems more connected, efficient, and accessible.
 
 ## OpenAI Adoption of MCP
 

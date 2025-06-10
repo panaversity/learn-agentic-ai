@@ -1,4 +1,4 @@
-# 05: AI Protocols for Agentic Systems
+# AI Protocols for Agentic Systems
 
 This module outlines the various communication protocols foundational to building robust, scalable, and interoperable agentic AI systems, particularly within the Dapr Agentic Cloud Ascent (DACA) design pattern.
 
@@ -6,16 +6,14 @@ The protocols are organized in a layered approach, starting from fundamental com
 
 ## Directory Structure and Protocols
 
-### `01_base/`: Foundational Communication Protocols
+### `01_mcp_concepts/`: Foundational Communication Protocols
 
 This directory contains the underlying communication technologies that serve as the transport layer for more complex interactions, organized in a suggested learning path. Understanding these is crucial for designing efficient and reliable data exchange in distributed agent systems. See the `01_base/readme.md` for the detailed learning progression.
 
-- **[`01_Http/`](01_base/01_Http/)**: Defines standards and best practices for using Hypertext Transfer Protocol.
-- **[`02_REST/`](01_base/02_REST/)**: Focuses on the architectural principles of REST for building scalable web services.
-- **[`03_Streamable_HTTP/`](01_base/03_Streamable_HTTP/)**: Covers protocols and techniques for streaming data over HTTP.
-- **[`04_SSE/`](01_base/04_SSE/) (Server-Sent Events)**: Details the use of SSE for enabling real-time, unidirectional server-to-client communication.
-- **[`05_JSON_RPC/`](01_base/05_JSON_RPC/)**: Outlines the use of JSON Remote Procedure Call for simple and efficient inter-service communication.
-- **[`06_GRPC/`](01_base/06_GRPC/) (Google Remote Procedure Call)**: Describes the use of gRPC for high-performance microservice communication.
+- **[`01_Http/`] Defines standards and best practices for using Hypertext Transfer Protocol.
+- **[`02_REST/`]**: Focuses on the architectural principles of REST for building scalable web services.
+- **[`03_Streamable_HTTP/`]**: Covers protocols and techniques for streaming data over HTTP.
+- **[`03_JSON_RPC/`]**: Outlines the use of JSON Remote Procedure Call for simple and efficient inter-service communication.
 
 ### `02_model_context_protocol/` (MCP)
 
