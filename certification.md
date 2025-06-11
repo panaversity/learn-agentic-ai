@@ -214,6 +214,8 @@ Total Questions: Under Development
 
 Difficulty Level: Advanced (NOT beginner-level)
 
+Covers Docker, Kubernetes, and Dapr
+
 ---
 
 ## Level 4 (Physical AI Professional)
@@ -223,4 +225,6 @@ Difficulty Level: Advanced (NOT beginner-level)
 Total Questions: Under Development
 
 Difficulty Level: Advanced (NOT beginner-level)
+
+Covers NVIDIA Isaac ROS, NVIDIA Isaac GR00T and Isaac Sim
 
