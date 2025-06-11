@@ -1,12 +1,12 @@
 # Panaversity Certified Agentic and Physical AI Engineer
 
-The certification consists of four levels. Our Faculty and Product Developers must pass all exams of Level 2. 
+The certification consists of four levels. Level 1 exams will only be offered online, on schedule, and proctored. Level 2 exams will be offered manually and you can schedule by sending message to Zia Khan on Whatsapp at 92-300-826-3374. Our Faculty and Product Developers must pass all exams of Level 2. 
 
 ## Level 1 (Beginner)
 
 ### Fundamentals of Modern AI Python Level 1 (Beginner) Quiz
 
-Under Development
+Panaversity Exam Board is currently developing this exam
 
 **Covers**:
 
@@ -14,7 +14,47 @@ Covers Colabs from 01 to 09:
 
 https://github.com/panaversity/learn-modern-ai-python/tree/main/00_python_colab
 
+---
 
+### Advanced Modern AI Python Level 1 (Beginner) Quiz
+
+Panaversity Exam Board is currently developing this exam
+
+**Covers**:
+
+https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html 
+
+https://mypy.readthedocs.io/en/stable/builtin_types.html 
+
+https://mypy.readthedocs.io/en/stable/protocols.html 
+
+https://mypy.readthedocs.io/en/stable/kinds_of_types.html 
+
+Covers Colabs from 12 to 17:
+
+https://github.com/panaversity/learn-modern-ai-python/tree/main/00_python_colab
+
+---
+
+### Fundamentals of Agentic AI Level 1 (Beginner) Quiz
+
+Panaversity Exam Board is currently developing this exam
+
+**Covers**:
+
+https://openai.github.io/openai-agents-python/
+
+https://cookbook.openai.com/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration 
+
+https://cookbook.openai.com/examples/gpt4-1_prompting_guide 
+
+https://www.kaggle.com/whitepaper-prompt-engineering 
+
+https://www.markdownguide.org/basic-syntax/ 
+
+https://www.markdownguide.org/cheat-sheet/ 
+
+https://github.com/panaversity/learn-agentic-ai/tree/main/01_ai_agents_first
 
 ---
 
