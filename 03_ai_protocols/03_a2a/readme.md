@@ -22,31 +22,31 @@ Here’s a polished and integrated **Design Principles** section for your A2A le
 
 ### 1. **Embrace agentic capabilities**
 
-A2A empowers agents to collaborate in their native, unstructured modalities—whether reasoning, synthesizing, or conversing—**without sharing memory, tools, or internal context**. This enables true multi-agent workflows rather than reducing each agent to a single-function “tool”([datacamp.com][1], [developers.googleblog.com][2]).
+A2A empowers agents to collaborate in their native, unstructured modalities—whether reasoning, synthesizing, or conversing—**without sharing memory, tools, or internal context**. This enables true multi-agent workflows rather than reducing each agent to a single-function “tool”.
 
 ---
 
 ### 2. **Build on existing standards**
 
-Instead of reinventing the wheel, A2A builds on proven open standards—**HTTP(S)** for transport, **JSON‑RPC 2.0** for structured messaging, and **Server‑Sent Events (SSE)** for real-time streaming. This makes integration with existing IT systems smoother and more maintainable([developers.googleblog.com][2]).
+Instead of reinventing the wheel, A2A builds on proven open standards—**HTTP(S)** for transport, **JSON‑RPC 2.0** for structured messaging, and **Server‑Sent Events (SSE)** for real-time streaming. This makes integration with existing IT systems smoother and more maintainable.
 
 ---
 
 ### 3. **Secure by default**
 
-Security is foundational in A2A. The protocol includes **enterprise-grade authentication and authorization**, aligning with OpenAPI security schemes (e.g., OAuth2, bearer tokens, JWT). This ensures agents interact over **encrypted, trusted channels** right out of the gate([developers.googleblog.com][2]).
+Security is foundational in A2A. The protocol includes **enterprise-grade authentication and authorization**, aligning with OpenAPI security schemes (e.g., OAuth2, bearer tokens, JWT). This ensures agents interact over **encrypted, trusted channels** right out of the gate.
 
 ---
 
 ### 4. **Support for long-running tasks**
 
-Agent-enabled tasks often span large timeframes—from seconds to hours or even days. A2A is built to support this with real-time insights into task state (“working”, “input‑required”, “completed”), **streaming updates**, and notifications meant for human-in‑the‑loop workflows([developers.googleblog.com][2]).
+Agent-enabled tasks often span large timeframes—from seconds to hours or even days. A2A is built to support this with real-time insights into task state (“working”, “input‑required”, “completed”), **streaming updates**, and notifications meant for human-in‑the‑loop workflows.
 
 ---
 
 ### 5. **Modality agnostic**
 
-The protocol doesn’t limit agents to plain text. Whether it’s **audio, video, images, structured data, or interactive UI components**, A2A supports rich and evolving communication forms, enabling truly versatile multi-agent systems([developers.googleblog.com][2]).
+The protocol doesn’t limit agents to plain text. Whether it’s **audio, video, images, structured data, or interactive UI components**, A2A supports rich and evolving communication forms, enabling truly versatile multi-agent systems.
 
 ---
 
@@ -56,7 +56,7 @@ The protocol doesn’t limit agents to plain text. Whether it’s **audio, video
 Agents find each other using **Agent Cards**, JSON files hosted at a well-known URI (e.g., `/.well-known/agent.json`). These cards detail an agent’s capabilities and how to connect.
 
 ### 2. Message Exchange
-Agents send **Messages** with **Parts** (text, data, or files). The client uses the role `"user"`, and the server uses `"agent"`, even in agent-to-agent communication.
+Agents send **Messages** with **Parts** (text, data, or files). The client uses the role `"user"`, and the server uses `"agent"`, even in agent-to-agent communication. For Parts explanation see below.
 
 ### 3. Task Management
 Tasks are created to handle requests, with states like `working`, `completed`, or `input-required`. Clients can poll task status or receive updates via streaming or notifications.
@@ -164,20 +164,20 @@ A2A enables seamless, secure collaboration between a **Client Agent** (who initi
 
 ### 1. Capability Discovery
 
-Each remote agent exposes an **Agent Card**—a JSON file (typically at `/.well-known/agent.json`) that declares its skills, supported input/output types, UI modalities, and authentication methods. Client agents fetch these cards to find the right specialist agent for a task.([googlecloudcommunity.com][3])
+Each remote agent exposes an **Agent Card**—a JSON file (typically at `/.well-known/agent.json`) that declares its skills, supported input/output types, UI modalities, and authentication methods. Client agents fetch these cards to find the right specialist agent for a task.
 
 ---
 
 ### 2. Task Management
 
 Tasks are stateful units of work with a clear lifecycle: `submitted` → `working` → (`input‑required`) → `completed`/`failed`/`canceled`.
-Client agents create tasks and monitor progress, while remote agents process them, update status, and eventually produce **artifacts**—the finalized outputs (text, files, media, structured data).([googlecloudcommunity.com][3], [blott.studio][4])
+Client agents create tasks and monitor progress, while remote agents process them, update status, and eventually produce **artifacts**—the finalized outputs (text, files, media, structured data).
 
 ---
 
 ### 3. Collaboration and Messaging
 
-Agents exchange structured **messages** via JSON-RPC over HTTP. Messages include multiple **parts**, where each part contains a complete piece of content (e.g., text snippet, image, or widget). This lets agents ask clarifying questions, share context, or pass intermediate results.([developers.googleblog.com][5])
+Agents exchange structured **messages** via JSON-RPC over HTTP. Messages include multiple **parts**, where each part contains a complete piece of content (e.g., text snippet, image, or widget). This lets agents ask clarifying questions, share context, or pass intermediate results.
 
 ---
 
@@ -191,7 +191,7 @@ Each message part indicates its content type and optional UI hints. This allows 
 
 | Step                        | Description                                                                                    |
 | --------------------------- | ---------------------------------------------------------------------------------------------- |
-| 1. Discovery                | Client fetches the Agent Card to learn capabilities and connection details. ([medium.com][6])  |
+| 1. Discovery                | Client fetches the Agent Card to learn capabilities and connection details.   |
 | 2. Initiation               | Client sends a task via `message/send` or starts streaming with `message/stream`.              |
 | 3. Execution                | Remote agent updates task state, streaming progress via SSE or pushing via webhooks.           |
 | 4. Collaboration (Optional) | If input is needed, remote agent flags `input-required`, prompting additional messages.        |
@@ -375,7 +375,7 @@ This example shows how agents can collaborate: Agent A (travel planner) relies o
 
 ### What are Parts?
 
-In the Google Agent-to-Agent (A2A) Protocol, **Parts** are components of a **Message** used to structure and transmit content between agents. Here's a clear explanation of "Parts" based on the provided document:
+In the Google Agent-to-Agent (A2A) Protocol, **Parts** are components of a **Message** used to structure and transmit content between agents. Here's a clear explanation of "Parts":
 
 - **Parts** are individual pieces of content within a Message, allowing agents to send multiple types of data (e.g., text, structured data, files, or media) in a single conversational turn.
 - Each Part is a self-contained unit with a specific **kind** (type) and associated content, enabling flexible and multimodal communication.
@@ -533,11 +533,11 @@ Why JWT + JWKS?  – lets servers rotate keys without breaking receivers.([googl
 
 | Method              | Purpose              | Typical use                 | Notes                                                           |
 | ------------------- | -------------------- | --------------------------- | --------------------------------------------------------------- |
-| `tasks/get`         | Poll task state      | Mobile / serverless clients | Returns full `Task`.([google-a2a.github.io][1])                 |
-| `tasks/cancel`      | Attempt cancellation | User abort, quota limit     | May return `TaskNotCancelableError`.([google-a2a.github.io][1]) |
-| `tasks/resubscribe` | Re-join SSE stream   | Network hiccup              | Requires `capabilities.streaming`.([google-a2a.github.io][1])   |
+| `tasks/get`         | Poll task state      | Mobile / serverless clients | Returns full `Task`.                |
+| `tasks/cancel`      | Attempt cancellation | User abort, quota limit     | May return `TaskNotCancelableError`. |
+| `tasks/resubscribe` | Re-join SSE stream   | Network hiccup              | Requires `capabilities.streaming`.   |
 
-Error codes follow JSON-RPC plus A2A-specific codes (`-32001` TaskNotFound, etc.).([google-a2a.github.io][1])
+Error codes follow JSON-RPC plus A2A-specific codes (`-32001` TaskNotFound, etc.).
 
 ---
 
@@ -546,15 +546,13 @@ Error codes follow JSON-RPC plus A2A-specific codes (`-32001` TaskNotFound, etc.
 | Threat                  | Mitigation                                                                                                            |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | **Webhook SSRF**        | Allow-list or challenge the client-supplied URL.([google-a2a.github.io][2])                                           |
-| **Impersonated Server** | Use TLS + optional mTLS; verify JWT issuer/audience claims.([google-a2a.github.io][2], [googlecloudcommunity.com][6]) |
-| **Replay attacks**      | Include `iat` and `jti` in signed notifications; reject stale timestamps.([google-a2a.github.io][2])                  |
-| **Secret rotation**     | Host JWKS endpoint and use `kid` header for key discovery.([google-a2a.github.io][2])                                 |
-
-For a deeper discussion see Google’s developer blog post on A2A security patterns.
+| **Impersonated Server** | Use TLS + optional mTLS; verify JWT issuer/audience claims. |
+| **Replay attacks**      | Include `iat` and `jti` in signed notifications; reject stale timestamps.)                  |
+| **Secret rotation**     | Host JWKS endpoint and use `kid` header for key discovery.                                 |
 
 ---
 
-## End-to-end example (Hello World stream)
+## End-to-end stream example (Hello World stream)
 
 1. **Start server** (from samples above).
 2. **Send request**:
@@ -578,7 +576,7 @@ curl -N -H "Content-Type: application/json" \
 
 ## How A2A differs from MCP (one-liner)
 
-MCP is **agent ↔ front-end**; A2A is **agent ↔ agent**.  Both reuse JSON-RPC over HTTP and SSE, but A2A layers discovery (Agent Card), task lifecycle, and push-notification workflows specialised for peer-to-peer collaboration.([google-a2a.github.io][1], [businessinsider.com][4])
+MCP is **agent ↔ front-end**; A2A is **agent ↔ agent**.  Both reuse JSON-RPC over HTTP and SSE, but A2A layers discovery (Agent Card), task lifecycle, and push-notification workflows specialised for peer-to-peer collaboration.
 
 ---
 
@@ -598,64 +596,6 @@ For more details, see the [A2A specification](https://google-a2a.github.io/A2A/s
 [5]: https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/?utm_source=chatgpt.com "Announcing the Agent2Agent Protocol (A2A)"
 [6]: https://medium.com/design-bootcamp/breaking-down-ai-silos-how-agent2agent-enables-agent-collaboration-d4951b0a2293?utm_source=chatgpt.com "Breaking down AI silos: how Agent2Agent enables agent collaboration"
 
-
-
-Below is a self-contained tutorial that walks you from the big-picture “why A2A?” down to concrete HTTP examples, sample code, and security tips.  It is laid out so you can drop it into the same learning flow as your existing MCP tutorial, with parallel section names and markdown formatting.
-
----
-
-## Executive summary
-
-Google’s **Agent-to-Agent (A2A) Protocol v0.2.2** is a JSON-RPC-over-HTTP standard that lets independent AI agents discover each other (§ Agent Card) and collaborate on long-running, multimodal tasks (§ Task lifecycle).  It supports four interaction styles out-of-the-box: synchronous request/response (`message/send`), real-time streaming over **SSE** (`message/stream`), polling (`tasks/get`) and fully disconnected push notifications (webhooks).  A2A deliberately re-uses web primitives—HTTPS, JWT, JWKS, CORS—so you can layer enterprise security, tracing, and observability on day one.  Early adopters already include Google Cloud services and a growing open-source ecosystem.([google-a2a.github.io][1], [google-a2a.github.io][2], [developers.googleblog.com][3], [businessinsider.com][4])
-
----
-
-## 1  Why A2A?
-
-* **Interoperability & opacity** – Agents running on different stacks can cooperate without leaking internal prompts, weights, or tool code.([google-a2a.github.io][1])
-* **Async-first design** – Long tasks, human-in-the-loop approvals, and incremental artefact uploads are first-class citizens.([google-a2a.github.io][1], [google-a2a.github.io][2])
-* **Enterprise readiness** – Spec includes TLS, mTLS, OAuth 2 / JWT, push-notification hardening, and error codes.([google-a2a.github.io][2], [google-a2a.github.io][1])
-* Analysts see A2A (alongside MCP) as a key building block for future multi-agent ecosystems.([businessinsider.com][4])
-
----
-
-## 2  Core concepts
-
-| Term           | What it is                                                    | Key fields                                                                                       |                                      |
-| -------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| **Agent Card** | JSON discovery doc published at `/.well-known/agent.json`     | `url`, `capabilities.streaming`, `skills[]`([google-a2a.github.io][1])                           |                                      |
-| **Task**       | Long-running unit of work (text, file, or structured data)    | `status.state`, `artifacts[]`, `contextId`([google-a2a.github.io][1], [google-a2a.github.io][1]) |                                      |
-| **Message**    | One conversational turn (\`role: user                         | agent\` + Parts)                                                                                 | `parts[]`([google-a2a.github.io][1]) |
-| **Artifacts**  | Outputs (file, text, data) streamed or returned when complete | `append`, `lastChunk` flags for chunking([google-a2a.github.io][1])                              |                                      |
-
----
-
-## 3  Transport & data format
-
-* **HTTP(S) + JSON-RPC 2.0** for all calls.([google-a2a.github.io][1])
-* **SSE** (`text/event-stream`) for server-pushed incremental updates.([google-a2a.github.io][1], [google-a2a.github.io][2])
-* Payloads are UTF-8 JSON; large binaries are exchanged via pre-signed URLs referenced from `FilePart`.([google-a2a.github.io][1])
-
----
-
-## 4  Installing the SDKs & samples
-
-```bash
-# Grab the reference SDK and samples
-pip install a2a-sdk               # Python SDK
-git clone https://github.com/google-a2a/a2a-samples.git
-cd a2a-samples/samples/python/agents/helloworld
-
-# Run the remote agent
-uv run .
-
-# In another shell, send a task from the bundled client
-uv run test_client.py             # prints streamed updates
-```
-
-([github.com][5])
-
----
 
 
 
