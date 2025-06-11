@@ -1,5 +1,5 @@
 Run Server:
 
 ```bash
-uv run uvicorn main:mcp_stateless
+uv run uvicorn server:mcp_stateless --port 8000 --reload
 ```
