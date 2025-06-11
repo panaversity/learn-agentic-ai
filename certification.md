@@ -178,7 +178,9 @@ https://github.com/panaversity/learn-agentic-ai/tree/main/01_ai_agents_first
 ### Agentic AI Protocols Level 2 (Professional) Quiz
 
 Total Questions: 100
+
 Duration: 2 Hours 30 Minutes
+
 Difficulty Level: Advanced (NOT beginner-level)
 
 
@@ -186,6 +188,7 @@ Difficulty Level: Advanced (NOT beginner-level)
 **Covers**:
 
 Foundational Protocols Chapters 01 to 05
+
 https://github.com/panaversity/learn-agentic-ai/tree/main/03_ai_protocols/01_mcp_concepts 
 
 https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http 
@@ -198,6 +201,7 @@ https://github.com/panaversity/learn-agentic-ai/tree/main/03_ai_protocols/02_mod
 ### Agentic AI Memory, RAG, and Design Patterns Level 2 (Professional) Quiz
 
 Total Questions: Under Development
+
 Difficulty Level: Advanced (NOT beginner-level)
 
 ---
@@ -207,6 +211,7 @@ Difficulty Level: Advanced (NOT beginner-level)
 ### Agent Native Cloud Level 3 Quiz
 
 Total Questions: Under Development
+
 Difficulty Level: Advanced (NOT beginner-level)
 
 ---
@@ -216,5 +221,6 @@ Difficulty Level: Advanced (NOT beginner-level)
 ### Physical AI and Robotics Level 4 Quiz
 
 Total Questions: Under Development
+
 Difficulty Level: Advanced (NOT beginner-level)
 
