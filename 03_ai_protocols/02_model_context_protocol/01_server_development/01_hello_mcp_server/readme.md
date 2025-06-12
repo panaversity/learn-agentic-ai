@@ -60,7 +60,7 @@ mcp_stateless = mcp.streamable_http_app()
     - Execute the command:
 
       ```bash
-      uv run uvicorn main:mcp_stateless --port 8000 --reload
+      uv run uvicorn server:mcp_stateless --port 8000 --reload
       ```
 
     - This will start:
@@ -71,7 +71,7 @@ mcp_stateless = mcp.streamable_http_app()
     We have a simple HTTP client in python
 
     ```bash
-    uv run python 
+    uv run python client.py
     ```
 
     We can use MCP inspector to test our MCP Server

@@ -1,8 +1,6 @@
-# MCP Server Development: Empowering AI Agents
+# [MCP Server Development in Python](https://github.com/modelcontextprotocol/python-sdk): Empowering AI Agents
 
 Welcome to the MCP Server Development module! This section is dedicated to learning how to build MCP Servers—the crucial components that expose tools, data (resources), and prompt templates to MCP Clients and, by extension, to AI models and agentic systems.
-
-MCP Servers act as the bridge between the abstract reasoning capabilities of Large Language Models (LLMs)/AI Agents and the concrete functionalities of external systems. By adhering to the Model Context Protocol, these servers provide a standardized way for AI agents to discover, understand, and utilize a diverse range of capabilities.
 
 ## Core Concepts of MCP Server Development
 
@@ -13,7 +11,7 @@ Throughout this module, we will explore:
     - **Resources:** Contextual data that an AI can read and use (e.g., file contents, database records, real-time information).
     - **Prompt Templates:** Pre-defined interaction patterns that guide the AI or user in achieving specific tasks with the server's capabilities.
 2.  **Server Lifecycle:** Understanding how a server participates in the MCP session lifecycle, including initialization and capability negotiation with clients.
-3.  **SDKs for Server Creation:** Primarily focusing on using the Python `FastMCP` library from the official `modelcontextprotocol-python-sdk` to build servers efficiently.
+3.  **SDKs for Server Creation:** Primarily focusing on using the Python `[FastMCP](https://github.com/modelcontextprotocol/python-sdk)` official library to build servers efficiently.
 4.  **Configuration and Metadata:** How servers declare their identity and manage necessary configurations.
 
 ## Why MCP Servers are Vital for Agentic Engines (e.g., OpenAI Agents SDK)
