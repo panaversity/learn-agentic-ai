@@ -114,6 +114,188 @@ While REST is an architectural style, several best practices have emerged for de
 10. **HATEOAS (Optional but Recommended for Maturity)**: Include links in responses to guide clients to related resources and available actions, promoting discoverability.
 
 ---
+## Practical Example: Raw RESTful API Request and Response Messages
+
+This example illustrates the raw text format of HTTP requests and responses for a RESTful API, showcasing how REST principles—such as resource identification, statelessness, and the use of standard HTTP methods—are applied in practice. The messages demonstrate interactions with a hypothetical RESTful API for managing "users" resources, aligning with the "Core Architectural Constraints of REST" and "Key Concepts in RESTful APIs" sections of the tutorial. 
+
+## Example Overview
+This section includes four raw HTTP messages that adhere to REST principles:
+- A `GET` request to retrieve a representation of a specific user resource (`/users/123`).
+- The server's `GET` response with a JSON representation of the user.
+- A `POST` request to create a new user resource (`/users`).
+- The server's `POST` response confirming the creation with a JSON representation of the new user.
+
+These messages simulate interactions with a hypothetical RESTful API at `api.example.com` using HTTP/1.1. The explanations highlight REST-specific concepts, such as resource URIs, representations, self-descriptive messages, and the optional inclusion of HATEOAS links to demonstrate discoverability.
+
+
+## Raw RESTful API Messages and Their Components
+
+Below are the raw HTTP messages, each followed by an explanation of its components, focusing on how they embody REST principles. The messages are formatted exactly as they would appear in a network transaction, with proper line breaks and spacing.
+
+### 1. GET Request
+```
+GET /users/123 HTTP/1.1
+Host: api.example.com
+Accept: application/json
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+Accept-Language: en-US,en;q=0.5
+Connection: keep-alive
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Explanation**:
+- **REST Principles Demonstrated**:
+  - **Identification of Resources**: The URI `/users/123` uniquely identifies a specific user resource, following the REST convention of using nouns to represent resources.
+  - **Statelessness**: The request contains all necessary information (URI, headers, authentication token) for the server to process it without relying on stored client context.
+  - **Uniform Interface**: Uses the `GET` method to retrieve a representation of the resource, with the `Accept` header specifying the desired format (`application/json`).
+- **Message Components**:
+  - **Start-Line**: `GET /users/123 HTTP/1.1`
+    - **Method**: `GET` – Requests a representation of the user resource.
+    - **URI**: `/users/123` – Identifies the specific user with ID 123.
+    - **HTTP Version**: `HTTP/1.1`.
+  - **Headers**:
+    - `Host: api.example.com` – Specifies the API domain.
+    - `Accept: application/json` – Requests a JSON representation of the resource.
+    - `User-Agent` – Identifies the client (e.g., a browser or custom client).
+    - `Accept-Language` – Indicates preferred languages for the response.
+    - `Connection: keep-alive` – Requests the server to maintain the TCP connection.
+    - `Authorization` – Includes a Bearer token for authentication, ensuring secure access to the resource.
+  - **Empty Line**: Separates headers from the body (CRLF).
+  - **Body**: None – `GET` requests in REST typically have no body, as they retrieve data.
+
+### 2. GET Response
+```
+HTTP/1.1 200 OK
+Date: Thu, 12 Jun 2025 09:19:00 GMT
+Server: Nginx/1.18.0
+Content-Type: application/json; charset=UTF-8
+Content-Length: 165
+Cache-Control: max-age=3600
+Connection: keep-alive
+
+{
+  "id": 123,
+  "name": "Alice Smith",
+  "email": "alice@example.com",
+  "_links": {
+    "self": {"href": "/users/123"},
+    "update": {"href": "/users/123", "method": "PATCH"},
+    "delete": {"href": "/users/123", "method": "DELETE"}
+  }
+}
+```
+
+**Explanation**:
+- **REST Principles Demonstrated**:
+  - **Manipulation of Resources Through Representations**: The response provides a JSON representation of the user resource's state, including attributes like `id`, `name`, and `email`.
+  - **Self-Descriptive Messages**: The `Content-Type` header specifies the representation format (`application/json`), and the body includes all necessary data.
+  - **HATEOAS**: The `_links` object provides hyperlinks to related actions (`self`, `update`, `delete`), enabling clients to discover possible next steps dynamically.
+  - **Cacheability**: The `Cache-Control` header (`max-age=3600`) indicates the response can be cached for one hour, reducing server load for subsequent requests.
+- **Message Components**:
+  - **Start-Line**: `HTTP/1.1 200 OK`
+    - **HTTP Version**: `HTTP/1.1`.
+    - **Status Code**: `200` – Indicates the request was successful.
+    - **Reason Phrase**: `OK`.
+  - **Headers**:
+    - `Date` – Timestamp of the response.
+    - `Server` – Identifies the server software (Nginx).
+    - `Content-Type: application/json; charset=UTF-8` – Specifies the JSON format and UTF-8 encoding.
+    - `Content-Length: 165` – Length of the JSON body in bytes.
+    - `Cache-Control` – Enables caching for 3600 seconds.
+    - `Connection: keep-alive` – Allows connection reuse.
+  - **Empty Line**: Separates headers from the body.
+  - **Body**: A JSON object representing the user, with HATEOAS links for discoverability.
+
+### 3. POST Request
+```
+POST /users HTTP/1.1
+Host: api.example.com
+Accept: application/json
+Content-Type: application/json
+Content-Length: 65
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+Connection: keep-alive
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "name": "Bob Johnson",
+  "email": "bob@example.com"
+}
+```
+
+**Explanation**:
+- **REST Principles Demonstrated**:
+  - **Identification of Resources**: The URI `/users` identifies the collection resource for users, where a new user will be created.
+  - **Statelessness**: The request includes all data (JSON payload, authentication token) needed to create the resource, without server-side session state.
+  - **Uniform Interface**: Uses the `POST` method to create a new resource, with `Content-Type` and `Accept` headers specifying JSON for the request and response.
+  - **Manipulation of Resources Through Representations**: The JSON body provides the representation of the new user to be created.
+- **Message Components**:
+  - **Start-Line**: `POST /users HTTP/1.1`
+    - **Method**: `POST` – Creates a new resource in the users collection.
+    - **URI**: `/users` – Targets the users collection.
+    - **HTTP Version**: `HTTP/1.1`.
+  - **Headers**:
+    - `Host`, `User-Agent`, `Connection`, `Authorization` – Similar to the GET request.
+    - `Accept: application/json` – Requests a JSON response.
+    - `Content-Type: application/json` – Indicates the request body is JSON.
+    - `Content-Length: 65` – Length of the JSON body in bytes.
+  - **Empty Line**: Separates headers from the body.
+  - **Body**: A JSON object with `name` and `email` fields for the new user.
+
+### 4. POST Response
+```
+HTTP/1.1 201 Created
+Date: Thu, 12 Jun 2025 09:19:05 GMT
+Server: Nginx/1.18.0
+Content-Type: application/json; charset=UTF-8
+Content-Length: 188
+Location: /users/124
+Connection: keep-alive
+
+{
+  "id": 124,
+  "name": "Bob Johnson",
+  "email": "bob@example.com",
+  "_links": {
+    "self": {"href": "/users/124"},
+    "update": {"href": "/users/124", "method": "PATCH"},
+    "delete": {"href": "/users/124", "method": "DELETE"}
+  }
+}
+```
+
+**Explanation**:
+- **REST Principles Demonstrated**:
+  - **Manipulation of Resources Through Representations**: The response returns a JSON representation of the newly created user, including the server-assigned `id`.
+  - **Self-Descriptive Messages**: The `Content-Type` and `Location` headers provide metadata about the response and the new resource's URI.
+  - **HATEOAS**: The `_links` object includes hyperlinks for further actions, supporting dynamic navigation.
+  - **Uniform Interface**: The `201 Created` status code and `Location` header indicate successful resource creation and provide the URI of the new resource.
+- **Message Components**:
+  - **Start-Line**: `HTTP/1.1 201 Created`
+    - **HTTP Version**: `HTTP/1.1`.
+    - **Status Code**: `201` – Indicates the resource was created successfully.
+    - **Reason Phrase**: `Created`.
+  - **Headers**:
+    - `Date`, `Server`, `Content-Type`, `Content-Length`, `Connection` – Similar to the GET response.
+    - `Location: /users/124` – Specifies the URI of the newly created user resource.
+  - **Empty Line**: Separates headers from the body.
+  - **Body**: A JSON object representing the new user, with HATEOAS links.
+
+## Key REST Concepts Demonstrated
+This example ties directly to the "Core Architectural Constraints of REST" and "Key Concepts in RESTful APIs" sections by illustrating:
+- **Client-Server Architecture**: The requests and responses separate client concerns (sending requests) from server concerns (processing and storing resources).
+- **Statelessness**: Each request is self-contained, with authentication tokens and data included, requiring no server-side session state.
+- **Cacheability**: The GET response includes a `Cache-Control` header to enable caching, reducing server load.
+- **Uniform Interface**:
+  - **Identification of Resources**: URIs like `/users/123` and `/users` clearly identify resources.
+  - **Manipulation Through Representations**: JSON payloads represent resource states for creation and retrieval.
+  - **Self-Descriptive Messages**: Headers like `Content-Type`, `Accept`, and `Authorization` make messages interpretable.
+  - **HATEOAS**: Response links enable clients to discover related resources and actions dynamically.
+- **HTTP Methods**: `GET` retrieves a resource representation; `POST` creates a new resource.
+- **HTTP Status Codes**: `200 OK` for successful retrieval, `201 Created` for successful creation with a `Location` header.
+- **Media Types**: `application/json` is used consistently for representations, as specified in headers.
+
+---
 
 ## Working with REST APIs in Python
 
