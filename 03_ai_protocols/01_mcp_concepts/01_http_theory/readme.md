@@ -179,6 +179,154 @@ Key security considerations related to HTTP/HTTPS:
 
 ---
 
+## Practical Example: Raw HTTP Request and Response Messages
+
+This example illustrates the raw text format of HTTP requests and responses for both `GET` and `POST` methods, showcasing the structure of HTTP messages as described in the "Structure of an HTTP Message" section. By examining these raw messages, you can see how the protocol's components—start-line, headers, and body—come together in real-world scenarios. 
+
+## Example Overview
+This section includes four raw HTTP messages:
+- A `GET` request to retrieve an HTML page (`/resource/example.html`).
+- The server's `GET` response with an HTML document.
+- A `POST` request to submit JSON data to an API endpoint (`/api/submit`).
+- The server's `POST` response with a JSON confirmation.
+
+These messages simulate interactions with a hypothetical server at `example.com` using HTTP/1.1. The explanations break down each message's components, linking them to the theoretical concepts in the tutorial.
+
+## How to Explore the Example
+You can study the raw HTTP messages embedded below directly in this document. To experiment with these messages:
+1. Copy the request texts and use a tool like `curl` or `telnet` to send them to a real server (replace `example.com` with an actual server supporting these endpoints).
+2. Alternatively, set up a local HTTP server (e.g., using Python's `http.server`, Node.js, or Apache) to handle these requests and observe the responses.
+3. Use a network tool like Wireshark to capture real HTTP traffic and compare it to these examples.
+4. Compare the message components to the descriptions in the "Core HTTP Concepts" section of the tutorial.
+
+## Raw HTTP Messages and Their Components
+
+Below are the raw HTTP messages, each followed by an explanation of its components. The messages are formatted exactly as they would appear in a network transaction, with proper line breaks and spacing.
+
+### 1. GET Request
+```
+GET /resource/example.html HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+```
+
+**Explanation**:
+- **Start-Line**: `GET /resource/example.html HTTP/1.1`
+  - **Method**: `GET` – Requests the resource at the specified path.
+  - **URI**: `/resource/example.html` – Identifies the target resource (an HTML page).
+  - **HTTP Version**: `HTTP/1.1` – Specifies the protocol version used.
+- **Headers**:
+  - `Host: example.com` – Specifies the server domain, required for virtual hosting.
+  - `User-Agent` – Identifies the client (e.g., a browser with its version and OS details).
+  - `Accept` – Lists acceptable response formats (prioritizes HTML, XHTML, XML, and others).
+  - `Accept-Language` – Indicates preferred languages (English, with US as priority).
+  - `Accept-Encoding` – Specifies supported compression formats (gzip, deflate).
+  - `Connection: keep-alive` – Requests the server to keep the TCP connection open for reuse.
+- **Empty Line**: The blank line (CRLF) separates headers from the body.
+- **Body**: None – `GET` requests typically do not include a body, as they are meant to retrieve data.
+
+### 2. GET Response
+```
+HTTP/1.1 200 OK
+Date: Thu, 12 Jun 2025 08:51:00 GMT
+Server: Apache/2.4.41 (Unix)
+Content-Type: text/html; charset=UTF-8
+Content-Length: 51
+Connection: keep-alive
+
+<html>
+<head><title>Example</title></head>
+<body><h1>Hello, World!</h1></body>
+</html>
+```
+
+**Explanation**:
+- **Start-Line**: `HTTP/1.1 200 OK`
+  - **HTTP Version**: `HTTP/1.1` – Matches the request's version for compatibility.
+  - **Status Code**: `200` – Indicates the request was successful.
+  - **Reason Phrase**: `OK` – A human-readable description of the status.
+- **Headers**:
+  - `Date` – Provides the timestamp when the response was generated.
+  - `Server` – Identifies the server software (Apache in this case).
+  - `Content-Type: text/html; charset=UTF-8` – Specifies the response body is HTML with UTF-8 encoding.
+  - `Content-Length: 51` – Indicates the body length in bytes (51 bytes for the HTML).
+  - `Connection: keep-alive` – Confirms the TCP connection can stay open for further requests.
+- **Empty Line**: Separates headers from the body.
+- **Body**: Contains a simple HTML document (`<html>...</html>`) that the client (e.g., a browser) can render.
+
+### 3. POST Request
+```
+POST /api/submit HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+Accept: application/json
+Content-Type: application/json
+Content-Length: 47
+Connection: keep-alive
+
+{
+  "name": "Alice",
+  "message": "Hello, Server!"
+}
+```
+
+**Explanation**:
+- **Start-Line**: `POST /api/submit HTTP/1.1`
+  - **Method**: `POST` – Submits data to the server for processing.
+  - **URI**: `/api/submit` – The API endpoint for submitting data.
+  - **HTTP Version**: `HTTP/1.1`.
+- **Headers**:
+  - `Host`, `User-Agent`, `Connection` – Similar to the GET request, providing server, client, and connection details.
+  - `Accept: application/json` – Indicates the client prefers JSON responses.
+  - `Content-Type: application/json` – Specifies that the request body contains JSON data.
+  - `Content-Length: 47` – The length of the JSON body in bytes.
+- **Empty Line**: Separates headers from the body.
+- **Body**: A JSON object (`{"name": "Alice", "message": "Hello, Server!"}`) containing data to be processed by the server.
+
+### 4. POST Response
+```
+HTTP/1.1 201 Created
+Date: Thu, 12 Jun 2025 08:51:05 GMT
+Server: Apache/2.4.41 (Unix)
+Content-Type: application/json
+Content-Length: 75
+Connection: keep-alive
+
+{
+  "received": {"name": "Alice", "message": "Hello, Server!"},
+  "status": "success"
+}
+```
+
+**Explanation**:
+- **Start-Line**: `HTTP/1.1 201 Created`
+  - **HTTP Version**: `HTTP/1.1`.
+  - **Status Code**: `201` – Indicates a resource was successfully created or processed.
+  - **Reason Phrase**: `Created` – Describes the successful outcome.
+- **Headers**:
+  - `Date`, `Server`, `Connection` – Similar to the GET response, providing metadata.
+  - `Content-Type: application/json` – Indicates the response body is JSON.
+  - `Content-Length: 75` – The length of the JSON response body in bytes.
+- **Empty Line**: Separates headers from the body.
+- **Body**: A JSON object confirming receipt of the submitted data (`"received"`) and a success status (`"status": "success"`).
+
+## Key HTTP Concepts Demonstrated
+This example ties directly to the "Core HTTP Concepts" section of the tutorial by illustrating:
+- **Request-Response Cycle**: The client sends a request (`GET` or `POST`), and the server responds with a status code, headers, and an optional body.
+- **HTTP Methods**: `GET` retrieves data (e.g., an HTML page); `POST` submits data (e.g., JSON) for processing.
+- **Status Codes**: `200 OK` for successful retrieval, `201 Created` for successful submission.
+- **Headers**: Provide metadata, such as `Content-Type` (format of the body), `Content-Length` (body size), and `Connection` (connection management).
+- **Message Structure**: Each message includes a start-line, headers, an empty line (CRLF), and an optional body, as described in the tutorial.
+- **Statelessness**: Each request is self-contained, with all necessary information in the headers and body, requiring no server-side state between requests.
+
+
+
+---
+
 ## Use Cases in Agentic AI Systems (DACA Context)
 
 HTTP, in its various versions (primarily HTTPS), is a cornerstone for communication in distributed agentic AI platforms like DACA:
