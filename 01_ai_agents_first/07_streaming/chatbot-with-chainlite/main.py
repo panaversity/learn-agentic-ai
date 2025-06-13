@@ -63,11 +63,15 @@ async def main(message: cl.Message):
         print("\n[CALLING_AGENT_WITH_CONTEXT]\n", history, "\n")
         # Run the agent with streaming enabled
         result = Runner.run_streamed(agent, history, run_config=config)
+        # Initializing assistant's response as empty string
+        response_text = ""
 
         # Stream the response token by token
         async for event in result.stream_events():
             if event.type == "raw_response_event" and hasattr(event.data, 'delta'):
                 token = event.data.delta
+                # Collecting assistant's response
+                response_text += token
                 await msg.stream_token(token)
 
         # Append the assistant's response to the history.
@@ -78,7 +82,7 @@ async def main(message: cl.Message):
 
         # Optional: Log the interaction
         print(f"User: {message.content}")
-        print(f"Assistant: {msg.content}")
+        print(f"Assistant: {response_text}")
 
     except Exception as e:
         await msg.update(content=f"Error: {str(e)}")
