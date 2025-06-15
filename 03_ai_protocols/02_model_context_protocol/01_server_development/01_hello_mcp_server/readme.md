@@ -67,23 +67,47 @@ mcp_stateless = mcp.streamable_http_app()
       - MCP server at: http://localhost:8000
       
 
-5.  **Run MCP Client:**
-    We have a simple HTTP client in python
-
+5.  **Test the MCP Server:**
+    
+    **Option 1: Python Client (Programmatic)**
     ```bash
     uv run python client.py
     ```
 
-    We can use MCP inspector to test our MCP Server
+    **Option 2: Postman (Visual & Educational) - RECOMMENDED FOR LEARNING**
+    1. Install Postman from [postman.com](https://www.postman.com/downloads/)
+    2. Import the collection: `postman/Hello_MCP_Server.postman_collection.json`
+    3. Run requests in sequence to understand MCP protocol
+    4. See detailed documentation in `postman/README.md`
 
+    **Option 3: MCP Inspector (Interactive)**
     ```bash
     npx @modelcontextprotocol/inspector
     ```
-    
-    - MCP Inspector: http://127.0.0.1:6274
+    - Run and Open MCP Inspector at: http://127.0.0.1:6274
+    - Select Tools Tab and list and run the tool
 
-    - At this stage, the server will be running. It won't do much yet, but it will be capable of responding to an MCP `initialize` request.
-    - Open MCP Inspector i.e: http://127.0.0.1:6274 in browser and try it out. 
-      - Select Tools Tab and list and run the tool.
+## 🎓 Why Use Postman for Learning?
+
+**Postman provides the best educational experience** because it:
+- **Visualizes the Protocol**: See raw JSON-RPC requests and responses
+- **Hands-on Learning**: Modify parameters and experiment easily
+- **Better Debugging**: Clear error messages and response inspection
+- **No Coding Required**: Focus on understanding MCP without Python complexity
+- **Shareable**: Export collections to share with classmates/students
+
+**Learning Path**:
+1. Start with Postman to understand the protocol
+2. Move to Python client to see programmatic usage
+3. Use MCP Inspector for debugging later and testing
 
 This "Hello, MCP Server!" example lays the groundwork. In subsequent sections, we'll build upon this to add tools, resources, and prompt templates, making our server progressively more useful to AI agents.
+
+## 🔗 Next Steps
+
+- **02_adding_resources**: Learn to provide contextual data to AI agents
+- **03_prompt_templates**: Create reusable prompt templates
+- **04_error_handling**: Handle errors gracefully
+- **05_server_initialization**: Deep dive into MCP connection lifecycle and initialization handshake
+
+For detailed understanding of the MCP initialization process, protocol version negotiation, and capability management, see the `05_server_initialization` example.

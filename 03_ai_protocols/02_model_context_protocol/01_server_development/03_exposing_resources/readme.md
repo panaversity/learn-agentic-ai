@@ -108,3 +108,19 @@ Finally, we'll read 'users://jane.doe/profile' to get a specific user's data.
 ```
 
 This example shows how you can provide an AI with different kinds of information—static, dynamic, and specific—by defining and exposing resources.
+
+## 5. Testing with Postman
+
+For a more interactive testing experience, we've included a comprehensive Postman collection in the `postman/` directory:
+
+- **Collection**: `MCP_Exposing_Resources.postman_collection.json`
+- **Documentation**: `postman/README.md`
+
+The Postman collection includes:
+- Resource discovery requests
+- Tests for all three resource types (static, dynamic, templated)
+- Multiple examples of templated resources with different user IDs
+- Error handling scenarios
+- Comprehensive explanations of resource vs tool concepts
+
+This provides an excellent way to experiment with MCP resources and understand how they differ from tools.

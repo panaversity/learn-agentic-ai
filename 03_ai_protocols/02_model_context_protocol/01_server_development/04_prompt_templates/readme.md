@@ -115,3 +115,20 @@ Finally, let's get the 'debug_error' prompt to start a conversation.
 ```
 
 This demonstrates how prompt templates allow you to programmatically build high-quality, structured inputs for an LLM from simple parameters.
+
+## 5. Testing with Postman
+
+For a more interactive testing experience, we've included a comprehensive Postman collection in the `postman/` directory:
+
+- **Collection**: `MCP_Prompt_Templates.postman_collection.json`
+- **Documentation**: `postman/README.md`
+
+The Postman collection includes:
+- Prompt template discovery requests
+- Tests for simple prompt templates (single message output)
+- Tests for complex prompt templates (multi-message conversations)
+- Various content types (text, code, technical content)
+- Error handling scenarios and edge cases
+- Comprehensive explanations of ChatML format and message structures
+
+This provides an excellent way to experiment with prompt templates and understand how they generate structured AI prompts.
