@@ -14,7 +14,7 @@ The Panaversity Learning Program follows a structured, hands-on approach to empo
 
 4. **Foster Practical Skills through Hackathons**: Organize monthly, day-long hackathons focused on agentic AI development, enabling students to build robust project portfolios and gain real-world experience.
 
-5. **Achieve Universal Certification**: Ensure all students and faculty members earn certifications to validate their skills and knowledge.  
+5. **Achieve Agentic AI Certification**: Ensure all students and faculty members earn certifications to validate their skills and knowledge.  
    - Reference: [Certification Details](https://github.com/panaversity/learn-agentic-ai/blob/main/certification.md)
 
 6. **Launch Startups with Mentorship**: Guide senior students to become startup founders, working directly under Zia Khan’s mentorship to develop and launch professional projects in the global marketplace.
