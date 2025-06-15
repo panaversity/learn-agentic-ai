@@ -1,0 +1,93 @@
+{
+	"info": {
+		"name": "Hello MCP Server",
+		"description": "Educational Postman collection for testing MCP servers. Demonstrates JSON-RPC protocol, tool discovery, and execution.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Initialize MCP Server",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-03-26\",\n        \"clientInfo\": {\n            \"name\": \"postman-client\",\n            \"version\": \"1.0.0\"\n        },\n        \"capabilities\": {}\n    },\n    \"id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp/",
+					"host": ["{{baseUrl}}"],
+					"path": ["mcp", ""]
+				},
+				"description": "Initialize the MCP server connection. This establishes protocol version and exchanges capabilities."
+			}
+		},
+		{
+			"name": "02. List Available Tools",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/list\",\n    \"params\": {},\n    \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp/",
+					"host": ["{{baseUrl}}"],
+					"path": ["mcp", ""]
+				},
+				"description": "Discover what tools the MCP server provides. Returns tool schemas and descriptions."
+			}
+		},
+		{
+			"name": "03. Call Weather Tool",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get_forecast\",\n        \"arguments\": {\n            \"city\": \"New York\"\n        }\n    },\n    \"id\": 3\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp/",
+					"host": ["{{baseUrl}}"],
+					"path": ["mcp", ""]
+				},
+				"description": "Execute the weather forecast tool with a city parameter. Try different cities!"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000"
+		}
+	]
+} 

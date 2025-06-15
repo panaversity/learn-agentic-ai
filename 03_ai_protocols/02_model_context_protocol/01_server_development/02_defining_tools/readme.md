@@ -117,3 +117,18 @@ Finally, we'll call the 'greet' tool with the name 'Student'.
 ```
 
 This example shows the fundamental pattern of MCP: a client discovers what a server can do (`tools/list`) and then asks it to perform an action (`tools/call`).
+
+## 5. Testing with Postman
+
+For a more interactive testing experience, we've included a comprehensive Postman collection in the `postman/` directory:
+
+- **Collection**: `MCP_Defining_Tools.postman_collection.json`
+- **Documentation**: `postman/README.md`
+
+The Postman collection includes:
+- Tool discovery requests
+- Multiple test scenarios for both `add` and `greet` tools
+- Error handling examples
+- Parameter validation tests
+
+This provides an excellent way to experiment with the server and understand how MCP tools work without writing code.
