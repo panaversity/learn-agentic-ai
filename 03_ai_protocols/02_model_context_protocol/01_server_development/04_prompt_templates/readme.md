@@ -1,4 +1,4 @@
-# 04: Using MCP Prompt Templates
+# 04: Using [MCP Prompt](https://modelcontextprotocol.io/specification/2025-03-26/server/prompts) Templates
 
 **Objective:** Learn how to create and use **MCP Prompt Templates** to generate dynamic, structured prompts for an AI.
 

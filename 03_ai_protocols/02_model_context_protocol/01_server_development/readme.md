@@ -6,7 +6,7 @@ Welcome to the MCP Server Development module! This section is dedicated to learn
 
 Throughout this module, we will explore:
 
-1.  **Server Primitives:** How servers define and offer:
+1.  **[Server Primitives](https://modelcontextprotocol.io/specification/2025-03-26/server):** How servers define and offer:
     - **Tools:** Executable functions that an AI can request the server to run (e.g., call an API, query a database, perform a calculation).
     - **Resources:** Contextual data that an AI can read and use (e.g., file contents, database records, real-time information).
     - **Prompt Templates:** Pre-defined interaction patterns that guide the AI or user in achieving specific tasks with the server's capabilities.
