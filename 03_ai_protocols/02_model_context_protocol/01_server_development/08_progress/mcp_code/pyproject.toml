@@ -1,11 +1,14 @@
 [project]
-name = "mcp-code"
+name = "mcp-progress-demo"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "MCP Progress Tracking Demo"
 requires-python = ">=3.13"
 dependencies = [
-    "httpx>=0.28.1",
-    "mcp>=1.9.4",
+    "mcp>=1.0.0",
+    "httpx>=0.25.0",
     "uvicorn>=0.34.3",
+    "httpx-sse>=0.4.0",
 ]
+
+[tool.uv]
+dev-dependencies = []

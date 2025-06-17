@@ -130,21 +130,26 @@ wheels = [
 ]
 
 [[package]]
-name = "mcp-code"
+name = "mcp-progress-demo"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "httpx" },
+    { name = "httpx-sse" },
     { name = "mcp" },
     { name = "uvicorn" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "httpx", specifier = ">=0.28.1" },
-    { name = "mcp", specifier = ">=1.9.4" },
+    { name = "httpx", specifier = ">=0.25.0" },
+    { name = "httpx-sse", specifier = ">=0.4.0" },
+    { name = "mcp", specifier = ">=1.0.0" },
     { name = "uvicorn", specifier = ">=0.34.3" },
 ]
+
+[package.metadata.requires-dev]
+dev = []
 
 [[package]]
 name = "pydantic"
