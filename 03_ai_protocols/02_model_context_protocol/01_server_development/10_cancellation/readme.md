@@ -1,0 +1,1 @@
+[Request cancellation](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/cancellation)
