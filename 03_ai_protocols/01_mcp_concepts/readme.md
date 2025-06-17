@@ -28,20 +28,23 @@ This module provides a future-proofed, pedagogically ordered learning path throu
 - **Start at the top** and work your way down for a solid foundation in network and application protocols.
 - **extra** is a living area for tracking and contributing to the next generation of AI communication standards. i.e:
 
-| 00    | 00_IP                  | Network addressing/routing                  |
-| 01    | 01_TCP                 | Reliable transport                          |
-| 02    | 02_UDP                 | Fast, connectionless transport              |
-| 03    | 03_HTTP2               | Multiplexing, server push                   |
-| 04    | 04_QUIC                | Modern UDP-based transport (HTTP/3)         |
-| 05    | 05_HTTP3               | HTTP over QUIC                              |
-| 06    | 06_WebRTC              | Real-time, P2P, multi-modal                 |
-| 07    | 07_WebTransport        | Modern real-time transport (HTTP/3, QUIC)   |
-| 08    | 08_WebCodecs           | Low-level media encoding/decoding           |
-| 09    | 09_WebSockets          | Bidirectional, persistent connections       |
-| 10    | 10_MQTT                | Lightweight pub/sub                         |
-| 11    | 11_SSE                 | Server-sent events                          |
-| 12    | 12_GRPC | Next Gen AI Communication Potential standard |
-| 13    | 13_Future_AI_Protocols | Research, proposals, and emerging standards |
+| Code | Folder                | Description                                           |
+|------|-----------------------|-------------------------------------------------------|
+| 00   | 00_IP                 | Network addressing/routing                           |
+| 01   | 01_TCP                | Reliable transport                                   |
+| 02   | 02_UDP                | Fast, connectionless transport                       |
+| 03   | 03_HTTP2              | Multiplexing, server push                            |
+| 04   | 04_QUIC               | Modern UDP-based transport (HTTP/3)                  |
+| 05   | 05_HTTP3              | HTTP over QUIC                                       |
+| 06   | 06_WebRTC             | Real-time, P2P, multi-modal                          |
+| 07   | 07_WebTransport       | Modern real-time transport (HTTP/3, QUIC)            |
+| 08   | 08_WebCodecs          | Low-level media encoding/decoding                    |
+| 09   | 09_WebSockets         | Bidirectional, persistent connections                |
+| 10   | 10_MQTT               | Lightweight pub/sub                                  |
+| 11   | 11_SSE                | Server-sent events                                   |
+| 12   | 12_GRPC               | Next Gen AI Communication Potential standard         |
+| 13   | 13_Future_AI_Protocols| Research, proposals, and emerging standards          |
+
 
 ## Protocol Summaries
 
