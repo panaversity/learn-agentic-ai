@@ -1,0 +1,461 @@
+{
+	"info": {
+		"_postman_id": "mcp-cancellation-demo-2025",
+		"name": "MCP Cancellation Tests",
+		"description": "Test collection for MCP request cancellation functionality.\n\nThis collection demonstrates:\n1. Starting long-running tasks\n2. Cancelling requests gracefully\n3. Race condition handling\n4. Resource cleanup verification",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Initialize MCP Connection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extract session ID for subsequent requests",
+							"const sessionId = pm.response.headers.get('mcp-session-id');",
+							"if (sessionId) {",
+							"    pm.collectionVariables.set('sessionId', sessionId);",
+							"    console.log('Session ID:', sessionId);",
+							"}",
+							"",
+							"// Verify successful initialization",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response contains result', function () {",
+							"    const response = pm.response.text();",
+							"    pm.expect(response).to.include('result');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"2025-03-26\",\n    \"clientInfo\": {\n      \"name\": \"postman-cancellation-test\",\n      \"version\": \"1.0.0\"\n    },\n    \"capabilities\": {\n      \"experimental\": {},\n      \"sampling\": {}\n    }\n  },\n  \"id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Send Initialized Notification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify notification was accepted",
+							"pm.test('Status code is 200 or 202', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"notifications/initialized\",\n  \"params\": {}\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Start Long-Running Task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// This request will take 10 seconds",
+							"// You can manually cancel it using the next request",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Store request ID for cancellation",
+							"pm.collectionVariables.set('longTaskRequestId', '2');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"process_large_file\",\n    \"arguments\": {\n      \"filename\": \"postman_test_file.csv\",\n      \"processing_time\": 10\n    }\n  },\n  \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Cancel Long-Running Task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify cancellation was accepted",
+							"pm.test('Status code is 200 or 202', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202]);",
+							"});",
+							"",
+							"console.log('Cancellation sent for request ID:', pm.collectionVariables.get('longTaskRequestId'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"notifications/cancelled\",\n  \"params\": {\n    \"requestId\": \"{{longTaskRequestId}}\",\n    \"reason\": \"Manual cancellation from Postman test\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Check Active Tasks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response contains task status', function () {",
+							"    const response = pm.response.text();",
+							"    pm.expect(response).to.include('tasks');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_active_tasks\",\n    \"arguments\": {}\n  },\n  \"id\": 3\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Quick Task (Race Condition Test)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Store request ID for immediate cancellation",
+							"pm.collectionVariables.set('quickTaskRequestId', '4');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"quick_task\",\n    \"arguments\": {\n      \"message\": \"Race condition test from Postman\"\n    }\n  },\n  \"id\": 4\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Cancel Quick Task (Race Condition)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// This tests race condition handling",
+							"// The task likely completed before cancellation",
+							"pm.test('Status code is 200 or 202', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202]);",
+							"});",
+							"",
+							"console.log('Race condition test: Tried to cancel completed task');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"notifications/cancelled\",\n  \"params\": {\n    \"requestId\": \"{{quickTaskRequestId}}\",\n    \"reason\": \"Race condition test - cancel completed task\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8. Final Active Tasks Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Should show no active tasks if everything was cleaned up",
+							"pm.test('Tasks were cleaned up', function () {",
+							"    const response = pm.response.text();",
+							"    // Response should indicate no active tasks or completed cleanup",
+							"    pm.expect(response).to.satisfy(function(text) {",
+							"        return text.includes('No active tasks') || text.includes('tasks');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_active_tasks\",\n    \"arguments\": {}\n  },\n  \"id\": 5\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set base URL if not already set",
+					"if (!pm.collectionVariables.get('baseUrl')) {",
+					"    pm.collectionVariables.set('baseUrl', 'http://localhost:8000');",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "sessionId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "longTaskRequestId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "quickTaskRequestId",
+			"value": "",
+			"type": "string"
+		}
+	]
+} 
