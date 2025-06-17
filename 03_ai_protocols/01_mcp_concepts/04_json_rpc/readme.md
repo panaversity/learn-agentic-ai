@@ -6,16 +6,20 @@
 
 ## Read this in Sequence:
 
-1. [MCP Overview](https://modelcontextprotocol.io/specification/2025-03-26/basic)
-2. [MCP Lifecycle](https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle)
-3. [MCP Transports](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)
-4. [MCP Authorization](https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization)
-5. [MCP Cancellation](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/cancellation)
+1. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-03-26/architecture)
+2. [MCP Overview](https://modelcontextprotocol.io/specification/2025-03-26/basic)
+3. [MCP Lifecycle](https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle)
+4. [MCP Transports](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)
+5. [MCP Authorization](https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization)
+6. [MCP Cancellation](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/cancellation)
 7. [MCP Ping](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/ping)
 8. [MCP Progress](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/progress)
 9. [MCP Roots](https://modelcontextprotocol.io/specification/2025-03-26/client/roots)
 10. [MCP Sampling](https://modelcontextprotocol.io/specification/2025-03-26/client/sampling)
 11. [MCP Examples](https://www.jsonrpc.org/specification#examples)
+12. [MCP Prompts](https://modelcontextprotocol.io/specification/2025-03-26/server/prompts)
+13. [MCP Resources](https://modelcontextprotocol.io/specification/2025-03-26/server/resources)
+14. [MCP Tools](https://modelcontextprotocol.io/specification/2025-03-26/server/tools)
 
 
 
