@@ -136,12 +136,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "httpx" },
     { name = "mcp" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", specifier = ">=1.9.4" },
+    { name = "uvicorn", specifier = ">=0.34.3" },
 ]
 
 [[package]]
