@@ -3,6 +3,22 @@
 > **JSON-RPC is a stateless, light-weight remote procedure call (RPC) protocol. It is transport agnostic and uses JSON as its data format. It is designed to be simple!**  
 > — [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 
+
+## Read this in Sequence:
+
+1. [MCP Overview](https://modelcontextprotocol.io/specification/2025-03-26/basic)
+2. [MCP Lifecycle](https://modelcontextprotocol.io/specification/2025-03-26/basic/lifecycle)
+3. [MCP Transports](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)
+4. [MCP Authorization](https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization)
+5. [MCP Cancellation](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/cancellation)
+7. [MCP Ping](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/ping)
+8. [MCP Progress](https://modelcontextprotocol.io/specification/2025-03-26/basic/utilities/progress)
+9. [MCP Roots](https://modelcontextprotocol.io/specification/2025-03-26/client/roots)
+10. [MCP Sampling](https://modelcontextprotocol.io/specification/2025-03-26/client/sampling)
+11. [MCP Examples](https://www.jsonrpc.org/specification#examples)
+
+
+
 JSON-RPC is a stateless, light-weight remote procedure call (RPC) protocol. It allows for notifications (data sent to the server that does not require a response) and for multiple calls to be sent to the server which may be answered out of order. The protocol uses JSON (JavaScript Object Notation) for its data format, making it human-readable and easy to work with across many programming languages.
 
 This guide covers the widely adopted JSON-RPC 2.0 specification, highlighting its structure, and providing hands-on Python examples using FastAPI and Pydantic.
