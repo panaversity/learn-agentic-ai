@@ -3,7 +3,7 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP(
     name="batching-server",
     description="A simple server to demonstrate MCP batching.",
-    stateless_http=True
+    # stateless_http=True
 )
 
 @mcp.tool()

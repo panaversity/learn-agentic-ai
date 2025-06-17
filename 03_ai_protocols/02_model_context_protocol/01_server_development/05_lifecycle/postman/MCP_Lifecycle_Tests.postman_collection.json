@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "mcp-init-tests-2025",
-    "name": "MCP Initialization Tests",
-    "description": "Complete test suite for Model Context Protocol initialization according to MCP 2025-03-26 specification",
+    "_postman_id": "mcp-lifecycle-tests-2025",
+    "name": "MCP Complete Lifecycle Tests",
+    "description": "Complete test suite for the full Model Context Protocol connection lifecycle: Initialization → Operation → Shutdown (MCP 2025-03-26 specification)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

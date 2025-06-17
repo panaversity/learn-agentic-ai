@@ -1,4 +1,6 @@
-# 08: Advanced - Batching Requests
+# 09: [Batching Requests](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#sending-messages-to-the-server) - Bug in S dK
+
+> This is not yet implemented in MCP Python SDK - see this [Github Issue](https://github.com/modelcontextprotocol/python-sdk/issues/934).
 
 **Objective:** Understand how to send multiple JSON-RPC requests in a single HTTP call to improve network efficiency.
 
@@ -20,18 +22,3 @@ Each of these trips has network latency. Batching allows us to combine all three
 - **JSON Array of Responses:** A compliant server will process all the requests in the batch and then return a single JSON array containing the response for each corresponding request.
 - **Order is Preserved:** The spec recommends that the server process requests in order and that the response array should match the order of the request array. This makes it easy for the client to match responses to their original requests.
 - **Notifications in a Batch:** A batch can also include notifications (requests without an `id`). The server processes them but does not include a response for them in the output array.
-
-## Project Structure
-
-```
-08_advanced_batching_requests/
-├── server.py     # A simple, stateless server with a few tools to call.
-└── client.py     # A client that demonstrates how to construct and send a batched request.
-```
-
-## How It Will Work
-
-1.  Our server will be very simple, providing two tools: `add` and `greet`. The `FastMCP` library handles batch requests automatically, so no special server code is needed.
-2.  Our client will construct a list of three separate JSON-RPC requests (two `add` calls and one `greet` call).
-3.  It will send this list as a single JSON array in one `POST` request.
-4.  It will then receive a single response, which will be an array containing the three corresponding results. The client will print this to show the successful batch operation. 

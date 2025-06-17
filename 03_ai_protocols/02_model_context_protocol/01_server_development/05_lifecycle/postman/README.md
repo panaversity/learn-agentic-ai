@@ -1,14 +1,15 @@
-# 📮 Postman Testing Guide for MCP Initialization
+# 📮 Postman Testing Guide for Complete MCP Lifecycle
 
-This directory contains Postman collections for testing Model Context Protocol (MCP) initialization sequences according to the [MCP 2025-03-26 Specification](https://modelcontextprotocol.io/specification/2025-03-26).
+This directory contains Postman collections for testing the complete Model Context Protocol (MCP) connection lifecycle according to the [MCP 2025-03-26 Specification](https://modelcontextprotocol.io/specification/2025-03-26).
 
 ## 🎯 What You'll Learn
 
-- How to test MCP initialization handshake manually
-- Understanding the three-phase MCP connection lifecycle
+- How to test the complete MCP connection lifecycle manually
+- Understanding all three phases: Initialization → Operation → Shutdown
 - Protocol version negotiation testing
 - Capability negotiation validation
 - Session management verification
+- Proper connection termination
 - Error scenario testing
 
 ## 📋 Prerequisites
@@ -24,9 +25,9 @@ This directory contains Postman collections for testing Model Context Protocol (
    - Import `MCP_Initialization_Tests.postman_collection.json`
    - Import `MCP_Environment.postman_environment.json`
 
-## 🔄 MCP Initialization Flow Testing
+## 🔄 Complete MCP Lifecycle Flow Testing
 
-### **Phase 1: Initialize Request** 
+### **Phase 1: Initialization** 
 According to [MCP Architecture](https://modelcontextprotocol.io/specification/2025-03-26/architecture#connection-lifecycle):
 
 **Request**: `POST http://localhost:8000/mcp/`
@@ -88,7 +89,7 @@ According to [MCP Architecture](https://modelcontextprotocol.io/specification/20
 
 **Expected Response**: `202 Accepted`
 
-### **Phase 3: Normal Operations**
+### **Phase 2: Operation**
 
 #### List Tools
 **Request**: `POST http://localhost:8000/mcp/`
@@ -117,12 +118,27 @@ According to [MCP Architecture](https://modelcontextprotocol.io/specification/20
 }
 ```
 
+### **Phase 3: Shutdown**
+
+**Per MCP Specification**: 
+- **"No specific shutdown messages are defined"**
+- **"For HTTP transports, shutdown is indicated by closing the associated HTTP connection(s)"**
+
+#### Connection Termination (No Request Needed)
+The MCP specification explicitly states that shutdown is handled by the transport layer:
+- **HTTP Transport**: Close the HTTP connection
+- **No JSON-RPC messages required**
+- Session cleanup happens automatically when connection closes
+
+This is **spec-compliant behavior** - no termination notification is needed or expected.
+
 ## 🧪 Test Scenarios
 
 ### ✅ **Success Cases**
-1. **Complete Flow**: Initialize → Initialized → List Tools → Call Tool
+1. **Complete Lifecycle**: Initialize → Initialized → List Tools → Call Tool → (Close Connection)
 2. **Protocol Version Match**: Client and server both use `2025-03-26`
-3. **Session Persistence**: Reuse session ID across requests
+3. **Session Persistence**: Reuse session ID across all requests
+4. **Graceful Shutdown**: HTTP connection termination (no messages needed)
 
 ### ❌ **Error Cases**
 1. **Skip Initialization**: Try tools/list without initialize
@@ -138,6 +154,7 @@ According to [MCP Architecture](https://modelcontextprotocol.io/specification/20
 | Initialized | 202 Accepted | Standard | Notification acknowledged |
 | Tools List | 200 OK | `text/event-stream` | Tools array returned |
 | Tool Call | 200 OK | `text/event-stream` | Tool result returned |
+| Shutdown | N/A | N/A | Close HTTP connection (no message) |
 
 ## 🔧 Postman Environment Variables
 
@@ -159,9 +176,12 @@ Set these in your Postman environment:
 2. Start the MCP server: `uv run server.py` 
 3. Run "1. Initialize MCP Server" request
 4. Copy the `mcp-session-id` from response headers
-5. Run subsequent requests in order
-6. Observe the complete MCP initialization flow!
+5. Run the 4 active requests in order:
+   - Initialize → Initialized → List Tools → Call Tool
+   - Shutdown happens automatically when connection closes
+6. Observe the complete MCP connection lifecycle!
 
 ---
 
-**Pro Tip**: Watch the server logs while running tests to see the MCP lifecycle in action! 🔍 
+**Pro Tip**: Watch the server logs while running tests to see all three phases of the MCP lifecycle in action! 🔍  
+**Complete Flow**: Initialization → Operation → Shutdown ✅ 

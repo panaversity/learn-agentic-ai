@@ -1,10 +1,13 @@
 [project]
-name = "08-http-get-listening"
+name = "08-bidirectional-notifications"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "asyncio-sse>=0.1",
     "httpx>=0.28.1",
-    "mcp>=1.9.3",
+    "mcp>=1.9.4",
+    "starlette>=0.40.0",
+    "uvicorn>=0.32.0",
 ]
