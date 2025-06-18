@@ -210,6 +210,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "httpx" },
+    { name = "httpx-sse" },
     { name = "mcp" },
     { name = "uvicorn" },
 ]
@@ -217,6 +218,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "httpx-sse", specifier = ">=0.4.0" },
     { name = "mcp", specifier = ">=1.9.4" },
     { name = "uvicorn", specifier = ">=0.34.3" },
 ]

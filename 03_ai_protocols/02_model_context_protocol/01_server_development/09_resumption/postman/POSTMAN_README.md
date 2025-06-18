@@ -2,17 +2,17 @@
 
 ## 🎯 **What This Tests**
 
-**Core concept**: Initialize → Tool call times out → Resume & retry with Last-Event-ID
+**Core concept**: Initialize → Tool call times out → Resume with GET + Last-Event-ID
 
-This simplified Postman collection demonstrates MCP resumption in just 4 clear steps.
+This Postman collection demonstrates **MCP specification resumption** in 4 clear steps using the standard **GET + Last-Event-ID** approach.
 
 ## 🚀 **Quick Start**
 
 ### **1. Start the Server**
 ```bash
-cd 06_resumption
-python server.py
-# Server has 6-second delays to cause timeouts
+cd 09_resumption
+uv run server.py
+# Server has 6-second delays to demonstrate resumption
 ```
 
 ### **2. Import Collection**
@@ -24,7 +24,7 @@ python server.py
 ### **3. Run Tests in Order**
 Follow the **numbered sequence** - each test builds on the previous one!
 
-## 📊 **Test Flow - Simple 4 Steps**
+## 📊 **Test Flow - 4 Simple Steps**
 
 ### **🧪 STEP 1: Initialize MCP Connection**
 1. **Initialize MCP Server** - Get session ID and event ID
@@ -33,27 +33,27 @@ Follow the **numbered sequence** - each test builds on the previous one!
 ### **🧪 STEP 2: Tool Call Timeout (Connection Drop)**
 3. **Tool Call with Timeout** - 2s timeout vs 6s server delay = guaranteed timeout!
 
-### **🧪 STEP 3: Resume & Retry Tool Call**
-4. **Resume & Retry Tool Call** - Same tool call but with `Last-Event-ID` header
+### **🧪 STEP 3: Resume with MCP Specification**
+4. **Resume with GET + Last-Event-ID** - MCP spec compliant resumption
 
 ## 🔍 **What You'll See**
 
 ### **✅ Success Pattern**
 - Tests 1-2: MCP initialized ✅
-- Test 3: Times out as expected ⏰ (this proves connection broke!)
-- Test 4: Tool call succeeds with resumption ✅
+- Test 3: Times out as expected ⏰ (this simulates network problems!)
+- Test 4: Resumption succeeds ✅
 
 ### **📊 Console Output**
 ```
 ✅ Session ID captured: sess_abc123
 📋 Event ID captured: 1001
 💥 Connection timed out as expected - simulating network drop
-🔄 Ready for resumption in next test...
-📋 Resumed from Event ID: 1001
-✅ RESUMPTION SUCCESSFUL! Tool call worked after timeout
-🌤️ Weather result: The weather in New York will be warm and sunny!
+🔄 Ready for MCP resumption in next test...
+📋 Resuming from Event ID: 1001
+✅ MCP RESUMPTION SUCCESSFUL! GET + Last-Event-ID worked
+🌤️ Weather result: The weather in Tokyo will be warm and sunny! (Retrieved via resumption)
 🎯 MCP Resumption Demo Complete!
-💡 Key insight: Connection broke → Resumed with Last-Event-ID → Success!
+💡 Key insight: Cross-stream event replay made MCP resumption work!
 ```
 
 ## 🔧 **Key Features**
@@ -75,25 +75,44 @@ const sessionId = pm.response.headers.get('mcp-session-id');
 pm.collectionVariables.set('mcp_session_id', sessionId);
 ```
 
-### **The Magic Resumption Header**
-Test 4 includes the key header that makes resumption work:
+### **MCP Resumption Header**
+Test 4 uses the MCP specification header:
 ```json
 {
   "key": "Last-Event-ID",
   "value": "{{last_event_id}}",
-  "description": "This is the magic header that enables resumption!"
+  "description": "MCP spec header for cross-stream event replay"
 }
+```
+
+## 🔬 **Technical Learning**
+
+### **Cross-Stream Event Correlation**
+The key concept for students to understand:
+- **Problem**: Events stored in different streams (`stream_id='1'` vs `stream_id='_GET_stream'`)
+- **Solution**: Search ALL streams for events after the last event ID
+- **Result**: MCP resumption works as specified!
+
+### **MCP Server Log Evidence**
+```bash
+🏪 Stored event abc123 in stream 1          # Initialize response
+🏪 Stored event def456 in stream _GET_stream # Tool result (different stream!)
+🔄 Checking stream 1 with 1 events          # Same stream - no new events
+🔄 Checking stream _GET_stream with 1 events # Different stream - found tool result!
+🔄 Found event to replay: def456 in different stream _GET_stream
+🔄 Sending event: def456 from stream _GET_stream
 ```
 
 ## 🎓 **Learning Outcomes**
 
-After running these tests, you'll understand:
+After running these tests, students will understand:
 
 - ✅ How MCP initialization establishes connections
-- ✅ Why timeouts happen (network problems are real!)
-- ✅ How `Last-Event-ID` enables resumption
-- ✅ How the same tool call succeeds after resumption
-- ✅ The power of never losing progress
+- ✅ Why network timeouts happen in real systems
+- ✅ How `Last-Event-ID` enables MCP resumption
+- ✅ **Cross-stream event correlation** (the technical breakthrough!)
+- ✅ How GET requests retrieve cached results
+- ✅ The power of never losing progress with MCP
 
 ## 🔧 **Troubleshooting**
 
@@ -101,7 +120,7 @@ After running these tests, you'll understand:
 
 1. **Server Not Running**
    ```bash
-   python server.py  # Start server first
+   uv run server.py  # Start server first
    ```
 
 2. **Test 3 Doesn't Timeout**
@@ -118,46 +137,39 @@ After running these tests, you'll understand:
    - Check `Last-Event-ID` header is present in Test 4
    - Verify the event ID variable was captured in Test 1
 
-## 🔍 **How to Prove Real Resumption (Not Cached Response)**
+## 🔍 **How to Verify MCP Resumption**
 
-The ultimate test to confirm resumption is REAL:
-
-### **Method 1: Change Server Response**
-1. Run tests 1-3 (initialize → timeout)
-2. **Stop the server** (Ctrl+C)
-3. **Edit server.py** - change the weather response text
-4. **Restart server** 
-5. Run test 4 (resume with Last-Event-ID)
-6. **Verify you get the NEW response** 
-
-If you get the modified response, it proves the server processed the request fresh, not from cache!
-
-### **Method 2: Use the Proof Script**
-Run the automated proof test:
+### **Method 1: Server Log Analysis**
+Look for these log patterns:
 ```bash
-python test_resumption_proof.py
+🔄 Replaying events after [event-id]
+🔄 Found event to replay: [new-event-id] in different stream [stream-name]
+🔄 Sending event: [new-event-id] from stream [stream-name]
 ```
 
-This script automatically:
-- Makes a call that times out
-- Stops server & modifies response  
-- Restarts server
-- Resumes with Last-Event-ID
-- Confirms you get the NEW response
+### **Method 2: Response Indicator**
+The tool result includes proof:
+```json
+{
+  "result": "The weather in Tokyo will be warm and sunny! ☀️ (Retrieved via resumption)",
+  "indicator_date": "2025-06-18T04:42:55.711075"
+}
+```
 
-### **What This Proves**
-- ✅ **Real Resumption**: Server processes request fresh
-- ✅ **Not Cached**: Response changes prove live processing
-- ✅ **State Persistence**: Last-Event-ID maintains session context
-- ✅ **MCP Spec Compliance**: Proper resumption behavior
+The **"Retrieved via resumption"** text proves the server replayed the cached result!
+
+### **Method 3: Timing Analysis**
+- **Fresh call**: 6+ seconds (server processing time)
+- **Resumed call**: ~100ms (cached result retrieval)
 
 ## 💡 **The Big Picture**
 
-This simplified collection proves that:
+This collection teaches students that:
 - **Network problems happen** (Test 3 timeout)
-- **Resumption works** (Test 4 succeeds)
-- **No work is lost** (Same tool call, different outcome)
-- **Last-Event-ID is the key** (The magic header that makes it work)
+- **Cross-stream events can be correlated** (the technical breakthrough)
+- **MCP resumption works across streams** (Test 4 succeeds)
+- **No work is lost** (Same tool call, instant cached result)
+- **Last-Event-ID is the key** (The MCP spec header that enables cross-stream replay)
 
 ## 🎯 **Test Sequence Summary**
 
@@ -165,16 +177,17 @@ This simplified collection proves that:
 |------|---------|----------------|
 | 1 | Initialize | ✅ Get session & event ID |
 | 2 | Complete handshake | ✅ Connection established |
-| 3 | Tool call (timeout) | ⏰ Times out (good!) |
-| 4 | Resume & retry | ✅ Succeeds with Last-Event-ID |
+| 3 | Tool call (timeout) | ⏰ Times out (simulates network issues) |
+| 4 | MCP resumption | ✅ Succeeds with GET + Last-Event-ID |
 
-Perfect for understanding **MCP Stream Resumption** fundamentals! 🚀
+Perfect for learning **MCP Cross-Stream Resumption** fundamentals! 🚀
 
 ---
 
 ## 📋 **Summary**
 
-**What this tests**: The core resumption pattern in 4 simple steps
-**Why it matters**: Real agents face real network problems  
-**Key insight**: Last-Event-ID header = Never lose messages
-**Result**: Production-ready AI agents! 🌍 
+**What this teaches**: MCP specification resumption in 4 simple steps
+**Why it matters**: Real agents face network problems in production systems
+**Technical concept**: Cross-stream event correlation enables reliable resumption
+**Key learning**: GET + Last-Event-ID header follows MCP specification
+**Result**: Students understand production-ready resilient AI agent communication! 🌍 

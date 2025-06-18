@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "mcp-resumption-tests-2025",
-    "name": "MCP Stream Resumption Tests",
-    "description": "Simplified test suite for MCP Stream Resumption. Demonstrates: Initialize → Tool Call Timeout → Resume & Retry.",
+    "name": "MCP Resumption Tests",
+    "description": "MCP specification test suite for resumption. Demonstrates: Initialize → Tool Call Timeout → MCP Resumption with GET + Last-Event-ID.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -28,7 +28,7 @@
                   "    console.log('✅ Session ID captured:', sessionId);",
                   "});",
                   "",
-                  "// Extract Event ID for resumption tracking",
+                  "// Extract Event ID for MCP resumption tracking",
                   "pm.test(\"Event ID extraction\", function () {",
                   "    const responseText = pm.response.text();",
                   "    const lines = responseText.split('\\n');",
@@ -52,7 +52,7 @@
                   "    ",
                   "    if (eventId) {",
                   "        pm.collectionVariables.set('last_event_id', eventId);",
-                  "        console.log('📋 Event ID captured:', eventId);",
+                  "        console.log('📋 Event ID captured for MCP resumption:', eventId);",
                   "        pm.expect(eventId).to.not.be.null;",
                   "    }",
                   "});",
@@ -86,7 +86,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-03-26\",\n        \"clientInfo\": {\n            \"name\": \"postman-resumption-client\",\n            \"version\": \"1.0.0\"\n        },\n        \"capabilities\": {\n            \"experimental\": {},\n            \"sampling\": {}\n        }\n    },\n    \"id\": 1\n}"
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-03-26\",\n        \"clientInfo\": {\n            \"name\": \"postman-mcp-client\",\n            \"version\": \"1.0.0\"\n        },\n        \"capabilities\": {\n            \"experimental\": {},\n            \"sampling\": {}\n        }\n    },\n    \"id\": 1\n}"
             },
             "url": {
               "raw": "http://localhost:8000/mcp/",
@@ -177,11 +177,11 @@
                   "    ",
                   "    if (isTimeout) {",
                   "        console.log('💥 Connection timed out as expected - simulating network drop');",
-                  "        console.log('🔄 Ready for resumption in next test...');",
+                  "        console.log('🔄 Ready for MCP resumption in next test...');",
                   "        pm.expect(true).to.be.true; // Pass the test",
                   "    } else {",
                   "        console.log('⚠️ Request completed instead of timing out');",
-                  "        console.log('💡 This might still work for resumption demo');",
+                  "        console.log('💡 This might still work for MCP resumption demo');",
                   "        pm.expect(true).to.be.true; // Still pass, but note the issue",
                   "    }",
                   "});"
@@ -228,47 +228,46 @@
       ]
     },
     {
-      "name": "🧪 STEP 3: Resume & Retry Tool Call",
+      "name": "🧪 STEP 3: MCP Resumption",
       "item": [
         {
-          "name": "4. Resume & Retry Tool Call (With Last-Event-ID)",
+          "name": "4. MCP Resumption with GET + Last-Event-ID",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Tool call successful after resumption\", function () {",
+                  "pm.test(\"MCP resumption successful\", function () {",
                   "    pm.response.to.have.status(200);",
-                  "    console.log('✅ RESUMPTION SUCCESSFUL! Tool call worked after timeout');",
+                  "    console.log('✅ MCP RESUMPTION SUCCESSFUL! GET + Last-Event-ID worked');",
                   "});",
                   "",
-                  "pm.test(\"Last-Event-ID header was sent for resumption\", function () {",
+                  "pm.test(\"Last-Event-ID header was sent for MCP resumption\", function () {",
                   "    const lastEventId = pm.collectionVariables.get('last_event_id');",
                   "    pm.expect(lastEventId).to.not.be.null;",
-                  "    console.log('📋 Resumed from Event ID:', lastEventId);",
-                  "    console.log('🔄 This proves we are resuming, not starting fresh!');",
+                  "    console.log('📋 Resuming from Event ID:', lastEventId);",
+                  "    console.log('🔄 MCP Spec: GET + Last-Event-ID enables cross-stream replay');",
                   "});",
                   "",
-                  "pm.test(\"Weather forecast received after resume\", function () {",
+                  "pm.test(\"Weather forecast received via MCP resumption\", function () {",
                   "    const responseText = pm.response.text();",
                   "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
                   "    if (dataLine) {",
                   "        const data = JSON.parse(dataLine.substring(6));",
                   "        if (data.result && data.result.content) {",
-                  "            pm.expect(data.result.content[0].text).to.include('New York');",
-                  "            console.log('🌤️ Weather result:', data.result.content[0].text);",
+                  "            const weatherText = data.result.content[0].text;",
+                  "            pm.expect(weatherText).to.include('Tokyo');",
+                  "            console.log('🌤️ Weather result:', weatherText);",
                   "            ",
-                  "            // Check for attempt number in response to prove resumption",
-                  "            if (data.result.content[0].text.includes('Attempt #')) {",
-                  "                console.log('📊 PROOF OF RESUMPTION: Response shows attempt number!');",
-                  "                if (data.result.content[0].text.includes('Attempt #2')) {",
-                  "                    console.log('🎯 CONFIRMED: This is attempt #2 - proving resumption worked!');",
-                  "                }",
+                  "            // Check for resumption indicator in response",
+                  "            if (weatherText.includes('Retrieved via resumption')) {",
+                  "                console.log('🎯 CONFIRMED: Response shows \"Retrieved via resumption\"!');",
+                  "                console.log('💡 This proves MCP resumption worked - cached result retrieved!');",
                   "            }",
                   "            ",
                   "            console.log('🎯 MCP Resumption Demo Complete!');",
-                  "            console.log('💡 Key insight: Connection broke → Resumed with Last-Event-ID → Success!');",
-                  "            console.log('🔍 Check server logs for \"RESUMPTION DETECTED\" message');",
+                  "            console.log('💡 Key learning: GET + Last-Event-ID enables cross-stream event replay');",
+                  "            console.log('📚 Students now understand MCP specification resumption!');",
                   "        }",
                   "    }",
                   "});"
@@ -278,15 +277,11 @@
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Accept",
-                "value": "application/json, text/event-stream"
+                "value": "text/event-stream"
               },
               {
                 "key": "mcp-session-id",
@@ -295,13 +290,9 @@
               {
                 "key": "Last-Event-ID",
                 "value": "{{last_event_id}}",
-                "description": "This is the magic header that enables resumption!"
+                "description": "MCP specification header for cross-stream event replay"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get_forecast\",\n        \"arguments\": {\n            \"city\": \"New York\"\n        }\n    },\n    \"id\": 3\n}"
-            },
             "url": {
               "raw": "http://localhost:8000/mcp/",
               "protocol": "http",

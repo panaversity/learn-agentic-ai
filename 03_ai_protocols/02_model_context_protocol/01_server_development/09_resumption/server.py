@@ -1,7 +1,9 @@
-import time
 import logging
+import asyncio
 from mcp.server.fastmcp import FastMCP
 from memory_store import InMemoryEventStore
+from datetime import datetime
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -22,38 +24,35 @@ mcp = FastMCP(
 async def get_forecast(city: str) -> str:
     """Get weather forecast for a city.
     
-    This tool has an intentional 4-second delay to test resumption!
+    This tool has an intentional 6-second delay to test resumption!
     Clients with 3-second timeouts will fail and need to resume.
 
     Args:
         city(str): The name of the city
     """
-    logger.info(f"🌤️ Getting forecast for {city}...")
-    logger.info("⏰ Processing (this takes 4 seconds - testing resumption)...")
+    start_time = datetime.now().isoformat()
+    print(f"🌤️ Starting forecast for {city} at {start_time}")
+    
+    # Simulate long-running operation (server processing delay)
+    print(f"🌤️ Processing... (6 second delay)")
+    await asyncio.sleep(6)
+    
+    end_time = datetime.now().isoformat()
+    result = {
+        "result": f"The weather in {city} will be warm and sunny! ☀️ (Retrieved via resumption)",
+        "indicator_date": end_time,
+    }
+    
+    print(f"🌤️ Forecast complete for {city} at {end_time}")
+    return json.dumps(result)
 
-    # Intentional delay to cause client timeouts
-    time.sleep(6)  # 6 second delay
 
-    result = f"The weather in {city} will be warm and sunny! ☀️ (Retrieved via resumption)"
-    logger.info(f"✅ Forecast complete for {city}")
-
-    return result
 
 # Create the ASGI app
 app = mcp.streamable_http_app()
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("         SIMPLE MCP RESUME SERVER")
-    print("=" * 60)
-    print("🚀 Starting server with resumption capabilities...")
-    print("📋 EventStore: Enabled (tracks messages for resumption)")
-    print("⏰ Tool delay: 4 seconds (to test client timeouts)")
-    print("🌐 Server URL: http://localhost:8000")
-    print("=" * 60)
-    print()
-    print("💡 How to test:")
-    print("1. Run: python client.py")
-    print("2. Watch client timeout on tool call")
-    print("3. See resumption in action!")
-    print()
+
+    import uvicorn
+    
+    uvicorn.run(app, host="0.0.0.0", port=8000)

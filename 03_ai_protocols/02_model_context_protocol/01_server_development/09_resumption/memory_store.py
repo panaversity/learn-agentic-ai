@@ -60,7 +60,9 @@ class InMemoryEventStore(EventStore):
         """Stores an event with a generated event ID."""
         event_id = str(uuid4())
         event_entry = EventEntry(
-            event_id=event_id, stream_id=stream_id, message=message
+            event_id=event_id, 
+            stream_id=stream_id, 
+            message=message
         )
 
         # Get or create deque for this stream
@@ -77,6 +79,7 @@ class InMemoryEventStore(EventStore):
         self.streams[stream_id].append(event_entry)
         self.event_index[event_id] = event_entry
 
+        print(f"🏪 Stored event {event_id} in stream {stream_id}")
         return event_id
 
     async def replay_events_after(
@@ -84,22 +87,43 @@ class InMemoryEventStore(EventStore):
         last_event_id: EventId,
         send_callback: EventCallback,
     ) -> StreamId | None:
-        """Replays events that occurred after the specified event ID."""
+        """Replays events that occurred after the specified event ID across ALL streams."""
+        print(f"🔄 Replaying events after {last_event_id}")
         if last_event_id not in self.event_index:
             logger.warning(f"Event ID {last_event_id} not found in store")
             return None
 
-        # Get the stream and find events after the last one
+        # Get the last known event
         last_event = self.event_index[last_event_id]
-        stream_id = last_event.stream_id
-        stream_events = self.streams.get(last_event.stream_id, deque())
+        print(f"🔄 Last event stream: {last_event.stream_id}")
 
-        # Events in deque are already in chronological order
-        found_last = False
-        for event in stream_events:
-            if found_last:
-                await send_callback(EventMessage(event.message, event.event_id))
-            elif event.event_id == last_event_id:
-                found_last = True
+        # Search across ALL streams for events that came after the last event
+        events_to_replay = []
+        
+        for stream_id, stream_events in self.streams.items():
+            print(f"🔄 Checking stream {stream_id} with {len(stream_events)} events")
+            
+            # If this is the same stream as the last event, find events after it
+            if stream_id == last_event.stream_id:
+                found_last = False
+                for event in stream_events:
+                    if found_last:
+                        events_to_replay.append(event)
+                        print(f"🔄 Found event to replay: {event.event_id} in same stream {stream_id}")
+                    elif event.event_id == last_event_id:
+                        found_last = True
+            else:
+                # Different stream - include ALL events (they all came after initialization)
+                for event in stream_events:
+                    events_to_replay.append(event)
+                    print(f"🔄 Found event to replay: {event.event_id} in different stream {stream_id}")
 
-        return stream_id
+        print(f"🔄 Found {len(events_to_replay)} events to replay")
+
+        # Send all events
+        for event in events_to_replay:
+            print(f"🔄 Sending event: {event.event_id} from stream {event.stream_id}")
+            await send_callback(EventMessage(event.message, event.event_id))
+
+        # Return the original stream ID for compatibility
+        return last_event.stream_id
