@@ -30,7 +30,7 @@ uv add a2a-sdk uvicorn
 
 ### 2. Agent with Skills Implementation
 
-**File**: `agent_with_skills.py`
+**File**: `main.py`
 
 ```python
 import uvicorn
@@ -53,23 +53,10 @@ class SkillDemoAgent:
     async def invoke(self, skill_id: str, input_data: dict) -> str:
         """Invoke specific skill with input data."""
         if skill_id == "greeting":
-            name = input_data.get("name", "Friend")
-            time_of_day = input_data.get("time_of_day", "day")
-            return f"Good {time_of_day}, {name}! Nice to meet you."
+            return f"Good day, Nice to meet you."
         
         elif skill_id == "simple_math":
-            operation = input_data.get("operation")
-            a = input_data.get("a", 0)
-            b = input_data.get("b", 0)
-            
-            if operation == "add":
-                result = a + b
-                return f"The sum of {a} and {b} is {result}"
-            elif operation == "multiply":
-                result = a * b
-                return f"The product of {a} and {b} is {result}"
-            else:
-                return f"Operation {operation} not implemented yet"
+            return f"Operation simple_math not implemented yet"
         
         return f"Unknown skill: {skill_id}"
 
@@ -155,7 +142,7 @@ if __name__ == '__main__':
 ### 1. Start the Server
 ```bash
 cd a2a02_code
-python agent_with_skills.py
+uv run python main.py
 ```
 
 ### 2. Visual Test in Browser
@@ -165,28 +152,6 @@ Open these URLs in your browser:
    - **Key insight**: See how skills are embedded using official AgentSkill types
    - Notice the skill structure: id, name, description, tags, examples
    - Skills are now proper A2A SDK objects, not custom JSON
-
-### 3. Command Line Test
-```bash
-# Test agent discovery with skills
-curl http://localhost:8001/.well-known/agent.json | jq '.skills'
-
-# Test A2A message sending
-curl -X POST http://localhost:8001/a2a \
-  -H "Content-Type: application/json" \
-  -d '{
-    "jsonrpc": "2.0",
-    "method": "message/send",
-    "params": {
-      "message": {
-        "role": "user",
-        "parts": [{"kind": "text", "text": "Test my skills!"}],
-        "messageId": "test-123"
-      }
-    },
-    "id": "req-456"
-  }' | jq '.'
-```
 
 ### 4. Test with Official A2A Client
 

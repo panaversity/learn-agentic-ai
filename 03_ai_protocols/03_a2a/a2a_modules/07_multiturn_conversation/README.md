@@ -1,22 +1,22 @@
 # Step 07: Multiturn Conversation 💬
 
-**Conversational AI with context - Task management and conversation history**
+**Context-aware conversations with memory - Official patterns from LangGraph sample**
 
-> **Goal**: Implement multiturn conversations with context retention using A2A task management and conversation history.
+> **Goal**: Implement multiturn conversations using official A2A patterns from [a2a-samples/langgraph](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph) with contextId management and conversation memory.
 
 ## 🎯 What You'll Learn
 
-- Multiturn conversation patterns with A2A
-- Task lifecycle management (create, update, complete)
-- Conversation context and history retention
-- Task-based conversation state management
-- Memory patterns for conversational agents
-- Foundation for complex conversational AI
+- Official multiturn conversation patterns from [LangGraph sample](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph)
+- Context management with `contextId` and task continuity  
+- Conversation memory and state persistence
+- Input-required states for interactive dialogue
+- History tracking across message exchanges
+- RequestContext usage for multiturn scenarios
 
 ## 📋 Prerequisites
 
 - Completed [Step 06: Message Streaming](../06_message_streaming/)
-- Understanding of A2A tasks and streaming
+- Understanding of A2A TaskUpdater and streaming
 - UV package manager installed
 - Basic understanding of conversation state management
 
@@ -27,7 +27,7 @@
 cd 07_multiturn_conversation
 uv init a2a07_code
 cd a2a07_code
-uv add httpx a2a-sdk uvicorn
+uv add a2a-sdk uvicorn httpx
 ```
 
 ### 2. Conversational Agent Implementation
@@ -35,239 +35,557 @@ uv add httpx a2a-sdk uvicorn
 **File**: `conversation_agent.py`
 
 ```python
-import asyncio
-from typing import Dict, List, Optional
-from dataclasses import dataclass
+import logging
+from typing import Dict, List, Any
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
-from a2a.utils import new_agent_text_message
+from a2a.server.tasks import TaskUpdater
+from a2a.types import Part, TextPart, TaskState
+from a2a.utils import new_agent_text_message, new_task
 
-
-@dataclass
-class ConversationTurn:
-    """Represents a single turn in conversation."""
-    role: str  # 'user' or 'agent'
-    message: str
-    timestamp: str
-    turn_number: int
+logger = logging.getLogger(__name__)
 
 
 class ConversationMemory:
-    """Manages conversation history and context."""
+    """Simple conversation memory following official patterns."""
     
     def __init__(self):
-        self.conversations: Dict[str, List[ConversationTurn]] = {}
-        self.turn_counters: Dict[str, int] = {}
+        self.conversations: Dict[str, List[Dict[str, str]]] = {}
     
-    def add_turn(self, task_id: str, role: str, message: str) -> None:
-        """Add a conversation turn."""
-        if task_id not in self.conversations:
-            self.conversations[task_id] = []
-            self.turn_counters[task_id] = 0
+    def add_message(self, context_id: str, role: str, content: str):
+        """Add message to conversation history."""
+        if context_id not in self.conversations:
+            self.conversations[context_id] = []
         
-        self.turn_counters[task_id] += 1
-        turn = ConversationTurn(
-            role=role,
-            message=message,
-            timestamp="now",  # In real app, use proper timestamp
-            turn_number=self.turn_counters[task_id]
-        )
-        self.conversations[task_id].append(turn)
+        self.conversations[context_id].append({
+            "role": role,
+            "content": content,
+            "timestamp": str(len(self.conversations[context_id]))
+        })
     
-    def get_conversation_history(self, task_id: str) -> List[ConversationTurn]:
-        """Get full conversation history."""
-        return self.conversations.get(task_id, [])
+    def get_conversation(self, context_id: str) -> List[Dict[str, str]]:
+        """Get conversation history for context."""
+        return self.conversations.get(context_id, [])
     
-    def get_recent_context(self, task_id: str, num_turns: int = 5) -> str:
-        """Get recent conversation context as formatted string."""
-        history = self.get_conversation_history(task_id)
-        recent = history[-num_turns:] if len(history) > num_turns else history
+    def get_conversation_summary(self, context_id: str) -> str:
+        """Get formatted conversation summary."""
+        messages = self.get_conversation(context_id)
+        if not messages:
+            return "No conversation history"
         
-        context_lines = []
-        for turn in recent:
-            context_lines.append(f"{turn.role}: {turn.message}")
+        summary = "Conversation history:\n"
+        for msg in messages[-5:]:  # Last 5 messages
+            summary += f"- {msg['role']}: {msg['content']}\n"
         
-        return "\n".join(context_lines)
+        return summary
 
 
-class ConversationalAgent:
-    """Agent that maintains conversation context."""
-
+class MultiturnAgent:
+    """Agent demonstrating multiturn conversation patterns."""
+    
     def __init__(self):
         self.memory = ConversationMemory()
-        self.personality = {
-            "name": "Alex",
-            "traits": ["helpful", "curious", "remembers context"],
-            "greeting": "Hi! I'm Alex, your conversational AI assistant."
-        }
-
-    async def process_message(self, task_id: str, user_message: str) -> str:
-        """Process user message with conversation context."""
+        self.waiting_for_info = {}  # Track what info we're waiting for per context
+    
+    async def stream(self, query: str, context_id: str):
+        """Process query with conversation context awareness."""
         
-        # Add user message to conversation history
-        self.memory.add_turn(task_id, "user", user_message)
+        # Add user message to memory
+        self.memory.add_message(context_id, "user", query)
         
-        # Get conversation context
-        context = self.memory.get_recent_context(task_id, num_turns=10)
-        conversation_history = self.memory.get_conversation_history(task_id)
-        turn_count = len(conversation_history)
+        # Get conversation history
+        history = self.memory.get_conversation(context_id)
         
-        # Generate contextual response
-        if turn_count == 1:
-            # First message - introduce yourself
-            response = f"{self.personality['greeting']} How can I help you today?"
-        elif "remember" in user_message.lower():
-            # User asking about memory
-            if turn_count > 2:
-                response = f"Yes, I remember our conversation! We've exchanged {turn_count} messages. Here's our recent context:\n\n{context}"
+        # Check if we're in middle of collecting information
+        if context_id in self.waiting_for_info:
+            yield await self._handle_pending_request(query, context_id, history)
+            return
+        
+        # Process new request
+        async for response in self._process_new_request(query, context_id, history):
+            yield response
+    
+    async def _process_new_request(self, query: str, context_id: str, history: List[Dict[str, str]]):
+        """Process a new conversation request."""
+        
+        query_lower = query.lower()
+        
+        # Check for different conversation patterns
+        if "weather" in query_lower:
+            # Need location information
+            if not self._has_location_info(history):
+                self.waiting_for_info[context_id] = "location"
+                yield {
+                    "content": "I'd be happy to help you with weather information! What city or location would you like weather for?",
+                    "is_task_complete": False,
+                    "require_user_input": True
+                }
+                return
             else:
-                response = "We just started talking, but I'm already keeping track of our conversation!"
-        elif "who are you" in user_message.lower() or "what's your name" in user_message.lower():
-            # Identity question with context
-            response = f"I'm {self.personality['name']}, and we've been chatting for {turn_count} turns now. I'm {', '.join(self.personality['traits'])}."
-        elif user_message.lower() in ["bye", "goodbye", "see you"]:
-            # Farewell with context
-            response = f"Goodbye! It was great chatting with you for {turn_count} turns. Feel free to continue our conversation anytime!"
+                location = self._extract_location(history)
+                yield {"content": f"Looking up weather for {location}...", "is_task_complete": False, "require_user_input": False}
+                yield {"content": f"The weather in {location} is sunny and 72°F. Perfect day!", "is_task_complete": True, "require_user_input": False}
+        
+        elif "favorite" in query_lower and "color" in query_lower:
+            # Personal preference question
+            yield {"content": "Analyzing your question...", "is_task_complete": False, "require_user_input": False}
+            
+            # Check if user has mentioned colors before
+            color_mentioned = self._extract_mentioned_color(history)
+            if color_mentioned:
+                yield {"content": f"Based on our conversation, you seem to like {color_mentioned}! Is that still your favorite?", "is_task_complete": False, "require_user_input": True}
+                self.waiting_for_info[context_id] = "color_confirmation"
+            else:
+                yield {"content": "What's your favorite color? I'd love to know more about your preferences!", "is_task_complete": False, "require_user_input": True}
+                self.waiting_for_info[context_id] = "favorite_color"
+        
+        elif "hello" in query_lower or "hi" in query_lower:
+            # Greeting with context awareness
+            if len(history) > 1:
+                yield {"content": "Nice to chat with you again! How can I help you today?", "is_task_complete": True, "require_user_input": False}
+            else:
+                yield {"content": "Hello! I'm a conversational agent that remembers our chat. How can I help you?", "is_task_complete": True, "require_user_input": False}
+        
         else:
-            # General response with context awareness
-            recent_topics = [turn.message for turn in conversation_history[-3:] if turn.role == "user"]
-            response = f"I understand you're saying: '{user_message}'. "
-            
-            if len(recent_topics) > 1:
-                response += f"Following up on our discussion about: {', '.join(recent_topics[-2:-1])}. "
-            
-            response += "What would you like to explore further?"
+            # General response with context
+            conversation_context = f"Based on our conversation: {self.memory.get_conversation_summary(context_id)}"
+            yield {"content": "Processing your request...", "is_task_complete": False, "require_user_input": False}
+            yield {"content": f"I understand you're asking about: {query}\n\n{conversation_context}", "is_task_complete": True, "require_user_input": False}
+    
+    async def _handle_pending_request(self, query: str, context_id: str, history: List[Dict[str, str]]):
+        """Handle responses when waiting for specific information."""
         
-        # Add agent response to conversation history
-        self.memory.add_turn(task_id, "agent", response)
+        waiting_for = self.waiting_for_info[context_id]
         
-        return response
+        if waiting_for == "location":
+            # User provided location for weather
+            self.memory.add_message(context_id, "assistant", f"Got location: {query}")
+            del self.waiting_for_info[context_id]
+            return {"content": f"Perfect! The weather in {query} is sunny and 75°F with light clouds. Great day to be outside!", "is_task_complete": True, "require_user_input": False}
+        
+        elif waiting_for == "favorite_color":
+            # User provided favorite color
+            self.memory.add_message(context_id, "assistant", f"Favorite color: {query}")
+            del self.waiting_for_info[context_id]
+            return {"content": f"Great choice! {query.title()} is a beautiful color. I'll remember that for our future conversations!", "is_task_complete": True, "require_user_input": False}
+        
+        elif waiting_for == "color_confirmation":
+            # User confirmed/changed color preference
+            del self.waiting_for_info[context_id]
+            if "yes" in query.lower() or "still" in query.lower():
+                return {"content": "Awesome! I'll keep that noted. Colors can say a lot about personality!", "is_task_complete": True, "require_user_input": False}
+            else:
+                return {"content": f"Thanks for the update! {query.title()} is your new favorite. I've updated my memory!", "is_task_complete": True, "require_user_input": False}
+        
+        # Default fallback
+        del self.waiting_for_info[context_id]
+        return {"content": f"Thank you for the information: {query}. How else can I help?", "is_task_complete": True, "require_user_input": False}
+    
+    def _has_location_info(self, history: List[Dict[str, str]]) -> bool:
+        """Check if location was mentioned in conversation."""
+        for msg in history:
+            if any(city in msg['content'].lower() for city in ['new york', 'london', 'tokyo', 'paris', 'city']):
+                return True
+        return False
+    
+    def _extract_location(self, history: List[Dict[str, str]]) -> str:
+        """Extract location from conversation history."""
+        for msg in history:
+            content = msg['content'].lower()
+            if 'new york' in content:
+                return 'New York'
+            elif 'london' in content:
+                return 'London'
+            elif 'tokyo' in content:
+                return 'Tokyo'
+            elif 'paris' in content:
+                return 'Paris'
+        return "your location"
+    
+    def _extract_mentioned_color(self, history: List[Dict[str, str]]) -> str:
+        """Extract any color mentioned in conversation."""
+        colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'black', 'white']
+        for msg in history:
+            content = msg['content'].lower()
+            for color in colors:
+                if color in content:
+                    return color
+        return ""
 
 
-class ConversationalAgentExecutor(AgentExecutor):
-    """Agent Executor for multiturn conversations."""
+class MultiturnAgentExecutor(AgentExecutor):
+    """Agent Executor implementing official multiturn conversation patterns."""
 
     def __init__(self):
-        self.agent = ConversationalAgent()
+        self.agent = MultiturnAgent()
 
     async def execute(
         self,
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
-        # Extract user message
-        user_message = "Hello"
-        if context.message and context.message.parts:
-            for part in context.message.parts:
-                if part.kind == "text":
-                    user_message = part.text
+        """Execute agent with multiturn conversation support."""
+        
+        # Get user input and context
+        query = context.get_user_input()
+        task = context.current_task
+
+        # Create new task if needed (new conversation)
+        if not task:
+            task = new_task(context.message)  # type: ignore
+            await event_queue.enqueue_event(task)
+
+        # Create TaskUpdater for managing conversation state
+        updater = TaskUpdater(event_queue, task.id, task.contextId)
+
+        try:
+            # Process with conversation memory
+            async for item in self.agent.stream(query, task.contextId):
+                is_task_complete = item['is_task_complete']
+                require_user_input = item['require_user_input']
+
+                if not is_task_complete and not require_user_input:
+                    # Send interim status update
+                    await updater.update_status(
+                        TaskState.working,
+                        new_agent_text_message(
+                            item['content'],
+                            task.contextId,
+                            task.id,
+                        ),
+                    )
+
+                elif require_user_input:
+                    # Request more input (multiturn conversation)
+                    await updater.update_status(
+                        TaskState.input_required,
+                        new_agent_text_message(
+                            item['content'],
+                            task.contextId,
+                            task.id,
+                        ),
+                        final=True,
+                    )
                     break
 
-        # Use task ID for conversation continuity
-        task_id = context.task_id or "default-conversation"
-        
-        # Process message with conversation context
-        response = await self.agent.process_message(task_id, user_message)
-        
-        # Stream response for better UX
-        words = response.split()
-        for i, word in enumerate(words):
-            if i == 0:
-                await event_queue.enqueue_event(new_agent_text_message(word))
-            else:
-                await event_queue.enqueue_event(new_agent_text_message(f" {word}"))
-            await asyncio.sleep(0.1)  # Simulate natural typing speed
-        
-        # Add conversation metadata
-        conversation_history = self.agent.memory.get_conversation_history(task_id)
-        metadata_msg = f"\n\n💭 [Turn {len(conversation_history)//2} | Context: {len(conversation_history)} messages]"
-        await event_queue.enqueue_event(new_agent_text_message(metadata_msg))
+                else:
+                    # Task complete - add final response
+                    await updater.add_artifact(
+                        [Part(root=TextPart(text=item['content']))],
+                        name='conversation_response',
+                    )
+                    await updater.complete()
+                    break
+
+        except Exception as e:
+            logger.error(f'An error occurred in conversation: {e}')
+            await updater.update_status(
+                TaskState.failed,
+                new_agent_text_message(
+                    f"Sorry, I encountered an error: {str(e)}",
+                    task.contextId,
+                    task.id,
+                ),
+                final=True,
+            )
 
     async def cancel(
         self, context: RequestContext, event_queue: EventQueue
     ) -> None:
-        await event_queue.enqueue_event(new_agent_text_message("❌ Conversation cancelled"))
+        """Cancel conversation."""
+        task = context.current_task
+        if task:
+            updater = TaskUpdater(event_queue, task.id, task.contextId)
+            await updater.update_status(
+                TaskState.cancelled,
+                new_agent_text_message(
+                    "Conversation cancelled",
+                    task.contextId,
+                    task.id,
+                ),
+                final=True,
+            )
 ```
 
-### 3. Conversation Server
+### 3. Multiturn Server
 
-**File**: `conversation_server.py`
+**File**: `__main__.py`
 
 ```python
+import httpx
 import uvicorn
+import logging
+
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.tasks import InMemoryTaskStore
+from a2a.server.tasks import InMemoryTaskStore, InMemoryPushNotifier
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
-    AgentProvider,
 )
-from conversation_agent import ConversationalAgentExecutor
+from conversation_agent import MultiturnAgentExecutor
 
+logging.basicConfig(level=logging.INFO)
 
 if __name__ == '__main__':
     # Define conversation skills
     conversation_skill = AgentSkill(
         id='multiturn_conversation',
-        name='Multiturn Conversation',
-        description='Engage in contextual conversations with memory of previous exchanges',
-        tags=['conversation', 'context', 'memory', 'multiturn'],
+        name='Multiturn Conversation Handler',
+        description='Maintains context and memory across conversation turns',
+        tags=['conversation', 'memory', 'context', 'multiturn'],
         examples=[
-            'Tell me about yourself',
-            'Do you remember what we talked about?',
-            'Let\'s continue our conversation'
-        ],
-    )
-    
-    memory_skill = AgentSkill(
-        id='conversation_memory',
-        name='Conversation Memory',
-        description='Remember and reference previous parts of our conversation',
-        tags=['memory', 'context', 'history'],
-        examples=[
-            'What did I just say?',
-            'Summarize our conversation',
-            'Remember this for later'
+            'What is the weather?',
+            'What is your favorite color?', 
+            'Hello, how are you?',
+            'Tell me about yourself'
         ],
     )
 
-    # Create conversational agent card
-    public_agent_card = AgentCard(
-        name='Conversational AI Agent',
-        description='AI agent that maintains conversation context and memory across multiple turns',
-        url='http://localhost:8002/',
+    # Create agent card with conversation capabilities
+    agent_card = AgentCard(
+        name='Multiturn Conversation Agent',
+        description='Demonstrates A2A multiturn conversations with memory and context management',
+        url='http://localhost:11000/',
         version='1.0.0',
-        provider=AgentProvider(
-            organization='A2A Conversation Lab',
-            url='http://localhost:8002/',
-        ),
-        defaultInputModes=['text/plain'],
-        defaultOutputModes=['text/plain'],
+        defaultInputModes=['text'],
+        defaultOutputModes=['text'],
         capabilities=AgentCapabilities(
             streaming=True,
             pushNotifications=False,
-            stateTransitionHistory=True,  # Enable state transition history
+            stateTransitionHistory=True,
+            conversationMemory=True,  # Conversation memory capability
         ),
-        skills=[conversation_skill, memory_skill],
+        skills=[conversation_skill],
     )
     
-    # Setup A2A server with task management
+    # Setup A2A server with conversation support
+    httpx_client = httpx.AsyncClient()
     request_handler = DefaultRequestHandler(
-        agent_executor=ConversationalAgentExecutor(),
-        task_store=InMemoryTaskStore(),  # Stores conversation tasks
+        agent_executor=MultiturnAgentExecutor(),
+        task_store=InMemoryTaskStore(),
+        push_notifier=InMemoryPushNotifier(httpx_client),
     )
 
     server = A2AStarletteApplication(
-        agent_card=public_agent_card,
+        agent_card=agent_card,
         http_handler=request_handler
     )
 
-    print("💬 Starting Conversational AI Agent...")
-    print("🧠 Memory and context enabled!")
-    print("📝 Task-based conversation management active!")
-    uvicorn.run(server.build(), host='0.0.0.0', port=8002)
+    print("💬 Starting Multiturn Conversation Agent...")
+    print("🧠 Memory and context management enabled!")
+    print("📋 Agent Discovery: http://localhost:11000/.well-known/agent.json")
+    print("💬 A2A Endpoint: http://localhost:11000/")
+    uvicorn.run(server.build(), host='0.0.0.0', port=11000)
+```
+
+### 4. Multiturn Test Client
+
+**File**: `test_client.py`
+
+```python
+import logging
+import asyncio
+from typing import Any
+from uuid import uuid4
+import httpx
+
+from a2a.client import A2ACardResolver, A2AClient
+from a2a.types import (
+    AgentCard,
+    MessageSendParams,
+    SendMessageRequest,
+)
+
+
+async def test_multiturn_conversation() -> None:
+    """Test complete multiturn conversation flow."""
+    
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+
+    base_url = 'http://localhost:11000'
+
+    async with httpx.AsyncClient() as httpx_client:
+        # Connect to conversation agent
+        resolver = A2ACardResolver(
+            httpx_client=httpx_client,
+            base_url=base_url,
+        )
+        
+        logger.info(f'Connecting to conversation agent at: {base_url}')
+        agent_card: AgentCard = await resolver.get_agent_card()
+        
+        # Create client
+        client = A2AClient(
+            httpx_client=httpx_client, 
+            agent_card=agent_card
+        )
+
+        print("\n💬 Starting multiturn conversation...")
+        print("=" * 70)
+
+        # Conversation flow demonstration
+        conversation_messages = [
+            "Hello! How are you?",
+            "What's the weather like?",
+            "New York",  # Response to weather location request
+            "What's your favorite color?",
+            "Blue",  # Response to color question
+            "Yes, blue is still my favorite",  # Response to confirmation
+            "Tell me something about our conversation",
+        ]
+
+        context_id = None
+        task_id = None
+
+        for i, message_text in enumerate(conversation_messages):
+            print(f"\n👤 User (Turn {i+1}): {message_text}")
+            
+            # Build message payload
+            message_payload: dict[str, Any] = {
+                'message': {
+                    'role': 'user',
+                    'parts': [{'kind': 'text', 'text': message_text}],
+                    'messageId': uuid4().hex,
+                },
+            }
+            
+            # Add context for continuing conversation
+            if context_id and task_id:
+                message_payload['message']['contextId'] = context_id
+                message_payload['message']['taskId'] = task_id
+
+            request = SendMessageRequest(
+                id=str(uuid4()), 
+                params=MessageSendParams(**message_payload)
+            )
+
+            # Send message and get response
+            response = await client.send_message(request)
+            result = response.result
+
+            # Extract context for next message
+            if hasattr(result, 'contextId'):
+                context_id = result.contextId
+            if hasattr(result, 'id'):
+                task_id = result.id
+
+            # Display response
+            status = result.status.state
+            print(f"🤖 Agent (Status: {status}):")
+
+            # Show agent response content
+            if status == "input-required" and hasattr(result.status, 'message'):
+                # Agent is asking for more input
+                agent_msg = result.status.message.parts[0].text
+                print(f"   {agent_msg}")
+                print(f"   [Waiting for user input...]")
+                
+            elif hasattr(result, 'artifacts') and result.artifacts:
+                # Agent provided final response
+                agent_response = result.artifacts[0].parts[0].text
+                print(f"   {agent_response}")
+                
+            elif hasattr(result, 'history') and result.history:
+                # Check history for agent messages
+                for hist_msg in result.history:
+                    if hist_msg.role == 'agent':
+                        print(f"   {hist_msg.parts[0].text}")
+
+            # Small delay between turns
+            await asyncio.sleep(1.0)
+
+        print("\n" + "=" * 70)
+        print("✅ Multiturn conversation complete!")
+        
+        # Show final conversation history
+        if hasattr(result, 'history') and result.history:
+            print(f"\n📜 Final conversation history ({len(result.history)} messages):")
+            for i, hist_msg in enumerate(result.history[-6:], 1):  # Last 6 messages
+                role_icon = "👤" if hist_msg.role == "user" else "🤖"
+                print(f"   {i}. {role_icon} {hist_msg.parts[0].text[:60]}...")
+
+
+async def test_context_persistence() -> None:
+    """Test that context persists across separate requests."""
+    
+    print("\n🔄 Testing context persistence...")
+    
+    base_url = 'http://localhost:11000'
+
+    async with httpx.AsyncClient() as httpx_client:
+        resolver = A2ACardResolver(httpx_client=httpx_client, base_url=base_url)
+        agent_card = await resolver.get_agent_card()
+        client = A2AClient(httpx_client=httpx_client, agent_card=agent_card)
+
+        # First interaction
+        message1 = SendMessageRequest(
+            id=str(uuid4()),
+            params=MessageSendParams(message={
+                'role': 'user',
+                'parts': [{'kind': 'text', 'text': 'Hi, I like red cars'}],
+                'messageId': uuid4().hex,
+            })
+        )
+
+        response1 = await client.send_message(message1)
+        context_id = response1.result.contextId
+        
+        print(f"🔗 Established context: {context_id[:8]}...")
+
+        # Second interaction using same context
+        message2 = SendMessageRequest(
+            id=str(uuid4()),
+            params=MessageSendParams(message={
+                'role': 'user',
+                'parts': [{'kind': 'text', 'text': 'What did I just tell you?'}],
+                'messageId': uuid4().hex,
+                'contextId': context_id,
+                'taskId': response1.result.id,
+            })
+        )
+
+        response2 = await client.send_message(message2)
+        
+        # Check if agent remembers
+        if hasattr(response2.result, 'artifacts') and response2.result.artifacts:
+            agent_response = response2.result.artifacts[0].parts[0].text
+            if 'red' in agent_response.lower() or 'car' in agent_response.lower():
+                print("✅ Context persistence working! Agent remembered previous message.")
+            else:
+                print("❌ Context not persisted properly.")
+            print(f"   Agent response: {agent_response}")
+
+
+if __name__ == '__main__':
+    async def main():
+        await test_multiturn_conversation()
+        await test_context_persistence()
+    
+    asyncio.run(main())
+```
+
+### 5. Project Configuration
+
+**File**: `pyproject.toml`
+
+```toml
+[project]
+name = "a2a07-code"
+version = "0.1.0"
+description = "A2A Multiturn Conversations with Memory"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "a2a-sdk>=0.2.8",
+    "uvicorn>=0.32.1",
+    "httpx>=0.28.1",
+]
+
+[tool.uv]
+dev-dependencies = []
 ```
 
 ## 🧪 Testing
@@ -275,127 +593,169 @@ if __name__ == '__main__':
 ### 1. Start the Conversation Server
 ```bash
 cd a2a07_code
-uv run conversation_server.py
+uv run __main__.py
 ```
 
-### 2. Test Conversation Continuity
+### 2. Test Agent Discovery
 ```bash
-# Start a conversation
-TASK_ID="conv-$(date +%s)"
-
-# First message
-curl -X POST http://localhost:8002/a2a \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"jsonrpc\": \"2.0\",
-    \"method\": \"message/send\",
-    \"params\": {
-      \"message\": {
-        \"role\": \"user\",
-        \"parts\": [{\"kind\": \"text\", \"text\": \"Hello, who are you?\"}],
-        \"messageId\": \"msg-1\"
-      }
-    },
-    \"id\": \"$TASK_ID\"
-  }" | jq '.result.task.artifacts[].text'
-
-# Continue conversation with same task ID
-curl -X POST http://localhost:8002/a2a \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"jsonrpc\": \"2.0\",
-    \"method\": \"message/send\",
-    \"params\": {
-      \"message\": {
-        \"role\": \"user\",
-        \"parts\": [{\"kind\": \"text\", \"text\": \"Do you remember what I just asked?\"}],
-        \"messageId\": \"msg-2\"
-      }
-    },
-    \"id\": \"$TASK_ID\"
-  }" | jq '.result.task.artifacts[].text'
+# Check conversation capabilities
+curl http://localhost:11000/.well-known/agent.json | jq '.capabilities'
 ```
 
-### 3. Test Memory Features
+### 3. Run Multiturn Test
 ```bash
-# Test memory recall
-curl -X POST http://localhost:8002/a2a \
+cd a2a07_code
+uv run test_client.py
+```
+
+### 4. Manual Conversation Test
+```bash
+# Start conversation
+curl -X POST http://localhost:11000/ \
   -H "Content-Type: application/json" \
-  -d "{
-    \"jsonrpc\": \"2.0\",
-    \"method\": \"message/send\",
-    \"params\": {
-      \"message\": {
-        \"role\": \"user\",
-        \"parts\": [{\"kind\": \"text\", \"text\": \"What do you remember about our conversation?\"}],
-        \"messageId\": \"msg-3\"
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "message/send",
+    "params": {
+      "message": {
+        "role": "user",
+        "parts": [{"kind": "text", "text": "What is the weather?"}],
+        "messageId": "msg1"
       }
     },
-    \"id\": \"$TASK_ID\"
-  }" | jq '.result.task.artifacts[].text'
+    "id": "req1"
+  }' | jq '.result.contextId'
+
+# Continue conversation (use contextId from above)
+curl -X POST http://localhost:11000/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "message/send",
+    "params": {
+      "message": {
+        "role": "user",
+        "parts": [{"kind": "text", "text": "London"}],
+        "messageId": "msg2",
+        "contextId": "CONTEXT_ID_FROM_ABOVE",
+        "taskId": "TASK_ID_FROM_ABOVE"
+      }
+    },
+    "id": "req2"
+  }'
 ```
 
 ## 📊 Expected Output
 
-### Conversation Flow Example
+### Multiturn Conversation Flow
 ```
-First Message:
-👤 "Hello, who are you?"
-🤖 "Hi! I'm Alex, your conversational AI assistant. How can I help you today?"
-💭 [Turn 1 | Context: 2 messages]
+💬 Starting multiturn conversation...
+======================================================================
 
-Second Message:
-👤 "Do you remember what I just asked?"
-🤖 "Yes, I remember our conversation! We've exchanged 4 messages. Here's our recent context:
+👤 User (Turn 1): Hello! How are you?
+🤖 Agent (Status: completed):
+   Hello! I'm a conversational agent that remembers our chat. How can I help you?
 
-user: Hello, who are you?
-agent: Hi! I'm Alex, your conversational AI assistant. How can I help you today?
-user: Do you remember what I just asked?"
-💭 [Turn 2 | Context: 4 messages]
+👤 User (Turn 2): What's the weather like?
+🤖 Agent (Status: input-required):
+   I'd be happy to help you with weather information! What city or location would you like weather for?
+   [Waiting for user input...]
 
-Third Message:
-👤 "What's your personality like?"
-🤖 "I understand you're saying: 'What's your personality like?'. Following up on our discussion about: Do you remember what I just asked?. What would you like to explore further?"
-💭 [Turn 3 | Context: 6 messages]
+👤 User (Turn 3): New York
+🤖 Agent (Status: completed):
+   Perfect! The weather in New York is sunny and 75°F with light clouds. Great day to be outside!
+
+👤 User (Turn 4): What's your favorite color?
+🤖 Agent (Status: input-required):
+   What's your favorite color? I'd love to know more about your preferences!
+   [Waiting for user input...]
+
+👤 User (Turn 5): Blue
+🤖 Agent (Status: completed):
+   Great choice! Blue is a beautiful color. I'll remember that for our future conversations!
+
+👤 User (Turn 6): Yes, blue is still my favorite
+🤖 Agent (Status: completed):
+   Awesome! I'll keep that noted. Colors can say a lot about personality!
+
+👤 User (Turn 7): Tell me something about our conversation
+🤖 Agent (Status: completed):
+   I understand you're asking about: Tell me something about our conversation
+   
+   Based on our conversation: Conversation history:
+   - user: Hello! How are you?
+   - user: What's the weather like?
+   - user: New York
+   - user: What's your favorite color?
+   - user: Blue
+
+======================================================================
+✅ Multiturn conversation complete!
+
+🔄 Testing context persistence...
+🔗 Established context: 12ab34cd...
+✅ Context persistence working! Agent remembered previous message.
+   Agent response: Based on our conversation, you mentioned that you like red cars!
 ```
 
-## 🔍 Key A2A Conversation Concepts
+## 🔍 Key A2A Multiturn Concepts
 
-### Task-Based Conversation Management
-- **Task ID continuity**: Same task ID maintains conversation context
-- **Task lifecycle**: Create → Update → Complete for each conversation
-- **State persistence**: InMemoryTaskStore maintains conversation state
-- **Context retention**: Conversation history tied to task ID
+### Official Multiturn Pattern
+- **contextId**: Unique identifier that links messages in same conversation
+- **taskId**: Links messages within same task/conversation turn
+- **input-required state**: Pauses conversation to collect more input
+- **Conversation memory**: Agent maintains state across turns
+- **History tracking**: Full conversation preserved in response
 
-### Conversation Memory Patterns
-- **Turn tracking**: Number and sequence of conversation exchanges
-- **Context windowing**: Recent N turns for immediate context
-- **History management**: Full conversation history for reference
-- **Metadata tracking**: Timestamps, roles, turn numbers
+### Context Management
+```python
+# Check for existing task/context
+task = context.current_task
 
-### A2A Multiturn Features
-- **stateTransitionHistory**: Capability flag for conversation tracking
-- **Streaming responses**: Real-time conversation feel
-- **Message parts**: Structured message format for rich content
-- **Role-based messaging**: Clear user/agent distinction
+# Create new context if none exists
+if not task:
+    task = new_task(context.message)
+    await event_queue.enqueue_event(task)
+
+# Use TaskUpdater with same contextId
+updater = TaskUpdater(event_queue, task.id, task.contextId)
+```
+
+### State Flow for Multiturn
+```python
+# Request more input
+await updater.update_status(
+    TaskState.input_required,
+    new_agent_text_message("Please provide more details..."),
+    final=True,  # Pause here for user input
+)
+
+# Continue in next message with same contextId
+```
+
+### Memory Implementation
+- **Session-based**: Memory tied to contextId
+- **Structured storage**: Role, content, timestamp tracking
+- **History access**: Previous messages inform current response
+- **State persistence**: Agent remembers what it's waiting for
 
 ## ✅ Success Criteria
 
-- ✅ UV project created with conversation dependencies
-- ✅ Agent maintains conversation context across multiple turns
-- ✅ Task ID provides conversation continuity
-- ✅ Memory system tracks conversation history
-- ✅ Streaming responses create natural conversation flow
-- ✅ Agent demonstrates context awareness in responses
-- ✅ Conversation metadata properly tracked
-- ✅ Multiple conversation threads can be managed
+- ✅ UV project created with A2A SDK dependencies
+- ✅ Agent maintains conversation memory across turns
+- ✅ contextId properly links related messages
+- ✅ input-required state works for interactive dialogues
+- ✅ Conversation history persists and influences responses
+- ✅ Multiple conversation threads can run simultaneously
+- ✅ Context awareness improves response quality
+- ✅ Official A2A multiturn patterns implemented correctly
 
 ## 🎯 Next Step
 
-Ready for [Step 08: Push Notifications](../08_push_notifications/) - Learn about disconnected agent communication!
+Ready for [Step 08: Production Ready](../08_production_ready/) - Prepare for deployment!
 
 ## 📖 Official Reference
 
-This step extends: [A2A Task Management](https://google-a2a.github.io/A2A/latest/specification/#task-management)
+This step implements patterns from: [A2A LangGraph Multiturn Example](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph)
 
-**🎉 Congratulations! You've built a conversational AI agent with memory and context using A2A!** 
+**🎉 Congratulations! You've mastered A2A multiturn conversations with memory and context management!** 

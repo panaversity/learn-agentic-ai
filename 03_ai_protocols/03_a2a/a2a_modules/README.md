@@ -20,14 +20,14 @@
 02_agent_skill/             # Add skills to agent card (visual in browser)  
 03_multiple_cards/          # Multiple agent cards (visual in browser)
 04_agent_executor/          # Agent executor pattern (official tutorial)
-05_hello_a2a/              # Basic A2A messaging (message/send)
+05_a2a_client/              # Basic A2A messaging (message/send)
 06_message_streaming/       # Server-sent events streaming (message/stream)
 07_multiturn_conversation/  # Multiturn conversations with task management
 08_push_notifications/      # Push notifications for disconnected scenarios
-09_agent_discovery/         # Discover and connect to other agents
-10_agent_to_agent/          # Agent calling another agent
-11_authentication/          # Auth patterns (OAuth2, JWT, API keys)
-12_enterprise_features/        
+09_agent_discovery/         # Agent discovery mechanisms and registry patterns
+10_agent_to_agent/          # Direct agent-to-agent communication patterns
+11_authentication/          # Authentication & security (OAuth2, JWT, API keys)
+12_enterprise_features/     # Enterprise features & production deployment        
 ```
 
 ## 📚 Complete Step Learning Goals
@@ -42,10 +42,10 @@
 | **06** | Streaming | Server-sent events, real-time | [Streaming & Multiturn](https://google-a2a.github.io/A2A/latest/tutorials/python/7-streaming-and-multiturn/) | curl + browser |
 | **07** | Multiturn | Task management, conversation state | [Streaming & Multiturn](https://google-a2a.github.io/A2A/latest/tutorials/python/7-streaming-and-multiturn/) | Multi-request test |
 | **08** | Push Notifications | Webhooks, disconnected scenarios | [Push Notifications](https://google-a2a.github.io/A2A/latest/topics/streaming-and-async/#2-push-notifications-for-disconnected-scenarios) | Webhook test |
-| **09** | Discovery | Finding other agents, registry | Agent discovery patterns | Multi-agent setup |
-| **10** | Agent2Agent | Agent communication patterns | A2A protocol usage | Multi-agent test |
-| **11** | Authentication | Security, OAuth2, JWT | [Security Considerations](https://google-a2a.github.io/A2A/latest/topics/streaming-and-async/#security-considerations-for-push-notifications) | Secure client test |
-| **12** | Production | Docker, monitoring, deployment | Production deployment | Production deploy |
+| **09** | Agent Discovery | Agent discovery mechanisms, registry | [A2A Agent Discovery](https://google-a2a.github.io/A2A/specification/#agent-discovery) | Multi-agent setup |
+| **10** | Agent-to-Agent | Direct agent communication patterns | [A2A Multi-Agent Communication](https://google-a2a.wiki/technical-documentation/#agent-collaboration) | Multi-agent test |
+| **11** | Authentication | Security, OAuth2, JWT, API keys | [A2A Security Features](https://google-a2a.github.io/A2A/specification/#security) | Secure client test |
+| **12** | Enterprise Features | Production deployment, monitoring | [A2A Production Considerations](https://google-a2a.github.io/A2A/specification/#production-considerations) | Production deploy |
 
 ## 🎯 Progressive Complexity
 
@@ -62,12 +62,12 @@
 
 **Advanced A2A Steps (8-10)**: Real-world patterns
 - **Step 8**: [Push Notifications](https://google-a2a.github.io/A2A/latest/topics/streaming-and-async/#2-push-notifications-for-disconnected-scenarios) for disconnected scenarios
-- **Step 9**: Agent discovery mechanisms
-- **Step 10**: Agent-to-agent communication
+- **Step 9**: [Agent Discovery](https://google-a2a.github.io/A2A/specification/#agent-discovery) mechanisms and registry patterns
+- **Step 10**: [Agent-to-Agent Communication](https://google-a2a.wiki/technical-documentation/#agent-collaboration) patterns
 
 **Production Steps (11-12)**: Real-world deployment
-- **Step 11**: [Authentication and security](https://google-a2a.github.io/A2A/latest/topics/streaming-and-async/#security-considerations-for-push-notifications)
-- **Step 12**: Docker and Kubernetes deployment
+- **Step 11**: [Authentication & Security](https://google-a2a.github.io/A2A/specification/#security) (OAuth2, JWT, API keys)
+- **Step 12**: [Enterprise Features](https://google-a2a.github.io/A2A/specification/#production-considerations) & production deployment
 
 ## 💡 Why This Structure Works
 

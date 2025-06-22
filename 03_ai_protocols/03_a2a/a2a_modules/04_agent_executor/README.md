@@ -1,19 +1,37 @@
 # Step 04: Agent Executor 🎯
 
-**Implement the Agent Executor pattern - the core of A2A agents**
+**Master the Agent Executor pattern - the core engine of A2A agents**
 
-> **Goal**: Learn the official A2A Agent Executor pattern for handling agent execution logic.
+> **🎯 Official Tutorial**: [Agent Executor - A2A Python Tutorial](https://google-a2a.github.io/A2A/latest/tutorials/python/4-agent-executor/)
+
+> **Goal**: Deep dive into the Agent Executor pattern to understand how it processes requests, manages EventQueue, and handles the core execution logic.
+
+## 📊 Current Status
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| ✅ **Agent Discovery** | Working | `/.well-known/agent.json` endpoint |
+| ✅ **Server Setup** | Working | A2A server starts successfully |
+| ✅ **Official Pattern** | Working | HelloWorld executor matches tutorial |
+| ✅ **Enhanced Pattern** | Ready | Educational version with logging |
+| ✅ **Message Testing** | Fixed | Message extraction working correctly |
+| ✅ **Postman Collection** | Working | Comprehensive test scenarios |
+
+**✅ Fixed**: Message extraction now works correctly by accessing `part.root.text` from A2A SDK Part structure.
 
 ## 🎯 What You'll Learn
 
-- Agent Executor pattern from [official A2A tutorial](https://google-a2a.github.io/A2A/latest/tutorials/python/4-agent-executor/)
-- RequestContext and EventQueue usage
-- Proper agent execution lifecycle
-- Official A2A SDK integration
+- **AgentExecutor pattern** - The heart of every A2A agent
+- **EventQueue mechanics** - Understanding `enqueue` and `dequeue` operations
+- **RequestContext** - How agent receives and processes requests
+- **Official A2A patterns** - Following the exact tutorial examples
+- **Enhanced implementations** - Building on the foundation
+- **Raw A2A requests** - Manual testing without client SDK
+- **Execution lifecycle** - From request to response
 
 ## 📋 Prerequisites
 
-- Completed Steps 01-03 (Agent Card, Skills, Multiple Cards)
+- Completed [Step 03: Multiple Cards](../03_multiple_cards/)
 - Understanding of async Python
 - UV package manager installed
 
@@ -24,213 +42,248 @@
 cd 04_agent_executor
 uv init a2a04_code
 cd a2a04_code
-uv add a2a-server
+uv add a2a-sdk uvicorn
 ```
 
-### 2. Agent Executor Implementation
+### Enhanced Agent Executor (Learning Version)
 
 **File**: `agent_executor.py`
 
 ```python
+import asyncio
+import logging
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
 from a2a.utils import new_agent_text_message
 
-
-# --8<-- [start:HelloWorldAgent]
-class HelloWorldAgent:
-    """Hello World Agent."""
-
-    async def invoke(self) -> str:
-        # This is where Agent is invoked - whatever OpenAI Agents SDK, LangGraph, Google ADK...
-        return 'Hello from Agent Executor!'
+logger = logging.getLogger(__name__)
 
 
-# --8<-- [end:HelloWorldAgent]
+class EnhancedAgent:
+    """Enhanced agent that processes actual user messages."""
+
+    async def invoke(self, message: str) -> str:
+        """Process a message and return response."""
+        logger.info(f"Agent processing message: {message}")
+        
+        # Simulate some processing time
+        await asyncio.sleep(0.5)
+        
+        # Different responses based on input
+        if "hello" in message.lower():
+            return "Hello! Nice to meet you through the A2A protocol!"
+        elif "time" in message.lower():
+            return "I don't have access to real time, but I can process your requests!"
+        elif "error" in message.lower():
+            raise Exception("Simulated error for testing error handling")
+        else:
+            return f"I received your message: '{message}'. How can I help you?"
 
 
-# --8<-- [start:HelloWorldAgentExecutor_init]
-class HelloWorldAgentExecutor(AgentExecutor):
-    """Agent Executor Implementation following official A2A pattern."""
+class EnhancedAgentExecutor(AgentExecutor):
+    """
+    Enhanced Agent Executor that processes actual user input.
+    
+    Key improvements over official example:
+    1. Extracts user message from RequestContext
+    2. Processes the actual message content
+    3. Detailed logging for learning
+    4. Error handling
+    """
 
     def __init__(self):
-        self.agent = HelloWorldAgent()
+        self.agent = EnhancedAgent()
+        logger.info("Enhanced AgentExecutor initialized")
 
-    # --8<-- [end:HelloWorldAgentExecutor_init]
-    # --8<-- [start:HelloWorldAgentExecutor_execute]
     async def execute(
         self,
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
-        """Execute the agent and enqueue the result."""
-        result = await self.agent.invoke()
-        await event_queue.enqueue_event(new_agent_text_message(result))
+        """
+        Enhanced execution with message processing.
+        """
+        logger.info("=== Enhanced AgentExecutor.execute() called ===")
+        
+        # Extract message from RequestContext
+        user_message = self._extract_message_from_context(context)
+        logger.info(f"Extracted user message: {user_message}")
+        
+        # Log context details for learning
+        self._log_context_details(context)
+        
+        try:
+            # Process with enhanced agent
+            logger.info("Calling enhanced agent.invoke()...")
+            result = await self.agent.invoke(user_message)
+            logger.info(f"Agent returned: {result}")
+            
+            # Enqueue the response
+            logger.info("Enqueueing response to EventQueue...")
+            await event_queue.enqueue_event(new_agent_text_message(result))
+            logger.info("✅ Response successfully enqueued!")
+            
+        except Exception as e:
+            # Handle errors gracefully
+            error_msg = f"Agent execution failed: {str(e)}"
+            logger.error(error_msg)
+            await event_queue.enqueue_event(new_agent_text_message(error_msg))
 
-    # --8<-- [end:HelloWorldAgentExecutor_execute]
-
-    # --8<-- [start:HelloWorldAgentExecutor_cancel]
     async def cancel(
-        self, context: RequestContext, event_queue: EventQueue
+        self, 
+        context: RequestContext, 
+        event_queue: EventQueue
     ) -> None:
-        """Cancel agent execution (not supported in this basic example)."""
-        raise Exception('cancel not supported')
+        """Enhanced cancel with proper response."""
+        logger.info("=== Enhanced AgentExecutor.cancel() called ===")
+        cancel_msg = "Agent execution was cancelled"
+        await event_queue.enqueue_event(new_agent_text_message(cancel_msg))
 
-    # --8<-- [end:HelloWorldAgentExecutor_cancel]
+    def _extract_message_from_context(self, context: RequestContext) -> str:
+        """Extract user message from RequestContext."""
+        if not context.message:
+            return "No message found"
+            
+        if context.message.parts:
+            for part in context.message.parts:
+                # A2A SDK structure: Part(root=TextPart(text='hello'))
+                if hasattr(part, 'root') and hasattr(part.root, 'text'):
+                    return part.root.text
+                elif hasattr(part, 'text'):
+                    return part.text
+        return "No message found"
+
+    def _log_context_details(self, context: RequestContext):
+        """Log RequestContext details for learning purposes."""
+        logger.info("--- RequestContext Details ---")
+        logger.info(f"Message ID: {context.message.messageId if context.message else 'None'}")
+        logger.info(f"Message Role: {context.message.role if context.message else 'None'}")
+        logger.info(f"Message Parts Count: {len(context.message.parts) if context.message and context.message.parts else 0}")
+        logger.info(f"Task ID: {context.task_id}")
+        logger.info("-----------------------------")
 ```
 
-### 3. Agent Card with Executor
+### 4. Server Implementation
 
-**File**: `agent_card_server.py`
+**File**: `main.py`
 
 ```python
 import uvicorn
-
+import logging
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
-from a2a.types import (
-    AgentCapabilities,
-    AgentCard,
-    AgentSkill,
-)
-from agent_executor import (
-    HelloWorldAgentExecutor,  # type: ignore[import-untyped]
-)
+from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 
+# Choose which executor to use
+from agent_executor import EnhancedAgentExecutor  # Official example
+# from enhanced_agent_executor import EnhancedAgentExecutor  # Enhanced version
+
+# Enable detailed logging to see EventQueue operations
+logging.basicConfig(level=logging.INFO)
 
 if __name__ == '__main__':
-    # --8<-- [start:AgentSkill]
+    # Agent skill definition
     skill = AgentSkill(
         id='hello_world',
         name='Returns hello world',
-        description='just returns hello world',
-        tags=['hello world'],
-        examples=['hi', 'hello world'],
+        description='Official A2A HelloWorld example - just returns hello world',
+        tags=['hello world', 'tutorial', 'official'],
+        examples=['hi', 'hello world', 'test'],
     )
-    # --8<-- [end:AgentSkill]
 
-    # --8<-- [start:AgentCard]
-    # This will be the public-facing agent card
-    public_agent_card = AgentCard(
-        name='Hello World Agent with Executor',
-        description='Agent using the official Agent Executor pattern',
-        url='http://localhost:8000/',
+    # Agent card matching official tutorial
+    agent_card = AgentCard(
+        name='Hello World Agent Executor',
+        description='Official A2A Agent Executor tutorial implementation',
+        url='http://localhost:9999/',
         version='1.0.0',
         defaultInputModes=['text'],
         defaultOutputModes=['text'],
-        capabilities=AgentCapabilities(streaming=True),
+        capabilities=AgentCapabilities(streaming=False),
         skills=[skill],
     )
-    # --8<-- [end:AgentCard]
 
+    # Setup A2A server with official components
     request_handler = DefaultRequestHandler(
-        agent_executor=HelloWorldAgentExecutor(),
+        agent_executor=EnhancedAgentExecutor(),  # Use official executor
         task_store=InMemoryTaskStore(),
     )
 
     server = A2AStarletteApplication(
-        agent_card=public_agent_card,
+        agent_card=agent_card, 
         http_handler=request_handler
     )
 
-    print("🎯 Starting Agent Executor Server...")
-    print("📋 Agent Discovery: http://localhost:8000/.well-known/agent.json")
-    print("💬 A2A Endpoint: http://localhost:8000/a2a")
-    uvicorn.run(server.build(), host='0.0.0.0', port=8000)
+    print("🎯 Starting Official Agent Executor Server...")
+    print("📋 Agent Discovery: http://localhost:9999/.well-known/agent.json")
+    print("💬 Test with curl or Postman (see collection below)...")
+    uvicorn.run(server.build(), host='0.0.0.0', port=9999)
 ```
 
-### 4. Test Client
+## 🧪 Testing & Learning
 
-**File**: `test_client.py`
-
-```python
-import logging
-import asyncio
-from typing import Any
-from uuid import uuid4
-
-import httpx
-
-from a2a.client import A2ACardResolver, A2AClient
-from a2a.types import (
-    AgentCard,
-    MessageSendParams,
-    SendMessageRequest,
-)
-
-
-async def main() -> None:
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-
-    base_url = 'http://localhost:8000'
-
-    async with httpx.AsyncClient() as httpx_client:
-        # Initialize A2ACardResolver
-        resolver = A2ACardResolver(
-            httpx_client=httpx_client,
-            base_url=base_url,
-        )
-
-        # Fetch agent card
-        logger.info(f'Fetching agent card from: {base_url}/.well-known/agent.json')
-        public_agent_card: AgentCard = await resolver.get_agent_card()
-        logger.info(public_agent_card.model_dump_json(indent=2, exclude_none=True))
-
-        # Initialize client
-        client = A2AClient(
-            httpx_client=httpx_client, agent_card=public_agent_card
-        )
-        logger.info('A2AClient initialized.')
-
-        # Send message
-        send_message_payload: dict[str, Any] = {
-            'message': {
-                'role': 'user',
-                'parts': [
-                    {'kind': 'text', 'text': 'Hello Agent Executor!'}
-                ],
-                'messageId': uuid4().hex,
-            },
-        }
-        request = SendMessageRequest(
-            id=str(uuid4()), params=MessageSendParams(**send_message_payload)
-        )
-
-        response = await client.send_message(request)
-        print("📤 Agent Response:")
-        print(response.model_dump(mode='json', exclude_none=True))
-
-
-if __name__ == '__main__':
-    asyncio.run(main())
-```
-
-## 🧪 Testing
-
-### 1. Start the Agent Server
+### 1. Start the Demo Server
 ```bash
 cd a2a04_code
-python agent_card_server.py
+uv run main.py
 ```
 
-### 2. Test Agent Discovery
-```bash
-# In another terminal
-curl http://localhost:8000/.well-known/agent.json | jq '.'
+**Expected Output:**
+```
+🎯 Starting Official Agent Executor Server...
+📋 Agent Discovery: http://localhost:9999/.well-known/agent.json
+💬 Test with curl or Postman (see collection below)...
+INFO:     Started server process [12345]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9999 (Press CTRL+C to quit)
 ```
 
-### 3. Test with Client
+### 2. Agent Discovery Test
 ```bash
-# In another terminal
-cd a2a04_code
-python test_client.py
+curl http://localhost:9999/.well-known/agent.json | jq '.'
 ```
 
-### 4. Manual A2A Test
+**Expected Response:**
+```json
+{
+  "capabilities": {
+    "streaming": false
+  },
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "description": "Official A2A Agent Executor tutorial implementation",
+  "name": "Hello World Agent Executor",
+  "skills": [
+    {
+      "description": "Official A2A HelloWorld example - just returns hello world",
+      "examples": [
+        "hi",
+        "hello world",
+        "test"
+      ],
+      "id": "hello_world",
+      "name": "Returns hello world",
+      "tags": [
+        "hello world",
+        "tutorial",
+        "official"
+      ]
+    }
+  ],
+  "url": "http://localhost:9999/",
+  "version": "1.0.0"
+}
+```
+
+You can also try sending a message:
 ```bash
-curl -X POST http://localhost:8000/a2a \
+ curl -X POST http://localhost:9999/ \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -238,95 +291,162 @@ curl -X POST http://localhost:8000/a2a \
     "params": {
       "message": {
         "role": "user",
-        "parts": [
-          {
-            "kind": "text",
-            "text": "Test the executor!"
-          }
-        ],
-        "messageId": "test-123"
+        "parts": [{"kind": "text", "text": "hello"}],
+        "messageId": "test-001"
       }
     },
-    "id": "req-456"
+    "id": "req-001"
   }' | jq '.'
 ```
 
-## 📊 Expected Output
+### 3. Testing with Enhanced Executor
 
-**Agent Response Structure:**
-```json
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "id": "task-abc123",
-    "status": {
-      "state": "completed",
-      "timestamp": "2024-01-01T12:00:00"
-    },
-    "artifacts": [
-      {
-        "artifactId": "artifact-def456",
-        "parts": [
-          {
-            "kind": "text",
-            "text": "Hello from Agent Executor!"
-          }
-        ]
-      }
-    ],
-    "kind": "task"
-  },
-  "id": "req-456"
-}
+## 🔧 Postman Collection Testing
+
+A comprehensive Postman collection is included for thorough testing:
+
+**File**: `A2A_Agent_Executor_Tests.postman_collection.json`
+
+### Import and Setup
+
+1. **Import the Collection**:
+   - Open Postman
+   - Click "Import" → "Upload Files"
+   - Select `A2A_Agent_Executor_Tests.postman_collection.json`
+
+2. **Set Environment Variables**:
+   - Create a new Environment called "A2A Local"
+   - Add variable: `base_url` = `http://localhost:9999`
+
+3. **Start Your Server**:
+   ```bash
+   cd a2a04_code
+   uv run main.py
+   ```
+
+### Test Scenarios
+
+The collection includes:
+
+1. **01 - Agent Discovery**: Tests `/.well-known/agent.json` endpoint
+2. **02 - Basic Hello Message**: Sends simple message via `message/send`
+3. **03 - Different Message Content**: Tests that official agent always returns "Hello World"
+4. **04 - Invalid JSON-RPC Method**: Tests error handling
+
+### Running Tests
+
+**Option 1: Individual Tests**
+- Click any request and hit "Send"
+- Check the "Test Results" tab for validations
+
+**Option 2: Collection Runner**
+- Click "..." next to collection name
+- Select "Run collection"
+- Choose environment and run all tests
+
+### Expected Test Results
+
+✅ **All tests should pass when using the official HelloWorldAgentExecutor**
+
+- Agent Discovery: Validates agent card structure
+- Basic Message: Confirms "Hello World" response
+- Different Content: Still returns "Hello World" (official behavior)
+- Invalid Method: Proper JSON-RPC error handling
+
+### Testing Enhanced Executor
+
+To test the enhanced version:
+
+1. Update `main.py` to use `EnhancedAgentExecutor`
+2. Re-run tests
+3. Test #03 should show different behavior (processes actual message content)
+
+## 🔍 Deep Dive: EventQueue Mechanics
+
+### What is EventQueue?
+
+The `EventQueue` is the core communication channel between your agent and the A2A client:
+
+```python
+# ENQUEUE: Your agent puts responses into the queue
+await event_queue.enqueue_event(new_agent_text_message("Hello!"))
+
+# DEQUEUE: A2A system takes responses from queue and sends to client
+# (This happens automatically in the A2A framework)
 ```
 
-## 🔍 Key A2A Concepts
+### EventQueue Operations
 
-### Agent Executor Pattern
-- **AgentExecutor**: Abstract base class for agent execution logic
-- **execute()**: Main method that processes requests and generates responses
-- **cancel()**: Method to cancel ongoing execution
-- **RequestContext**: Contains request metadata and context
-- **EventQueue**: Queue for sending events/responses back to client
+1. **Enqueue** (`await event_queue.enqueue_event()`):
+   - Your agent puts messages/artifacts into the queue
+   - These get converted to proper A2A protocol format
+   - Sent to the client as JSON-RPC responses
 
-### Official A2A Architecture
-- **A2AStarletteApplication**: Main server application
-- **DefaultRequestHandler**: Handles incoming A2A requests
-- **InMemoryTaskStore**: Stores task state in memory
-- **AgentCard**: Describes agent capabilities
-- **AgentSkill**: Defines specific agent skills
+2. **Dequeue** (automatic):
+   - A2A system pulls events from queue
+   - Converts to HTTP responses
+   - Delivers to client
 
-### Integration Points
-- Your agent logic goes in the `HelloWorldAgent.invoke()` method
-- The executor handles A2A protocol details
-- EventQueue manages response streaming
-- Task store handles state persistence
+### Key EventQueue Methods
+
+```python
+# Send text message
+await event_queue.enqueue_event(new_agent_text_message("Hello"))
+
+# Send custom event (advanced)
+from a2a.types import Event
+await event_queue.enqueue_event(Event(...))
+```
+
+## 🔧 RequestContext Deep Dive
+
+The `RequestContext` contains everything about the incoming request:
+
+```python
+def analyze_context(context: RequestContext):
+    """Understand what's in RequestContext"""
+    
+    # The actual message from user
+    message = context.message
+    print(f"User said: {message.parts[0].text}")
+    print(f"Message ID: {message.messageId}")
+    print(f"Role: {message.role}")  # Usually "user"
+    
+    # Task information
+    print(f"Task ID: {context.task_id}")
+    
+    # Authentication info (if any)
+    print(f"Auth info: {context.auth_context}")
+```
 
 ## ✅ Success Criteria
 
-- ✅ UV project created with a2a-server dependency
-- ✅ Agent Executor implements required methods
-- ✅ Server starts and serves agent card
-- ✅ Client can discover and communicate with agent
-- ✅ A2A protocol compliance maintained
-- ✅ Official A2A SDK patterns followed
+- ✅ **Understand AgentExecutor**: Know how `execute()` and `cancel()` work
+- ✅ **Master EventQueue**: Understand enqueue operations and why they matter
+- ✅ **Parse RequestContext**: Extract user messages and context data
+- ✅ **Handle Raw Requests**: Test with curl commands
+- ✅ **See the Logs**: Watch the execution flow in real-time
+- ✅ **Error Handling**: Understand how exceptions are managed
 
 ## 🎯 Next Step
 
-**Ready for Step 05?** → [05_hello_a2a](../05_hello_a2a/) - Interact with the server using A2A client
+**Ready for A2A Client?** → [05_a2a_client](../05_a2a_client/) - Learn agent-to-agent communication
+
+**Why Skip "Start Server"?** 
+Server startup is the same everywhere: `uvicorn.run(server.build(), ...)`. The real learning is in **client interaction** and **messaging patterns**.
 
 ---
 
 ## 💡 Key Insights
 
-1. **Agent Executor is the core pattern** - All A2A agents should implement this
-2. **Separation of concerns** - Agent logic separate from A2A protocol handling
-3. **Official SDK integration** - Use A2A SDK for protocol compliance
-4. **Event-driven architecture** - EventQueue enables streaming and async responses
-5. **Task-based responses** - All A2A responses are wrapped in task objects
+1. **AgentExecutor is the Engine**: Every A2A agent centers around this pattern
+2. **EventQueue is the Highway**: All responses travel through `enqueue_event()`
+3. **RequestContext is the Package**: Contains everything about the incoming request
+4. **Logging is Learning**: Watch the execution flow to understand the pattern
+5. **Raw Testing First**: Understand the protocol before using helper SDKs
 
 ## 📖 Official Reference
 
-This step directly implements: [Agent Executor Tutorial](https://google-a2a.github.io/A2A/latest/tutorials/python/4-agent-executor/)
+Agent Executor pattern from: [A2A HelloWorld Sample](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/helloworld)
 
-**🎉 Congratulations! You've implemented the official A2A Agent Executor pattern!** 
+**🎉 You've mastered the core Agent Executor pattern - the foundation of all A2A agents!** 

@@ -1,445 +1,239 @@
-# Step 03: Multiple Cards 🌐
+# Step 03: Public vs Extended Agent Cards 🔐
 
-**Create an ecosystem of specialized agents using official A2A SDK - visual agent discovery**
+**Learn A2A agent card tiers - public discovery vs authenticated extended capabilities**
 
-> **Goal**: Run multiple specialized A2A agents simultaneously using official SDK and see how they advertise different capabilities.
+> **Goal**: Implement the A2A pattern of public agent cards with additional authenticated extended cards using the official A2A SDK.
 
 ## 🎯 What You'll Learn
 
-- Agent specialization using official A2A SDK
-- Multi-agent ecosystem patterns
-- Comparative agent discovery
-- Port management for multiple agents
-- Visual ecosystem exploration
-- Foundation for agent networks
+- A2A public vs extended agent card patterns
+- Authentication-gated skill access using A2A SDK
+- `supportsAuthenticatedExtendedCard` feature
+- Tiered capability disclosure
+- Visual comparison of card differences
+- Foundation for secure agent architectures
+
+## 💡 Key Insights
+
+1. **Tiered access enables business models** - Public discovery with premium features
+2. **Authentication context matters** - Skills must check user permissions
+3. **Capability advertising strategy** - What to show publicly vs privately
+4. **User experience flow** - Clear path from public to authenticated access
+5. **A2A supports complex access patterns** - Not just all-or-nothing
 
 ## 📋 Prerequisites
 
 - Completed [Step 02: Agent Skill](../02_agent_skill/)
-- Understanding of AgentCard and AgentSkill types
-- UV package manager installed
-- Ability to run multiple terminals/processes
+- Understanding of AgentCard and AgentSkill types from A2A SDK
+
+## 🎯 A2A Concept: Agent Card Tiers
+
+A2A agents can expose **two different agent cards**:
+
+1. **Public Card**: Basic capabilities visible to everyone
+2. **Extended Card**: Additional capabilities for authenticated users only
+
+This enables **capability tiering** - public discovery with premium features for authorized access.
 
 ## 🚀 Implementation
 
-We'll create 3 specialized agents using official A2A SDK, each focused on different capabilities:
+We'll create a single agent with dual agent cards using the official A2A SDK:
 
-### 1. Create UV Projects for Each Agent
+### 1. Initialize Project
 
 ```bash
-# Create Math Agent
-cd 03_multiple_cards
-uv init math_agent_code
-cd math_agent_code
-uv add a2a-server
-
-# Create Language Agent  
-cd ../
-uv init language_agent_code
-cd language_agent_code
-uv add a2a-server
-
-# Create Utility Agent
-cd ../
-uv init utility_agent_code  
-cd utility_agent_code
-uv add a2a-server
-```
-
-### 2. Math Agent (Port 8002)
-
-**File**: `math_agent_code/math_agent.py`
-
-```python
-import uvicorn
-from a2a.server.apps import A2AStarletteApplication
-from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.tasks import InMemoryTaskStore
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
-from a2a.utils import new_agent_text_message
-from a2a.types import (
-    AgentCapabilities,
-    AgentCard,
-    AgentSkill,
-    AgentProvider,
-)
+from a2a.types import AgentSkill, AgentCard, AgentProvider, AgentCapabilities
 
-class MathAgent:
-    """Specialized agent for mathematical operations."""
-    
-    async def invoke(self, operation: str = "add") -> str:
-        """Perform mathematical operations."""
-        if operation == "add":
-            return "I can add numbers: 5 + 3 = 8"
-        elif operation == "statistics":
-            return "I can calculate statistics: mean, median, mode"
-        return "Math operations: addition, statistics, calculations"
-
-
-class MathAgentExecutor(AgentExecutor):
-    """Math specialist agent executor."""
-    
-    def __init__(self):
-        self.agent = MathAgent()
+class TieredAgentExecutor(AgentExecutor):
+    """Agent executor supporting both public and extended skills"""
     
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
-        """Execute math operations."""
-        result = await self.agent.invoke("add")
-        await event_queue.enqueue_event(new_agent_text_message(result))
+        """Execute based on skill ID and authentication status"""
+
+        ...
     
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
-        """Cancel execution."""
-        raise Exception('cancel not supported')
+        """Cancel execution"""
+        ...
 
-
-if __name__ == "__main__":
-    # Define math-focused skills
-    addition_skill = AgentSkill(
-        id='add_numbers',
-        name='Number Addition',
-        description='Add two or more numbers together with detailed calculation',
-        tags=['math', 'arithmetic', 'addition'],
-        examples=['Add 5 and 3', 'Sum these numbers: 1,2,3,4'],
+    # PUBLIC SKILL - Available to everyone
+    public_skill = AgentSkill(
+        id='hello_world',
+        name='Basic Hello World',
+        description='Returns a friendly hello world greeting - available to all users',
+        tags=['greeting', 'public', 'basic'],
+        examples=['hi', 'hello', 'greet me'],
     )
     
-    statistics_skill = AgentSkill(
-        id='basic_statistics',
-        name='Basic Statistics',
-        description='Calculate mean, median, and other basic statistics for datasets',
-        tags=['math', 'statistics', 'analysis'],
-        examples=['Calculate mean of [1,2,3,4,5]', 'Find median of dataset'],
+    # EXTENDED SKILLS - Only for authenticated users
+    super_skill = AgentSkill(
+        id='super_hello_world',
+        name='Super Hello World',
+        description='Returns an enhanced SUPER greeting with special formatting - requires authentication',
+        tags=['greeting', 'premium', 'enhanced', 'authenticated'],
+        examples=['super hi', 'give me a super hello', 'premium greeting'],
     )
-
-    # Create math agent card
-    math_agent_card = AgentCard(
-        name='Math Specialist Agent',
-        description='Specialized agent for mathematical operations and statistical analysis',
-        url='http://localhost:8002/',
+    
+    premium_skill = AgentSkill(
+        id='premium_analysis',
+        name='Premium Analysis',
+        description='Advanced computational analysis features - authenticated users only',
+        tags=['analysis', 'premium', 'advanced', 'authenticated'],
+        examples=['analyze this data', 'premium insights', 'advanced analysis'],
+    )
+    
+    # PUBLIC AGENT CARD - Basic capabilities visible to everyone
+    public_agent_card = AgentCard(
+        name='Tiered Capability Agent',
+        description='An A2A agent demonstrating public vs authenticated extended capabilities',
+        url='http://localhost:8005/',
         version='1.0.0',
         provider=AgentProvider(
-            organization='A2A Math Lab',
-            url='http://localhost:8002/',
+            organization='A2A Tiered Services Lab',
+            url='http://localhost:8005/'
         ),
+        iconUrl='http://localhost:8005/icon.png',
+        documentationUrl='http://localhost:8005/docs',
         defaultInputModes=['text/plain'],
         defaultOutputModes=['text/plain'],
         capabilities=AgentCapabilities(
             streaming=True,
             pushNotifications=False,
-            stateTransitionHistory=False,
+            stateTransitionHistory=False
         ),
-        skills=[addition_skill, statistics_skill],
+        skills=[public_skill],  # Only public skill in public card
+        supportsAuthenticatedExtendedCard=True,  # Indicates extended card is available
+    )
+    
+    # EXTENDED AGENT CARD - Full capabilities for authenticated users
+    extended_agent_card = public_agent_card.model_copy(
+        update={
+            'name': 'Tiered Capability Agent - Extended Edition',
+            'description': 'Full-featured A2A agent with premium capabilities for authenticated users',
+            'version': '1.1.0',  # Different version for extended features
+            'skills': [
+                public_skill,    # Include public skill
+                super_skill,     # Add premium skills
+                premium_skill,
+            ],
+            # Inherit all other settings from public card
+        }
     )
 
-    # Create server
+```
+
+And main.py
+```python
+import uvicorn
+from a2a.server.apps import A2AStarletteApplication
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.tasks import InMemoryTaskStore
+from tiered_agent import TieredAgentExecutor, public_agent_card, extended_agent_card
+
+if __name__ == "__main__":
+    # Create request handler
     request_handler = DefaultRequestHandler(
-        agent_executor=MathAgentExecutor(),
+        agent_executor=TieredAgentExecutor(),
         task_store=InMemoryTaskStore(),
     )
-
+    
+    # Create A2A server with BOTH agent cards
     server = A2AStarletteApplication(
-        agent_card=math_agent_card,
-        http_handler=request_handler
+        agent_card=public_agent_card,           # Public card
+        http_handler=request_handler,
+        extended_agent_card=extended_agent_card,  # Extended card for authenticated users
     )
+    
+    print("🔐 Starting Tiered Capability Agent on port 8005...")
+    print(f"📋 Public skills: {[skill.id for skill in public_agent_card.skills]}")
+    print(f"🌟 Extended skills: {[skill.id for skill in extended_agent_card.skills]}")
+    print(f"🔑 Extended card support: {public_agent_card.supportsAuthenticatedExtendedCard}")
+    
+    uvicorn.run(server.build(), host="0.0.0.0", port=8005)
 
-    print("🧮 Starting Math Specialist Agent on port 8002...")
-    print(f"📊 Skills: {[skill.id for skill in math_agent_card.skills]}")
-    uvicorn.run(server.build(), host="0.0.0.0", port=8002)
 ```
-
-### 3. Language Agent (Port 8003)
-
-**File**: `language_agent_code/language_agent.py`
-
-```python
-# Similar structure to Math Agent, but with language-focused skills
-import uvicorn
-from a2a.server.apps import A2AStarletteApplication
-from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.tasks import InMemoryTaskStore
-from a2a.server.agent_execution import AgentExecutor, RequestContext
-from a2a.server.events import EventQueue
-from a2a.utils import new_agent_text_message
-from a2a.types import AgentCapabilities, AgentCard, AgentSkill, AgentProvider
-
-class LanguageAgent:
-    async def invoke(self) -> str:
-        return "I can translate text and analyze language patterns!"
-
-class LanguageAgentExecutor(AgentExecutor):
-    def __init__(self):
-        self.agent = LanguageAgent()
-    
-    async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
-        result = await self.agent.invoke()
-        await event_queue.enqueue_event(new_agent_text_message(result))
-    
-    async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
-        raise Exception('cancel not supported')
-
-if __name__ == "__main__":
-    # Language-focused skills
-    translation_skill = AgentSkill(
-        id='translate_text',
-        name='Text Translation',
-        description='Translate text between different languages',
-        tags=['language', 'translation', 'multilingual'],
-        examples=['Translate "Hello" to Spanish', 'Convert English to French'],
-    )
-    
-    analysis_skill = AgentSkill(
-        id='analyze_text',
-        name='Text Analysis',
-        description='Analyze text for sentiment, language detection, and linguistic properties',
-        tags=['language', 'analysis', 'nlp'],
-        examples=['Analyze sentiment of text', 'Detect language of document'],
-    )
-
-    language_agent_card = AgentCard(
-        name='Language Specialist Agent',
-        description='Specialized agent for language processing, translation, and text analysis',
-        url='http://localhost:8003/',
-        version='1.0.0',
-        provider=AgentProvider(organization='A2A Language Lab', url='http://localhost:8003/'),
-        defaultInputModes=['text/plain'],
-        defaultOutputModes=['text/plain'],
-        capabilities=AgentCapabilities(streaming=True, pushNotifications=False),
-        skills=[translation_skill, analysis_skill],
-    )
-
-    request_handler = DefaultRequestHandler(
-        agent_executor=LanguageAgentExecutor(),
-        task_store=InMemoryTaskStore(),
-    )
-    server = A2AStarletteApplication(agent_card=language_agent_card, http_handler=request_handler)
-    
-    print("🗣️ Starting Language Specialist Agent on port 8003...")
-    uvicorn.run(server.build(), host="0.0.0.0", port=8003)
-```
-
-### 4. Utility Agent (Port 8004)
-
-**File**: `utility_agent_code/utility_agent.py`
-
-```python
-# Similar structure with utility-focused skills
-import uvicorn
-from a2a.server.apps import A2AStarletteApplication
-from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.tasks import InMemoryTaskStore
-from a2a.server.agent_execution import AgentExecutor, RequestContext
-from a2a.server.events import EventQueue
-from a2a.utils import new_agent_text_message
-from a2a.types import AgentCapabilities, AgentCard, AgentSkill, AgentProvider
-from datetime import datetime
-
-class UtilityAgent:
-    async def invoke(self) -> str:
-        return f"Current time: {datetime.now().isoformat()}, I can help with utilities!"
-
-class UtilityAgentExecutor(AgentExecutor):
-    def __init__(self):
-        self.agent = UtilityAgent()
-    
-    async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
-        result = await self.agent.invoke()
-        await event_queue.enqueue_event(new_agent_text_message(result))
-    
-    async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
-        raise Exception('cancel not supported')
-
-if __name__ == "__main__":
-    # Utility-focused skills
-    datetime_skill = AgentSkill(
-        id='get_datetime_info',
-        name='DateTime Information',
-        description='Get current date/time information in various formats',
-        tags=['utility', 'datetime', 'formatting'],
-        examples=['Get current time', 'Format date as ISO'],
-    )
-    
-    uuid_skill = AgentSkill(
-        id='generate_uuid',
-        name='UUID Generation',
-        description='Generate unique identifiers in various formats',
-        tags=['utility', 'uuid', 'generation'],
-        examples=['Generate UUID', 'Create unique identifier'],
-    )
-
-    utility_agent_card = AgentCard(
-        name='Utility Specialist Agent',
-        description='Specialized agent for utility functions like datetime, UUIDs, and system operations',
-        url='http://localhost:8004/',
-        version='1.0.0',
-        provider=AgentProvider(organization='A2A Utility Lab', url='http://localhost:8004/'),
-        defaultInputModes=['text/plain'],
-        defaultOutputModes=['text/plain'],
-        capabilities=AgentCapabilities(streaming=True, pushNotifications=False),
-        skills=[datetime_skill, uuid_skill],
-    )
-
-    request_handler = DefaultRequestHandler(
-        agent_executor=UtilityAgentExecutor(),
-        task_store=InMemoryTaskStore(),
-    )
-    server = A2AStarletteApplication(agent_card=utility_agent_card, http_handler=request_handler)
-    
-    print("🔧 Starting Utility Specialist Agent on port 8004...")
-    uvicorn.run(server.build(), host="0.0.0.0", port=8004)
-```
-
-
 
 ## 🧪 Testing
 
-### 1. Start All Agents
-
-Open 3 separate terminals and run:
+### 1. Start the Tiered Agent
 
 ```bash
-# Terminal 1 - Math Agent
-cd math_agent_code
-python math_agent.py
-
-# Terminal 2 - Language Agent  
-cd language_agent_code
-python language_agent.py
-
-# Terminal 3 - Utility Agent
-cd utility_agent_code
-python utility_agent.py
+uv run python main.py
 ```
 
-### 2. Visual Agent Ecosystem Test
+### 2. Visual Agent Card Comparison
 
-**Individual Agent Cards:**
-1. Math Agent: http://localhost:8002/.well-known/agent.json
-2. Language Agent: http://localhost:8003/.well-known/agent.json  
-3. Utility Agent: http://localhost:8004/.well-known/agent.json
+**Public Card** (everyone can see):
+http://localhost:8005/.well-known/agent.json
 
-**Compare specializations** - Notice how each agent focuses on different capabilities using official A2A SDK!
+**Extended Card** (authenticated users only):
+http://localhost:8005/agent/authenticatedExtendedCard
 
-### 3. Command Line Ecosystem Test
+### 3. Compare Cards in Browser
 
-```bash
-# Compare agent capabilities
-curl http://localhost:8002/.well-known/agent.json | jq '.skills[].tags'
-curl http://localhost:8003/.well-known/agent.json | jq '.skills[].tags'  
-curl http://localhost:8004/.well-known/agent.json | jq '.skills[].tags'
+Open both URLs and notice the differences:
 
-# Compare skill counts
-curl http://localhost:8002/.well-known/agent.json | jq '.skills | length'
-curl http://localhost:8003/.well-known/agent.json | jq '.skills | length'
-curl http://localhost:8004/.well-known/agent.json | jq '.skills | length'
+### Public Card Discovery
+- ✅ Shows basic capabilities only
+- ✅ Indicates extended card is available via `supportsAuthenticatedExtendedCard: true`
+- ✅ Allows public skill testing
+- ✅ Standard A2A agent card format
 
-# Test A2A messaging with each agent
-curl -X POST http://localhost:8002/a2a \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc": "2.0", "method": "message/send", "params": {"message": {"role": "user", "parts": [{"kind": "text", "text": "Hello Math Agent!"}], "messageId": "test-123"}}, "id": "req-456"}' | jq '.'
-```
+### Extended Card Discovery  
+- ✅ Shows all capabilities (public + premium)
+- ✅ Different name and version
+- ✅ Additional premium skills visible
+- ✅ Same base structure as public card
 
-## 📊 Expected Output
-
-When you visit each agent card, you should see distinct specializations:
-
-**Math Agent** (http://localhost:8002/.well-known/agent.json):
-```json
-{
-  "name": "Math Specialist Agent",
-  "description": "Specialized agent for mathematical operations and statistical analysis",
-  "provider": {"organization": "A2A Math Lab"},
-  "skills": [
-    {
-      "id": "add_numbers",
-      "name": "Number Addition",
-      "tags": ["math", "arithmetic", "addition"]
-    },
-    {
-      "id": "basic_statistics", 
-      "name": "Basic Statistics",
-      "tags": ["math", "statistics", "analysis"]
-    }
-  ]
-}
-```
-
-**Language Agent** (http://localhost:8003/.well-known/agent.json):
-```json
-{
-  "name": "Language Specialist Agent",
-  "provider": {"organization": "A2A Language Lab"},
-  "skills": [
-    {
-      "id": "translate_text",
-      "tags": ["language", "translation", "multilingual"]
-    },
-    {
-      "id": "analyze_text",
-      "tags": ["language", "analysis", "nlp"]
-    }
-  ]
-}
-```
+### Skill Execution
+- ✅ Public skills work for everyone
+- ✅ Premium skills show authentication requirements
+- ✅ Clear feedback about access levels
 
 ## 🔍 Key A2A Concepts
 
-### Agent Specialization
-- **Focused capabilities**: Each agent excels in specific domains
-- **Clear boundaries**: Math, language, utilities - distinct responsibilities  
-- **Efficient discovery**: Other agents know exactly what each agent offers
-- **Composition potential**: Agents can work together on complex tasks
+### Agent Card Tiering
+- **Public discovery**: Anyone can see basic capabilities
+- **Extended capabilities**: Premium features for authenticated users
+- **Graduated access**: Start with public, upgrade to extended
+- **Clear indication**: `supportsAuthenticatedExtendedCard` flag
 
-### Multi-Agent Ecosystems
-- **Distributed capabilities**: No single agent needs to do everything
-- **Service discovery**: Agents can find and use each other's services
-- **Scalability**: Add new specialized agents without changing existing ones
-- **Fault tolerance**: If one agent fails, others continue working
+### Capability Disclosure Strategy
+- **Marketing approach**: Public card showcases basic value
+- **Security approach**: Sensitive capabilities hidden until authenticated
+- **Scalability approach**: Different service tiers
+- **Discovery approach**: Users know extended features exist
 
-### Discovery Patterns
-- **Standard endpoints**: All agents use `/.well-known/agent.json`
-- **Automated discovery**: Discovery hubs can catalog available agents
-- **Real-time status**: Check which agents are online/offline
-- **Capability mapping**: Understand the full ecosystem's capabilities
+### A2A Authentication Integration
+- **Standard endpoints**: Both cards use standard A2A endpoints
+- **Authentication context**: Skills check authentication status
+- **Graceful degradation**: Public skills always work
+- **Clear messaging**: Users understand access requirements
 
-### Why Multiple Agents Matter
-- **Separation of concerns**: Each agent has a clear, focused purpose
-- **Independent scaling**: Scale math-heavy vs language-heavy workloads separately
-- **Independent deployment**: Update agents independently
-- **Expertise modeling**: Different agents can embody different types of expertise
-
-## ✅ Success Criteria
-
-- ✅ All 3 UV projects created with a2a-server dependencies
-- ✅ All 3 servers start without port conflicts using official A2A SDK
-- ✅ Each specialized agent serves a unique agent card with proper AgentSkill types
-- ✅ Each agent shows different specializations via tags and skill categories
-- ✅ Browser testing reveals ecosystem structure using official A2A format
-- ✅ Command line tests show agent diversity and A2A protocol compliance
+### Why This Pattern Matters
+- **Business models**: Enable freemium and premium service tiers
+- **Security**: Sensitive capabilities aren't publicly advertised
+- **User experience**: Clear progression from basic to advanced features
+- **Agent discovery**: Public cards enable efficient ecosystem discovery
 
 ## 🎯 Next Step
 
-**Ready for Step 04?** → [04_agent_executor](../04_agent_executor/) - Implement the official Agent Executor pattern
+**Ready for Step 04?** → [04_agent_executor](../04_agent_executor/) - Implement the Agent Executor pattern with proper request handling
 
 ---
 
-## 💡 Key Insights
+## 🏗️ Enterprise Applications
 
-1. **Specialization enables expertise** - Focused agents are more effective than generalist agents
-2. **Discovery enables composition** - Agents can find and use each other's capabilities
-3. **Ecosystems are powerful** - Multiple agents can solve complex problems together
-4. **Standards enable interoperability** - Consistent agent card format allows ecosystem growth
-5. **Visual testing reveals patterns** - Browser testing makes ecosystem structure clear
-
-## 🏗️ Ecosystem Design Patterns
-
-1. **Domain specialization**: Agents focus on specific knowledge domains
-2. **Function specialization**: Agents focus on specific types of operations
-3. **Discovery hubs**: Central services that catalog available agents
-4. **Service meshes**: Networks of interconnected specialized agents
-5. **Capability advertising**: Agents clearly communicate what they can do
+1. **SaaS API agents**: Free tier vs paid tier capabilities
+2. **Internal vs external APIs**: Different capabilities for different user types
+3. **Security-sensitive agents**: Hide advanced features until verified
+4. **Progressive feature unlock**: Users discover more as they authenticate
+5. **Compliance requirements**: Restrict certain features to authorized users
 
 ## 📖 Official Reference
 
-This step demonstrates ecosystem concepts from: [Agent Skills & Agent Card](https://google-a2a.github.io/A2A/latest/tutorials/python/3-agent-skills-and-agent-card/)
+This step demonstrates extended agent card concepts from: [Agent Skills & Agent Card](https://google-a2a.github.io/A2A/latest/tutorials/python/3-agent-skills-and-agent-card/)
 
-**🎉 Congratulations! You've created your first A2A agent ecosystem with specialized, discoverable agents!** 
+**🎉 Congratulations! You've implemented A2A agent card tiering with public and extended capabilities!** 

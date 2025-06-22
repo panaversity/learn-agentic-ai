@@ -1,22 +1,22 @@
 # Step 06: Message Streaming 🌊
 
-**Real-time streaming communication - Server-Sent Events with A2A protocol**
+**Real-time streaming with A2A protocol - Official patterns from LangGraph sample**
 
-> **Goal**: Implement real-time message streaming using the official A2A SDK for responsive agent communication.
+> **Goal**: Implement A2A message streaming using official patterns from [a2a-samples/langgraph](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph) with TaskUpdater and proper event handling.
 
 ## 🎯 What You'll Learn
 
-- A2A message/stream protocol implementation
-- Server-Sent Events (SSE) for real-time streaming
-- EventQueue management for streaming responses
-- Chunked response handling
+- Official A2A streaming patterns from [LangGraph sample](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph)
+- TaskUpdater for streaming status updates
+- Server-Sent Events (SSE) with A2A protocol
+- Task state management (working → completed)
+- Artifact updates and status events
 - Real-time agent feedback patterns
-- Foundation for conversational AI agents
 
 ## 📋 Prerequisites
 
 - Completed [Step 05: Hello A2A](../05_hello_a2a/)
-- Understanding of A2A messaging protocol
+- Understanding of A2A Agent Executor pattern
 - UV package manager installed
 - Basic understanding of streaming concepts
 
@@ -27,7 +27,7 @@
 cd 06_message_streaming
 uv init a2a06_code
 cd a2a06_code
-uv add httpx a2a-sdk uvicorn
+uv add a2a-sdk uvicorn httpx
 ```
 
 ### 2. Streaming Agent Implementation
@@ -36,29 +36,37 @@ uv add httpx a2a-sdk uvicorn
 
 ```python
 import asyncio
+import logging
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
-from a2a.utils import new_agent_text_message
+from a2a.server.tasks import TaskUpdater
+from a2a.types import Part, TextPart, TaskState
+from a2a.utils import new_agent_text_message, new_task
+
+logger = logging.getLogger(__name__)
 
 
 class StreamingAgent:
-    """Agent that demonstrates streaming responses."""
+    """Agent that demonstrates streaming responses following official patterns."""
 
-    async def invoke(self, message: str) -> None:
-        """Generate streaming response word by word."""
-        response_parts = [
-            "Hello!", "I'm", "streaming", "this", "response", 
-            "word", "by", "word", "to", "demonstrate", 
-            "real-time", "communication", "capabilities."
+    async def stream(self, query: str, context_id: str):
+        """Generate streaming response with status updates."""
+        
+        # Simulate streaming with different types of updates
+        steps = [
+            {"content": "Starting to process your request...", "is_task_complete": False, "require_user_input": False},
+            {"content": "Analyzing your query...", "is_task_complete": False, "require_user_input": False},
+            {"content": "Generating response...", "is_task_complete": False, "require_user_input": False},
+            {"content": f"Your query '{query}' has been processed successfully!", "is_task_complete": True, "require_user_input": False},
         ]
         
-        for part in response_parts:
-            yield part
-            await asyncio.sleep(0.5)  # Simulate processing time
+        for step in steps:
+            yield step
+            await asyncio.sleep(1.0)  # Simulate processing time
 
 
 class StreamingAgentExecutor(AgentExecutor):
-    """Agent Executor that handles streaming responses."""
+    """Agent Executor implementing official streaming patterns."""
 
     def __init__(self):
         self.agent = StreamingAgent()
@@ -68,94 +76,159 @@ class StreamingAgentExecutor(AgentExecutor):
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
-        # Extract message from context
-        message_text = "default message"
-        if context.message and context.message.parts:
-            for part in context.message.parts:
-                if part.kind == "text":
-                    message_text = part.text
+        """Execute agent with streaming following official LangGraph pattern."""
+        
+        # Get user input
+        query = context.get_user_input()
+        task = context.current_task
+
+        # Create new task if needed
+        if not task:
+            task = new_task(context.message)  # type: ignore
+            await event_queue.enqueue_event(task)
+
+        # Create TaskUpdater for streaming
+        updater = TaskUpdater(event_queue, task.id, task.contextId)
+
+        try:
+            # Stream responses using official pattern
+            async for item in self.agent.stream(query, task.contextId):
+                is_task_complete = item['is_task_complete']
+                require_user_input = item['require_user_input']
+
+                if not is_task_complete and not require_user_input:
+                    # Send status update while working
+                    await updater.update_status(
+                        TaskState.working,
+                        new_agent_text_message(
+                            item['content'],
+                            task.contextId,
+                            task.id,
+                        ),
+                    )
+
+                elif require_user_input:
+                    # Request input from user
+                    await updater.update_status(
+                        TaskState.input_required,
+                        new_agent_text_message(
+                            item['content'],
+                            task.contextId,
+                            task.id,
+                        ),
+                        final=True,
+                    )
                     break
 
-        # Stream response parts
-        async for response_part in self.agent.invoke(message_text):
-            await event_queue.enqueue_event(new_agent_text_message(response_part))
-            
-        # Send final completion message
-        await event_queue.enqueue_event(new_agent_text_message("\n\n✅ Streaming complete!"))
+                else:
+                    # Task complete - add final artifact
+                    await updater.add_artifact(
+                        [Part(root=TextPart(text=item['content']))],
+                        name='streaming_result',
+                    )
+                    await updater.complete()
+                    break
+
+        except Exception as e:
+            logger.error(f'An error occurred while streaming: {e}')
+            await updater.update_status(
+                TaskState.failed,
+                new_agent_text_message(
+                    f"Error occurred: {str(e)}",
+                    task.contextId,
+                    task.id,
+                ),
+                final=True,
+            )
 
     async def cancel(
         self, context: RequestContext, event_queue: EventQueue
     ) -> None:
-        await event_queue.enqueue_event(new_agent_text_message("❌ Streaming cancelled"))
+        """Cancel streaming operation."""
+        task = context.current_task
+        if task:
+            updater = TaskUpdater(event_queue, task.id, task.contextId)
+            await updater.update_status(
+                TaskState.cancelled,
+                new_agent_text_message(
+                    "Streaming operation cancelled",
+                    task.contextId,
+                    task.id,
+                ),
+                final=True,
+            )
 ```
 
 ### 3. Streaming Server
 
-**File**: `streaming_server.py`
+**File**: `__main__.py`
 
 ```python
+import httpx
 import uvicorn
+import logging
+
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
-from a2a.server.tasks import InMemoryTaskStore
+from a2a.server.tasks import InMemoryTaskStore, InMemoryPushNotifier
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
-    AgentProvider,
 )
 from streaming_agent import StreamingAgentExecutor
 
+logging.basicConfig(level=logging.INFO)
 
 if __name__ == '__main__':
     # Define streaming skill
     streaming_skill = AgentSkill(
         id='streaming_response',
         name='Streaming Response Generator',
-        description='Generates real-time streaming responses word by word',
-        tags=['streaming', 'real-time', 'communication'],
-        examples=['Tell me a story', 'Explain something step by step'],
+        description='Generates real-time streaming responses with status updates',
+        tags=['streaming', 'real-time', 'status-updates'],
+        examples=['Process my request', 'Stream me a response'],
     )
 
     # Create agent card with streaming capabilities
-    public_agent_card = AgentCard(
+    agent_card = AgentCard(
         name='Streaming Demo Agent',
-        description='Demonstrates real-time streaming communication using A2A protocol',
-        url='http://localhost:8001/',
+        description='Demonstrates official A2A streaming patterns with TaskUpdater',
+        url='http://localhost:10000/',
         version='1.0.0',
-        provider=AgentProvider(
-            organization='A2A Streaming Lab',
-            url='http://localhost:8001/',
-        ),
-        defaultInputModes=['text/plain'],
-        defaultOutputModes=['text/plain'],
+        defaultInputModes=['text'],
+        defaultOutputModes=['text'],
         capabilities=AgentCapabilities(
             streaming=True,  # Enable streaming capability
             pushNotifications=False,
-            stateTransitionHistory=False,
+            stateTransitionHistory=True,
         ),
         skills=[streaming_skill],
     )
     
     # Setup A2A server with streaming support
+    httpx_client = httpx.AsyncClient()
     request_handler = DefaultRequestHandler(
         agent_executor=StreamingAgentExecutor(),
         task_store=InMemoryTaskStore(),
+        push_notifier=InMemoryPushNotifier(httpx_client),
     )
 
     server = A2AStarletteApplication(
-        agent_card=public_agent_card,
+        agent_card=agent_card,
         http_handler=request_handler
     )
 
     print("🌊 Starting Streaming Demo Agent...")
     print("📡 Streaming capability enabled!")
-    uvicorn.run(server.build(), host='0.0.0.0', port=8001)
+    print("📋 Agent Discovery: http://localhost:10000/.well-known/agent.json")
+    print("💬 A2A Endpoint: http://localhost:10000/")
+    uvicorn.run(server.build(), host='0.0.0.0', port=10000)
 ```
 
-### 4. Streaming Client
+### 4. Streaming Test Client
 
-**File**: `streaming_client.py`
+**File**: `test_client.py`
 
 ```python
 import logging
@@ -168,47 +241,47 @@ from a2a.client import A2ACardResolver, A2AClient
 from a2a.types import (
     AgentCard,
     MessageSendParams,
+    SendMessageRequest,
     SendStreamingMessageRequest,
 )
 
 
 async def test_streaming() -> None:
-    """Test streaming message communication."""
+    """Test streaming message communication with official patterns."""
     
-    # Configure logging
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
-    base_url = 'http://localhost:8001'
+    base_url = 'http://localhost:10000'
 
     async with httpx.AsyncClient() as httpx_client:
-        # Discover agent
+        # Discover agent capabilities
         resolver = A2ACardResolver(
             httpx_client=httpx_client,
             base_url=base_url,
         )
         
         logger.info(f'Discovering streaming agent at: {base_url}')
-        public_agent_card: AgentCard = await resolver.get_agent_card()
+        agent_card: AgentCard = await resolver.get_agent_card()
         
         # Verify streaming capability
-        if public_agent_card.capabilities and public_agent_card.capabilities.streaming:
+        if agent_card.capabilities and agent_card.capabilities.streaming:
             logger.info("✅ Agent supports streaming!")
         else:
             logger.warning("⚠️ Agent does not support streaming")
 
-        # Create streaming client
+        # Create client
         client = A2AClient(
             httpx_client=httpx_client, 
-            agent_card=public_agent_card
+            agent_card=agent_card
         )
 
-        # Prepare streaming message
+        # Test streaming message
         message_payload: dict[str, Any] = {
             'message': {
                 'role': 'user',
                 'parts': [
-                    {'kind': 'text', 'text': 'Please stream a response to me!'}
+                    {'kind': 'text', 'text': 'Please stream a response with status updates!'}
                 ],
                 'messageId': uuid4().hex,
             },
@@ -220,8 +293,8 @@ async def test_streaming() -> None:
         )
 
         print("\n🌊 Starting streaming communication...")
-        print("📡 Receiving streaming response:")
-        print("-" * 50)
+        print("📡 Receiving streaming response chunks:")
+        print("-" * 60)
 
         # Process streaming response
         stream_response = client.send_message_streaming(streaming_request)
@@ -229,32 +302,41 @@ async def test_streaming() -> None:
         chunk_count = 0
         async for chunk in stream_response:
             chunk_count += 1
-            print(f"Chunk {chunk_count}: {chunk.model_dump(mode='json', exclude_none=True)}")
+            result = chunk.result
             
-            # Add visual separator between chunks
-            if chunk_count % 3 == 0:
-                print("...")
-                await asyncio.sleep(0.2)
+            # Parse different types of streaming events
+            if hasattr(result, 'kind'):
+                if result.kind == 'task':
+                    print(f"📦 Chunk {chunk_count} [TASK]: {result.status.state}")
+                elif result.kind == 'status-update':
+                    status_msg = result.status.message.parts[0].text if result.status.message else "Status update"
+                    final = "FINAL" if result.final else "INTERIM"
+                    print(f"🔄 Chunk {chunk_count} [STATUS-{final}]: {status_msg}")
+                elif result.kind == 'artifact-update':
+                    artifact_text = result.artifact.parts[0].text
+                    print(f"🎯 Chunk {chunk_count} [ARTIFACT]: {artifact_text}")
+            else:
+                print(f"📡 Chunk {chunk_count}: {chunk.model_dump(mode='json', exclude_none=True)}")
+            
+            await asyncio.sleep(0.1)  # Small delay for readability
 
-        print("-" * 50)
+        print("-" * 60)
         print(f"✅ Streaming complete! Received {chunk_count} chunks")
 
 
 async def test_non_streaming_comparison() -> None:
-    """Compare with non-streaming message for demonstration."""
+    """Compare with non-streaming for demonstration."""
     
-    print("\n🔄 Comparing with non-streaming message...")
+    print("\n🔄 Testing non-streaming for comparison...")
     
-    base_url = 'http://localhost:8001'
+    base_url = 'http://localhost:10000'
 
     async with httpx.AsyncClient() as httpx_client:
         resolver = A2ACardResolver(httpx_client=httpx_client, base_url=base_url)
-        public_agent_card = await resolver.get_agent_card()
-        client = A2AClient(httpx_client=httpx_client, agent_card=public_agent_card)
+        agent_card = await resolver.get_agent_card()
+        client = A2AClient(httpx_client=httpx_client, agent_card=agent_card)
 
-        # Send regular (non-streaming) message
-        from a2a.types import SendMessageRequest
-        
+        # Send non-streaming message
         message_payload: dict[str, Any] = {
             'message': {
                 'role': 'user',
@@ -270,8 +352,10 @@ async def test_non_streaming_comparison() -> None:
 
         print("📦 Sending non-streaming message...")
         response = await client.send_message(request)
-        print("📦 Non-streaming response:")
-        print(response.model_dump(mode='json', exclude_none=True))
+        print("📦 Non-streaming response received:")
+        print(f"   Status: {response.result.status.state}")
+        if hasattr(response.result, 'artifacts') and response.result.artifacts:
+            print(f"   Content: {response.result.artifacts[0].parts[0].text}")
 
 
 if __name__ == '__main__':
@@ -282,37 +366,58 @@ if __name__ == '__main__':
     asyncio.run(main())
 ```
 
+### 5. Project Configuration
+
+**File**: `pyproject.toml`
+
+```toml
+[project]
+name = "a2a06-code"
+version = "0.1.0"
+description = "A2A Streaming with Official Patterns"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "a2a-sdk>=0.2.8",
+    "uvicorn>=0.32.1",
+    "httpx>=0.28.1",
+]
+
+[tool.uv]
+dev-dependencies = []
+```
+
 ## 🧪 Testing
 
 ### 1. Start the Streaming Server
 ```bash
 cd a2a06_code
-uv run streaming_server.py
+uv run __main__.py
 ```
 
 You should see:
 ```
 🌊 Starting Streaming Demo Agent...
 📡 Streaming capability enabled!
-INFO:     Uvicorn running on http://0.0.0.0:8001
+INFO:     Uvicorn running on http://0.0.0.0:10000
 ```
 
 ### 2. Test Agent Discovery
 ```bash
-# Check streaming capability in agent card
-curl http://localhost:8001/.well-known/agent.json | jq '.capabilities.streaming'
+# Check streaming capability
+curl http://localhost:10000/.well-known/agent.json | jq '.capabilities.streaming'
 ```
 
 ### 3. Run Streaming Client
 ```bash
 cd a2a06_code
-uv run streaming_client.py
+uv run test_client.py
 ```
 
 ### 4. Test Streaming with curl
 ```bash
 # Test streaming endpoint
-curl -X POST http://localhost:8001/a2a \
+curl -X POST http://localhost:10000/ \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \
   -d '{
@@ -335,18 +440,17 @@ curl -X POST http://localhost:8001/a2a \
 ```json
 {
   "name": "Streaming Demo Agent",
-  "description": "Demonstrates real-time streaming communication using A2A protocol",
-  "url": "http://localhost:8001/",
+  "description": "Demonstrates official A2A streaming patterns with TaskUpdater",
+  "url": "http://localhost:10000/",
   "capabilities": {
     "streaming": true,
-    "pushNotifications": false,
-    "stateTransitionHistory": false
+    "stateTransitionHistory": true
   },
   "skills": [
     {
       "id": "streaming_response",
       "name": "Streaming Response Generator",
-      "tags": ["streaming", "real-time", "communication"]
+      "tags": ["streaming", "real-time", "status-updates"]
     }
   ]
 }
@@ -355,59 +459,83 @@ curl -X POST http://localhost:8001/a2a \
 ### Streaming Client Output
 ```
 🌊 Starting streaming communication...
-📡 Receiving streaming response:
---------------------------------------------------
-Chunk 1: {"jsonrpc": "2.0", "result": {"task": {"taskId": "task-123", "status": "running", "artifacts": [{"kind": "text", "text": "Hello!"}]}}}
-Chunk 2: {"jsonrpc": "2.0", "result": {"task": {"taskId": "task-123", "status": "running", "artifacts": [{"kind": "text", "text": "I'm"}]}}}
-Chunk 3: {"jsonrpc": "2.0", "result": {"task": {"taskId": "task-123", "status": "running", "artifacts": [{"kind": "text", "text": "streaming"}]}}}
-...
-Chunk 14: {"jsonrpc": "2.0", "result": {"task": {"taskId": "task-123", "status": "completed", "artifacts": [{"kind": "text", "text": "✅ Streaming complete!"}]}}}
---------------------------------------------------
-✅ Streaming complete! Received 14 chunks
+📡 Receiving streaming response chunks:
+------------------------------------------------------------
+📦 Chunk 1 [TASK]: submitted
+🔄 Chunk 2 [STATUS-INTERIM]: Starting to process your request...
+🔄 Chunk 3 [STATUS-INTERIM]: Analyzing your query...
+🔄 Chunk 4 [STATUS-INTERIM]: Generating response...
+🎯 Chunk 5 [ARTIFACT]: Your query 'Please stream a response with status updates!' has been processed successfully!
+🔄 Chunk 6 [STATUS-FINAL]: completed
+------------------------------------------------------------
+✅ Streaming complete! Received 6 chunks
+
+🔄 Testing non-streaming for comparison...
+📦 Sending non-streaming message...
+📦 Non-streaming response received:
+   Status: completed
+   Content: Your query 'Send me a regular response' has been processed successfully!
 ```
 
 ## 🔍 Key A2A Streaming Concepts
 
-### Streaming Protocol
-- **method**: `message/stream` (vs `message/send`)
-- **Accept header**: `text/event-stream` for Server-Sent Events
-- **Response format**: Multiple JSON-RPC responses over SSE
-- **Task status**: `running` → `completed` progression
+### Official Streaming Architecture
+- **TaskUpdater**: Official class for managing streaming updates
+- **update_status()**: Send status updates with TaskState (working, completed, etc.)
+- **add_artifact()**: Send final results as artifacts
+- **complete()**: Mark task as completed
+- **Server-Sent Events**: HTTP streaming using `text/event-stream`
 
-### EventQueue Management
-- **enqueue_event()**: Sends individual chunks to client
-- **new_agent_text_message()**: Creates properly formatted text artifacts
-- **Async iteration**: Agent yields response parts over time
-- **Completion signaling**: Final message with `completed` status
+### Task State Progression
+```python
+# Official task state flow
+TaskState.submitted → TaskState.working → TaskState.completed
+```
 
-### Streaming vs Non-Streaming
-- **Streaming**: Real-time chunks, immediate feedback, better UX
-- **Non-streaming**: Single response, wait for completion, simpler
-- **Use cases**: Long responses, step-by-step processes, interactive experiences
+### Event Types
+- **Task Events**: Initial task creation
+- **Status Update Events**: Interim progress updates (working state)
+- **Artifact Events**: Final results and outputs
+- **Final Status Events**: Task completion or failure
 
-### Server-Sent Events (SSE)
-- **Protocol**: HTTP-based streaming over persistent connection
-- **Format**: `data: {json}\n\n` for each event
-- **Browser support**: Native EventSource API
-- **Reliability**: Automatic reconnection, error handling
+### TaskUpdater Usage
+```python
+# Create updater for task
+updater = TaskUpdater(event_queue, task.id, task.contextId)
+
+# Send interim status update
+await updater.update_status(
+    TaskState.working,
+    new_agent_text_message("Processing..."),
+)
+
+# Add final artifact
+await updater.add_artifact(
+    [Part(root=TextPart(text="Final result"))],
+    name='result',
+)
+
+# Complete task
+await updater.complete()
+```
 
 ## ✅ Success Criteria
 
-- ✅ UV project created with streaming dependencies
+- ✅ UV project created with correct A2A SDK dependencies
 - ✅ Agent card shows `streaming: true` capability
-- ✅ Streaming server handles `message/stream` method
-- ✅ EventQueue properly manages streaming events
+- ✅ TaskUpdater properly manages streaming events
+- ✅ Server handles `message/stream` method correctly
 - ✅ Client receives real-time streaming chunks
-- ✅ SSE protocol works correctly
-- ✅ Task status progression (running → completed)
-- ✅ Comparison with non-streaming messaging works
+- ✅ Task state progression works (submitted → working → completed)
+- ✅ Artifacts and status updates are properly separated
+- ✅ SSE protocol compliance maintained
 
 ## 🎯 Next Step
 
-Ready for [Step 07: Multiturn Conversation](../07_multiturn_conversation/) - Learn about maintaining conversation context!
+Ready for [Step 07: Multiturn Conversation](../07_multiturn_conversation/) - Learn about conversation context and memory!
 
 ## 📖 Official Reference
 
-This step builds on: [A2A Streaming Documentation](https://google-a2a.github.io/A2A/latest/specification/#message-streaming)
+This step implements patterns from: [A2A LangGraph Sample](https://github.com/google-a2a/a2a-samples/tree/main/samples/python/agents/langgraph)
 
-**🎉 Congratulations! You've mastered real-time streaming communication with the A2A protocol!** 
+**🎉 Congratulations! You've mastered official A2A streaming patterns with TaskUpdater!** 

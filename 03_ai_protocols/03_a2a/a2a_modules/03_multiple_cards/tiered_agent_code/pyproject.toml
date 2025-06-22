@@ -1,0 +1,10 @@
+[project]
+name = "tiered-agent-code"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "a2a-sdk>=0.2.8",
+    "uvicorn>=0.34.3",
+]
