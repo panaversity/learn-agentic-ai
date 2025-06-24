@@ -2,6 +2,8 @@
 
 **Learn A2A by building - step by step with working code**
 
+> **🚨 Major News**: [Google Cloud has donated A2A to the Linux Foundation](https://developers.googleblog.com/en/google-cloud-donates-a2a-to-linux-foundation/)! A2A is now an open, vendor-neutral standard backed by Amazon Web Services, Cisco, Google, Microsoft, Salesforce, SAP, and ServiceNow. This makes A2A the premier industry standard for AI agent interoperability.
+
 > **Prerequisites**: Read the [A2A theory overview](../readme.md) first for context.
 
 ## 🎯 Learning Approach
@@ -29,6 +31,17 @@
 11_authentication/          # Authentication & security (OAuth2, JWT, API keys)
 12_enterprise_features/     # Enterprise features & production deployment        
 ```
+
+## 🏛️ Linux Foundation A2A Project
+
+**Major Industry Milestone**: A2A has joined the Linux Foundation as a vendor-neutral open standard! This ensures:
+
+- ✅ **Open Governance**: Community-driven development under Linux Foundation
+- ✅ **Industry Support**: Backed by 100+ companies including AWS, Microsoft, Cisco, Salesforce, SAP, ServiceNow
+- ✅ **Long-term Stability**: Neutral stewardship and sustainable development
+- ✅ **Enterprise Adoption**: Accelerated adoption through trusted governance
+
+[📖 Read the full announcement](https://developers.googleblog.com/en/google-cloud-donates-a2a-to-linux-foundation/) | [🏛️ Linux Foundation Press Release](https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents)
 
 ## 📚 Complete Step Learning Goals
 
