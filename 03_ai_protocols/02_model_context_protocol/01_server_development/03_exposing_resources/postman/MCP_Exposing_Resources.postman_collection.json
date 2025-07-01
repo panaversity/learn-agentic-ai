@@ -32,7 +32,7 @@
 			}
 		},
 		{
-			"name": "02. Read Static Resource (Welcome Message)",
+			"name": "02. Discover Resource Templates",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -47,7 +47,33 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///messages/welcome\"\n    },\n    \"id\": 2\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/templates/list\",\n    \"params\": {},\n    \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": ["{{baseUrl}}"],
+					"path": ["mcp"]
+				},
+				"description": "Discover what resource templates the server provides. Resource templates allow for dynamic URI patterns with variables."
+			}
+		},
+		{
+			"name": "03. Read Static Resource (Welcome Message)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///messages/welcome\"\n    },\n    \"id\": 3\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -58,7 +84,7 @@
 			}
 		},
 		{
-			"name": "03. Read Dynamic Resource (Server Time)",
+			"name": "04. Read Dynamic Resource (Server Time)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -73,7 +99,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///system/time\"\n    },\n    \"id\": 3\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///system/time\"\n    },\n    \"id\": 4\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -84,7 +110,7 @@
 			}
 		},
 		{
-			"name": "04. Read Templated Resource (User: jane.doe)",
+			"name": "05. Read Templated Resource (User: jane.doe)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -99,7 +125,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://jane.doe/profile\"\n    },\n    \"id\": 4\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://jane.doe/profile\"\n    },\n    \"id\": 5\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -110,7 +136,7 @@
 			}
 		},
 		{
-			"name": "05. Read Templated Resource (User: john.smith)",
+			"name": "06. Read Templated Resource (User: john.smith)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -125,7 +151,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://john.smith/profile\"\n    },\n    \"id\": 5\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://john.smith/profile\"\n    },\n    \"id\": 6\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -136,7 +162,7 @@
 			}
 		},
 		{
-			"name": "06. Read Templated Resource (User: alice_123)",
+			"name": "07. Read Templated Resource (User: alice_123)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -151,7 +177,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://alice_123/profile\"\n    },\n    \"id\": 6\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://alice_123/profile\"\n    },\n    \"id\": 7\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -162,7 +188,7 @@
 			}
 		},
 		{
-			"name": "07. Read Templated Resource (Special Characters)",
+			"name": "08. Read Templated Resource (Special Characters)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -177,7 +203,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://user-with-dashes/profile\"\n    },\n    \"id\": 7\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"users://user-with-dashes/profile\"\n    },\n    \"id\": 8\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -188,7 +214,7 @@
 			}
 		},
 		{
-			"name": "08. Multiple Time Requests (Compare Dynamic)",
+			"name": "09. Multiple Time Requests (Compare Dynamic)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -203,7 +229,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///system/time\"\n    },\n    \"id\": 8\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///system/time\"\n    },\n    \"id\": 9\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
@@ -214,7 +240,7 @@
 			}
 		},
 		{
-			"name": "09. Error: Invalid Resource URI",
+			"name": "10. Error: Invalid Resource URI",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -229,7 +255,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///nonexistent/resource\"\n    },\n    \"id\": 9\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"resources/read\",\n    \"params\": {\n        \"uri\": \"app:///nonexistent/resource\"\n    },\n    \"id\": 10\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
