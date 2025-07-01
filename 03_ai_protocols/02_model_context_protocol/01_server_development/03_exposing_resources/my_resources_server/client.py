@@ -3,7 +3,7 @@ import json
 import asyncio
 
 # --- Helper Function to Make MCP Requests ---
-async def _mcp_request(method: str, params: dict = None):
+async def _mcp_request(method: str, params: dict = {}):
     """A simple, reusable function to make JSON-RPC requests to our MCP server."""
     payload = {
         "jsonrpc": "2.0",
@@ -48,9 +48,23 @@ async def main():
     print(f"   -> Success! Server has {len(resources)} resources:")
     for res in resources:
         print(f"      - {res.get('uri')}: {res.get('description')}")
+        
+        
+    # 2. Listing  Resource Templates
+    print("\n[Step 2: Discovering Resource Templates]")
+    print("We ask the server what templates resources it has with a 'resources/templates/list' request.")
+    resource_templates_response = await _mcp_request("resources/templates/list")
+    
+    if 'error' in resource_templates_response:
+        print(f"   -> Error: {resource_templates_response['error']}")
+    
+    resource_templates = resource_templates_response.get('result', {}).get('resourceTemplates', [])
+    print(f"   -> Success! Server has {len(resource_templates)} resource templates:")
+    for res in resource_templates:
+        print(f"      - {res.get('uriTemplate')}: {res.get('description')}")
 
-    # 2. Read the static welcome message
-    print("\n[Step 2: Reading a static resource]")
+    # 3. Read the static welcome message
+    print("\n[Step 3: Reading a static resource]")
     print("Now, we'll read the 'app:///messages/welcome' resource.")
     read_params = {"uri": "app:///messages/welcome"}
     read_response = await _mcp_request("resources/read", read_params)
@@ -58,11 +72,11 @@ async def main():
     if 'error' in read_response:
         print(f"   -> Error: {read_response['error']}")
     else:
-        content = read_response.get('result', {}).get('content', [{}])[0].get('text')
+        content = read_response.get('result', {}).get('contents', [{}])[0].get('text')
         print(f"   -> Success! The server returned: '{content}'")
 
-    # 3. Read the dynamic system time
-    print("\n[Step 3: Reading a dynamic resource]")
+    # 4. Read the dynamic system time
+    print("\n[Step 4: Reading a dynamic resource]")
     print("Next, we'll read 'app:///system/time'. This one is generated on the fly.")
     read_params = {"uri": "app:///system/time"}
     read_response = await _mcp_request("resources/read", read_params)
@@ -70,12 +84,12 @@ async def main():
     if 'error' in read_response:
         print(f"   -> Error: {read_response['error']}")
     else:
-        content = read_response.get('result', {}).get('content', [{}])[0]
+        content = read_response.get('result', {}).get('contents', [{}])[0]
         print(f"   -> Success! The server returned a JSON object:")
         print(f"      {json.dumps(content)}")
 
-    # 4. Read a templated user profile
-    print("\n[Step 4: Reading a templated resource]")
+    # 5. Read a templated user profile
+    print("\n[Step 5: Reading a templated resource]")
     print("Finally, we'll read 'users://jane.doe/profile' to get a specific user's data.")
     read_params = {"uri": "users://jane.doe/profile"}
     read_response = await _mcp_request("resources/read", read_params)
@@ -83,7 +97,7 @@ async def main():
     if 'error' in read_response:
         print(f"   -> Error: {read_response['error']}")
     else:
-        content = read_response.get('result', {}).get('content', [{}])[0]
+        content = read_response.get('result', {}).get('contents', [{}])[0]
         print(f"   -> Success! The server returned the user profile:")
         print(f"      {json.dumps(content)}")
 
