@@ -1,1 +1,0 @@
-https://www.byteplus.com/en/topic/542106?title=mcp-design-patterns-a-guide-to-model-context-protocol
