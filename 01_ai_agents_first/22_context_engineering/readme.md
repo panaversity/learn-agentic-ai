@@ -1,5 +1,11 @@
 # Context Engineering
 
+https://blog.langchain.com/the-rise-of-context-engineering/
+
+https://contextengineer.org/
+
+![](./context_eng.jpeg)
+
 **Prompt engineering** and **context engineering** are closely related but distinct concepts in working with language models like ChatGPT. Here's a clear breakdown of the difference:
 
 ---
