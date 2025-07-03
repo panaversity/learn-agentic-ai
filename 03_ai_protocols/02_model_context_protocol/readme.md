@@ -1,7 +1,7 @@
-# Model Context Protocol (MCP)
+# Model Context Protocol (MCP) Hands On
 
 > **An open protocol that enables seamless integration between LLM applications and external data sources and tools.**  
-> — [Official MCP Specification](https://modelcontextprotocol.io/specification/2025-03-26)
+> — [Official MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18)
 
 ## What is MCP?
 
@@ -35,7 +35,7 @@ The protocol uses JSON-RPC 2.0 for communication, allowing dynamic, two-way inte
 In practice, MCP empowers AI to be more than just a text generator—it can act as an agent that interacts with the world. Developers benefit from reduced integration overhead, and the open-source nature of MCP fosters a growing ecosystem of reusable servers for platforms like Slack, GitHub, or even local file systems. It’s a step toward making AI more practical and connected in real-world applications.
 
 ### The Context
-This serverless capability, combined with the OAuth 2.1 authentication, streamable HTTP transport, JSON-RPC batching, and tool annotations, makes the MCP update a holistic leap forward. It’s clear the spec is evolving to support a wider range of deployment models—persistent servers for heavy, consistent workloads and serverless for lightweight, on-demand tasks. This duality strengthens MCP’s position as a versatile standard, catering to both resource-intensive enterprise needs and lean, agile projects.
+This serverless capability, combined with the OAuth 2.1 authentication, streamable HTTP transport, JSON-RPC, and tool annotations, makes the MCP update a holistic leap forward. It’s clear the spec is evolving to support a wider range of deployment models—persistent servers for heavy, consistent workloads and serverless for lightweight, on-demand tasks. This duality strengthens MCP’s position as a versatile standard, catering to both resource-intensive enterprise needs and lean, agile projects.
 
 The serverless shift also reinforces MCP’s ethos of reducing friction: just as it aims to standardize AI-tool integration, it now minimizes the operational overhead of running those integrations. Expect this to fuel a wave of experimentation, with developers potentially releasing serverless MCP servers as open-source templates, further enriching the ecosystem. 
 
@@ -129,7 +129,7 @@ In short, this move positions OpenAI as a leader in AI interoperability and sets
 
 ## Further Reading
 
-- [Official MCP Specification (2025-03-26)](https://modelcontextprotocol.io/specification/2025-03-26)
+- [Official MCP Specification (2025-06-18)](https://modelcontextprotocol.io/specification/2025-06-18)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [MCP Server Registry](https://github.com/modelcontextprotocol/servers)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification) - Foundation protocol
