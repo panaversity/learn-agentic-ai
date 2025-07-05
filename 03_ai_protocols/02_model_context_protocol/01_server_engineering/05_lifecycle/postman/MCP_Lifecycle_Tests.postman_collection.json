@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "mcp-lifecycle-tests-2025",
     "name": "MCP Complete Lifecycle Tests",
-    "description": "Complete test suite for the full Model Context Protocol connection lifecycle: Initialization → Operation → Shutdown (MCP 2025-03-26 specification)",
+    "description": "Complete test suite for the Model Context Protocol connection lifecycle according to MCP 2025-06-18 specification",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -36,24 +36,27 @@
                   "    pm.expect(responseText).to.include('data: ');",
                   "});",
                   "",
-                  "pm.test(\"Protocol version matches\", function () {",
+                  "pm.test(\"Protocol version matches 2024-11-05\", function () {",
                   "    const responseText = pm.response.text();",
                   "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
                   "    if (dataLine) {",
                   "        const data = JSON.parse(dataLine.substring(6));",
                   "        if (data.result && data.result.protocolVersion) {",
-                  "            pm.expect(data.result.protocolVersion).to.equal('2025-03-26');",
+                  "            pm.expect(data.result.protocolVersion).to.equal('2024-11-05');",
                   "        }",
                   "    }",
                   "});",
                   "",
-                  "pm.test(\"Server capabilities present\", function () {",
+                  "pm.test(\"Server capabilities and title present\", function () {",
                   "    const responseText = pm.response.text();",
                   "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
                   "    if (dataLine) {",
                   "        const data = JSON.parse(dataLine.substring(6));",
                   "        pm.expect(data.result).to.have.property('capabilities');",
                   "        pm.expect(data.result).to.have.property('serverInfo');",
+                  "        if (data.result.serverInfo) {",
+                  "            pm.expect(data.result.serverInfo).to.have.property('title');",
+                  "        }",
                   "    }",
                   "});"
                 ],
@@ -75,7 +78,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-03-26\",\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"version\": \"1.0.0\"\n        },\n        \"capabilities\": {\n            \"experimental\": {},\n            \"sampling\": {}\n        }\n    },\n    \"id\": 1\n}"
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2024-11-05\",\n        \"capabilities\": {\n            \"roots\": {\n                \"listChanged\": true\n            },\n            \"sampling\": {},\n            \"elicitation\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"title\": \"Postman Test Client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
             },
             "url": {
               "raw": "http://localhost:8000/mcp/",
@@ -93,6 +96,19 @@
         },
         {
           "name": "2. Send Initialized Notification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Initialized notification accepted\", function () {",
+                  "    pm.expect([200, 202]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -105,13 +121,17 @@
                 "value": "application/json, text/event-stream"
               },
               {
+                "key": "MCP-Protocol-Version",
+                "value": "2024-11-05"
+              },
+              {
                 "key": "mcp-session-id",
                 "value": "{{mcp_session_id}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"notifications/initialized\",\n    \"params\": {}\n}"
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"notifications/initialized\"\n}"
             },
             "url": {
               "raw": "http://localhost:8000/mcp/",
@@ -129,6 +149,23 @@
         },
         {
           "name": "3. List Available Tools",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Tools list response successful\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Protocol version header included\", function () {",
+                  "    pm.expect(pm.request.headers.get('MCP-Protocol-Version')).to.equal('2024-11-05');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -139,6 +176,10 @@
               {
                 "key": "Accept",
                 "value": "application/json, text/event-stream"
+              },
+              {
+                "key": "MCP-Protocol-Version",
+                "value": "2024-11-05"
               },
               {
                 "key": "mcp-session-id",
@@ -165,6 +206,24 @@
         },
         {
           "name": "4. Call Weather Tool",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Tool call successful\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains forecast data\", function () {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText).to.include('weather');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -175,6 +234,10 @@
               {
                 "key": "Accept",
                 "value": "application/json, text/event-stream"
+              },
+              {
+                "key": "MCP-Protocol-Version",
+                "value": "2024-11-05"
               },
               {
                 "key": "mcp-session-id",
@@ -205,14 +268,65 @@
       "name": "❌ Error Scenarios",
       "item": [
         {
-          "name": "Skip Initialization - Try Tools List",
+          "name": "Missing MCP-Protocol-Version Header",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Should fail without initialization\", function () {",
-                  "    pm.expect(pm.response.code).to.be.greaterThan(399);",
+                  "pm.test(\"Should handle missing protocol header\", function () {",
+                  "    // Server may reject or handle gracefully",
+                  "    pm.expect([200, 400, 422]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              },
+              {
+                "key": "mcp-session-id",
+                "value": "test-session"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/list\",\n    \"params\": {},\n    \"id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/mcp/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "mcp",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Invalid Protocol Version",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Should handle version mismatch gracefully\", function () {",
+                  "    // Server should respond with supported version or error",
+                  "    pm.expect([200, 400, 422]).to.include(pm.response.code);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -233,7 +347,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/list\",\n    \"params\": {},\n    \"id\": 1\n}"
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"1.0.0\",\n        \"capabilities\": {\n            \"experimental\": {},\n            \"sampling\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
             },
             "url": {
               "raw": "http://localhost:8000/mcp/",

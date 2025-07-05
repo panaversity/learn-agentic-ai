@@ -1,12 +1,12 @@
 {
 	"info": {
-		"name": "MCP Defining Tools",
-		"description": "Educational Postman collection for testing MCP servers with multiple tools. Demonstrates tool discovery and execution for calculator and greeter tools.",
+		"name": "MCP Tools - Complete Scenarios",
+		"description": "Test all 5 essential MCP tool patterns: simple lists, primitives, Pydantic models, rich content, and multi-content responses. Perfect for beginners learning MCP tools.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "01. Discover Available Tools",
+			"name": "01. Initialize Session",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -21,18 +21,22 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/list\",\n    \"params\": {},\n    \"id\": 1\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-06-18\",\n        \"capabilities\": {},\n        \"clientInfo\": {\n            \"name\": \"postman-tools-test\",\n            \"version\": \"1.0.0\"\n        }\n    }\n, \"id\": 1}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Discover what tools the server provides. Should return 'add' and 'greet' tools with their schemas and descriptions."
+				"description": "Initialize MCP session with the tools server. This is required before any other operations."
 			}
 		},
 		{
-			"name": "02. Call Add Tool (Basic)",
+			"name": "02. Send Initialized Notification",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -43,22 +47,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add\",\n        \"arguments\": {\n            \"a\": 5,\n            \"b\": 7\n        }\n    },\n    \"id\": 2\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"notifications/initialized\",\n    \"params\": {}\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Execute the add tool with numbers 5 and 7. Should return 12."
+				"description": "Complete the MCP session initialization with the required notification."
 			}
 		},
 		{
-			"name": "03. Call Add Tool (Large Numbers)",
+			"name": "03. Discover Available Tools",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -69,22 +81,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add\",\n        \"arguments\": {\n            \"a\": 1000,\n            \"b\": 2500\n        }\n    },\n    \"id\": 3\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/list\",\n    \"params\": {},\n    \"id\": 3\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test the add tool with larger numbers. Should return 3500."
+				"description": "Discover all 5 tools: list_cities, get_temperature, get_weather, add_numbers, and analyze_data."
 			}
 		},
 		{
-			"name": "04. Call Add Tool (Negative Numbers)",
+			"name": "04. Simple List Tool (list_cities)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -95,22 +115,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add\",\n        \"arguments\": {\n            \"a\": -10,\n            \"b\": 15\n        }\n    },\n    \"id\": 4\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"list_cities\",\n        \"arguments\": {}\n    },\n    \"id\": 4\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test the add tool with negative numbers. Should return 5."
+				"description": "Test simple list return type. MCP auto-wraps as {\"result\": [\"London\", \"Paris\", \"Tokyo\"]}."
 			}
 		},
 		{
-			"name": "05. Call Greet Tool (Basic)",
+			"name": "05. Simple Primitive Tool (get_temperature)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -121,22 +149,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"greet\",\n        \"arguments\": {\n            \"name\": \"Student\"\n        }\n    },\n    \"id\": 5\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get_temperature\",\n        \"arguments\": {\n            \"city\": \"London\"\n        }\n    },\n    \"id\": 5\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Execute the greet tool with name 'Student'. Should return a personalized greeting."
+				"description": "Test simple float return type. MCP auto-wraps as {\"result\": 22.5}."
 			}
 		},
 		{
-			"name": "06. Call Greet Tool (Different Names)",
+			"name": "06. Structured Data Tool (get_weather)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -147,22 +183,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"greet\",\n        \"arguments\": {\n            \"name\": \"Alice\"\n        }\n    },\n    \"id\": 6\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get_weather\",\n        \"arguments\": {\n            \"city\": \"Paris\"\n        }\n    },\n    \"id\": 6\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test the greet tool with a different name. Try changing 'Alice' to other names!"
+				"description": "Test Pydantic model return. Returns structured WeatherData with temperature, humidity, condition, wind_speed."
 			}
 		},
 		{
-			"name": "07. Error: Invalid Tool Name",
+			"name": "07. Rich Content Tool (add_numbers)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -173,22 +217,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"nonexistent_tool\",\n        \"arguments\": {}\n    },\n    \"id\": 7\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add_numbers\",\n        \"arguments\": {\n            \"a\": 15.5,\n            \"b\": 27.3\n        }\n    },\n    \"id\": 7\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test error handling by calling a tool that doesn't exist. Should return an error response."
+				"description": "Test TextContent with annotations. Returns rich content with audience targeting and priority metadata."
 			}
 		},
 		{
-			"name": "08. Error: Missing Required Parameter",
+			"name": "08. Multi-Content Tool (analyze_data)",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -199,22 +251,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add\",\n        \"arguments\": {\n            \"a\": 5\n        }\n    },\n    \"id\": 8\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"analyze_data\",\n        \"arguments\": {\n            \"data_type\": \"sales\",\n            \"sample_size\": 500\n        }\n    },\n    \"id\": 8\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test error handling by omitting required parameter 'b' for the add tool. Should return a validation error."
+				"description": "Test multi-content response. Returns both TextContent and ImageContent items in a single response."
 			}
 		},
 		{
-			"name": "09. Error: Wrong Parameter Type",
+			"name": "09. Error Test - Invalid Tool",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -225,22 +285,30 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add\",\n        \"arguments\": {\n            \"a\": \"hello\",\n            \"b\": \"world\"\n        }\n    },\n    \"id\": 9\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"nonexistent_tool\",\n        \"arguments\": {}\n    },\n    \"id\": 9\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test error handling by passing strings instead of integers to the add tool. Should return a type validation error."
+				"description": "Test error handling by calling a tool that doesn't exist."
 			}
 		},
 		{
-			"name": "10. Error: Empty Name for Greet",
+			"name": "10. Error Test - Missing Parameter",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -251,18 +319,60 @@
 					{
 						"key": "Accept",
 						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"greet\",\n        \"arguments\": {\n            \"name\": \"\"\n        }\n    },\n    \"id\": 10\n}"
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"get_temperature\",\n        \"arguments\": {}\n    },\n    \"id\": 10\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/mcp",
-					"host": ["{{baseUrl}}"],
-					"path": ["mcp"]
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
 				},
-				"description": "Test the greet tool with an empty name. Should still work but return a greeting with an empty name."
+				"description": "Test error handling by omitting required 'city' parameter for get_temperature tool."
+			}
+		},
+		{
+			"name": "11. Error Test - Wrong Parameter Type",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"add_numbers\",\n        \"arguments\": {\n            \"a\": \"hello\",\n            \"b\": \"world\"\n        }\n    },\n    \"id\": 11\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				},
+				"description": "Test error handling by passing strings instead of numbers to add_numbers tool."
 			}
 		}
 	],

@@ -1,157 +1,231 @@
-# 05: Connection Lifecycle
+# 05: Connection Lifecycle Management (2025-06-18)
 
-**Objective:** Understand the stateful connection lifecycle in MCP, moving beyond simple stateless requests.
+**Objective:** Learn the complete MCP connection lifecycle with **2025-06-18 specification compliance**, including initialization sequences, capability negotiation, and graceful shutdown procedures.
 
-For advanced features like notifications, a persistent connection is required. This lesson covers the fundamental handshake: `initialize`, `initialized`, and `shutdown`.
+**Building on All Previous Lessons**: You now understand MCP's three building blocks (Tools, Resources, Prompts). This lesson focuses on **how AI and MCP servers establish and manage their connection**.
 
-## Key MCP Concepts
+### 🤔 What Is the MCP Connection Lifecycle? (Simple Explanation)
 
--   **Stateful Connection:** Unlike stateless HTTP where each request is independent, a stateful connection involves a session that persists across multiple requests. This is managed via the `MCP-Session-Id` header.
--   **`initialize` (Request):** The very first message a client sends to establish a stateful session. It includes client capabilities and the desired protocol version. The server responds with its capabilities and a unique `session_id`.
--   **`MCP-Session-Id` (Header):** After `initialize`, the client **MUST** include this header with the assigned `session_id` in all subsequent requests for that session.
--   **`initialized` (Notification):** A notification sent from the client to the server *after* `initialize` is complete to confirm that the client is ready to receive notifications.
--   **`shutdown` / `exit`:** The graceful two-part process for ending a session. The client requests a `shutdown`, and after the server acknowledges, the client sends an `exit` notification to terminate the connection.
+**Simple Definition**: The MCP Connection Lifecycle is the **conversation protocol** that AI and servers use to connect, negotiate capabilities, communicate, and disconnect.
 
-## Implementation Plan
+**Real-World Analogy**: Think of it like meeting a new person:
+1. 🤝 **Introduction (Initialization)**: "Hi, I'm Claude. I can do X, Y, Z. What can you do?"
+2. 🗣️ **Conversation (Operation)**: Normal back-and-forth communication using agreed capabilities
+3. 👋 **Goodbye (Shutdown)**: "Thanks for the chat, see you later!"
 
--   **`server.py`:**
-    -   We will use a stateful `FastMCP` server instance (the default).
-    -   The library handles the session management automatically. We will add logging to observe lifecycle events.
+### 🏗️ MCP Lifecycle vs. What You Know
 
--   **`client.py`:**
-    -   The client will be rewritten to manage the `session_id`.
-    -   It will perform the full lifecycle sequence:
-        1.  Call `initialize` and store the received `session_id`.
-        2.  Send the `initialized` notification.
-        3.  Perform an action (like `tools/list`), including the `MCP-Session-Id` header.
-        4.  Call `shutdown`.
-        5.  Send the `exit` notification.
-    -   The client will print its state at each step of the process.
+| **If you're familiar with...** | **MCP Lifecycle is like...** | **Key insight** |
+|-------------------------------|-------------------------------|-----------------|
+| **HTTP Request/Response** | HTTP, but with handshakes and ongoing sessions | More like WebSocket with negotiation |
+| **API Authentication** | OAuth flow with capability discovery | Not just auth, but feature negotiation |
+| **Database Connections** | Connection pooling with capabilities | Discovers what's available before using |
+| **Network Protocols** | TCP handshake, but for AI communication | Ensures compatibility before operation |
 
-## 🎯 What We're Building
+### 🎯 Why Connection Lifecycle Matters
 
-A complete MCP connection lifecycle implementation that demonstrates:
+**The Problem**: Without proper lifecycle management:
+- 🔧 **Tools might fail**: AI tries to use features the server doesn't support
+- 📚 **Resources could be missing**: AI expects data that isn't available
+- 💬 **Prompts may not work**: AI assumes templates that don't exist
+- ⚡ **Errors are unclear**: No standardized error handling
 
-1. **🚀 Initialization Phase** - Capability negotiation and protocol version agreement
-2. **⚙️ Operation Phase** - Normal protocol communication  
-3. **🛑 Shutdown Phase** - Graceful termination of the connection
+**The MCP Lifecycle Solution**:
+- ✅ **Capability Discovery**: AI learns what server can do before trying
+- ✅ **Version Compatibility**: Ensures both sides speak the same protocol
+- ✅ **Graceful Errors**: Standardized error handling and recovery
+- ✅ **Resource Management**: Proper connection setup and cleanup
 
-This follows the **official MCP 2025-03-26 specification** exactly, ensuring compatibility with all MCP-compliant systems.
+### 📋 The Three Essential Phases
 
-## 📋 The Three Phases of MCP Lifecycle
+#### **Phase 1: Initialization (The Handshake)**
+- 🤝 **Negotiate protocol versions**: Ensure compatibility
+- 📋 **Exchange capabilities**: "I can do X, you can do Y"
+- 🆔 **Share identity information**: Names, versions, descriptions
+- ✅ **Confirm readiness**: Both sides ready for normal operation
 
-### Phase 1: Initialization 🚀
+#### **Phase 2: Operation (The Conversation)**
+- 🔧 **Call tools** using negotiated capabilities
+- 📚 **Read resources** that were discovered
+- 💬 **Use prompts** that are available
+- 🔄 **Handle errors** gracefully
 
-The initialization phase **MUST** be the first interaction between client and server. During this phase:
+#### **Phase 3: Shutdown (The Goodbye)**
+- 🧹 **Clean up resources** and connections
+- 💾 **Save state** if needed
+- 👋 **Graceful disconnection** without data loss
 
-- Protocol version compatibility is established
-- Capabilities are exchanged and negotiated
-- Implementation details are shared
+This lesson demonstrates the three-phase MCP lifecycle: **Initialization → Operation → Shutdown** according to the official [MCP 2025-06-18 Lifecycle specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle).
 
-#### Step 1: Initialize Request
-The **client** initiates with an `initialize` request:
+## Key MCP Concepts (2025-06-18)
 
+### 🎯 **Lifecycle Phases**
+1. **Initialization**: Protocol version agreement and capability negotiation
+2. **Operation**: Normal protocol communication using negotiated capabilities  
+3. **Shutdown**: Graceful connection termination
+
+### 📊 **Core Requirements**
+- **Protocol Version**: Use `"2024-11-05"` in JSON requests (per official spec)
+- **HTTP Headers**: Include `MCP-Protocol-Version: 2024-11-05` after initialization
+- **Session Management**: Server handles sessions automatically in stateful mode
+- **Error Handling**: Proper JSON-RPC 2.0 error responses
+
+## 🔧 Official 2025-06-18 Implementation
+
+### **Phase 1: Initialization**
+
+**Client Initialize Request:**
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "initialize",
-  "params": {
-    "protocolVersion": "2025-03-26",
-    "capabilities": {
-      "experimental": {},
-      "sampling": {}
-    },
-    "clientInfo": {
-      "name": "test-client",
-      "version": "1.0.0"
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+            "roots": {
+                "listChanged": true
+            },
+            "sampling": {},
+            "elicitation": {}
+        },
+        "clientInfo": {
+            "name": "ExampleClient",
+            "title": "Example Client Display Name",
+            "version": "1.0.0"
+        }
     }
-  }
 }
 ```
 
-**Key Requirements:**
-- The initialize request **MUST NOT** be part of a JSON-RPC batch
-- No other requests are possible until initialization completes
-- Client **SHOULD NOT** send requests (except pings) before server responds
-
-#### Step 2: Initialize Response
-The **server** responds with its capabilities:
-
+**Server Initialize Response:**
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "protocolVersion": "2025-03-26",
-    "capabilities": {
-      "tools": {
-        "listChanged": true
-      },
-      "logging": {},
-      "prompts": {
-        "listChanged": true
-      },
-      "resources": {
-        "subscribe": true,
-        "listChanged": true
-      }
-    },
-    "serverInfo": {
-      "name": "weather-server",
-      "version": "1.0.0"
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+            "logging": {},
+            "prompts": {
+                "listChanged": true
+            },
+            "resources": {
+                "subscribe": true,
+                "listChanged": true
+            },
+            "tools": {
+                "listChanged": true
+            },
+            "completions": {}
+        },
+        "serverInfo": {
+            "name": "ExampleServer",
+            "title": "Example Server Display Name",
+            "version": "1.0.0"
+        },
+        "instructions": "Optional instructions for the client"
     }
-  }
 }
 ```
 
-#### Step 3: Initialized Notification
-The **client** sends an `initialized` notification to confirm readiness:
-
+**Client Initialized Notification:**
 ```json
 {
-  "jsonrpc": "2.0",
-  "method": "notifications/initialized"
+    "jsonrpc": "2.0",
+    "method": "notifications/initialized"
 }
 ```
 
-**Important:** Server **SHOULD NOT** send requests (except pings and logging) before receiving this notification.
+### **Phase 2: Operation**
 
-### Phase 2: Operation ⚙️
+After initialization, the client **MUST** include the `MCP-Protocol-Version` header:
 
-During the operation phase, client and server exchange messages according to negotiated capabilities:
+```http
+POST /mcp/ HTTP/1.1
+Content-Type: application/json
+MCP-Protocol-Version: 2024-11-05
+mcp-session-id: <session-id>
 
-- Both parties **MUST** respect the negotiated protocol version
-- Only capabilities that were successfully negotiated **SHOULD** be used
-- Normal MCP operations (tools, resources, prompts) are now available
+{
+    "jsonrpc": "2.0",
+    "method": "tools/list",
+    "params": {},
+    "id": 2
+}
+```
 
-### Phase 3: Shutdown 🛑
+### **Phase 3: Shutdown**
 
-**Per the MCP Specification**: *"No specific shutdown messages are defined—instead, the underlying transport mechanism should be used to signal connection termination"*
+Per the specification:
+- **No specific shutdown messages are defined**
+- **HTTP transport**: Shutdown by closing the HTTP connection
+- Session cleanup happens automatically
 
-Clean termination of the protocol connection using the underlying transport mechanism:
+## FastMCP Implementation
 
-- **stdio**: Client closes input stream, waits for server exit, sends SIGTERM/SIGKILL if needed  
-- **HTTP**: Shutdown indicated by closing HTTP connection(s) - **no JSON-RPC messages needed**
+Our simplified server demonstrates proper lifecycle handling:
 
-This is **spec-compliant behavior** - the transport layer handles termination, not the protocol layer.
+```python
+from mcp.server.fastmcp import FastMCP
 
-## 🔧 Version Negotiation
+# FastMCP handles all lifecycle complexity automatically
+mcp = FastMCP("weather", stateless_http=False)
 
-### Protocol Version Handling
-- Client **MUST** send a supported protocol version (preferably latest: `2025-03-26`)
-- Server responds with same version (if supported) or different supported version
-- If client doesn't support server's version, it **SHOULD** disconnect
+@mcp.tool()
+async def get_forecast(city: str) -> str:
+    """Get weather forecast for a city."""
+    return f"The weather in {city} will be warm and sunny today! 🌤️"
 
-### Version Compatibility
-- **`2025-03-26`** - Latest specification with full feature support ✅
-- **`2024-11-05`** - Previous version with limited features
-- **`draft`** - Development version (not for production)
+mcp_app = mcp.streamable_http_app()
+```
 
-## 🛠️ Capability Negotiation
+**What FastMCP Automatically Handles:**
+- ✅ Protocol version negotiation (`2024-11-05` ↔ `2025-06-18`)
+- ✅ HTTP header requirements (`MCP-Protocol-Version`)
+- ✅ Session management (stateful mode)
+- ✅ Capability negotiation
+- ✅ JSON-RPC 2.0 compliance
+- ✅ Error handling
+- ✅ Graceful shutdown
 
-### Client Capabilities
+## 🚀 Quick Start
 
-| Capability | Description | Implementation |
-|------------|-------------|----------------|
-| `roots` | Filesystem root access | `{ "listChanged": true }`
+### **Terminal 1: Start the Enhanced Server**
+```bash
+uv add mcp uvicorn httpx
+uv run uvicorn server:mcp_app --host 0.0.0.0 --port 8000 --reload
+```
+
+### **Terminal 2: Test with Client**
+```bash
+uv run python client.py
+```
+
+## Key Learning Outcomes
+
+### **✅ Lifecycle Management**
+- Understanding the three mandatory phases
+- Protocol version negotiation between JSON and HTTP headers
+- Capability exchange and validation
+- Proper session handling
+
+### **✅ 2025-06-18 Compliance**
+- Using correct protocol versions (`"2024-11-05"` in JSON)
+- Required HTTP headers (`MCP-Protocol-Version: 2024-11-05`)
+- Enhanced capability structure with `title` fields
+- Proper error handling patterns
+
+### **✅ FastMCP Benefits**
+- Automatic lifecycle management
+- Built-in 2025-06-18 compliance
+- Simplified development experience
+- Production-ready error handling
+
+## References
+
+- [MCP 2025-06-18 Lifecycle](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle)
+- [HTTP Transport Requirements](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#protocol-version-header)
+- [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
+
+This lesson shows how FastMCP makes implementing the complete MCP 2025-06-18 lifecycle specification straightforward and reliable.

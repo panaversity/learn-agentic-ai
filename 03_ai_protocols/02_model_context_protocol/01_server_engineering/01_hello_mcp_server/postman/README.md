@@ -30,7 +30,7 @@ This directory contains Postman collections and documentation for testing MCP (M
 ### 1. Start the Hello MCP Server
 ```bash
 cd hello-mcp
-uv run uvicorn server:mcp_stateless --port 8000 --reload
+uv run uvicorn server:mcp_app --port 8000 --reload
 ```
 
 ### 2. Import the Postman Collection
@@ -40,12 +40,12 @@ uv run uvicorn server:mcp_stateless --port 8000 --reload
 4. The collection will appear in your workspace
 
 ### 3. Run the Requests in Order
-Execute the requests in sequence to understand the MCP flow:
+Execute the requests in sequence to understand the compliant MCP client flow:
 
-1. **Initialize MCP Server** - Establish connection
-2. **List Available Tools** - Discover server capabilities  
-3. **Call Tool** - Execute a weather forecast
-4. **Error Examples** - See how errors are handled
+1. **Initialize Session** - Even for a stateless server, a compliant client MUST send this first.
+2. **Send Initialized Notification** - Required by 2025-06-18 spec after successful initialization.
+3. **List Available Tools** - Discovers what the server can do.
+4. **Call Weather Tool** - Executes a weather forecast with structured output (new in 2025-06-18).
 
 ## 📚 Collection Overview
 
@@ -69,32 +69,43 @@ data: {"jsonrpc":"2.0","result":{"tools":[...]},"id":2}
 ### Required Headers
 - `Content-Type: application/json`
 - `Accept: application/json, text/event-stream`
+- `MCP-Protocol-Version: 2025-06-18` (for requests after `initialize`)
 
 ## 🔍 Understanding the Requests
 
-### 1. Tools List Request  
-**Purpose**: Discover what tools the server provides
+### 1. Initialize Request
+**Purpose**: Start an MCP interaction. This is the **mandatory** first step for any compliant client.
+
+**Key Elements**:
+- Method: `initialize`
+- `protocolVersion: "2025-06-18"` in params
+- Client capabilities and info
+- Server responds with negotiated version and capabilities
+
+### 2. Initialized Notification
+**Purpose**: Complete the initialization sequence (required in 2025-06-18).
+
+**Key Elements**:
+- Method: `notifications/initialized`
+- Sent after successful initialize response
+- Tells server the client is ready for normal operations
+
+### 3. Tools List Request  
+**Purpose**: Discover what tools the server provides.
 
 **Key Elements**:
 - Method: `tools/list`
-- Returns tool schemas and descriptions
-- No parameters required
+- Returns tool schemas with title fields (new in 2025-06-18)
+- Must include `MCP-Protocol-Version: 2025-06-18` header
 
-### 2. Tool Call Request
-**Purpose**: Execute a specific tool with parameters
+### 4. Tool Call Request
+**Purpose**: Execute a specific tool with parameters.
 
 **Key Elements**:
 - Method: `tools/call`
 - Tool name and arguments in params
+- Returns structured content arrays (new in 2025-06-18)
 - Parameter validation against schema
-
-### 3. Error Handling
-**Purpose**: Understand error responses and debugging
-
-**Key Elements**:
-- JSON-RPC error format
-- Different error types (method not found, invalid params)
-- Proper error codes and messages
 
 ## 🧪 Testing Different Scenarios
 
@@ -126,18 +137,12 @@ Each request includes test scripts that:
 
 ### Environment Variables
 - `baseUrl`: Server URL (default: http://localhost:8000)
-- `toolName`: Dynamically captured from tools list
-
-### Pre-request Scripts
-- Set common variables
-- Prepare authentication if needed
-- Log request details
 
 ## 🎓 Educational Workflow
 
 ### For Students
 1. **Import and Explore**: Load collection and read descriptions
-2. **Run in Sequence**: Execute requests 1-5 in order
+2. **Run in Sequence**: Execute requests in order to see the full lifecycle.
 3. **Examine Responses**: Study the JSON-RPC format
 4. **Modify Parameters**: Experiment with different inputs
 5. **Create Variations**: Duplicate requests and try edge cases
@@ -148,8 +153,6 @@ Each request includes test scripts that:
 3. **Error Analysis**: Show different failure modes
 4. **Protocol Basics**: Explain JSON-RPC 2.0 fundamentals
 5. **Compare Implementations**: Test different MCP servers
-
-*For advanced initialization concepts, use the `05_server_initialization` example.*
 
 ## 📤 Exporting Collections
 
@@ -195,13 +198,11 @@ Each request includes test scripts that:
 
 ## 🔗 Additional Resources
 
-- [MCP Specification 2025-03-26](https://modelcontextprotocol.io/specification/2025-03-26/architecture)
+- [MCP Specification 2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18/architecture)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 - [Postman Learning Center](https://learning.postman.com/)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
-
-*For detailed MCP lifecycle and initialization, see `05_server_initialization` example.*
 
 ---
 

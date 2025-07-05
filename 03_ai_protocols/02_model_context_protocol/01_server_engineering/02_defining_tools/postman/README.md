@@ -1,142 +1,241 @@
-# 🧰 MCP Defining Tools - Postman Collection
+# 🧰 MCP Defining Tools - Postman Testing Guide
 
-This Postman collection demonstrates how to test an MCP server with **multiple tools**. You'll learn how to discover available tools and execute them with different parameters.
+This Postman collection demonstrates **all 5 essential MCP tool patterns** that every developer should know. Perfect for beginners learning how different tool return types work in MCP!
 
-## 🎯 What You'll Learn
+## 🎯 What You'll Test
 
-- **Tool Discovery**: How to find out what tools a server provides
-- **Tool Execution**: How to call tools with proper parameters
-- **Parameter Validation**: Understanding type checking and required fields
-- **Error Handling**: What happens when things go wrong
+### **5 Essential Tool Patterns**
+1. **Simple List Tool** (`list_cities`) - Auto-wrapped primitives
+2. **Simple Number Tool** (`get_temperature`) - Auto-wrapped floats  
+3. **Structured Data Tool** (`get_weather`) - Pydantic models
+4. **Rich Content Tool** (`add_numbers`) - TextContent with annotations
+5. **Multi-Content Tool** (`analyze_data`) - Multiple content items
 
-## 🚀 Quick Start
+### **Plus Error Scenarios**
+- Invalid tool names
+- Missing required parameters
+- Wrong parameter types
 
-### 1. Start the Server
+## 🚀 Quick Start (3 Steps)
+
+### **Step 1: Start the Server**
 ```bash
-cd 03_ai_protocols/02_model_context_protocol/01_server_development/02_defining_tools/my_tools_server
-uvicorn server:mcp_app --host 0.0.0.0 --port 8000
+cd my_tools_server
+uv add mcp uvicorn httpx pydantic
+uv run uvicorn server:mcp_app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 2. Import Collection
+### **Step 2: Import Collection**
 - Open Postman
-- Click **Import** → **Upload Files**
+- Click **Import** → **Upload Files** 
 - Select `MCP_Defining_Tools.postman_collection.json`
 
-### 3. Run the Requests
-Start with **"01. Discover Available Tools"** and work your way through!
+### **Step 3: Run Tests**
+Start with **"01. Initialize Session"** and work through all 11 requests!
 
-## 🔍 Understanding the Requests
+## 📋 Request Guide (Run in Order!)
 
-### 1. Tool Discovery
-**Purpose**: Find out what tools the server provides
+| # | Request Name | Tool | What It Tests | Expected Result |
+|---|--------------|------|---------------|------------------|
+| **01** | Initialize Session | - | MCP session setup | Session established |
+| **02** | Send Initialized | - | Complete initialization | Ready for operations |
+| **03** | Discover Tools | - | Tool discovery | List of 5 tools |
+| **04** | Simple List Tool | `list_cities` | Auto-wrapped list | `{"result": ["London", "Paris", "Tokyo"]}` |
+| **05** | Simple Primitive | `get_temperature` | Auto-wrapped float | `{"result": 22.5}` |
+| **06** | Structured Data | `get_weather` | Pydantic model | Rich WeatherData object |
+| **07** | Rich Content | `add_numbers` | TextContent + annotations | Formatted content with metadata |
+| **08** | Multi-Content | `analyze_data` | Multiple content items | Array of TextContent/ImageContent |
+| **09** | Error: Invalid Tool | - | Error handling | Tool not found error |
+| **10** | Error: Missing Param | `get_temperature` | Parameter validation | Missing parameter error |
+| **11** | Error: Wrong Type | `add_numbers` | Type validation | Type conversion error |
 
-**What to expect**:
-- Server returns list of available tools
-- Each tool includes name, description, and parameter schema
-- Should see `add` and `greet` tools
+## 🔍 Understanding Each Response Type
 
-### 2. Calculator Tool Tests
-**Purpose**: Test the `add` tool with different scenarios
+### **1. Auto-Wrapped Primitives (Requests 04-05)**
+When tools return simple types, MCP wraps them automatically:
 
-**Variations**:
-- **Basic Addition**: Simple positive numbers (5 + 7 = 12)
-- **Large Numbers**: Test with bigger values (1000 + 2500 = 3500)
-- **Negative Numbers**: Mixed positive/negative (-10 + 15 = 5)
+```json
+// Request 04: list_cities
+{
+  "result": ["London", "Paris", "Tokyo"]
+}
 
-### 3. Greeter Tool Tests
-**Purpose**: Test the `greet` tool with different names
+// Request 05: get_temperature  
+{
+  "result": 22.5
+}
+```
 
-**Variations**:
-- **Basic Greeting**: Standard name ("Student")
-- **Different Names**: Try various names ("Alice", "Bob", etc.)
-- **Edge Cases**: Empty names or special characters
+**Key Learning**: Simple return types are consistent across all MCP tools.
 
-### 4. Error Scenarios
-**Purpose**: Understand how the server handles mistakes
+### **2. Structured Data (Request 06)**
+Pydantic models return rich, validated objects:
 
-**Error Types**:
-- **Invalid Tool**: Calling a tool that doesn't exist
-- **Missing Parameters**: Forgetting required arguments
-- **Wrong Types**: Passing strings instead of numbers
-- **Edge Cases**: Empty or unusual values
+```json
+// Request 06: get_weather
+{
+  "temperature": 22.5,
+  "humidity": 65.0, 
+  "condition": "partly cloudy",
+  "wind_speed": 12.3
+}
+```
 
-## 📋 Request Details
+**Key Learning**: No `{"result": ...}` wrapper for structured data.
 
-| Request | Tool | Purpose | Expected Result |
-|---------|------|---------|----------------|
-| **01** | - | Discover tools | List of `add` and `greet` tools |
-| **02** | `add` | Basic addition | `12` |
-| **03** | `add` | Large numbers | `3500` |
-| **04** | `add` | Negative numbers | `5` |
-| **05** | `greet` | Basic greeting | `"Hello, Student! Welcome..."` |
-| **06** | `greet` | Different name | `"Hello, Alice! Welcome..."` |
-| **07** | - | Invalid tool | Error response |
-| **08** | `add` | Missing parameter | Validation error |
-| **09** | `add` | Wrong type | Type error |
-| **10** | `greet` | Empty name | `"Hello, ! Welcome..."` |
+### **3. Rich Content (Request 07)**
+TextContent enables rich user experiences:
 
-## 🎓 Learning Path
+```json
+// Request 07: add_numbers
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "🧮 **Addition Calculation**\n**Result:** 42.8",
+      "annotations": {
+        "audience": ["user", "assistant"],
+        "priority": 1.0
+      }
+    }
+  ]
+}
+```
 
-### For Beginners
-1. **Start with Discovery**: Run request #01 to see available tools
-2. **Try Basic Calls**: Run requests #02 and #05 for successful examples
-3. **Experiment**: Change parameters in requests #03, #04, #06
-4. **Learn from Errors**: Run requests #07-#10 to see error handling
+**Key Learning**: Content arrays support rich formatting and metadata.
 
-### For Advanced Users
-1. **Modify Parameters**: Edit request bodies to test edge cases
-2. **Add New Tests**: Create requests for boundary conditions
-3. **Analyze Schemas**: Study the tool schemas returned by discovery
-4. **Compare Responses**: Notice differences between sync/async tools
+### **4. Multi-Content (Request 08)**
+Multiple content items in one response:
 
-## 🔧 Customization Tips
+```json
+// Request 08: analyze_data
+{
+  "content": [
+    {
+      "type": "text", 
+      "text": "📊 **Data Analysis Report**...",
+      "annotations": {...}
+    },
+    {
+      "type": "image",
+      "data": "",
+      "mimeType": "text/plain",
+      "annotations": {...}
+    }
+  ]
+}
+```
 
-### Testing Your Own Values
-- **Calculator**: Change `a` and `b` values in add tool requests
-- **Greeter**: Modify the `name` parameter with different strings
-- **Error Testing**: Try invalid parameter combinations
+**Key Learning**: Single tool can return multiple content types.
 
-### Adding New Requests
-1. Duplicate an existing request
-2. Modify the parameters
+## 🎓 Learning Objectives
+
+After completing this collection, you'll understand:
+
+### **✅ Tool Return Types**
+- When MCP auto-wraps responses vs. returns structured data
+- How Pydantic models become structured output
+- How TextContent enables rich user interfaces
+
+### **✅ MCP Request Flow**
+- Proper session initialization sequence
+- How tool discovery works
+- Error handling and validation
+
+### **✅ Practical Applications**
+- Simple tools: calculators, lookups, basic operations
+- Structured tools: APIs, validated data, complex objects  
+- Rich content: user interfaces, reports, dashboards
+
+## 🔧 Customization Ideas
+
+### **Try Different Values**
+```json
+// Experiment with get_temperature
+{"city": "Tokyo"}
+{"city": "New York"}
+
+// Test add_numbers with different numbers
+{"a": 100, "b": 200}
+{"a": -5.5, "b": 3.14}
+
+// Vary analyze_data parameters
+{"data_type": "users", "sample_size": 1000}
+{"data_type": "performance", "sample_size": 50}
+```
+
+### **Create New Requests**
+1. Duplicate any request
+2. Modify parameters
 3. Update the description
-4. Test your changes
+4. Test your changes!
 
 ## 🐛 Troubleshooting
 
-### Common Issues
-
+### **Connection Issues**
 | Problem | Solution |
 |---------|----------|
-| **Connection refused** | Make sure server is running on port 8000 |
-| **404 Not Found** | Check the URL path is `/mcp` |
-| **Invalid JSON** | Verify request body syntax |
-| **Tool not found** | Ensure tool name matches exactly |
+| **Connection refused** | Start server: `uvicorn server:mcp_app --port 8000` |
+| **404 Not Found** | Check URL is `http://localhost:8000/mcp` |
+| **Timeout** | Server might be starting - wait 10 seconds |
 
-### Expected Error Responses
-- **Invalid tool**: `{"error": {"code": -32601, "message": "Method not found"}}`
-- **Missing parameter**: Validation error with details
-- **Wrong type**: Type conversion error
+### **Expected Error Responses**
+```json
+// Invalid tool (Request 09)
+{
+  "error": {
+    "code": -32601,
+    "message": "Method not found"
+  }
+}
+
+// Missing parameter (Request 10)  
+{
+  "error": {
+    "code": -32602,
+    "message": "Invalid params"
+  }
+}
+
+// Wrong type (Request 11)
+{
+  "error": {
+    "code": -32602, 
+    "message": "Type validation error"
+  }
+}
+```
 
 ## 🎯 Success Criteria
 
-You've mastered this collection when you can:
-- ✅ Discover all available tools
-- ✅ Successfully call both `add` and `greet` tools
-- ✅ Handle different parameter types and values
-- ✅ Understand and interpret error responses
+You've mastered MCP tools when you can:
+- ✅ Run all 11 requests successfully
+- ✅ Understand the 4 different response patterns
+- ✅ Explain when to use each tool type
 - ✅ Modify requests to test your own scenarios
+- ✅ Interpret both success and error responses
 
-## 🔗 Next Steps
+## 🔗 What's Next?
 
-After completing this collection:
-1. **Try Other Examples**: Explore other MCP server examples
-2. **Build Your Own**: Create a server with custom tools
-3. **Advanced Features**: Learn about resources, prompts, and notifications
-4. **Integration**: Connect MCP servers to AI applications
+After mastering this collection:
+1. **Lesson 03**: Learn about MCP resources (data that tools reference)
+2. **Lesson 04**: Explore prompt templates for AI interactions
+3. **Build Your Own**: Create tools for your specific use cases
+4. **Advanced Features**: Error handling, async tools, complex workflows
+
+## 💡 Pro Tips
+
+1. **Always start with initialization**: Requests 01-02 are mandatory
+2. **Watch the response structure**: Notice how different return types are formatted
+3. **Use Postman's JSON viewer**: Makes complex responses easier to read
+4. **Test error scenarios**: Understanding failures helps debug real applications
+5. **Experiment with parameters**: Try edge cases and different values
 
 ## 📚 Additional Resources
 
 - [MCP Specification](https://spec.modelcontextprotocol.io/)
 - [FastMCP Documentation](https://github.com/jlowin/fastmcp)
-- [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification) 
+- [Pydantic Models Guide](https://docs.pydantic.dev/)
+- [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
+
+This collection gives you hands-on experience with every major MCP tool pattern. Master these basics and you'll be ready to build any kind of MCP tool! 

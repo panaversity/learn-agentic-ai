@@ -1,141 +1,228 @@
-# 03: Exposing Resources
+# 03: Exposing Resources with Enhanced Metadata (2025-06-18)
 
-**Objective:** Learn how to define and expose data as "resources" that an AI agent or user can read using the MCP `resources/` methods.
+**Objective:** Learn how to expose data as **MCP Resources** with features: **title fields**, **rich metadata**, **multiple URI schemes**, and **structured content responses** using the 2025-06-18 specification.
 
-While tools are for *actions*, resources are for *information*. They allow a server to provide contextual data, such as file contents, database records, or real-time information, in a standardized way.
+**Building on Previous Lessons**: You've learned about Tools (Lesson 02) - functions AI can call. Now let's explore Resources - **data that AI can read** to enhance its knowledge and context.
 
-## Key MCP Concepts
+### 🤔 What Are MCP Resources? (Simple Explanation)
 
--   **Resource:** A piece of data, identified by a URI, that a client can read.
--   **`@mcp.resource()` Decorator:** The `FastMCP` decorator used to expose a Python function as a data resource. The decorator takes the resource's `uri` and `description` as arguments.
--   **Resource URI:** A unique identifier for a resource (e.g., `app:///messages/welcome` or `users://jane.doe/profile`). URIs can be static or contain template placeholders.
--   **`resources/list`:** The MCP method for a client to discover all available resources a server provides.
--   **`resources/read`:** The MCP method for a client to fetch the content of a specific resource by its URI.
--   **Dynamic vs. Templated Resources:**
-    -   A **dynamic resource** (e.g., `app:///system/time`) is generated on-the-fly every time it's read.
-    -   A **templated resource** (e.g., `users://{user_id}/profile`) uses placeholders in its URI. `FastMCP` automatically maps parts of the requested URI to the function's arguments.
+**Simple Definition**: MCP Resources are **documents, data, and information that AI can access** to provide better, more informed responses.
+
+**Real-World Analogy**: If Tools are like giving AI a toolbox, Resources are like giving AI a **library or knowledge base**. The AI can:
+- 📖 Read documentation and guides
+- 📊 Access real-time data and reports  
+- 🗂️ Browse file systems and databases
+- 🔍 Search through knowledge collections
+
+### 🏗️ MCP Resources vs. What You Know
+
+| **If you're familiar with...** | **MCP Resources are like...** | **Key advantage** |
+|-------------------------------|--------------------------------|-------------------|
+| **File Systems** | Files the AI can browse and read | Discoverable and structured for AI |
+| **REST API GET endpoints** | Read-only API endpoints | Built-in metadata and categorization |
+| **RAG (Retrieval Augmented Generation)** | Knowledge base for AI context | Standardized across all AI platforms |
+| **Documentation Sites** | Docs the AI can navigate | Self-describing with rich metadata |
+| **Database Views** | Queryable data collections | AI-friendly formatting and discovery |
+
+### 🎯 Why Resources Matter for AI
+
+**The Problem**: AI models have training cutoffs and can't access:
+- Your company's latest documents
+- Real-time data and reports
+- User-specific information
+- Dynamic content that changes frequently
+
+**The MCP Resources Solution**:
+- ✅ **Rich Context**: AI gets access to relevant, up-to-date information
+- ✅ **Organized Data**: Resources are categorized and searchable
+- ✅ **Dynamic Content**: Information that updates automatically
+- ✅ **Metadata Rich**: Resources include descriptions, types, and relationships
+
+### 🔗 How Resources Work With Tools
+
+**Powerful Combination**: Resources and Tools work together:
+- 📚 **Resources provide context**: AI reads documentation about how to use an API
+- 🔧 **Tools take action**: AI calls the API using knowledge from resources
+- 📊 **Resources show results**: AI reads updated data after tool execution
+
+This lesson builds on our foundation by creating a server that demonstrates resource capabilities including virtual file systems, dynamic templates, analytics dashboards, and cross-scheme resource discovery.
+
+## Key MCP Concepts (2025-06-18)
+
+### 🎯 **Core Resource Features**
+-   **Resources:** Data items with unique URIs (e.g., `file:///project/README.md`, `users://123/profile`)
+-   **Resource Providers (`@mcp.resource_provider`)**: Functions that list available resources for specific URI schemes
+-   **Resource Getters (`@mcp.resource_getter`)**: Functions that fetch content for specific resource URIs
+-   **URI Schemes**: Categorization system (`file://`, `app://`, `users://`, `db://`, custom schemes)
+
+### 📊 **Enhanced Metadata System (NEW in 2025-06-18)**
+-   **Title Fields**: Human-friendly titles alongside programmatic names
+-   **Rich Descriptions**: Detailed resource descriptions with context and usage
+-   **MIME Type Detection**: Accurate content type identification for proper handling
+-   **Resource Metadata**: Size, modification dates, authors, tags, and custom properties
+-   **Cross-References**: Links between related resources and dependencies
+
+### 🔧 **Advanced Resource Patterns**
+-   **Static Resources**: Fixed content like documentation and configuration
+-   **Dynamic Resources**: Generated content based on parameters and state
+-   **Template Resources**: URI templates with parameters (e.g., `users://{user_id}/profile`)
+-   **Multiple Schemes**: Different URI schemes for different data types
+-   **Structured Content**: Rich formatting with markdown, JSON, and custom formats
+
+
+## 🔧 Resource Implementation Guide
+
+### **Resource Definition Patterns**
+
+**Basic Resource (Static Content):**
+```python
+@mcp.resource(
+    uri="app:///messages/welcome",
+    name="Welcome Message",
+    title="Server Welcome Message",  # NEW in 2025-06-18
+    description="Comprehensive welcome message with server information",
+    mime_type="text/markdown"
+)
+async def get_welcome_message() -> str:
+    return "# Welcome to MCP Resources!"
+```
+
+**Dynamic Resource (Generated Content):**
+```python
+@mcp.resource(
+    uri="app:///system/info",
+    name="System Information", 
+    title="Live Server System Information",  # NEW in 2025-06-18
+    description="Real-time system metrics and performance data",
+    mime_type="application/json"
+)
+async def get_system_info() -> str:
+    system_data = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "server_name": "my-resources-server",
+        "uptime": 3600,
+        "requests_served": 1247
+    }
+    return json.dumps(system_data, indent=2)
+```
+
+**Template Resource (Parameterized):**
+```python
+@mcp.resource(
+    uri="users://{user_id}/profile",
+    name="User Profile",
+    title="Dynamic User Profile Information",  # NEW in 2025-06-18
+    description="User profile with activity data and preferences",
+    mime_type="text/markdown"
+)
+def get_user_profile(user_id: str) -> str:
+    return f"""# User Profile: {user_id}
+    
+**User ID:** {user_id}
+**Status:** Active
+**Generated:** {datetime.datetime.now().isoformat()}
+"""
+```
 
 ## Implementation Plan
 
 Inside the `my_resources_server/` subdirectory:
 
--   **`server.py`:**
-    -   We will define several resource-providing functions, each decorated with `@mcp.resource()`:
-        -   A static resource that returns a fixed string.
-        -   A dynamic resource that returns the current server time as a JSON object.
-        -   A templated resource for user profiles, where `user_id` is extracted from the URI.
+### **Server (`server.py`)**
+-   **Virtual File System**: Rich metadata structure with file types, sizes, authors, tags
+-   **Multiple URI Schemes**: `file://`, `app://`, `users://` with scheme-specific providers
+-   **Dynamic Content**: Real-time system information, analytics dashboards, user profiles
+-   **Template Resources**: Parameterized URIs for dynamic content generation
+-   **Metadata**: Title fields, detailed descriptions, content classification
 
--   **`client.py`:**
-    -   The client will first call `resources/list` to see all resource templates.
-    -   It will then demonstrate calling `resources/read` for each type of resource: static, dynamic, and templated, printing the content it receives.
+### **Client (`client.py`)**
+-   **Multi-Scheme Discovery**: Lists resources across all supported URI schemes
+-   **Content Parsing**: Handles different MIME types and structured responses
+-   **Template Testing**: Tests parameterized resources with various inputs
+-   **Metadata Display**: Shows enhanced resource information and titles
+
+### **Postman Collection**
+-   **Scheme-Specific Testing**: Tests for each URI scheme independently
+-   **Template Validation**: Tests parameterized resources with different values
+-   **Metadata Verification**: Validates title fields and enhanced descriptions
+-   **Error Handling**: Tests edge cases and invalid resource requests
 
 ## Project Structure
 
-```
-03_exposing_resources/
-└── my_resources_server/
-    ├── main.py         # The MCP server code with resource definitions
-    └── call_mcp.py     # Our simple client to read the resources
-```
+## 1. Server Code (`server.py`)
 
-## 1. The Server Code (`main.py`)
+Server demonstrates comprehensive resource capabilities:
+1. Call `resources/list` to discover available resources
+2. Use `resources/read` to fetch specific content
+3. Explore template resources with dynamic parameters
 
-This server defines three different kinds of resources to show the flexibility of the system.
+## How to Run: Complete Testing Guide
 
-```python
-# The full server code is in main.py. It defines three resources:
-# 1. A static welcome message (always the same).
-# 2. A dynamic message that shows the current server time.
-# 3. A templated resource to fetch a user profile by their ID.
-```
+### **Terminal 1: Start the Enhanced Server**
 
-## 2. The Simplified Client (`call_mcp.py`)
+1. **Navigate to the directory:**
+   ```bash
+   cd my_resources_server
+   ```
 
-This client shows how to first discover and then read all the different resources from our server.
+2. **Install libraries:**
+   ```bash
+   uv add mcp uvicorn httpx
+   ```
 
-```python
-# The full, simplified client code is in the call_mcp.py file.
-# It demonstrates the step-by-step process of listing and reading resources.
-```
+3. **Run the server:**
+   ```bash
+   uvicorn server:mcp_app --host 0.0.0.0 --port 8000 --reload
+   ```
 
-## 3. How to Run: A Step-by-Step Guide
+### **Terminal 2: Test with Enhanced Client**
 
-This process is the same as the previous module. You will need two terminals.
+1. **Run the comprehensive client:**
+   ```bash
+   uv run python client.py
+   ```
 
-### **Terminal 1: Start the Server**
+### **Postman Testing (Recommended)**
 
-1.  **Navigate to the directory:**
-    ```bash
-    cd 03_ai_protocols/02_model_context_protocol/01_server_development/03_exposing_resources/my_resources_server
-    ```
-2.  **Install libraries:** (If you haven't already from the last step)
-    ```bash
-    uv add httpx mcp uvicorn
-    ```
-3.  **Run the server:**
-    ```bash
-    uvicorn server:mcp_app --host 0.0.0.0 --port 8000
-    ```
-    The server is now running and waiting for the client.
+1. **Import the enhanced collection:** `postman/MCP_Exposing_Resources.postman_collection.json`
+2. **Run requests in sequence:**
+   - `01. Initialize Session` - Protocol negotiation
+   - `02. Send Initialized Notification` - Complete initialization
+   - `03-05. List Resources by Scheme` - Test each URI scheme
+   - `06-10. Get Specific Resources` - Fetch various content types
+   - `11-13. Test Template Resources` - Dynamic content generation
+   - `14. Test Error Handling` - Invalid resource requests
 
-### **Terminal 2: Run the Client**
+## 4. Key Learning Outcomes
 
-1.  **Navigate to the *same* directory as Terminal 1:**
-    ```bash
-    cd 03_ai_protocols/02_model_context_protocol/01_server_development/03_exposing_resources/my_resources_server
-    ```
-2.  **Run the client:**
-    ```bash
-    uv run python client.py
-    ```
+After completing this lesson, you will understand:
 
-## 4. What Happens When You Run the Client
+### **✅ Enhanced Resource Implementation**
+- Creating resources with title fields and rich metadata
+- Implementing multiple URI schemes for different data types
+- Building template resources with dynamic parameters
+- Structuring virtual file systems with comprehensive metadata
 
-The client will print a step-by-step explanation of its actions. This is the **Expected Output** in Terminal 2:
+### **✅ Advanced Resource Patterns**
+- Static vs dynamic vs template resource patterns
+- Cross-scheme resource discovery and navigation
+- Content generation with real-time data
+- Analytics and monitoring resource integration
 
-```
---- MCP Resource Client Demonstration for Students ---
+### **✅ 2025-06-18 Specification Features**
+- Title fields for human-friendly resource identification
+- Enhanced descriptions with context and usage information
+- Proper MIME type handling for different content formats
+- Structured metadata for resource classification and search
 
-[Step 1: Discovering Resources]
-We ask the server what resources it has with a 'resources/list' request.
-   -> Sending resources/list request...
-   -> Success! Server has 3 resources:
-      - app:///messages/welcome: A static welcome message.
-      - app:///system/time: A dynamic JSON object with the current time.
-      - users://{user_id}/profile: A template for a user's profile.
+### **✅ Production Considerations**
+- Resource organization and categorization strategies
+- Performance optimization for large resource collections
+- Caching and content generation best practices
+- Error handling and graceful degradation patterns
 
-[Step 2: Reading a static resource]
-Now, we'll read the 'app:///messages/welcome' resource.
-   -> Sending resources/read request...
-   -> Success! The server returned: 'Hello and welcome to the MCP Resource Server!'
+## 6. Next Steps and Advanced Patterns
 
-[Step 3: Reading a dynamic resource]
-Next, we'll read 'app:///system/time'. This one is generated on the fly.
-   -> Sending resources/read request...
-   -> Success! The server returned a JSON object:
-      {"type": "json", "content": {"message": "Current server time.", "timestamp": "..."}}
+- **Lesson 04**: Create prompt templates that reference these resources
 
-[Step 4: Reading a templated resource]
-Finally, we'll read 'users://jane.doe/profile' to get a specific user's data.
-   -> Sending resources/read request...
-   -> Success! The server returned the user profile:
-      {"type": "json", "content": {"user_id": "jane.doe", "name": "Jane Doe", "role": "developer"}}
-```
-
-This example shows how you can provide an AI with different kinds of information—static, dynamic, and specific—by defining and exposing resources.
-
-## 5. Testing with Postman
-
-For a more interactive testing experience, we've included a comprehensive Postman collection in the `postman/` directory:
-
-- **Collection**: `MCP_Exposing_Resources.postman_collection.json`
-- **Documentation**: `postman/README.md`
-
-The Postman collection includes:
-- Resource discovery requests
-- Tests for all three resource types (static, dynamic, templated)
-- Multiple examples of templated resources with different user IDs
-- Error handling scenarios
-- Comprehensive explanations of resource vs tool concepts
-
-This provides an excellent way to experiment with MCP resources and understand how they differ from tools.
+This lesson provides the foundation for building rich, discoverable resource collections that enhance the context and capabilities available to MCP clients and AI agents.

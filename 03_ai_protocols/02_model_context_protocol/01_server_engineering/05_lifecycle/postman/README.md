@@ -1,71 +1,73 @@
-# 📮 Postman Testing Guide for Complete MCP Lifecycle
+# 📮 Postman Testing Guide for MCP Lifecycle
 
-This directory contains Postman collections for testing the complete Model Context Protocol (MCP) connection lifecycle according to the [MCP 2025-03-26 Specification](https://modelcontextprotocol.io/specification/2025-03-26).
+This directory contains Postman collections for testing the complete Model Context Protocol (MCP) connection lifecycle according to the [MCP 2025-06-18 Lifecycle specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle).
 
 ## 🎯 What You'll Learn
 
-- How to test the complete MCP connection lifecycle manually
-- Understanding all three phases: Initialization → Operation → Shutdown
-- Protocol version negotiation testing
+- Testing the complete MCP connection lifecycle phases
+- Protocol version negotiation with proper JSON/HTTP header usage
 - Capability negotiation validation
-- Session management verification
-- Proper connection termination
+- Session management with HTTP headers
 - Error scenario testing
 
 ## 📋 Prerequisites
 
-1. **Start the Hello MCP Server**:
+1. **Start the MCP Server**:
    ```bash
    cd ../hello-mcp
    uv run server.py
    ```
-   Server will run on `http://localhost:8000`
+   Server runs on `http://localhost:8000`
 
-2. **Import Collections**:
-   - Import `MCP_Initialization_Tests.postman_collection.json`
-   - Import `MCP_Environment.postman_environment.json`
+2. **Import Collection**:
+   - Import `MCP_Lifecycle_Tests.postman_collection.json`
 
-## 🔄 Complete MCP Lifecycle Flow Testing
+## 🔄 MCP Lifecycle Testing (2025-06-18 Specification)
 
 ### **Phase 1: Initialization** 
-According to [MCP Architecture](https://modelcontextprotocol.io/specification/2025-03-26/architecture#connection-lifecycle):
 
 **Request**: `POST http://localhost:8000/mcp/`
 ```json
 {
     "jsonrpc": "2.0",
+    "id": 1,
     "method": "initialize",
     "params": {
-        "protocolVersion": "2025-03-26",
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+            "roots": {
+                "listChanged": true
+            },
+            "sampling": {},
+            "elicitation": {}
+        },
         "clientInfo": {
             "name": "postman-test-client",
+            "title": "Postman Test Client",
             "version": "1.0.0"
-        },
-        "capabilities": {
-            "experimental": {},
-            "sampling": {}
         }
-    },
-    "id": 1
+    }
 }
 ```
 
-**Expected Response**: Server capabilities + session ID
+**Expected Response**:
 ```json
 {
     "jsonrpc": "2.0",
     "id": 1,
     "result": {
-        "protocolVersion": "2025-03-26",
+        "protocolVersion": "2024-11-05",
         "capabilities": {
-            "experimental": {},
-            "prompts": {"listChanged": false},
-            "resources": {"subscribe": false, "listChanged": false},
-            "tools": {"listChanged": false}
+            "logging": {},
+            "prompts": {"listChanged": true},
+            "resources": {"subscribe": true, "listChanged": true},
+            "tools": {"listChanged": true},
+            "completions": {}
         },
         "serverInfo": {
             "name": "weather",
-            "version": "1.9.4"
+            "title": "Weather Forecast Server",
+            "version": "1.0.0"
         }
     }
 }
@@ -76,23 +78,29 @@ According to [MCP Architecture](https://modelcontextprotocol.io/specification/20
 - `mcp-session-id: <uuid>`
 
 ### **Phase 2: Initialized Notification**
+
 **Request**: `POST http://localhost:8000/mcp/`
 ```json
 {
     "jsonrpc": "2.0",
-    "method": "notifications/initialized",
-    "params": {}
+    "method": "notifications/initialized"
 }
 ```
 
-**Headers**: Include the `mcp-session-id` from Phase 1
+**Required Headers (per 2025-06-18 spec)**:
+```http
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2024-11-05
+mcp-session-id: <session-id-from-init>
+```
 
 **Expected Response**: `202 Accepted`
 
-### **Phase 2: Operation**
+### **Phase 3: Operation**
 
 #### List Tools
-**Request**: `POST http://localhost:8000/mcp/`
+**Request**:
 ```json
 {
     "jsonrpc": "2.0",
@@ -102,8 +110,14 @@ According to [MCP Architecture](https://modelcontextprotocol.io/specification/20
 }
 ```
 
+**Required Headers**:
+```http
+MCP-Protocol-Version: 2024-11-05
+mcp-session-id: <session-id>
+```
+
 #### Call Tool
-**Request**: `POST http://localhost:8000/mcp/`
+**Request**:
 ```json
 {
     "jsonrpc": "2.0",
@@ -118,70 +132,75 @@ According to [MCP Architecture](https://modelcontextprotocol.io/specification/20
 }
 ```
 
-### **Phase 3: Shutdown**
+### **Phase 4: Shutdown**
 
-**Per MCP Specification**: 
+**Per MCP 2025-06-18 Specification**: 
 - **"No specific shutdown messages are defined"**
 - **"For HTTP transports, shutdown is indicated by closing the associated HTTP connection(s)"**
 
-#### Connection Termination (No Request Needed)
-The MCP specification explicitly states that shutdown is handled by the transport layer:
-- **HTTP Transport**: Close the HTTP connection
-- **No JSON-RPC messages required**
-- Session cleanup happens automatically when connection closes
-
-This is **spec-compliant behavior** - no termination notification is needed or expected.
+Connection termination happens automatically when HTTP connection closes.
 
 ## 🧪 Test Scenarios
 
 ### ✅ **Success Cases**
 1. **Complete Lifecycle**: Initialize → Initialized → List Tools → Call Tool → (Close Connection)
-2. **Protocol Version Match**: Client and server both use `2025-03-26`
-3. **Session Persistence**: Reuse session ID across all requests
-4. **Graceful Shutdown**: HTTP connection termination (no messages needed)
+2. **Protocol Versions**: Use `"2024-11-05"` in JSON, `2024-11-05` in HTTP headers
+3. **Session Persistence**: Reuse session ID across requests
+4. **Header Compliance**: Include `MCP-Protocol-Version` header after initialization
 
 ### ❌ **Error Cases**
-1. **Skip Initialization**: Try tools/list without initialize
-2. **Wrong Protocol Version**: Use `2024-11-05` instead of `2025-03-26`  
-3. **Missing Session ID**: Omit session header after initialization
-4. **Invalid JSON-RPC**: Send malformed JSON
+1. **Missing Protocol Header**: Omit `MCP-Protocol-Version` header
+2. **Invalid Protocol Version**: Use unsupported version like `"1.0.0"`
+3. **Malformed JSON**: Send invalid JSON-RPC
 
 ## 📊 Expected Results
 
-| Test Case | Expected Status | Expected Headers | Notes |
-|-----------|----------------|------------------|-------|
-| Initialize | 200 OK | `text/event-stream`, `mcp-session-id` | SSE format response |
-| Initialized | 202 Accepted | Standard | Notification acknowledged |
-| Tools List | 200 OK | `text/event-stream` | Tools array returned |
-| Tool Call | 200 OK | `text/event-stream` | Tool result returned |
-| Shutdown | N/A | N/A | Close HTTP connection (no message) |
+| Test Case | Expected Status | Key Headers | Notes |
+|-----------|----------------|-------------|-------|
+| Initialize | 200 OK | `text/event-stream`, `mcp-session-id` | SSE format |
+| Initialized | 202 Accepted | Standard | Notification only |
+| Tools List | 200 OK | `text/event-stream` | Tools array |
+| Tool Call | 200 OK | `text/event-stream` | Forecast result |
+| Shutdown | N/A | N/A | Close HTTP connection |
 
-## 🔧 Postman Environment Variables
+## 🔧 Key Protocol Points
 
-Set these in your Postman environment:
-- `mcp_host`: `http://localhost:8000`
-- `mcp_session_id`: `{{mcp-session-id}}` (auto-extracted)
-- `protocol_version`: `2025-03-26`
+### **Protocol Version Usage (2025-06-18)**
+- **JSON Requests**: Use `"protocolVersion": "2024-11-05"`
+- **HTTP Headers**: Use `MCP-Protocol-Version: 2024-11-05`
+- This follows the official specification examples exactly
+
+### **Required Headers After Initialization**
+All requests after `initialize` **MUST** include:
+```http
+MCP-Protocol-Version: 2024-11-05
+mcp-session-id: <session-id>
+```
+
+### **Capability Structure**
+Enhanced in 2025-06-18 with:
+- `title` fields in clientInfo/serverInfo
+- `completions` capability for autocompletion
+- Granular options like `listChanged`, `subscribe`
+
+## 🚀 Quick Test Flow
+
+1. Import `MCP_Lifecycle_Tests.postman_collection.json`
+2. Start MCP server: `uv run server.py`
+3. Run requests in order:
+   - **Initialize** → captures session ID automatically
+   - **Initialized** → uses captured session ID
+   - **List Tools** → shows available tools
+   - **Call Tool** → executes weather forecast
+
+4. Observe complete MCP 2025-06-18 lifecycle!
 
 ## 📚 References
 
-- [MCP 2025-03-26 Specification](https://modelcontextprotocol.io/specification/2025-03-26)
-- [MCP Architecture](https://modelcontextprotocol.io/specification/2025-03-26/architecture)
-- [Connection Lifecycle](https://modelcontextprotocol.io/specification/2025-03-26/architecture#connection-lifecycle)
+- [MCP 2025-06-18 Lifecycle](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle)
+- [HTTP Transport Requirements](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#protocol-version-header)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
-
-## 🚀 Quick Start
-
-1. Import both JSON files into Postman
-2. Start the MCP server: `uv run server.py` 
-3. Run "1. Initialize MCP Server" request
-4. Copy the `mcp-session-id` from response headers
-5. Run the 4 active requests in order:
-   - Initialize → Initialized → List Tools → Call Tool
-   - Shutdown happens automatically when connection closes
-6. Observe the complete MCP connection lifecycle!
 
 ---
 
-**Pro Tip**: Watch the server logs while running tests to see all three phases of the MCP lifecycle in action! 🔍  
-**Complete Flow**: Initialization → Operation → Shutdown ✅ 
+**Note**: The 2025-06-18 specification uses `"2024-11-05"` in JSON examples while referring to itself as the 2025-06-18 revision. This is the official protocol version for the current specification. ✅

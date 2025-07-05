@@ -1,41 +1,65 @@
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.prompts import base as mcp_messages
 
-# Initialize a stateless FastMCP server
+
+# Initialize FastMCP server with enhanced 2025-06-18 metadata
 mcp = FastMCP(
     name="my-prompts-server",
-    description="A simple server to demonstrate defining and using MCP Prompt Templates.",
     stateless_http=True
 )
 
-# --- Prompt 1: A simple prompt that returns a single string ---
-# This is the most basic form. The string becomes the content of a single user message.
-@mcp.prompt()
+
+@mcp.prompt(
+    name="summarize",
+    title="Simple Text Summarization",  # For Postman compatibility
+    description="Basic text summarization prompt for educational purposes"
+)
 def summarize(text: str) -> str:
     """
-    Creates a prompt asking an AI to summarize the provided text.
-    
-    Args:
-        text: The text to be summarized.
-    """
-    return f"Please summarize the following text in three bullet points:\n\n---\n{text}\n---"
+    Simple text summarization prompt that matches Postman collection expectations.
 
-# --- Prompt 2: A more complex prompt that returns a list of messages ---
-# This is useful for setting up a multi-turn conversation or providing examples.
-@mcp.prompt()
+    Args:
+        text: The text content to be summarized
+
+    Returns:
+        A basic summarization prompt
+    """
+    return f"""Please provide a clear and concise summary of the following text: {text}
+Focus on the main points and key information. Keep the summary informative but brief."""
+
+
+@mcp.prompt(
+    name="debug_error",
+    title="Simple Debugging Help",  # For Postman compatibility
+    description="Basic debugging conversation starter for educational purposes"
+)
 def debug_error(error_message: str, code_snippet: str) -> list[mcp_messages.Message]:
     """
-    Creates a conversation to start debugging an error.
+    Simple debugging conversation that matches Postman collection expectations.
 
     Args:
-        error_message: The error message that was observed.
-        code_snippet: The relevant code that produced the error.
+        error_message: The error that occurred
+        code_snippet: The code that caused the error
+
+    Returns:
+        A basic debugging conversation
     """
     return [
-        mcp_messages.UserMessage(f"I'm running into an issue with this code:\n\n```\n{code_snippet}\n```"),
-        mcp_messages.UserMessage(f"It's producing the following error:\n\n{error_message}"),
-        mcp_messages.AssistantMessage("I see. Let's debug this. Can you tell me what you've already tried to do to fix it?")
+        mcp_messages.UserMessage(
+            content=f"""I'm having trouble with this code. Here's the error I'm getting:
+**Error:** {error_message}
+**Code:** {code_snippet}
+
+Can you help me understand what's wrong and how to fix it?"""
+        ),
+
+        mcp_messages.AssistantMessage(
+            content=f"""I can help you debug this issue. Let me analyze the error and code:
+The error '{error_message}' suggests there's an issue with the code logic.Let's work through this step by step."""
+        )
     ]
+
+
 
 # --- Expose the app for Uvicorn ---
 mcp_app = mcp.streamable_http_app()
