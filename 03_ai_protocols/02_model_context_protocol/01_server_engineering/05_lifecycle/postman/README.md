@@ -33,7 +33,7 @@ This directory contains Postman collections for testing the complete Model Conte
     "id": 1,
     "method": "initialize",
     "params": {
-        "protocolVersion": "2024-11-05",
+        "protocolVersion": "2025-06-18",
         "capabilities": {
             "roots": {
                 "listChanged": true
@@ -56,7 +56,7 @@ This directory contains Postman collections for testing the complete Model Conte
     "jsonrpc": "2.0",
     "id": 1,
     "result": {
-        "protocolVersion": "2024-11-05",
+        "protocolVersion": "2025-06-18",
         "capabilities": {
             "logging": {},
             "prompts": {"listChanged": true},
@@ -91,7 +91,7 @@ This directory contains Postman collections for testing the complete Model Conte
 ```http
 Content-Type: application/json
 Accept: application/json, text/event-stream
-MCP-Protocol-Version: 2024-11-05
+MCP-Protocol-Version: 2025-06-18
 mcp-session-id: <session-id-from-init>
 ```
 
@@ -112,7 +112,7 @@ mcp-session-id: <session-id-from-init>
 
 **Required Headers**:
 ```http
-MCP-Protocol-Version: 2024-11-05
+MCP-Protocol-Version: 2025-06-18
 mcp-session-id: <session-id>
 ```
 
@@ -144,7 +144,7 @@ Connection termination happens automatically when HTTP connection closes.
 
 ### ✅ **Success Cases**
 1. **Complete Lifecycle**: Initialize → Initialized → List Tools → Call Tool → (Close Connection)
-2. **Protocol Versions**: Use `"2024-11-05"` in JSON, `2024-11-05` in HTTP headers
+2. **Protocol Versions**: Use `"2025-06-18"` in JSON, `2025-06-18` in HTTP headers
 3. **Session Persistence**: Reuse session ID across requests
 4. **Header Compliance**: Include `MCP-Protocol-Version` header after initialization
 
@@ -166,14 +166,14 @@ Connection termination happens automatically when HTTP connection closes.
 ## 🔧 Key Protocol Points
 
 ### **Protocol Version Usage (2025-06-18)**
-- **JSON Requests**: Use `"protocolVersion": "2024-11-05"`
-- **HTTP Headers**: Use `MCP-Protocol-Version: 2024-11-05`
+- **JSON Requests**: Use `"protocolVersion": "2025-06-18"`
+- **HTTP Headers**: Use `MCP-Protocol-Version: 2025-06-18`
 - This follows the official specification examples exactly
 
 ### **Required Headers After Initialization**
 All requests after `initialize` **MUST** include:
 ```http
-MCP-Protocol-Version: 2024-11-05
+MCP-Protocol-Version: 2025-06-18
 mcp-session-id: <session-id>
 ```
 
@@ -203,4 +203,4 @@ Enhanced in 2025-06-18 with:
 
 ---
 
-**Note**: The 2025-06-18 specification uses `"2024-11-05"` in JSON examples while referring to itself as the 2025-06-18 revision. This is the official protocol version for the current specification. ✅
+**Note**: The 2025-06-18 specification uses `"2025-06-18"` in JSON examples while referring to itself as the 2025-06-18 revision. This is the official protocol version for the current specification. ✅

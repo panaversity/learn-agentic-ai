@@ -10,7 +10,7 @@ async def initialize_mcp(client: httpx.AsyncClient, url: str) -> str:
         "jsonrpc": "2.0",
         "method": "initialize",
         "params": {
-            "protocolVersion": "2024-11-05",
+            "protocolVersion": "2025-06-18",
             "capabilities": {
                 "roots": {
                     "listChanged": True
@@ -57,7 +57,7 @@ async def send_initialized(client: httpx.AsyncClient, url: str, session_id: str)
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/event-stream",
-        "MCP-Protocol-Version": "2024-11-05",
+        "MCP-Protocol-Version": "2025-06-18",
         "mcp-session-id": session_id
     }
 
@@ -80,7 +80,7 @@ async def list_tools(client: httpx.AsyncClient, url: str, session_id: str):
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/event-stream",
-        "MCP-Protocol-Version": "2024-11-05",
+        "MCP-Protocol-Version": "2025-06-18",
         "mcp-session-id": session_id
     }
 
@@ -110,7 +110,7 @@ async def call_tool(client: httpx.AsyncClient, url: str, session_id: str):
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/event-stream",
-        "MCP-Protocol-Version": "2024-11-05",
+        "MCP-Protocol-Version": "2025-06-18",
         "mcp-session-id": session_id
     }
 

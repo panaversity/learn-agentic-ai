@@ -36,13 +36,13 @@
                   "    pm.expect(responseText).to.include('data: ');",
                   "});",
                   "",
-                  "pm.test(\"Protocol version matches 2024-11-05\", function () {",
+                  "pm.test(\"Protocol version matches 2025-06-18\", function () {",
                   "    const responseText = pm.response.text();",
                   "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
                   "    if (dataLine) {",
                   "        const data = JSON.parse(dataLine.substring(6));",
                   "        if (data.result && data.result.protocolVersion) {",
-                  "            pm.expect(data.result.protocolVersion).to.equal('2024-11-05');",
+                  "            pm.expect(data.result.protocolVersion).to.equal('2025-06-18');",
                   "        }",
                   "    }",
                   "});",
@@ -78,7 +78,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2024-11-05\",\n        \"capabilities\": {\n            \"roots\": {\n                \"listChanged\": true\n            },\n            \"sampling\": {},\n            \"elicitation\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"title\": \"Postman Test Client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-06-18\",\n        \"capabilities\": {\n            \"roots\": {\n                \"listChanged\": true\n            },\n            \"sampling\": {},\n            \"elicitation\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"title\": \"Postman Test Client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
             },
             "url": {
               "raw": "http://localhost:8000/mcp/",
@@ -122,7 +122,7 @@
               },
               {
                 "key": "MCP-Protocol-Version",
-                "value": "2024-11-05"
+                "value": "2025-06-18"
               },
               {
                 "key": "mcp-session-id",
@@ -159,7 +159,7 @@
                   "});",
                   "",
                   "pm.test(\"Protocol version header included\", function () {",
-                  "    pm.expect(pm.request.headers.get('MCP-Protocol-Version')).to.equal('2024-11-05');",
+                  "    pm.expect(pm.request.headers.get('MCP-Protocol-Version')).to.equal('2025-06-18');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -179,7 +179,7 @@
               },
               {
                 "key": "MCP-Protocol-Version",
-                "value": "2024-11-05"
+                "value": "2025-06-18"
               },
               {
                 "key": "mcp-session-id",
@@ -237,7 +237,7 @@
               },
               {
                 "key": "MCP-Protocol-Version",
-                "value": "2024-11-05"
+                "value": "2025-06-18"
               },
               {
                 "key": "mcp-session-id",

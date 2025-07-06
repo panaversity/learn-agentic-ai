@@ -28,7 +28,7 @@
                   "    pm.expect(responseText).to.include('data: ');",
                   "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
                   "    const data = JSON.parse(dataLine.substring(6));",
-                  "    pm.expect(data.result.protocolVersion).to.equal('2024-11-05');",
+                  "    pm.expect(data.result.protocolVersion).to.equal('2025-06-18');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -43,7 +43,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2024-11-05\",\n        \"capabilities\": {\n            \"roots\": {\n                \"listChanged\": true\n            },\n            \"sampling\": {},\n            \"elicitation\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"title\": \"Postman Test Client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-06-18\",\n        \"capabilities\": {\n            \"roots\": {\n                \"listChanged\": true\n            },\n            \"sampling\": {},\n            \"elicitation\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"title\": \"Postman Test Client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}",

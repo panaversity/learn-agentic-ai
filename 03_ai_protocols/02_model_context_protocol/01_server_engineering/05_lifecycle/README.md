@@ -65,8 +65,8 @@ This lesson demonstrates the three-phase MCP lifecycle: **Initialization → Ope
 3. **Shutdown**: Graceful connection termination
 
 ### 📊 **Core Requirements**
-- **Protocol Version**: Use `"2024-11-05"` in JSON requests (per official spec)
-- **HTTP Headers**: Include `MCP-Protocol-Version: 2024-11-05` after initialization
+- **Protocol Version**: Use `"2025-06-18"` in JSON requests (per official spec)
+- **HTTP Headers**: Include `MCP-Protocol-Version: 2025-06-18` after initialization
 - **Session Management**: Server handles sessions automatically in stateful mode
 - **Error Handling**: Proper JSON-RPC 2.0 error responses
 
@@ -81,7 +81,7 @@ This lesson demonstrates the three-phase MCP lifecycle: **Initialization → Ope
     "id": 1,
     "method": "initialize",
     "params": {
-        "protocolVersion": "2024-11-05",
+        "protocolVersion": "2025-06-18",
         "capabilities": {
             "roots": {
                 "listChanged": true
@@ -104,7 +104,7 @@ This lesson demonstrates the three-phase MCP lifecycle: **Initialization → Ope
     "jsonrpc": "2.0",
     "id": 1,
     "result": {
-        "protocolVersion": "2024-11-05",
+        "protocolVersion": "2025-06-18",
         "capabilities": {
             "logging": {},
             "prompts": {
@@ -144,7 +144,7 @@ After initialization, the client **MUST** include the `MCP-Protocol-Version` hea
 ```http
 POST /mcp/ HTTP/1.1
 Content-Type: application/json
-MCP-Protocol-Version: 2024-11-05
+MCP-Protocol-Version: 2025-06-18
 mcp-session-id: <session-id>
 
 {
@@ -181,7 +181,7 @@ mcp_app = mcp.streamable_http_app()
 ```
 
 **What FastMCP Automatically Handles:**
-- ✅ Protocol version negotiation (`2024-11-05` ↔ `2025-06-18`)
+- ✅ Protocol version negotiation (`2025-06-18` ↔ `2025-06-18`)
 - ✅ HTTP header requirements (`MCP-Protocol-Version`)
 - ✅ Session management (stateful mode)
 - ✅ Capability negotiation
@@ -211,8 +211,8 @@ uv run python client.py
 - Proper session handling
 
 ### **✅ 2025-06-18 Compliance**
-- Using correct protocol versions (`"2024-11-05"` in JSON)
-- Required HTTP headers (`MCP-Protocol-Version: 2024-11-05`)
+- Using correct protocol versions (`"2025-06-18"` in JSON)
+- Required HTTP headers (`MCP-Protocol-Version: 2025-06-18`)
 - Enhanced capability structure with `title` fields
 - Proper error handling patterns
 
