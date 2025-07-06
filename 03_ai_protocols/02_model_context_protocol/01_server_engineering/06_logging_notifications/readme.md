@@ -1,169 +1,239 @@
-# 📝 MCP Logging & Notifications: Your Server's Storytelling System
+# 06: [Logging - Your Server's Voice](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging)
 
-> **What We're Building**: A smart logging system where your MCP server can "talk" to clients, sharing what it's doing, celebrating successes, and reporting when things go wrong!
+**Objective:** Learn how MCP servers communicate their internal state to clients through structured logging notifications using the **2025-06-18 specification**.
 
-## 🎯 **Why This Matters**
+## 🧠 Understanding MCP Logging Fundamentals
 
-Think of MCP logging like a **conversation between friends**:
-- Your server has stories to tell ("Hey, I just connected to the database!")
-- Your client wants to hear what's happening ("Tell me if something goes wrong!")
-- Together, they create a **transparent, debuggable system**
+**Building on Previous Lessons**: You've learned about Tools, Resources, and Prompts. Now let's explore **Logging** - how servers tell their story and share what they're thinking.
 
-Real-world example: Instead of silent failures, your AI agent can say *"Warning: API rate limit approaching"* or *"Success: Retrieved 50 weather records"*
+### 🤔 What is MCP Logging? (Simple Explanation)
 
-## 🔍 **What You'll Learn**
+Think of MCP logging as **giving your server a voice** so it can tell you what it's doing:
 
-After this module, you'll master:
-1. **📢 Server Storytelling**: How servers send structured log messages
-2. **🎚️ Volume Control**: How clients set logging levels (like turning volume up/down)
-3. **🏷️ Message Categories**: Different types of messages (debug, info, warning, error)
-4. **🔄 Real-time Communication**: Live logging notifications between server and client
+**Real-World Analogy**: Imagine you're cooking with a friend. Instead of working in silence, you narrate what you're doing:
+- "I'm heating the oil" (info level)
+- "The onions are browning nicely" (debug level)  
+- "Careful - the pan is getting hot!" (warning level)
+- "Oh no! I burned the garlic!" (error level)
 
-## 🌟 **The MCP Logging Magic**
+**MCP Logging is Similar**: Your server narrates its activities to help you understand what's happening, debug problems, and monitor performance.
 
-### **Core Concept**: Structured Conversations
-Instead of messy console logs, MCP creates **structured conversations**:
+### 📊 MCP vs Familiar Technologies
 
-```json
-{
-  "level": "info",
-  "logger": "weather-service", 
-  "data": {
-    "action": "forecast_retrieved",
-    "city": "San Francisco",
-    "temperature": "72°F",
-    "confidence": 0.95
-  }
-}
+| **Technology** | **What It Does** | **MCP Logging Advantage** |
+|----------------|------------------|---------------------------|
+| **Console.log()** | Basic text output | Structured, standardized format |
+| **Winston/Bunyan** | Node.js logging | Protocol-native, client-aware |
+| **Syslog** | System logging | AI-friendly, contextual |
+| **CloudWatch** | AWS logging | MCP-specific, tool-integrated |
+
+### 🎯 Why This Matters for AI Development
+
+1. **🔍 Debugging**: See exactly what your AI agent is thinking
+2. **📊 Monitoring**: Track performance and behavior patterns  
+3. **🤝 Transparency**: Users can see what their AI is doing
+4. **🛠️ Development**: Faster troubleshooting and optimization
+
+## 🎓 Learning Objectives
+
+By the end of this lesson, you will be able to:
+
+### ✅ **Conceptual Understanding**
+- Explain what MCP logging is and why it's important
+- Describe the 8 logging levels and when to use each
+- Understand the difference between logging and regular output
+
+### ✅ **Technical Skills**
+- Implement server-side logging using the Context object
+- Create clients that listen for logging notifications
+- Set and change logging levels dynamically
+- Handle structured log data with metadata
+
+### ✅ **Practical Application**
+- Debug MCP server issues using logs
+- Monitor AI agent behavior in real-time
+- Create user-friendly logging displays
+- Optimize logging for performance
+
+## 🌟 The 8 Levels of Communication
+
+Based on [RFC 5424](https://tools.ietf.org/html/rfc5424), MCP supports 8 logging levels:
+
+| 🎯 **Level** | 🎭 **When to Use** | 💡 **Example Use Case** | 📝 **Sample Message** |
+|-------------|-------------------|------------------------|----------------------|
+| `emergency` | System is unusable | Complete failure | "Database cluster down" |
+| `alert` | Immediate action needed | Critical component failing | "Memory usage at 95%" |
+| `critical` | Critical conditions | Major functionality broken | "Authentication service offline" |
+| `error` | Error conditions | Something failed | "Failed to process user request" |
+| `warning` | Warning conditions | Potential issues | "API rate limit at 80%" |
+| `notice` | Normal but significant | Important events | "User session started" |
+| `info` | Informational messages | General information | "Processing 50 records" |
+| `debug` | Debug-level messages | Detailed tracing | "Function entry: validateUser()" |
+
+## 🎬 Active Learning Activities
+
+### 🚀 **Activity 1: Basic Logging Setup** (⭐ Beginner)
+
+**Goal**: Get your first logging messages working
+
+**Steps**:
+1. Run the server: `cd mcp_code && uv run python server.py`
+2. Run the client: `uv run python client.py`
+3. **Observe**: Watch logging messages appear in real-time
+4. **Experiment**: Try different tasks and see how log messages change
+
+**Expected Output**:
+```
+🔍 [DEBUG] Starting to process task: data processing
+📰 [INFO] Task processing completed successfully
 ```
 
-### **8 Levels of Communication** (Based on [RFC 5424](https://tools.ietf.org/html/rfc5424))
+### 🎚️ **Activity 2: Log Level Control** (⭐⭐ Intermediate)
 
-| 🎯 Level | 🎭 Personality | 💭 When to Use | 📝 Example |
-|----------|----------------|----------------|-------------|
-| `debug` | 🔍 Detective | "Let me trace every step" | Function entry/exit points |
-| `info` | 📰 Reporter | "Here's what's happening" | "User logged in successfully" |
-| `notice` | 📢 Announcer | "Something noteworthy occurred" | "Configuration updated" |
-| `warning` | ⚠️ Advisor | "Heads up, pay attention!" | "API rate limit at 80%" |
-| `error` | 🚨 Alarm | "Something broke!" | "Database connection failed" |
-| `critical` | 🆘 Emergency | "System component down!" | "Payment service unavailable" |
-| `alert` | 🚒 Fire Department | "Drop everything and fix this!" | "Data corruption detected" |
-| `emergency` | 💥 Code Red | "The building is on fire!" | "Complete system failure" |
+**Goal**: Learn how to control what messages you see
 
-## 🎬 **How It Works: The Communication Flow**
+**Steps**:
+1. Start the server and client
+2. **Experiment**: Try setting different log levels:
+   - `debug` (see everything)
+   - `info` (normal operations)
+   - `warning` (only important issues)
+   - `error` (only problems)
+3. **Observe**: How the number of messages changes
 
-### **Step 1: Server Declares "I Can Talk!"**
-```json
-{
-  "capabilities": {
+**Reflection Questions**:
+- When would you use `debug` level vs `info` level?
+- Why might you want to reduce logging in production?
+
+### 🔧 **Activity 3: Custom Log Messages** (⭐⭐⭐ Advanced)
+
+**Goal**: Add your own logging to understand server behavior
+
+**Steps**:
+1. Open `server.py`
+2. Add your own log messages using `await ctx.info("Your message")`
+3. Test different log levels: `ctx.debug()`, `ctx.warning()`, `ctx.error()`
+4. **Observe**: How your messages appear in the client
+
+**Challenge**: Create a tool that logs its progress through multiple steps
+
+## 🛠️ What We'll Build
+
+### **📡 Smart Logging Server** (`server.py`)
+- **Structured Logging**: Uses MCP Context for proper logging
+- **Multiple Log Levels**: Demonstrates all 8 severity levels
+- **Realistic Scenarios**: Shows logging in real-world situations
+- **Performance Tracking**: Logs timing and resource usage
+
+### **👂 Listening Client** (`client.py`)
+- **Real-time Display**: Shows logs as they happen
+- **Level Filtering**: Controls which messages to show
+- **Beautiful Formatting**: Colors and emojis for easy reading
+- **Interactive Controls**: Change log levels on the fly
+
+## 🔄 How MCP Logging Works
+
+### **Step 1: Server Capability Declaration**
+```python
+# Server tells client: "I can send you log messages"
+capabilities = {
     "logging": {}
-  }
 }
 ```
 
-### **Step 2: Client Sets Volume Level**
-```json
-{
-  "method": "logging/setLevel",
-  "params": {
-    "level": "info"  // "Only tell me 'info' and above, skip the 'debug' chatter"
-  }
-}
+### **Step 2: Client Sets Preferences**
+```python
+# Client tells server: "Send me 'info' level and above"
+await session.set_logging_level("info")
 ```
 
-### **Step 3: Server Shares Stories**
-```json
-{
-  "method": "notifications/message",
-  "params": {
-    "level": "error",
-    "logger": "database",
-    "data": {
-      "error": "Connection timeout",
-      "retry_attempt": 3,
-      "next_retry_in": "30s"
-    }
-  }
-}
+### **Step 3: Server Sends Structured Messages**
+```python
+# Server narrates what it's doing
+await ctx.info("Processing user request", extra={
+    "user_id": "123",
+    "request_type": "weather",
+    "processing_time": 0.5
+})
 ```
 
-## 🛠️ **What We'll Build**
+### **Step 4: Client Receives and Displays**
+```python
+# Client formats and shows the message
+def log_handler(params):
+    print(f"📰 [INFO] Processing user request")
+    print(f"    User: 123, Type: weather, Time: 0.5s")
+```
 
-### **🖥️ Smart Server** (`server.py`)
-- **Declares logging capability** to clients
-- **Responds to log level changes** from clients  
-- **Generates realistic log messages** during operations
-- **Demonstrates all 8 severity levels** with practical examples
+## 🎯 Key Learning Insights
 
-### **📱 Interactive Client** (`client.py`)
-- **Connects and sets log preferences** (like choosing notification settings)
-- **Listens for real-time messages** from server
-- **Displays logs beautifully** with colors and emojis
-- **Tests different scenarios** (normal operations, errors, etc.)
+### **💡 Design Principles**
+1. **Tell a Story**: Logs should narrate what's happening
+2. **Be Selective**: Not everything needs to be logged
+3. **Add Context**: Include relevant metadata
+4. **Consider Your Audience**: Debug for developers, info for users
 
-## 🚀 **Learning Path**
+### **🔒 Security Considerations**
+- **Never log sensitive data**: passwords, API keys, personal information
+- **Sanitize user input**: prevent log injection attacks
+- **Consider log retention**: how long to keep logs
+- **Monitor log volume**: prevent disk space issues
 
-### **Phase 1: Understanding the Basics** ⭐
-- Run the server and see basic logging in action
-- Try setting different log levels
-- Watch how messages change based on severity
+### **🚀 Performance Tips**
+- **Use appropriate levels**: debug only in development
+- **Batch log messages**: reduce network overhead
+- **Structured data**: easier to parse and analyze
+- **Async logging**: don't block your main application
 
-### **Phase 2: Interactive Exploration** ⭐⭐
-- Use the client to trigger different log scenarios
-- Experiment with log filtering
-- See real-time notifications in action
+## 🏗️ Implementation Guide
 
-### **Phase 3: Advanced Scenarios** ⭐⭐⭐
-- Test error conditions and recovery
-- Explore structured data in log messages
-- Create your own logging categories
+### **Setting Up Your Environment**
+```bash
+# Navigate to the lesson directory
+cd mcp_code
 
-## 💡 **Key Insights You'll Gain**
+# Install dependencies
+uv sync
 
-1. **🎯 Clarity Over Noise**: Good logging tells a story, not just facts
-2. **🎚️ Context Matters**: Different situations need different detail levels
-3. **🔄 Real-time is Powerful**: Live logging helps with debugging and monitoring
-4. **🛡️ Security First**: Never log sensitive data (passwords, API keys, personal info)
+# Run the server (Terminal 1)
+uv run uvicorn server:app --reload
 
-## 🔗 **Official Specification**
-📚 [MCP Logging Utility Specification](https://modelcontextprotocol.io/specification/2025-03-26/server/utilities/logging)
+# Run the client (Terminal 2)
+uv run python client.py
+```
 
-## 🎓 **Next Steps**
+### **Testing Different Scenarios**
+```bash
+# Test with different log levels
+uv run python client.py --log-level debug
+uv run python client.py --log-level info
+uv run python client.py --log-level warning
+```
+
+## 📚 Specification References
+
+- **MCP 2025-06-18 Logging Specification**: [Official Docs](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging)
+- **RFC 5424 Syslog**: Standard logging levels and format
+- **JSON-RPC 2.0**: Message format for notifications
+
+## 🎓 Assessment Questions
+
+Test your understanding:
+
+1. **Conceptual**: What's the difference between `warning` and `error` levels?
+2. **Technical**: How do you set the logging level from a client?
+3. **Practical**: When would you use `debug` level logging?
+4. **Design**: How would you log a multi-step process?
+
+## 🚀 Next Steps
+
 After mastering logging, you'll be ready for:
-- **08_progress**: Track long-running operations
-- **09_cancellation**: Handle operation cancellation
-- **10_resumption**: Resume interrupted workflows
+- **07_tool_update_notification**: Dynamic tool management
+- **08_progress**: Long-running operation tracking
+- **09_ping**: Connection health monitoring
 
 ---
 
-> **💪 Pro Tip**: Think of logging as **giving your AI agents a voice**. They can tell you what they're thinking, warn you about problems, and celebrate their successes. This makes debugging and monitoring infinitely easier!
+> **🎯 Success Criteria**: You'll know you've mastered this lesson when you can explain what your server is doing just by reading its logs, and you can control the level of detail you see based on your needs.
 
-Ready to give your MCP server a voice? Let's dive in! 🏊‍♂️
-
-# 06: Logging Notifications
-
-**Objective:** Learn how the server can send log messages to the client using the `$/logTrace` notification.
-
-This feature is essential for debugging and providing visibility into the server's internal operations, allowing a client application to display server logs in its own interface.
-
-## Key MCP Concepts
-
--   **Notification:** A one-way message from server to client that does not have a response. This requires a stateful connection.
--   **`$/logTrace` (Notification):** The standard MCP notification for sending log messages.
--   **`$/setTrace` (Request):** A request from the client to the server to set the desired level of logging (e.g., 'verbose', 'off').
--   **`Context` Object:** In `FastMCP`, stateful methods receive a `Context` object (`ctx`), which provides access to utilities for interacting with the client, including the logger (`ctx.log`). `FastMCP` automatically translates `ctx.log` calls into `$/logTrace` notifications.
-
-## Implementation Plan
-
-Inside the `mcp_code/` subdirectory:
-
--   **`server.py`:**
-    -   We will create a tool (e.g., `do_work(task: str)`) that performs several steps.
-    -   Inside this tool, we will use `ctx.log.info(...)`, `ctx.log.warning(...)`, etc., to send log messages back to the client at each step.
-    -   The server will also handle the `$/setTrace` request to adjust its logging verbosity.
-
--   **`client.py`:**
-    -   The client will establish a stateful, streaming connection to listen for notifications.
-    -   It will first call `$/setTrace` to enable verbose logging.
-    -   It will then call the `do_work` tool.
-    -   In a separate task, it will listen on the event stream and print any `$/logTrace` notifications it receives from the server in real-time.
+Ready to give your MCP server a voice? Let's start building! 🎤

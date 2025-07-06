@@ -1,46 +1,50 @@
-import logging
+"""
+MCP Logging Server - Simple Educational Implementation
+
+This server provides a minimal, easy-to-understand demonstration of
+MCP logging with a single tool.
+"""
+
+import asyncio
+
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.server import Context
+from mcp import types
 
-# Setup logging for our console
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Create a simple MCP server
+mcp = FastMCP(
+    name="Simple Logging Server",
+    stateless_http=False  # Stateful connection required for logging notifications
+)
 
-# Create MCP server - FastMCP automatically supports logging via Context
-mcp = FastMCP("Simple Logging Server", stateless_http=False)
 
-@mcp.tool()
-async def do_work(task: str, ctx: Context) -> str:
+@mcp.tool(
+    name="process_item",
+    description="Processes an item and generates logs at different levels."
+)
+async def process_item(
+    ctx: Context,
+    item_id: str,
+    should_fail: bool = False,
+) -> list[types.TextContent]:
     """
-    Perform some work and demonstrate MCP logging.
-    
-    Args:
-        task: The task to perform
-        ctx: MCP context for logging
+    A simple tool that demonstrates logging by emitting messages
+    at different severity levels.
     """
-    await ctx.info(f"Starting to process task: {task}")
-    
-    # Simulate some work with natural logging
-    await ctx.debug("Initializing task processor...")
-    await ctx.info("Loading configuration...")
-    
-    if "data" in task.lower():
-        await ctx.debug("Processing data-related task")
-        await ctx.info("Validating input data...")
-        await ctx.info("Data validation successful")
-        await ctx.debug("Applying data transformations...")
-        await ctx.info("Task processing completed successfully")
-        return f"Successfully processed data task: {task}"
-    else:
-        await ctx.debug(f"Processing general task: {task}")
-        await ctx.info("Executing task logic...")
-        await ctx.info("Task completed successfully")
-        return f"Task '{task}' completed successfully"
+    await ctx.debug(f"Starting processing for item: {item_id}")
+    await asyncio.sleep(0.2)
+    await ctx.info("Configuration loaded successfully.")
+    await asyncio.sleep(0.2)
 
+    if should_fail:
+        await ctx.warning(f"Item '{item_id}' has a validation issue. Attempting to proceed...")
+        await asyncio.sleep(0.2)
+        await ctx.error(f"Failed to process item '{item_id}'. Critical failure.")
+        return [types.TextContent(type="text", text=f"Failed to process {item_id}.")]
 
-# Create the streamable HTTP app
+    await ctx.info(f"Item '{item_id}' processed successfully.")
+
+    return [types.TextContent(type="text", text=f"Successfully processed {item_id}.")]
+
+# Create the streamable HTTP app for stateful connections
 mcp_app = mcp.streamable_http_app()
-
-if __name__ == "__main__":
-    import uvicorn    
-    uvicorn.run(mcp_app, host="0.0.0.0", port=8000)
