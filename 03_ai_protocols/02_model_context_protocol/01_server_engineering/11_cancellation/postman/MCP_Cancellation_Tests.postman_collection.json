@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "mcp-cancellation-demo-2025",
+		"name": "MCP Cancellation Tests",
+		"description": "Test collection for MCP request cancellation functionality.\n\nThis collection demonstrates:\n1. Starting a long-running task\n2. Cancelling the task gracefully",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Initialize MCP Connection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extract session ID for subsequent requests",
+							"const sessionId = pm.response.headers.get('mcp-session-id');",
+							"if (sessionId) {",
+							"    pm.collectionVariables.set('sessionId', sessionId);",
+							"    console.log('Session ID:', sessionId);",
+							"}",
+							"",
+							"// Verify successful initialization",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response contains result', function () {",
+							"    const response = pm.response.text();",
+							"    pm.expect(response).to.include('result');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"2025-06-18\",\n    \"clientInfo\": {\n      \"name\": \"postman-cancellation-test\",\n      \"version\": \"1.0.0\"\n    },\n    \"capabilities\": {}\n  },\n  \"id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Send Initialized Notification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify notification was accepted",
+							"pm.test('Status code is 200 or 202', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"notifications/initialized\",\n  \"params\": {}\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Start Long-Running Task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// This request will take 10 seconds. You can cancel it",
+							"// by running the next request in the collection.",
+							"pm.test('Response indicates cancellation', function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.error).to.exist;",
+							"    pm.expect(response.error.code).to.equal(-32800);",
+							"});",
+							"",
+							"// Store request ID for cancellation",
+							"const requestBody = JSON.parse(pm.request.body.raw);",
+							"pm.collectionVariables.set('longTaskRequestId', requestBody.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"process_large_file\",\n    \"arguments\": {\n      \"filename\": \"postman_test_file.csv\",\n      \"processing_time\": 10\n    }\n  },\n  \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Cancel Long-Running Task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify cancellation notification was accepted",
+							"pm.test('Status code is 200 or 202', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202]);",
+							"});",
+							"",
+							"console.log('Cancellation sent for request ID:', pm.collectionVariables.get('longTaskRequestId'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "mcp-session-id",
+						"value": "{{sessionId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"notifications/cancelled\",\n  \"params\": {\n    \"requestId\": \"{{longTaskRequestId}}\",\n    \"reason\": \"Manual cancellation from Postman test\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set base URL if not already set",
+					"if (!pm.collectionVariables.get('baseUrl')) {",
+					"    pm.collectionVariables.set('baseUrl', 'http://localhost:8000');",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "sessionId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "longTaskRequestId",
+			"value": "",
+			"type": "string"
+		}
+	]
+} 
