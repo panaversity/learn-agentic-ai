@@ -1,28 +1,106 @@
 # 01: Protected Resource Metadata
 
-**Objective:** Configure an MCP server to advertise itself as an OAuth 2.1 protected resource, as required by the MCP specification.
+## What You Will Learn in This Step
 
-This is the very first step in making a secure MCP server. Before a client can even attempt to authenticate, it needs a standardized way to discover the server's security requirements and the location of the Authorization Server (AS) that governs it.
+This first step focuses on **Protected Resource Metadata Discovery** as defined in [RFC 9728](https://datatracker.ietf.org/doc/rfc9728/).
 
-## Key MCP and OAuth Concepts
+You are implementing the **first half** of the two-stage OAuth discovery process. The goal is to understand how an MCP server, acting as a "Protected Resource," advertises its security requirements and tells clients where to find the Authorization Server.
 
--   **OAuth Resource Server:** An MCP server acts as a Resource Server in the OAuth 2.1 model. Its API (tools, resources, etc.) is the protected resource.
--   **Authorization Server (AS):** The entity that issues access tokens for the Resource Server.
--   **Resource Metadata (`/.well-known/oauth-authorization-server`):** An MCP server **MUST** expose a document at this well-known URI. This document tells clients the `issuer` URL of the Authorization Server responsible for this MCP server.
--   **`WWW-Authenticate` Header:** When a client makes an unauthenticated request, the MCP server should respond with a `401 Unauthorized` status and this header, pointing to the location of its AS metadata. This provides a discovery mechanism for clients.
+By the end of this lesson, you will understand and have implemented the following flow:
+1. A client makes a request to a protected tool without a token
+2. The MCP server rejects it with a `401 Unauthorized` error
+3. The client inspects the `WWW-Authenticate` header in the error response
+4. The client fetches the server's metadata file (`/.well-known/oauth-protected-resource`)
+5. From this file, the client learns the **URL** of the Authorization Server (`http://localhost:9000`)
 
-## Implementation Plan
+**Note:** This step only discovers the Authorization Server's location. Step 02 will query that server to learn its specific endpoints.
 
--   **`authorization_server_mock.py`:**
-    -   We will create a very simple, mock Authorization Server using FastAPI.
-    -   It will expose an endpoint at `/.well-known/openid-configuration` which contains its own metadata, including its `issuer` and `token_endpoint`.
+---
 
--   **`mcp_server.py`:**
-    -   We will configure our `FastMCP` server to be "protected."
-    -   It will automatically host a `/.well-known/oauth-authorization-server` endpoint. This endpoint will contain a JSON object pointing to our mock AS's issuer URL.
-    -   We will add middleware to the MCP server that rejects any request without a valid token and replies with a `401 Unauthorized` and the correct `WWW-Authenticate` header.
+## Learning Objectives
 
--   **`client.py`:**
-    -   The client will first make an unauthenticated request to the MCP server.
-    -   It will receive a `401` error. It will then parse the `WWW-Authenticate` header to find the metadata URL (`/.well-known/oauth-authorization-server`).
-    -   The client will then fetch this metadata URL from the MCP server to discover the URL of the Authorization Server, printing it to confirm success. 
+After completing this module, you will be able to:
+1. Implement Protected Resource Metadata according to MCP specification
+2. Understand the first stage of the OAuth 2.1 discovery process
+3. See how a client discovers an Authorization Server's location
+
+## Standards Compliance
+
+This implementation follows these specifications:
+- [MCP Authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization)
+- [OAuth 2.1](https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/)
+- [OAuth 2.0 Protected Resource Metadata (RFC 9728)](https://datatracker.ietf.org/doc/rfc9728/)
+
+## Prerequisites
+
+- Basic understanding of HTTP and REST APIs
+- Experience with Python
+
+## Core Concepts
+
+### 1. Protected Resource Metadata (RFC 9728)
+- **Purpose**: Standardizes how clients discover OAuth configuration from Resource Servers
+- **Requirements**:
+  - MCP servers MUST expose `/.well-known/oauth-protected-resource`
+  - Document MUST include `authorization_servers` field
+  - Servers MUST use `WWW-Authenticate` header for 401 responses
+  - Clients MUST parse `WWW-Authenticate` headers
+
+### 2. First Stage of Discovery Flow
+- **What happens**:
+  1. Client makes unauthenticated JSON-RPC request to MCP server
+  2. Server responds with 401 + `WWW-Authenticate` header
+  3. Client fetches `/.well-known/oauth-protected-resource` from MCP server
+  4. Client extracts Authorization Server URL from metadata
+
+### 3. Resource Parameter Implementation
+- **Requirements**:
+  - Clients MUST include `resource` parameter in future token requests
+  - Parameter MUST identify target MCP server
+  - Must use canonical URI format
+  ```
+  &resource=https%3A%2F%2Fmcp.example.com
+  ```
+
+### 4. Token Requirements (For Later Steps)
+- **Bearer Token Usage**:
+  ```http
+  POST /mcp HTTP/1.1
+  Host: mcp.example.com
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+  ```
+- Tokens MUST NOT be in URI query string
+- Authorization required for every request
+
+## Implementation Guide
+
+### Running the Demo
+1. **Start the MCP Server:** In one terminal, from the `mcp_code` directory, run:
+   ```bash
+   uv run uvicorn serve:mcp_app --reload
+   ```
+2. **Run the Client:** In a second terminal, from the `mcp_code` directory, run:
+   ```bash
+   uv run client.py
+   ```
+
+The client's output will show:
+1. The `401 Unauthorized` response from the unauthenticated request
+2. The metadata document it fetched from `/.well-known/oauth-protected-resource`
+3. The discovered Authorization Server URL: `http://localhost:9000`
+
+## Next Steps
+
+With the Authorization Server URL discovered, step 02 will:
+1. **Create a simple Authorization Server** at `http://localhost:9000`
+2. **Query its metadata endpoint** (`/.well-known/oauth-authorization-server`) to discover specific endpoints
+3. **Complete the two-stage discovery process** required by the MCP specification
+
+This two-stage approach allows Authorization Servers to serve multiple MCP servers while maintaining clear separation of concerns.
+
+## Resources
+
+- [MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization)
+- [OAuth 2.1 Specification](https://oauth.net/2.1/)
+- [RFC 9728 - Protected Resource Metadata](https://datatracker.ietf.org/doc/rfc9728/)
+
