@@ -20,16 +20,45 @@ This is a deep, multi-step journey that covers the full lifecycle of modern API 
 
 ## Learning Path
 
-We build the entire flow from the ground up, piece by piece:
+We build the entire flow from the ground up, piece by piece. **Each step provides TWO implementations:**
+
+### 📚 **Custom Implementation** (Educational)
+Simple, focused Python code (~30-100 lines) that teaches core concepts without external dependencies.
+
+### 🏭 **Open Source Implementation** (Production)  
+Real-world examples using established OAuth libraries and servers for production deployment.
+
+---
 
 1.  **`01_protected_resource_metadata`:** MCP server advertises its security requirements and Authorization Server location via `/.well-known/oauth-protected-resource` - implements the first stage of OAuth discovery
+
 2.  **`02_authorization_server_metadata`:** Create a simple OAuth Authorization Server that provides its endpoint information via `/.well-known/oauth-authorization-server` - completes the two-stage discovery process
+    - **Custom**: Basic Python HTTP server serving static metadata
+    - **Open Source**: Keycloak setup + configuration or Hydra deployment
+
 3.  **`03_dynamic_client_registration`:** Programmatically register our client with the Authorization Server using the `/register` endpoint - enables automatic client onboarding
+    - **Custom**: Simple registration endpoint with in-memory storage
+    - **Open Source**: Keycloak Dynamic Client Registration or Auth0 Management API
+
 4.  **`04_oauth2_authorization_code_flow`:** Implement the full, user-facing login flow to get an access token - the primary OAuth flow for user authentication
+    - **Custom**: Mock HTML login form + code exchange
+    - **Open Source**: GitHub OAuth integration or Google OAuth setup
+
 5.  **`05_token_audience_validation`:** Implement JWT validation on the MCP server - ensures tokens are properly validated and scoped
+    - **Custom**: PyJWT validation with hardcoded keys
+    - **Open Source**: Using python-jose with JWKS endpoint discovery
+
 6.  **`06_error_handling`:** Handle common OAuth errors like invalid tokens or insufficient scope - builds robust error handling
+    - **Custom**: Basic error responses and client retry logic
+    - **Open Source**: Authlib's built-in error handling patterns
+
 7.  **`07_security_best_practices`:** Review and implement key security considerations from the spec - hardens the implementation
+    - **Custom**: Security checklist and basic hardening
+    - **Open Source**: Production Keycloak + NGINX setup with TLS
+
 8.  **`08_client_credentials_flow`:** System-to-system authentication without user interaction - enables machine-to-machine communication for DACA agents
+    - **Custom**: Direct client credentials exchange
+    - **Open Source**: Service account setup in Auth0/Keycloak
 
 ## Current Step Breakdown
 
@@ -80,6 +109,30 @@ Each step teaches a specific piece:
 - **08**: How systems authenticate without humans
 
 This gives you the complete toolkit for both user-facing and automated secure MCP applications.
+
+## DACA Alignment: Custom vs Open Source
+
+This dual approach perfectly aligns with the **Dapr Agentic Cloud Ascent (DACA)** deployment stages:
+
+### 🔬 **Local Development & Learning** (Custom Implementations)
+- **Stage**: Local development (step 1 of DACA ascent)
+- **Purpose**: Understanding OAuth fundamentals without complexity
+- **Tools**: Pure Python, minimal dependencies
+- **Cost**: Free - no external services required
+- **Scale**: 1-10 requests/second for learning
+
+### 🚀 **Production & Enterprise** (Open Source Implementations)  
+- **Stage**: Enterprise to Planet-scale (steps 3-4 of DACA ascent)
+- **Purpose**: Battle-tested, feature-complete OAuth servers
+- **Tools**: Keycloak, Auth0, GitHub OAuth, etc.
+- **Cost**: Free tiers available, scales with usage
+- **Scale**: Thousands to millions of concurrent agents
+
+## Implementation Strategy
+
+**For Learning**: Start with custom implementations to understand concepts
+**For Production**: Migrate to open source solutions for reliability and scale
+**For DACA**: Use client credentials flow (step 8) for agent-to-agent communication
 
 ## Two-Server Architecture
 

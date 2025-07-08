@@ -28,7 +28,7 @@ Now we implement the registration process itself. Before a client can ask for an
     -   **New Step:** It will then craft a JSON payload with its own metadata, including a `redirect_uris` array (e.g., `["http://localhost:8888/callback"]`).
     -   It will `POST` this payload to the `registration_endpoint`.
     -   It will receive the `client_id` and `client_secret` from the AS and store them securely (for this example, in memory).
-    -   The client will print a success message confirming that it has been registered and has received its credentials.
+    -   The client will print a success message confirming that it has been registered and has received its credentials. 
 
 ## Prerequisites
 
