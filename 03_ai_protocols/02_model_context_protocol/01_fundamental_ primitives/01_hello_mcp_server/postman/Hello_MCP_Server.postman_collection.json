@@ -1,0 +1,116 @@
+{
+	"info": {
+		"name": "Hello MCP Server",
+		"description": "Educational Postman collection for testing MCP servers, following the 2025-06-18 specification. Demonstrates the full stateful lifecycle: initialization, tool discovery, and execution.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Initialize Session",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-06-18\",\n        \"clientInfo\": {\n            \"name\": \"postman-client\",\n            \"version\": \"1.0.0\"\n        },\n        \"capabilities\": {}\n    },\n    \"id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp",
+						""
+					]
+				},
+				"description": "Initialize the MCP server connection. This is the first step in any MCP session, establishing the protocol version and exchanging capabilities. Even for simple interactions, this is a required step in the protocol."
+			}
+		},
+		{
+			"name": "02. Send Initialized Notification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"notifications/initialized\",\n    \"params\": {}\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp",
+						""
+					]
+				},
+				"description": "Send the initialized notification to complete the MCP session setup. This is required by the 2025-06-18 specification after receiving a successful initialize response."
+			}
+		},
+		{
+			"name": "03. List Available Tools",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					},
+					{
+						"key": "MCP-Protocol-Version",
+						"value": "2025-06-18"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"tools/list\",\n    \"params\": {},\n    \"id\": 3\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"mcp",
+						""
+					]
+				},
+				"description": "Discover what tools the MCP server provides. Note the 'MCP-Protocol-Version' header, required by the spec for all requests after initialization."
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000"
+		}
+	]
+} 
