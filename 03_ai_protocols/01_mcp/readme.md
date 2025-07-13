@@ -1,4 +1,4 @@
-# Model Context Protocol (MCP) Hands On
+# Model Context Protocol (MCP)
 
 > **An open protocol that enables seamless integration between LLM applications and external data sources and tools.**  
 > — [Official MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18)
