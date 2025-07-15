@@ -1,6 +1,10 @@
 # REST (Representational State Transfer)
 
-REST, or **RE**presentational **S**tate **T**ransfer, is a **software architectural style** for designing networked applications, particularly web services. It was first defined by Roy Fielding in his 2000 doctoral dissertation, drawing upon the principles that guided the architecture of the World Wide Web. REST is not a protocol or a specific technology but rather a set of constraints that, when applied, lead to scalable, stateless, and reliable systems. The core idea is that clients interact with _representations_ of _resources_ managed by servers.
+REST, or **RE**presentational **S**tate **T**ransfer, is a **software architectural style** for designing networked applications, particularly web services. 
+
+It was first defined by Roy Fielding in his 2000 doctoral dissertation, drawing upon the principles that guided the architecture of the World Wide Web. 
+
+REST is not a protocol or a specific technology but rather a set of constraints that, when applied, lead to scalable, stateless, and reliable systems. The core idea is that clients interact with _representations_ of _resources_ managed by servers.
 
 ---
 
