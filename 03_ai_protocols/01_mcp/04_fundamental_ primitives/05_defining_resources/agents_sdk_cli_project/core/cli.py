@@ -111,10 +111,12 @@ class UnifiedCompleter(Completer):
 
 
 class CliApp:
+    session: PromptSession
+    
     def __init__(self, agent: CliChat):
         self.agent = agent
-        self.resources = []
-        self.prompts = []
+        self.resources: list[str] = []
+        self.prompts: list = []
 
         self.completer = UnifiedCompleter()
 

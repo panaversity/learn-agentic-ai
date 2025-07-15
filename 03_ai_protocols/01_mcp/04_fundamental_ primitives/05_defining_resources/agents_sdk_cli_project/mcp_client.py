@@ -96,8 +96,38 @@ async def main():
     ) as _client:
         # Example usage:
         # Retrieve and print available tools to verify the client implementation.
+        print("Listing tools...")
         tools = await _client.list_tools()
-        print("Available Tools:", tools)
+        for tool in tools:
+            print(f"Tool: {tool.name}")
+            print(f"Description: {tool.description}")
+            if tool.inputSchema:
+                print("Parameters:")
+                properties = tool.inputSchema.get('properties', {})
+                required = tool.inputSchema.get('required', [])
+                for param_name, param_info in properties.items():
+                    param_type = param_info.get('type', 'unknown')
+                    param_desc = param_info.get('description', 'No description')
+                    required_str = " (required)" if param_name in required else " (optional)"
+                    print(f"  - {param_name}: {param_type}{required_str} - {param_desc}")
+            
+            print("-" * 50)  # Add separator between tools
+            
+        print("=" * 50)  # Add separator after tools section
+
+        
+        # Example usage:
+        # Test reading the document list
+        print("Reading document list...")
+        doc_list = await _client.read_resource("docs://documents")
+        print("Document List:")
+        print(f"  Documents: {doc_list}")
+        
+        # Test reading individual documents
+        print("\nReading individual documents...")
+        for doc_id in doc_list:
+            doc_contents = await _client.read_resource(f"docs://{doc_id}")
+            print(f"  {doc_id}: {doc_contents.text}")
 
 if __name__ == "__main__":
     if sys.platform == "win32":
