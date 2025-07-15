@@ -1,19 +1,13 @@
-# 05_ai_protocols/01_model_context_protocol/03_openai_agents_sdk_with_mcp/shared_mcp_server/server_main.py
-import asyncio
 import logging
 from mcp.server.fastmcp import FastMCP
 
 # Configure basic logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --- 1. Create and Configure the FastMCP Application ---
 mcp_app = FastMCP(
     name="SharedStandAloneMCPServer",
-    description="A simple shared MCP server for OpenAI Agents SDK examples.",
-    # Important for MCPServerStreamableHttp client in openai-agents-python
-    # The client will handle sessions if needed, server can be stateless.
     stateless_http=True,
     json_response=True, # Generally easier for HTTP clients if they don't need full SSE parsing
 )
@@ -50,15 +44,10 @@ def get_welcome_message() -> str:
     logger.info(f"Resource '{WELCOME_MSG_URI}' requested.")
     return "Welcome! This is a static resource from the SharedStandAloneMCPServer."
 
-# --- Main entry point to run the server ---
-
 streamable_http_app = mcp_app.streamable_http_app()
-logger.info(f"Starting {streamable_http_app}")
 
 if __name__ == "__main__":
     port = 8001
     import uvicorn
-    # uvicorn.run(streamable_http_app, host="0.0.0.0", port=port)
-    # start with hot reload
     uvicorn.run("server:streamable_http_app", host="0.0.0.0", port=port, reload=True)
 

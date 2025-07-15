@@ -1,9 +1,9 @@
-# 06: Integrating with OpenAI's Agents SDK
+# What You’re Learning: OpenAI Agents SDK + MCP Integration
 
-**Objective:** To understand and demonstrate how to integrate MCP servers (specifically those using the `streamable-http` transport) with agents created using the OpenAI Agents SDK. This will involve connecting agents to MCP servers, enabling tool discovery and invocation, managing tool list caching, and observing MCP interactions through tracing.
+This section bridges the gap between the open, interoperable world of MCP and a popular, production-grade agent framework. It shows how MCP is not a competing standard, but a powerful **complement** that makes agentic frameworks more modular, testable, and extensible.
 
-
-This final section bridges the gap between the open, interoperable world of MCP and a popular, production-grade agent framework. It shows how MCP is not a competing standard, but a powerful **complement** that makes agentic frameworks more modular, testable, and extensible.
+## **Big Picture**
+You’re exploring how to connect OpenAI Agents (using the OpenAI Agents SDK) to external context via the Model Context Protocol (MCP), specifically using the stateless, scalable `streamable-http` transport. This enables agents to discover and invoke tools and prompts dynamically, making your agentic systems more modular, interoperable, and production-ready—fully aligned with the DACA design pattern.
 
 ## Why This Architecture is Powerful (DACA-Aligned)
 
@@ -12,20 +12,65 @@ This final section bridges the gap between the open, interoperable world of MCP 
 -   **Scalability & Maintainability:** You can develop, test, and scale your tools (the MCP server) independently from your agent. Different teams can own different tool servers.
 -   **Open Core:** This aligns with the DACA principle of using open standards (MCP) to connect to managed services or closed frameworks (OpenAI API) at the edges.
 
-## Sub-modules
-We will explore:
+---
 
-- How to configure an agent to connect to one or more MCP servers.
-- How tools from these servers are discovered and made available to the agent's underlying Language Model (LLM).
-- The process of tool invocation and result handling when an MCP tool is selected by the LLM.
-- Performance optimization techniques like caching the list of tools from an MCP server.
-- The SDK's built-in tracing capabilities for monitoring MCP interactions.
+### **Module-by-Module Breakdown**
 
-This module is broken down into the following sub-modules, each focusing on a specific aspect of using MCP with the OpenAI Agents SDK:
+#### **01_agent_mcp_http**
+- **Goal:** Connect an OpenAI agent to a single MCP server using the `streamable-http` transport.
+- **Skills:** 
+  - Configure agent to use MCP server as a tool source.
+  - Understand the basic agent-to-MCP interaction loop.
 
-1.  **`01_intro_agent_and_mcp_streamable_http`**: Covers the basics of establishing a connection from an agent to a `streamable-http` MCP server using `MCPServerStreamableHttp`.
-2.  **`02_caching_mcp_tool_lists`**: Explains and shows how to use the tool list caching feature for performance optimization.
-3.  **`03_tracing_mcp_interactions_in_sdk`**: Highlights how to observe MCP operations (like `list_tools` and `call_tool`) using the SDK's tracing features.
-4.  **`04_agent_with_multiple_mcp_servers`**: Illustrates configuring a single agent to connect to and utilize tools from multiple MCP servers.
+#### **02_caching_tool_lists**
+- **Goal:** Optimize performance by caching the list of tools from the MCP server.
+- **Skills:** 
+  - Enable/disable tool list caching.
+  - Understand trade-offs between fresh tool discovery and latency.
+
+#### **03_static_tool_filter**
+- **Goal:** Filter available tools using static allow/block lists.
+- **Skills:** 
+  - Restrict which tools are visible to the agent.
+  - Use static configuration for tool access control.
+
+#### **04_dynamic_tool_filters**
+- **Goal:** Filter tools dynamically based on agent context or runtime conditions.
+- **Skills:** 
+  - Implement callable filters for tool selection.
+  - Make tool availability context-aware (e.g., user, session, environment).
+
+#### **05_prompt_server**
+- **Goal:** Serve prompts and tool definitions from a dedicated MCP server.
+- **Skills:** 
+  - Separate prompt/tool logic from agent logic.
+  - Use MCP to serve dynamic or static prompts to agents.
+
+#### **06_agent_with_multiple_mcp_servers**
+- **Goal:** Connect a single agent to multiple MCP servers at once.
+- **Skills:** 
+  - Aggregate tools from several sources.
+  - Enable agents to orchestrate across distributed tool servers.
+
+#### **shared_mcp_server**
+- **Goal:** Provide a reusable, shared MCP server implementation.
+- **Skills:** 
+  - Understand the server-side of MCP.
+  - Reuse and extend a common MCP server for different tool sets.
+
+---
+
+### **Key Learning Outcomes**
+- **Decoupling:** Agent logic is separated from tool implementation.
+- **Interoperability:** Any agent framework (OpenAI, LangChain, etc.) can use the same MCP server.
+- **Scalability:** Tool servers and agents can be developed, deployed, and scaled independently.
+- **Extensibility:** Easily add, remove, or update tools without changing agent code.
+- **DACA Alignment:** Follows the DACA pattern of open core, managed edges, and modular, cloud-native design.
+
+---
+
+**In summary:**  
+
+You’re mastering how to build agentic systems where agents can flexibly discover and use tools from one or more MCP servers, with advanced filtering and caching, all in a way that’s scalable, maintainable, and ready for real-world production.
 
 By the end of this module, you will have a practical understanding of how to extend your OpenAI Agents with powerful tools and resources made available through the Model Context Protocol.

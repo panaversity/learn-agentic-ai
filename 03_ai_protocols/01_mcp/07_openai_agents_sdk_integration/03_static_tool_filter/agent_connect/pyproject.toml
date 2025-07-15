@@ -5,7 +5,5 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "langsmith[openai-agents]>=0.3.42",
-    "langtrace-python-sdk>=3.8.18",
-    "openai-agents>=0.0.15",
+    "openai-agents>=0.2.0",
 ]
