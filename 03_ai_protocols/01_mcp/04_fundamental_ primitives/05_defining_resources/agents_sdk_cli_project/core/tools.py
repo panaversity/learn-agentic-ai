@@ -8,11 +8,12 @@ class ToolManager:
     @classmethod
     async def get_all_tools(cls, clients: dict[str, MCPClient]) -> list[Tool]:
         """Gets all tools from the provided clients."""
-        tools = []
+        all_tools = []
         for client in clients.values():
             tool_models = await client.list_tools()
-            tools = tool_models if tool_models else []
-        return tools
+            if tool_models:  # Only extend if tool_models is not empty
+                all_tools.extend(tool_models)
+        return all_tools
 
     @classmethod
     async def _find_client_with_tool(
@@ -30,7 +31,7 @@ class ToolManager:
     @classmethod
     def execute_tool_dynamically(cls, tool_name, mcp_client: MCPClient):
         """Execute a simulated database query."""
-        async def execute_tool(ctx: ToolContext, args: str) -> CallToolResult:
+        async def execute_tool(ctx: ToolContext, args: str):
             parsed_args = json.loads(args)
             result = await mcp_client.call_tool(tool_name, parsed_args)
             return result
