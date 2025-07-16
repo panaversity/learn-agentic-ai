@@ -1,10 +1,3 @@
-"""
-MCP Logging Server - Simple Educational Implementation
-
-This server provides a minimal, easy-to-understand demonstration of
-MCP logging with a single tool.
-"""
-
 import asyncio
 
 from mcp.server.fastmcp import FastMCP
@@ -14,7 +7,7 @@ from mcp import types
 # Create a simple MCP server
 mcp = FastMCP(
     name="Simple Logging Server",
-    stateless_http=False  # Stateful connection required for logging notifications
+    stateless_http=True  
 )
 
 

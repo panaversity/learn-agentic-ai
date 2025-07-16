@@ -1,11 +1,13 @@
-# Module 2: Core Capabilities & Transport Communication
+# Module 4: Core Capabilities & Transport Communication
+
+A hands-on, curiosity-driven journey through advanced MCP features and StreamableHTTP patterns.
 
 > **Master advanced MCP features and communication protocols for production-ready applications**  
 > Based on [Anthropic's Advanced MCP Topics Course](https://anthropic.skilljar.com/model-context-protocol-advanced-topics)
 
 ## 🎯 Module Overview
 
-This module covers the advanced capabilities that make MCP powerful for production applications: **Sampling**, **Logging & Progress Notifications**, **Roots**, and **Transport Protocols**. You'll learn how to build sophisticated MCP servers that can delegate reasoning to clients, provide real-time feedback, discover context, and communicate efficiently.
+This module covers the advanced capabilities that make MCP powerful for production applications: **Sampling**, **Logging & Progress Notifications**, **Roots**, and **Transport Protocols**. You'll learn how to build MCP servers that can delegate reasoning to clients, provide real-time feedback, discover context, and communicate efficiently.
 
 ### Pedagogical Approach
 
@@ -89,123 +91,30 @@ By the end of this module, you will be able to:
   - Message validation and parsing
   - Protocol compliance and debugging
 
-#### [05. STDIO Transport](05_stdio_transport/README.md)
+#### [05. STDIO and StreamableHTTP Transport](05_transport/README.md)
 - **Duration**: 45-60 minutes
-- **Focus**: Standard input/output transport for local development
-- **Deliverable**: STDIO-based MCP server and client
+- **Focus**: HTTP-based transport for production deployments and Standard input/output transport for local development
+- **Deliverable**: StreamableHTTP server with and without state management as well as STDIO-based MCP server and client
 - **Key Concepts**:
   - STDIO transport implementation
   - Message framing and parsing
   - Process lifecycle management
   - Error handling and recovery
   - Development and debugging workflows
-
-#### [06. StreamableHTTP Transport](06_streamable_http/README.md)
-- **Duration**: 60-75 minutes
-- **Focus**: HTTP-based transport for production deployments
-- **Deliverable**: StreamableHTTP server with state management
-- **Key Concepts**:
   - StreamableHTTP protocol specification
   - Stateful vs stateless connections
   - Connection management and persistence
   - Authentication and security
   - Production deployment considerations
-
+  
 ## 🔧 Prerequisites
 
 ### Technical Requirements
-- **Completed Module 1**: Understanding of MCP fundamentals
+- **Completed Module 4**: Understanding of MCP fundamentals
 - **Python 3.8+** with async/await experience
-- **HTTP and WebSocket knowledge**: Basic understanding of web protocols
+- **HTTP and SSE knowledge**: Basic understanding of web protocols
 - **JSON-RPC familiarity**: Understanding of RPC patterns (will be covered)
 
-## 🧠 Core Capabilities Deep Dive
-
-### 1. Sampling - AI Delegation
-**Definition**: Allows servers to request LLM sampling from clients
-
-**Key Concepts**:
-- **Server-to-Client Requests**: Servers can ask clients to perform AI reasoning
-- **Stateful Connections**: Required for bidirectional communication
-- **Model Preferences**: Servers can specify preferred models and parameters
-- **Error Handling**: Graceful handling of sampling failures
-
-**Use Cases**:
-- Content generation (stories, code, documentation)
-- Data analysis and interpretation
-- Creative tasks (design, writing, brainstorming)
-- Complex reasoning and problem-solving
-
-### 2. Logging & Progress Notifications
-**Definition**: Real-time feedback and observability for MCP operations
-
-**Key Concepts**:
-- **Log Levels**: Debug, info, warning, error notifications
-- **Progress Tracking**: Percentage-based progress for long operations
-- **Structured Data**: Rich metadata for debugging and monitoring
-- **Client Handling**: How clients process and display notifications
-
-**Use Cases**:
-- Long-running data processing
-- File operations and transfers
-- API integrations with external services
-- System monitoring and health checks
-
-### 3. Roots - Context Discovery
-**Definition**: Discovering and accessing user context and environment
-
-**Key Concepts**:
-- **Root Enumeration**: Discovering available context sources
-- **File System Access**: Reading workspace and project files
-- **Environment Integration**: Accessing configuration and settings
-- **Context-Aware Tools**: Tools that adapt based on discovered context
-
-**Use Cases**:
-- Code analysis and understanding
-- Project-specific tool behavior
-- Configuration management
-- Workspace-aware applications
-
-## 🌐 Transport Protocols Deep Dive
-
-### 1. JSON-RPC 2.0 Foundation
-**Definition**: The underlying RPC protocol that MCP extends
-
-**Key Concepts**:
-- **Request/Response Pattern**: Standard RPC message flow
-- **Error Handling**: Structured error responses
-- **Message Format**: JSON-based message structure
-- **Protocol Extensions**: MCP-specific message types
-
-### 2. STDIO Transport
-**Definition**: Standard input/output transport for local development
-
-**Key Concepts**:
-- **Process Communication**: Parent-child process communication
-- **Message Framing**: Delimiting messages in byte streams
-- **Lifecycle Management**: Starting and stopping MCP processes
-- **Development Workflow**: Local development and debugging
-
-### 3. StreamableHTTP Transport
-**Definition**: HTTP-based transport for production deployments
-
-**Key Concepts**:
-- **HTTP/HTTPS Support**: Web-standard transport protocol
-- **Stateful Connections**: Persistent connections for bidirectional communication
-- **Authentication**: OAuth 2.1 and other security mechanisms
-- **Production Deployment**: Scalable, load-balanced deployments
-
-## 📖 Assessment and Progress Tracking
-
-### Module Completion Checklist
-- [ ] **Sampling Implementation**: Built server that delegates AI reasoning to clients
-- [ ] **Progress Notifications**: Implemented comprehensive logging and progress tracking
-- [ ] **Roots Discovery**: Created server that discovers and accesses user context
-- [ ] **JSON-RPC Understanding**: Deep understanding of MCP message structure
-- [ ] **STDIO Transport**: Built and tested STDIO-based server
-- [ ] **StreamableHTTP Transport**: Implemented HTTP-based server with state management
-- [ ] **Error Handling**: Robust error handling for all capabilities
-- [ ] **Security**: Applied security best practices for transport protocols
 
 ### Knowledge Check
 - [ ] Can explain when to use sampling vs. direct tool implementation
@@ -240,37 +149,9 @@ By the end of this module, you will be able to:
 
 After completing this module, you'll be ready to explore:
 
-### Module 3: Advanced Engineering
-- Lifecycle management and server optimization
-- Pagination and large data handling
-- Cancellation and timeout management
-- Advanced error handling and recovery
-
-### Module 4: Advanced Client Features
-- Advanced client capabilities and integrations
-- Multi-server coordination and load balancing
-- Client-side caching and optimization
-- Advanced debugging and monitoring
-
-### Module 5: OAuth Integration
-- Security and authentication patterns
-- OAuth 2.1 implementation and best practices
-- Protected resource metadata discovery
-- Authorization server integration
-
-### Module 6: OpenAI Agents SDK Integration
-- Integration with OpenAI's agent framework
-- MCP server integration with OpenAI Agents
-- Advanced agent capabilities and patterns
-- Production deployment and scaling
-
-## 💡 Tips for Success
-
-1. **Start with Sampling**: It's the most transformative capability—master it first
-2. **Test Transport Protocols**: Experiment with different transports to understand trade-offs
-3. **Monitor Performance**: Use logging and progress notifications to understand your server's behavior
-4. **Security First**: Always consider security implications when implementing transport protocols
-5. **Production Thinking**: Design for scalability and reliability from the beginning
+- MCP Specification
+- OAuth Integration
+- OpenAI Agents SDK Integration
 
 ## 🔧 Common Challenges and Solutions
 

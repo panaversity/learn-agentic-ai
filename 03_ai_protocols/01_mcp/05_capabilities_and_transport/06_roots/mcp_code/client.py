@@ -9,26 +9,28 @@ This client demonstrates how to:
 
 import asyncio
 from pathlib import Path
-from typing import Any
+from pydantic import FileUrl
 
-import mcp.types as types
 from mcp.shared.context import RequestContext
 from mcp import ClientSession
 from mcp.client.streamable_http import streamablehttp_client
+from mcp.types import Root, ListRootsResult, ErrorData
 
+def _create_roots(root_paths: list[str]) -> list[Root]:
+    """Convert path strings to Root objects."""
+    roots = []
+    for path in root_paths:
+        p = Path(path).resolve()
+        file_url = FileUrl(f"file://{p}")
+        roots.append(Root(uri=file_url, name=p.name or "Root"))
+    return roots
 
-async def mock_roots_list(context: RequestContext["ClientSession", Any]) -> types.ListRootsResult | types.ErrorData:
-    """Handle roots/list requests from the server."""
-    print(f"<- Client: Received roots/list request")
-
-    # Get current directory as root
-    root_uri = f"file://{Path.cwd().absolute()}"
-    print(f"-> Client: Using root: {root_uri}")
-
-    return types.ListRootsResult(roots=[types.Root(
-        uri=types.FileUrl(root_uri),
-        name="Current Project"
-    )])
+async def _handle_list_roots(
+    context: RequestContext["ClientSession", None]
+) -> ListRootsResult | ErrorData:
+    """Callback for when server requests roots."""
+    root_paths = [str(Path.cwd().absolute())]
+    return ListRootsResult(roots=_create_roots(root_paths))
 
 
 async def main():
@@ -40,7 +42,7 @@ async def main():
         async with streamablehttp_client(server_url) as (read_stream, write_stream, get_session_id):
             # Create session with elicitation capability
 
-            async with ClientSession(read_stream, write_stream, list_roots_callback=mock_roots_list) as session:
+            async with ClientSession(read_stream, write_stream, list_roots_callback=_handle_list_roots) as session:
                 print("✅ Connected. Initializing session...")
                 await session.initialize()
                 print("🛠️ Session initialized with roots capability.")

@@ -1,10 +1,6 @@
-# 06: [Logging - Your Server's Voice](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging)
+# [Logging - Your Server's Voice](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging)
 
 **Objective:** Learn how MCP servers communicate their internal state to clients through structured logging notifications using the **2025-06-18 specification**.
-
-## 🧠 Understanding MCP Logging Fundamentals
-
-**Building on Previous Lessons**: You've learned about Tools, Resources, and Prompts. Now let's explore **Logging** - how servers tell their story and share what they're thinking.
 
 ### 🤔 What is MCP Logging? (Simple Explanation)
 
@@ -70,52 +66,6 @@ Based on [RFC 5424](https://tools.ietf.org/html/rfc5424), MCP supports 8 logging
 | `info` | Informational messages | General information | "Processing 50 records" |
 | `debug` | Debug-level messages | Detailed tracing | "Function entry: validateUser()" |
 
-## 🎬 Active Learning Activities
-
-### 🚀 **Activity 1: Basic Logging Setup** (⭐ Beginner)
-
-**Goal**: Get your first logging messages working
-
-**Steps**:
-1. Run the server: `cd mcp_code && uv run python server.py`
-2. Run the client: `uv run python client.py`
-3. **Observe**: Watch logging messages appear in real-time
-4. **Experiment**: Try different tasks and see how log messages change
-
-**Expected Output**:
-```
-🔍 [DEBUG] Starting to process task: data processing
-📰 [INFO] Task processing completed successfully
-```
-
-### 🎚️ **Activity 2: Log Level Control** (⭐⭐ Intermediate)
-
-**Goal**: Learn how to control what messages you see
-
-**Steps**:
-1. Start the server and client
-2. **Experiment**: Try setting different log levels:
-   - `debug` (see everything)
-   - `info` (normal operations)
-   - `warning` (only important issues)
-   - `error` (only problems)
-3. **Observe**: How the number of messages changes
-
-**Reflection Questions**:
-- When would you use `debug` level vs `info` level?
-- Why might you want to reduce logging in production?
-
-### 🔧 **Activity 3: Custom Log Messages** (⭐⭐⭐ Advanced)
-
-**Goal**: Add your own logging to understand server behavior
-
-**Steps**:
-1. Open `server.py`
-2. Add your own log messages using `await ctx.info("Your message")`
-3. Test different log levels: `ctx.debug()`, `ctx.warning()`, `ctx.error()`
-4. **Observe**: How your messages appear in the client
-
-**Challenge**: Create a tool that logs its progress through multiple steps
 
 ## 🛠️ What We'll Build
 
@@ -164,26 +114,6 @@ def log_handler(params):
     print(f"📰 [INFO] Processing user request")
     print(f"    User: 123, Type: weather, Time: 0.5s")
 ```
-
-## 🎯 Key Learning Insights
-
-### **💡 Design Principles**
-1. **Tell a Story**: Logs should narrate what's happening
-2. **Be Selective**: Not everything needs to be logged
-3. **Add Context**: Include relevant metadata
-4. **Consider Your Audience**: Debug for developers, info for users
-
-### **🔒 Security Considerations**
-- **Never log sensitive data**: passwords, API keys, personal information
-- **Sanitize user input**: prevent log injection attacks
-- **Consider log retention**: how long to keep logs
-- **Monitor log volume**: prevent disk space issues
-
-### **🚀 Performance Tips**
-- **Use appropriate levels**: debug only in development
-- **Batch log messages**: reduce network overhead
-- **Structured data**: easier to parse and analyze
-- **Async logging**: don't block your main application
 
 ## 🏗️ Implementation Guide
 

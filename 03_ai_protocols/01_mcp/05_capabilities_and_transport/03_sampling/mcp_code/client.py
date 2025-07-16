@@ -14,6 +14,7 @@ async def mock_sampler(context: RequestContext["ClientSession", Any], params: Cr
 
     print(f"<- Client Parameters '{params}'.")
     print(f"<- Client Context '{context}'.")
+    print(f"<- Client Message '{params.messages}'.")
 
     # Mock a response from an LLM
     mock_llm_response = (

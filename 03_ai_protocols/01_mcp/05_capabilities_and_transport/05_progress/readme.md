@@ -1,4 +1,4 @@
-# 📊 08: MCP Progress Notifications
+# 📊 MCP Progress Notifications
 
 > **Analogy:** Imagine ordering a pizza. A bad service just tells you "Order received" and you wait anxiously. A great service gives you real-time updates: "Making dough," "Adding toppings," "In the oven," "Out for delivery!" You feel informed and confident. MCP Progress Notifications do the same for long-running digital tasks.
 

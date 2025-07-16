@@ -1,10 +1,49 @@
-# 05: Connection Lifecycle Management (2025-06-18)
+# State and the StreamableHTTP transport Lifecycle (2025-06-18)
 
-**Objective:** Learn the complete MCP connection lifecycle with **2025-06-18 specification compliance**, including initialization sequences, capability negotiation, and graceful shutdown procedures.
+> **If you haven't reviewed the transport trade-offs, see the previous step: [MCP Transports](../01_mcp_transports/readme.md)**
 
-**Building on All Previous Lessons**: You now understand MCP's three building blocks (Tools, Resources, Prompts). This lesson focuses on **how AI and MCP servers establish and manage their connection**.
+The stateless_http and json_response flags in MCP servers control fundamental aspects of how your server behaves. Understanding when and why to use them is crucial, especially if you're planning to scale your server or deploy it in production
 
-### 🤔 What Is the MCP Connection Lifecycle? (Simple Explanation)
+## When You Need Stateless HTTP
+Imagine you build an MCP server that becomes popular. Initially, you might have just a few clients connecting to a single server instance:
+
+As your server grows, you might have thousands of clients trying to connect. Running a single server instance won't scale to handle all that traffic:
+
+The typical solution is horizontal scaling - running multiple server instances behind a load balancer:
+
+But here's where things get complicated. Remember that MCP clients need two separate connections:
+
+1. A GET SSE connection for receiving server-to-client requests
+2. POST requests for calling tools and receiving responses
+
+With a load balancer, these requests might get routed to different server instances. If your tool needs to use Claude (through sampling), the server handling the POST request would need to coordinate with the server handling the GET SSE connection. This creates a complex coordination problem between servers.
+
+## How Stateless HTTP Solves This
+Setting stateless_http=True eliminates this coordination problem, but with significant trade-offs:
+
+When stateless HTTP is enabled:
+
+- Clients don't get session IDs - the server can't track individual clients
+- No server-to-client requests - the GET SSE pathway becomes unavailable
+- No sampling - can't use Claude or other AI models
+- No progress reports - can't send progress updates during long operations
+- No subscriptions - can't notify clients about resource updates
+
+However, there's one benefit: client initialization is no longer required. Clients can make requests directly without the initial handshake process.
+
+## When to Use These Flags
+Use stateless HTTP when:
+- You need horizontal scaling with load balancers
+- You don't need server-to-client communication
+- Your tools don't require AI model sampling
+- You want to minimize connection overhead
+
+Use JSON response when:
+- You don't need streaming responses
+- You prefer simpler, non-streaming HTTP responses
+- You're integrating with systems that expect plain JSON
+
+### 🤔 What Is the Stateful HTTP MCP Connection Lifecycle? (Simple Explanation)
 
 **Simple Definition**: The MCP Connection Lifecycle is the **conversation protocol** that AI and servers use to connect, negotiate capabilities, communicate, and disconnect.
 
@@ -13,28 +52,7 @@
 2. 🗣️ **Conversation (Operation)**: Normal back-and-forth communication using agreed capabilities
 3. 👋 **Goodbye (Shutdown)**: "Thanks for the chat, see you later!"
 
-### 🏗️ MCP Lifecycle vs. What You Know
-
-| **If you're familiar with...** | **MCP Lifecycle is like...** | **Key insight** |
-|-------------------------------|-------------------------------|-----------------|
-| **HTTP Request/Response** | HTTP, but with handshakes and ongoing sessions | More like WebSocket with negotiation |
-| **API Authentication** | OAuth flow with capability discovery | Not just auth, but feature negotiation |
-| **Database Connections** | Connection pooling with capabilities | Discovers what's available before using |
-| **Network Protocols** | TCP handshake, but for AI communication | Ensures compatibility before operation |
-
-### 🎯 Why Connection Lifecycle Matters
-
-**The Problem**: Without proper lifecycle management:
-- 🔧 **Tools might fail**: AI tries to use features the server doesn't support
-- 📚 **Resources could be missing**: AI expects data that isn't available
-- 💬 **Prompts may not work**: AI assumes templates that don't exist
-- ⚡ **Errors are unclear**: No standardized error handling
-
-**The MCP Lifecycle Solution**:
-- ✅ **Capability Discovery**: AI learns what server can do before trying
-- ✅ **Version Compatibility**: Ensures both sides speak the same protocol
-- ✅ **Graceful Errors**: Standardized error handling and recovery
-- ✅ **Resource Management**: Proper connection setup and cleanup
+---
 
 ### 📋 The Three Essential Phases
 
@@ -54,6 +72,24 @@
 - 🧹 **Clean up resources** and connections
 - 💾 **Save state** if needed
 - 👋 **Graceful disconnection** without data loss
+
+---
+
+### 🗺️ Lifecycle Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    Client->>Server: initialize
+    Server->>Client: initialize result
+    Client->>Server: notifications/initialized
+    Note over Client,Server: Now in operation phase
+    Client->>Server: tool/resource requests
+    Server->>Client: results, notifications
+    Client->>Server: (disconnects)
+    Note over Client,Server: Shutdown phase (connection closes)
+```
 
 This lesson demonstrates the three-phase MCP lifecycle: **Initialization → Operation → Shutdown** according to the official [MCP 2025-06-18 Lifecycle specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle).
 
@@ -162,34 +198,18 @@ Per the specification:
 - **HTTP transport**: Shutdown by closing the HTTP connection
 - Session cleanup happens automatically
 
-## FastMCP Implementation
-
-Our simplified server demonstrates proper lifecycle handling:
-
-```python
-from mcp.server.fastmcp import FastMCP
-
-# FastMCP handles all lifecycle complexity automatically
-mcp = FastMCP("weather", stateless_http=False)
-
-@mcp.tool()
-async def get_forecast(city: str) -> str:
-    """Get weather forecast for a city."""
-    return f"The weather in {city} will be warm and sunny today! 🌤️"
-
-mcp_app = mcp.streamable_http_app()
-```
+## 🚀 Quick Start
 
 **What FastMCP Automatically Handles:**
-- ✅ Protocol version negotiation (`2025-06-18` ↔ `2025-06-18`)
-- ✅ HTTP header requirements (`MCP-Protocol-Version`)
-- ✅ Session management (stateful mode)
-- ✅ Capability negotiation
-- ✅ JSON-RPC 2.0 compliance
-- ✅ Error handling
-- ✅ Graceful shutdown
 
-## 🚀 Quick Start
+> **FastMCP automates all the hard parts for you:**
+> - ✅ Protocol version negotiation (`2025-06-18` ↔ `2025-06-18`)
+> - ✅ HTTP header requirements (`MCP-Protocol-Version`)
+> - ✅ Session management (stateful mode)
+> - ✅ Capability negotiation
+> - ✅ JSON-RPC 2.0 compliance
+> - ✅ Error handling
+> - ✅ Graceful shutdown
 
 ### **Terminal 1: Start the Enhanced Server**
 ```bash
@@ -221,6 +241,19 @@ uv run python client.py
 - Built-in 2025-06-18 compliance
 - Simplified development experience
 - Production-ready error handling
+
+---
+
+## 🔍 What You Lose with stateless_http
+
+- ❌ No session IDs (no per-client state)
+- ❌ No server-to-client requests (no SSE pathway)
+- ❌ No sampling (can't use Claude or other AI models)
+- ❌ No progress reports (no streaming updates)
+- ❌ No subscriptions (no resource update notifications)
+- ✅ But: No initialization required, and you can scale horizontally with load balancers
+
+---
 
 ## References
 

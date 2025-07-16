@@ -1,4 +1,4 @@
-# 02: [Elicitation](https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation) - Interactive Tool Experiences
+# [Elicitation](https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation) - Interactive Tool Experiences
 
 The Model Context Protocol (MCP) provides a standardized way for servers to request additional information from users during tool execution. This enables tools to adapt and respond based on user input, creating interactive and dynamic experiences.
 
@@ -199,15 +199,6 @@ SCENARIO 2: Declining the elicitation
 1. **Basic:** Add validation to the pizza toppings (e.g., max 3 toppings)
 2. **Intermediate:** Add size recommendations based on party size
 3. **Advanced:** Create a multi-step order wizard (size → toppings → drinks)
-
-## 🏆 Success Criteria
-
-You've mastered this lesson when you can:
-- [ ] Explain when to use elicitation vs. upfront parameters
-- [ ] Implement basic elicitation in your tools
-- [ ] Handle all elicitation response types
-- [ ] Design user-friendly interactive experiences
-
 ---
 
-**🎓 Ready for Context?** Once you've mastered interactive tools, move on to [03_roots](../03_roots/) to learn how tools can discover and work with your project structure. 
+**🎓 Ready for Context?** Now let's move on to [05_roots](../05_roots/) to learn how tools can discover and work with your project structure. 
