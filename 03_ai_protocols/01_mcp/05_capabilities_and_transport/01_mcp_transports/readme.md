@@ -64,11 +64,12 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    Agent -- POST/GET -->|Requests| MCP_Server
-    Agent -- SSE -->|Persistent connection| MCP_Server
+    Agent -- "POST or GET" --> MCP_Server
+    Agent -- "SSE" --> MCP_Server
     MCP_Server -- "Push: progress/logging" --> Agent
-    Note right of MCP_Server: SSE lets server send messages anytime
+    %% Note: GitHub does not support 'Note right of' syntax in Mermaid
 ```
+
  
 - **SSE connection** is like a “radio channel” the server can use to broadcast updates.
 - Example:  
@@ -84,15 +85,15 @@ graph TD
 ```mermaid
 flowchart LR
     subgraph Cloud
-        LB(Load Balancer)
-        S1(Server 1)
-        S2(Server 2)
+        LB[Load Balancer]
+        S1[Server 1]
+        S2[Server 2]
     end
-    Agent -- POST/GET --> LB
-    LB -- routes --> S1
-    LB -- routes --> S2
-    S1 -.->|No session| S2
-    Note right of S2: stateless_http = no session, no progress, no server-initiated
+    Agent -- "POST or GET" --> LB
+    LB -- "routes" --> S1
+    LB -- "routes" --> S2
+    S1 -. "No session" .-> S2
+    %% Note: stateless_http = no session, no progress, no server-initiated
 ```
 
 - With stateless HTTP, each request could go to a different server, so there’s no way to keep track of sessions or stream updates.

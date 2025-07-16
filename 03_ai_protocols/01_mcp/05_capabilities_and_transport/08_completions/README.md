@@ -1,4 +1,4 @@
-# 07: MCP Completions - Intelligent Auto-Completion
+# MCP Completions - Intelligent Auto-Completion
 
 **Learning Objective:** Master the MCP completions capability to provide intelligent, context-aware auto-completion suggestions that enhance user experience when working with parameterized prompts and resources.
 
@@ -14,7 +14,7 @@ Imagine you're filling out a form online:
 
 ## Why Are Completions Important?
 
-### Without Completions (Poor UX)
+### Without Completions (Poor UX)1
 ```
 User: I want to review some code
 System: Please provide the language parameter

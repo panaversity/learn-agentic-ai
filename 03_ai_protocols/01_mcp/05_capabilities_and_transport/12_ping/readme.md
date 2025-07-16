@@ -1,4 +1,4 @@
-# 🏓 09: MCP Ping Utility
+# 🏓 MCP Ping Utility
 
 > **Analogy:** Think of the ping utility like sonar on a submarine. You send out a "ping" into the dark water. If you hear an echo, you know the connection is alive and can even tell how "far away" the server is by measuring the delay. If you hear nothing, the connection might be lost in the depths. MCP Ping is that sonar for your digital connections.
 
