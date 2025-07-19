@@ -1,0 +1,236 @@
+{
+	"info": {
+		"_postman_id": "mcp-defining-resources",
+		"name": "MCP Defining Resources",
+		"description": "Test collection for MCP resources implementation - document reader and editor resources",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Resources List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});",
+							"",
+							"pm.test(\"Result contains a list of resources\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"resources/list\",\n  \"params\": {},\n  \"id\": 10\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Read Resource",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});",
+							"",
+							"pm.test(\"Result contains document list\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const content = jsonData.result.content;",
+							"    let docs = [];",
+							"    try { docs = JSON.parse(content); } catch(e) {}",
+							"    pm.expect(docs).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"resources/read\",\n  \"params\": {\n    \"uri\": \"docs://documents\"\n  },\n  \"id\": 7\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Resources Templates List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});",
+							"",
+							"pm.test(\"Result contains a list of resource templates\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"resources/templates/list\",\n  \"params\": {},\n  \"id\": 11\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Get Document Content",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains document content\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.have.property('content');",
+							"    pm.expect(jsonData.result.content).to.be.a('string');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"resources/read\",\n  \"params\": {\n    \"uri\": \"docs://plan.md\"\n  },\n  \"id\": 8\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server_url",
+			"value": "http://localhost:8000/mcp/",
+			"type": "string"
+		}
+	]
+}

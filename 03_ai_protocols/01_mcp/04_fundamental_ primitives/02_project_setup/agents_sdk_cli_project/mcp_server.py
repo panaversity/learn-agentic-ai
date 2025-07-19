@@ -1,7 +1,6 @@
 from mcp.server.fastmcp import FastMCP
-from pydantic import Field
 
-mcp = FastMCP("DocumentMCP", log_level="ERROR", stateless_http=True)
+mcp = FastMCP("DocumentMCP", stateless_http=True)
 
 docs = {
     "deposition.md": "This deposition covers the testimony of Angela Smith, P.E.",

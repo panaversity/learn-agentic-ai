@@ -1,10 +1,13 @@
 # 04: Implementing a Client
 
+
 The MCP client abstracts away the complexity of server communication, letting you focus on your application logic while still getting access to powerful external tools and data sources.
 
 ![mcp-interaction.png](mcp-interaction.png)
 
 Understanding this flow is crucial because you'll see all these pieces when building your own MCP clients and servers in the upcoming sections.
+
+> This step is for students following the Antropic Introduction to MCP course. In class our focus is on learning core premitives
 
 In this step, we build the client side of our CLI MCP application. 
 

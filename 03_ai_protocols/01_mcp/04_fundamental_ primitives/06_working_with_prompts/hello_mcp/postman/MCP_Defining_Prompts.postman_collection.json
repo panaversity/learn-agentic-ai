@@ -1,0 +1,77 @@
+{
+	"info": {
+		"_postman_id": "mcp-defining-prompts",
+		"name": "MCP Defining Prompts",
+		"description": "Test collection for MCP prompts implementation - document reader and editor prompts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Discover Available Prompts",
+			"request": {
+				"method": "POST",
+				"header": [
+					{ "key": "Content-Type", "value": "application/json" },
+					{ "key": "Accept", "value": "application/json, text/event-stream" }
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"prompts/list\",\n    \"params\": {},\n    \"id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [ "{{baseUrl}}" ],
+					"path": [ "mcp" ]
+				},
+				"description": "Discover available prompt templates on the MCP server."
+			}
+		},
+		{
+			"name": "02. Get Format Prompt",
+			"request": {
+				"method": "POST",
+				"header": [
+					{ "key": "Content-Type", "value": "application/json" },
+					{ "key": "Accept", "value": "application/json, text/event-stream" }
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"prompts/get\",\n    \"params\": {\n        \"name\": \"format\",\n        \"arguments\": {\n            \"doc_content\": \"Agentic AI is a new paradigm in AI that is based on the idea that AI should be able to learn and adapt to new tasks and environments.\"\n        }\n    },\n    \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/mcp",
+					"host": [ "{{baseUrl}}" ],
+					"path": [ "mcp" ]
+				},
+				"description": "Retrieve the 'format' prompt by providing a document id (e.g., plan.md) to get back a formatted markdown prompt."
+			}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server_url",
+			"value": "http://localhost:8000/mcp/",
+			"type": "string"
+		}
+	]
+} 

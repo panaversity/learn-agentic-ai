@@ -3,7 +3,7 @@
 ## Introduction
 In this step, you'll learn how to create and use MCP tools with the FastMCP Python SDK. This guide will show you how to turn your Python functions into easy-to-use tools with minimal hassle.
 
-### How Tools Work: Discovery and Execution
+## How Tools Work: Discovery and Execution
 Here’s a simple overview of the process:
 1. **Finding Tools:** The MCP client sends a `tools/list` request to get a list of available tools.
 2. **Using Tools:** When you want to run a tool, the client sends a `tools/call` request with the tool name and the necessary parameters.
@@ -22,10 +22,95 @@ sequenceDiagram
     Note over Client,Server: If tools change, server notifies client (tools/list_changed)
 ```
 
-### Defining Tools with `@mcp.tool`
+### 1. Defining Tools with `@mcp.tool`
 Using the `@mcp.tool` decorator, you can convert a regular Python function into an MCP tool. The decorator uses Python’s type hints and Pydantic’s `Field` to automatically create a clear, friendly interface. This means you don’t have to write complex JSON schemas by hand.
 
 *Learn More:* [MCP Tools Documentation](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)
+
+### 2. Listing Tools
+
+To discover available tools, clients send a tools/list request. This operation supports pagination.
+
+**Request**:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/list",
+  "params": {
+    "cursor": "optional-cursor-value"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "get_weather",
+        "title": "Weather Information Provider",
+        "description": "Get current weather info",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "City name or zip code"
+            }
+          },
+          "required": ["location"]
+        }
+      }
+    ],
+    "nextCursor": "next-page-cursor"
+  }
+}
+```
+
+### 3. Calling Tools
+To invoke a tool, clients send a tools/call request:
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "get_weather",
+    "arguments": {
+      "location": "New York"
+    }
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Current weather in New York:\nTemperature: 72°F\nConditions: Partly cloudy"
+      }
+    ],
+    "isError": false
+  }
+}
+```
+
+> Run the code in hello_mcp for hands-on.
 
 ## Todo Exercise: Simple Document Tools
 

@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "mcp-defining-tools",
+		"name": "MCP Defining Tools",
+		"description": "Test collection for MCP tools implementation - document reader and editor tools",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. List Available Tools",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains tools\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.have.property('tools');",
+							"});",
+							"",
+							"pm.test(\"Tools array contains expected tools\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const tools = jsonData.result.tools;",
+							"    const toolNames = tools.map(tool => tool.name);",
+							"    pm.expect(toolNames).to.include('read_doc_contents');",
+							"    pm.expect(toolNames).to.include('edit_document');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/list\",\n  \"params\": {},\n  \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Call Tool",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});",
+							"",
+							"pm.test(\"Result contains content\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.have.property('content');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"online_researcher\",\n    \"arguments\": {\n      \"query\": \"agent vs ai-agent\"\n    }\n  },\n  \"id\": 3\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server_url",
+			"value": "http://localhost:8000/mcp/",
+			"type": "string"
+		}
+	]
+} 

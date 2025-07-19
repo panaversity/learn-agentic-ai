@@ -2,8 +2,6 @@
 
 Resources in MCP servers allow you to expose data to clients, similar to GET request handlers in a typical HTTP server. They're perfect for scenarios where you need to fetch information rather than perform actions.
 
-
-
 ### 🏗️ MCP Resources vs. What You Know
 
 | **If you're familiar with...** | **MCP Resources are like...** | **Key advantage** |
@@ -35,7 +33,6 @@ Resources can return any type of data - strings, JSON, binary data, etc. Use the
 "application/pdf" for binary files
 The MCP Python SDK automatically serializes your return values. You don't need to manually convert objects to JSON strings - just return the data structure and let the SDK handle serialization.
 
-
 ## Types of Resources
 
 There are two types of resources:
@@ -46,7 +43,95 @@ Direct resources have static URIs that never change. They're perfect for operati
 ### 2. Templated Resources
 Templated resources include parameters in their URIs. The Python SDK automatically parses these parameters and passes them as keyword arguments to your function.
 
-## Update your server to add Resources
+*Learn More:* [MCP Recources Documentation](https://modelcontextprotocol.io/specification/2025-06-18/server/resources)
+
+## Protocol Messages Structure
+​
+### 1. Listing Resouces
+
+To discover available resources, clients send a resources/list request. This operation supports pagination.
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "resources/list",
+  "params": {
+    "cursor": "optional-cursor-value"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "resources": [
+      {
+        "uri": "file:///project/src/main.rs",
+        "name": "main.rs",
+        "title": "Rust Software Application Main File",
+        "description": "Primary application entry point",
+        "mimeType": "text/x-rust"
+      }
+    ],
+    "nextCursor": "next-page-cursor"
+  }
+}
+```
+### 2. Reading Resources:
+
+To retrieve resource contents, clients send a resources/read request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "resources/read",
+  "params": {
+    "uri": "file:///project/src/main.rs"
+  }
+}
+```
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "contents": [
+      {
+        "uri": "file:///project/src/main.rs",
+        "name": "main.rs",
+        "title": "Rust Software Application Main File",
+        "mimeType": "text/x-rust",
+        "text": "fn main() {\n    println!(\"Hello world!\");\n}"
+      }
+    ]
+  }
+}
+```
+
+### List Resource Templates
+
+Resource templates allow servers to expose parameterized resources using URI templates. Arguments may be auto-completed through the completion API.
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "resources/templates/list"
+}​
+```
+
+## Todo Exercise: Update your server to add Resources
 
 Let's update our project server for resources and access patterns.
 
