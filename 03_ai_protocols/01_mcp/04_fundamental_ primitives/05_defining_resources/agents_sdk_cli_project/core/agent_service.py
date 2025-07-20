@@ -1,10 +1,13 @@
 import asyncio
-from openai import AsyncOpenAI
-from agents import Agent, OpenAIChatCompletionsModel, Runner, RunResult
-from agents.tool import FunctionTool
+from openai import AsyncOpenAI # type: ignore
+from agents import Agent, OpenAIChatCompletionsModel, Runner, RunResult, set_tracing_disabled # type: ignore
+from agents.tool import FunctionTool # type: ignore
 from mcp.types import Tool
 from core.tools import ToolManager
 from mcp_client import MCPClient
+
+set_tracing_disabled(True)
+
 
 async def convert_to_sdk_tool(tools_schema: list[Tool], mcp_clients: dict[str, MCPClient]) -> list[FunctionTool]:
     converted_tools = []
@@ -31,7 +34,7 @@ class AgentService:
     def __init__(self, model: str, api_key: str, base_url: str | None = None, clients=None):
         self.model = model
         self.api_key = api_key
-        self.messages = []
+        self.messages = [] # type: ignore
 
         self.client = AsyncOpenAI(
             api_key=api_key,
@@ -44,7 +47,8 @@ class AgentService:
             model=OpenAIChatCompletionsModel(
                 model=model,
                 openai_client=self.client
-            ),
+            )
+            
         )
 
     async def chat(

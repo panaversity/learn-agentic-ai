@@ -20,6 +20,7 @@ docs = {
 def read_document(
     doc_id: str = Field(description="Id of the document to read")
 ):
+    print(f"Reading document tool called with {doc_id}...")
     if doc_id not in docs:
         raise ValueError(f"Doc with id {doc_id} not found")
 
@@ -37,6 +38,7 @@ def edit_document(
     new_str: str = Field(
         description="The new text to insert in place of the old text.")
 ):
+    print(f"Editing document tool called with {doc_id}...")
     if doc_id not in docs:
         raise ValueError(f"Doc with id {doc_id} not found")
 
@@ -49,6 +51,7 @@ def edit_document(
     mime_type="application/json"
 )
 def list_docs() -> list[str]:
+    print(f"Listing resources called")
     return list(docs.keys())
 
 # TODO: Write a resource to return the contents of a particular doc
@@ -57,6 +60,7 @@ def list_docs() -> list[str]:
     mime_type="text/plain"
 )
 def get_doc(doc_id: str) -> str:
+    print(f"Getting document resource called with {doc_id}")
     return docs[doc_id]
 
 # TODO: Write a prompt to rewrite a doc in markdown format
@@ -64,3 +68,9 @@ def get_doc(doc_id: str) -> str:
 
 
 mcp_app = mcp.streamable_http_app()
+
+
+if __name__ == "__main__":
+    import uvicorn
+    print("Starting MCP server...")
+    uvicorn.run("mcp_server:mcp_app", host="0.0.0.0", port=8000, reload=True)
