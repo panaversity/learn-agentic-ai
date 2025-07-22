@@ -1,0 +1,166 @@
+{
+  "info": {
+    "name": "MCP Progress Notifications",
+    "description": "Test MCP progress notifications for long-running tool calls.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Connection Lifecycle",
+      "item": [
+        {
+          "name": "Initialize Connection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test initialization response",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is text/event-stream\", function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/event-stream');",
+                  "});",
+                  "",
+                  "pm.test(\"Session ID header present\", function () {",
+                  "    const sessionId = pm.response.headers.get('mcp-session-id');",
+                  "    pm.expect(sessionId).to.not.be.null;",
+                  "    pm.collectionVariables.set('mcp_session_id', sessionId);",
+                  "});",
+                  "",
+                  "pm.test(\"Valid SSE format response\", function () {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText).to.include('data: ');",
+                  "});",
+                  "",
+                  "pm.test(\"Protocol version matches 2025-06-18\", function () {",
+                  "    const responseText = pm.response.text();",
+                  "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
+                  "    if (dataLine) {",
+                  "        const data = JSON.parse(dataLine.substring(6));",
+                  "        if (data.result && data.result.protocolVersion) {",
+                  "            pm.expect(data.result.protocolVersion).to.equal('2025-06-18');",
+                  "        }",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(\"Server capabilities and title present\", function () {",
+                  "    const responseText = pm.response.text();",
+                  "    const dataLine = responseText.split('\\n').find(line => line.startsWith('data: '));",
+                  "    if (dataLine) {",
+                  "        const data = JSON.parse(dataLine.substring(6));",
+                  "        pm.expect(data.result).to.have.property('capabilities');",
+                  "        pm.expect(data.result).to.have.property('serverInfo');",
+                  "        if (data.result.serverInfo) {",
+                  "            pm.expect(data.result.serverInfo).to.have.property('title');",
+                  "        }",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json, text/event-stream" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 1,\n    \"method\": \"initialize\",\n    \"params\": {\n        \"protocolVersion\": \"2025-06-18\",\n        \"capabilities\": {\n            \"roots\": {\n                \"listChanged\": true\n            },\n            \"sampling\": {},\n            \"elicitation\": {}\n        },\n        \"clientInfo\": {\n            \"name\": \"postman-test-client\",\n            \"title\": \"Postman Test Client\",\n            \"version\": \"1.0.0\"\n        }\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": ["{{baseUrl}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Initialized Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json, text/event-stream" },
+              { "key": "mcp-session-id", "value": "{{mcp_session_id}}" },
+              { "key": "MCP-Protocol-Version", "value": "2025-06-18" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"method\": \"notifications/initialized\",\n    \"params\": {}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": ["{{baseUrl}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Long-Running Tools",
+      "item": [
+        {
+          "name": "Call 'download_file' with Progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json, text/event-stream" },
+              { "key": "mcp-session-id", "value": "{{mcp_session_id}}" },
+              { "key": "MCP-Protocol-Version", "value": "2025-06-18" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 101,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"download_file\",\n        \"arguments\": {\n            \"filename\": \"dataset.zip\",\n            \"size_mb\": 2\n        },\n        \"_meta\": {\n            \"progressToken\": 101\n        }\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": ["{{baseUrl}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Call 'process_data' with Progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json, text/event-stream" },
+              { "key": "mcp-session-id", "value": "{{mcp_session_id}}" },
+              { "key": "MCP-Protocol-Version", "value": "2025-06-18" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jsonrpc\": \"2.0\",\n    \"id\": 102,\n    \"method\": \"tools/call\",\n    \"params\": {\n        \"name\": \"process_data\",\n        \"arguments\": {\n            \"records\": 30\n        },\n        \"_meta\": {\n            \"progressToken\": 102\n        }\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": ["{{baseUrl}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/mcp/",
+      "type": "string"
+    },
+    {
+      "key": "mcp_session_id",
+      "value": ""
+    }
+  ]
+} 

@@ -1,0 +1,127 @@
+{
+  "realm": "mcp-oauth",
+  "displayName": "MCP OAuth Realm - Step 03",
+  "displayNameHtml": "<strong>MCP OAuth</strong> Realm - Step 03",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "rememberMe": true,
+  "verifyEmail": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 3600,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "offlineSessionMaxLifespanEnabled": false,
+  "offlineSessionMaxLifespan": 5184000,
+  
+  "users": [
+    {
+      "username": "mcpuser",
+      "email": "mcpuser@example.com",
+      "firstName": "MCP",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["user", "mcp_reader", "mcp_writer"]
+    }
+  ],
+  
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Standard user role"
+      },
+      {
+        "name": "mcp_reader",
+        "description": "Can read MCP resources"
+      },
+      {
+        "name": "mcp_writer", 
+        "description": "Can write MCP resources"
+      }
+    ]
+  },
+  
+  "clients": [
+    {
+      "clientId": "mcp-demo-client",
+      "name": "MCP Demo Client - Step 03",
+      "description": "Pre-configured client for MCP OAuth flow testing",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "mcp-client-secret-step03",
+      "redirectUris": [
+        "http://localhost:8888/callback", 
+        "http://localhost:3000/callback",
+        "http://127.0.0.1:8888/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:8888", 
+        "http://localhost:3000",
+        "http://127.0.0.1:8888"
+      ],
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true,
+      "defaultClientScopes": ["web-origins", "role_list", "profile", "roles", "email"],
+      "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt", "mcp:read", "mcp:write", "openid"]
+    }
+  ],
+  
+  "clientScopes": [
+    {
+      "name": "openid",
+      "description": "OpenID Connect scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "basic",
+      "description": "Basic authentication scope for OAuth clients",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
+    },
+    {
+      "name": "mcp:read",
+      "description": "Read access to MCP resources",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "Read access to MCP tools and resources"
+      }
+    },
+    {
+      "name": "mcp:write", 
+      "description": "Write access to MCP resources",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "Write access to MCP tools and resources"
+      }
+    }
+  ],
+  
+  "defaultDefaultClientScopes": ["web-origins", "role_list", "profile", "roles", "email"],
+  "defaultOptionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt", "mcp:read", "mcp:write", "openid", "basic"]
+} 

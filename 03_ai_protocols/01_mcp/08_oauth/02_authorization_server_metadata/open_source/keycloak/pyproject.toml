@@ -1,0 +1,11 @@
+[project]
+name = "mcp-oauth-keycloak"
+version = "0.1.0"
+description = "MCP OAuth demonstration with production Keycloak server"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mcp>=1.10.1",
+    "uvicorn>=0.35.0",
+    "httpx>=0.25.0",
+] 

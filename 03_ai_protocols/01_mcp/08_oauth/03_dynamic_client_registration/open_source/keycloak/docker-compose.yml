@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: mcp-keycloak-step03
+    environment:
+      # Database configuration
+      KC_DB: dev-file
+      KC_DB_USERNAME: sa
+      KC_DB_PASSWORD: password
+
+      # Admin credentials
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+
+      # Hostname configuration
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 9000
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+
+      # HTTP configuration (disable HTTPS for local development)
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+
+      # Health and metrics
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_LOG_LEVEL: INFO
+
+    ports:
+      - "9000:8080"
+
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+
+    command:
+      - start-dev
+      - --import-realm
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  keycloak_data:
+    driver: local

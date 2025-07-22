@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "mcp-defining-tools",
+		"name": "MCP Defining Tools",
+		"description": "Test collection for MCP tools implementation - document reader and editor tools",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Initialize Connection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"2025-06-18\",\n    \"capabilities\": {},\n    \"clientInfo\": {\n      \"name\": \"postman-test\",\n      \"version\": \"1.0.0\"\n    }\n  },\n  \"id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. List Available Tools",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains tools\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.have.property('tools');",
+							"});",
+							"",
+							"pm.test(\"Tools array contains expected tools\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const tools = jsonData.result.tools;",
+							"    const toolNames = tools.map(tool => tool.name);",
+							"    pm.expect(toolNames).to.include('read_doc_contents');",
+							"    pm.expect(toolNames).to.include('edit_document');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/list\",\n  \"params\": {},\n  \"id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Read Document Contents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});",
+							"",
+							"pm.test(\"Result contains content\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.have.property('content');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"read_doc_contents\",\n    \"arguments\": {\n      \"doc_id\": \"deposition.md\"\n    }\n  },\n  \"id\": 3\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Edit Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains result\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('result');",
+							"});",
+							"",
+							"pm.test(\"Result contains success message\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result.content).to.include('Successfully updated');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"edit_document\",\n    \"arguments\": {\n      \"doc_id\": \"plan.md\",\n      \"old_str\": \"implementation\",\n      \"new_str\": \"execution\"\n    }\n  },\n  \"id\": 4\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Verify Document Edit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Document was updated\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const content = jsonData.result.content;",
+							"    pm.expect(content).to.include('execution');",
+							"    pm.expect(content).to.not.include('implementation');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"read_doc_contents\",\n    \"arguments\": {\n      \"doc_id\": \"plan.md\"\n    }\n  },\n  \"id\": 5\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Test Error Handling",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response contains error\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('error');",
+							"});",
+							"",
+							"pm.test(\"Error message indicates missing document\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.error.message).to.include('not found');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/event-stream"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"read_doc_contents\",\n    \"arguments\": {\n      \"doc_id\": \"nonexistent.md\"\n    }\n  },\n  \"id\": 6\n}"
+				},
+				"url": {
+					"raw": "{{server_url}}",
+					"host": [
+						"{{server_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server_url",
+			"value": "http://localhost:8000/mcp/",
+			"type": "string"
+		}
+	]
+} 
