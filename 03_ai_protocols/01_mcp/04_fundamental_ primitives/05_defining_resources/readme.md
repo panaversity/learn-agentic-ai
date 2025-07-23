@@ -12,13 +12,34 @@ Resources in MCP servers allow you to expose data to clients, similar to GET req
 | **Documentation Sites** | Docs the AI can navigate | Self-describing with rich metadata |
 | **Database Views** | Queryable data collections | AI-friendly formatting and discovery |
 
-### Key Characteristics of Resources
+## Key Characteristics of Resources
 
 - **Read-only**: Resources provide data, not actions
 - **URI-based**: Accessed through specific URIs with optional parameters
 - **MIME-typed**: Support various content types (JSON, text, images, etc.)
 - **App-controlled**: The application decides when to expose resources
 - **Static or templated**: Can be direct resources or parameterized
+
+Each resource is identified by a unique URI and can contain either text or binary data.
+​
+### Resource URIs
+
+Resources are identified using URIs that follow this format:
+
+[protocol]://[host]/[path]
+
+For example: 
+- file:///home/user/documents/report.pdf
+- postgres://database/customers/schema
+- screen://localhost/display1
+
+The protocol and path structure is defined by the MCP server implementation. Servers can define their own custom URI schemes.
+
+### Resources can contain two types of content:
+​
+1. Text resources contain UTF-8 encoded text data. These are suitable for Source code, Configuration file, JSON/XML data eyc.
+​
+2. Binary resources contain raw binary data encoded in base64. These are suitable for Images, PDFs, Audio files Video files and Other non-text formats
 
 ## How Resources Work?
 
