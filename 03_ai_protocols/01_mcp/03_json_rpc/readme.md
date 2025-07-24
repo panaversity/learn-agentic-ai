@@ -2,6 +2,16 @@
 
 [Specification](https://www.jsonrpc.org/specification)
 
+## Learn by Trying JSON-RPC Requests Online
+
+Interactively explore JSON-RPC by sending requests and observing responses in real time.
+
+Explore and experiment with JSON-RPC requests and responses using this online tool:
+
+[JSON-RPC Playground](https://jsonrpc-playground.onrender.com/)
+
+## What is JSON-RPC 2.0?
+
 JSON-RPC 2.0 is a lightweight and stateless remote procedure call (RPC) protocol that allows for notifications and remote procedure calls in a simple, standardized way. It uses JSON (JavaScript Object Notation) as its data format, making it easy to use with a wide variety of programming languages and platforms. The protocol is transport-agnostic, meaning it can be used over HTTP, WebSockets, or any other message-passing environment.
 
 At its core, JSON-RPC 2.0 defines a set of data structures and the rules for their processing. It's designed for simplicity and is a popular choice for building APIs and distributed systems.

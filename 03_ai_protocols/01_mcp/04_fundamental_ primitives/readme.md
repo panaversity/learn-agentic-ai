@@ -1,13 +1,15 @@
 # Module 4: MCP Fundamental Primitives
 
+> **Master the core building blocks of Model Context Protocol through hands-on coding**  
+> Based on [Anthropic's Introduction to Model Context Protocol Course](https://anthropic.skilljar.com/introduction-to-model-context-protocol)
+
+> **First Read** [Introduction MCP Course Lessons](https://docs.google.com/document/d/1W7Ex0rAK2kMtqTHHHEGwTFu2Wrf-zmQJosifppqF-vQ/)
+
 Model Context Protocol (MCP) is a communication layer for Agents context and tools so you don't have to write a bunch of tedious integration code for each project. Use it to shift the burden of tool definitions and execution away from your server to MCP servers.
 
 - If Github have MCP server and my agent have to manage some GitHub Actions why write them again?
 - Like companies providing APIs now they will likely create MCP implementation.
 - It's Transport agnostic with some caveats- the client and server can communicate over different protocols.
-
-> **Master the core building blocks of Model Context Protocol through hands-on coding**  
-> Based on [Anthropic's Introduction to Model Context Protocol Course](https://anthropic.skilljar.com/introduction-to-model-context-protocol)
 
 ## Overview
 
