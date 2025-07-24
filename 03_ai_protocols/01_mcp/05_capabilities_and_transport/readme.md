@@ -5,6 +5,9 @@ A hands-on, curiosity-driven journey through advanced MCP features and Streamabl
 > **Master advanced MCP features and communication protocols for production-ready applications**  
 > Based on [Anthropic's Advanced MCP Topics Course](https://anthropic.skilljar.com/model-context-protocol-advanced-topics)
 
+> **First Read** [Advanced MCP Course Lessons](https://docs.google.com/document/d/1mvWO9NzzomRea_uJuKHEoiyswGVJTpkuQqjUBGalptE/)
+
+
 ## 🎯 Module Overview
 
 This module covers the advanced capabilities that make MCP powerful for production applications: **Sampling**, **Logging & Progress Notifications**, **Roots**, and **Transport Protocols**. You'll learn how to build MCP servers that can delegate reasoning to clients, provide real-time feedback, discover context, and communicate efficiently.
