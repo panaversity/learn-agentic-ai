@@ -124,3 +124,94 @@ Here are some examples of JSON-RPC 2.0 in action:
 
 Method names that start with `rpc.` are reserved for system extensions and should not be used for anything else.
 
+
+---
+
+## **Why JSON-RPC for Model Context Protocol (MCP), not REST?**
+
+**Model Context Protocol (MCP)** chooses **JSON-RPC** over REST for several technical and strategic reasons. Understanding this will also give you an edge in designing or integrating agent frameworks!
+
+---
+
+### **1. Agent/Model Operations Need More Than REST’s CRUD**
+
+REST is built around CRUD (Create, Read, Update, Delete), mapping HTTP verbs (`GET`, `POST`, `PUT`, `DELETE`) to resources. But LLM/Agent orchestration protocols like MCP need something different:
+
+* **Procedural/Command-like Interactions:**
+  MCP sessions involve rich operations—start, cancel, resume, stream, call tool, manage prompt state, etc.—that don’t map neatly to CRUD.
+
+**JSON-RPC** is designed for *remote procedure calls* (Calling a function on another computer, as if it was a local function in your code.) — “Do this specific thing for me and return the result”—making it a natural fit.
+
+---
+
+### **2. Multiplexing & Streaming Support**
+
+* **Multiple calls on the same connection:**
+  JSON-RPC is naturally suited to protocols that need to keep an open channel (e.g., WebSocket, HTTP/2, SSE) and send multiple commands and responses in real-time. REST (over HTTP 1.1) usually opens a new connection/request per action.
+* **Streaming & Notifications:**
+  With agents, you might want progress updates, partial results, or server-initiated messages (notifications).
+  JSON-RPC supports *notifications* (one-way messages), which is not idiomatic in REST.
+
+---
+
+### **3. Explicit Method Names and Structured Requests**
+
+* **In REST, the endpoint and verb define the operation.**
+  In JSON-RPC, you get `{"method": "tools/call", ...}`—the action is explicit and discoverable, not hidden in URL/HTTP verb combos.
+* **Easy to extend:**
+  Adding new capabilities (new methods) doesn’t require inventing new URLs or overloading HTTP semantics.
+
+---
+
+### **4. Stateless vs. Stateful Workflows**
+
+* **MCP can run stateful workflows** (sessions, resumption, tool resources, etc.), which benefit from a protocol that can express both state changes and direct procedure invocations.
+* REST is best for stateless, resource-centric operations.
+
+  ##### How can MCP do stateful things if JSON-RPC is stateless?
+  * The “state” is maintained by the server (or agent), not the protocol.
+
+  * MCP uses things like session_id, context_id, or other tokens/IDs to let the server keep track of ongoing workflows or conversations.
+
+  * Each JSON-RPC call includes the necessary information (like the session/context) so the server knows which workflow or conversation it’s handling.
+
+---
+
+### **5. Strong Error Handling**
+
+* **JSON-RPC defines a standard, structured error response** (`error` with code, message, data) for every request.
+* REST error handling is less standardized and can be messy (status codes + arbitrary payloads).
+
+---
+
+### **6. Ecosystem and Alignment with IDE Protocols**
+
+* **LLM agents and tools are inspired by language servers, debuggers, IDE plugins, etc.—many of which use JSON-RPC.**
+* Examples: LSP (Language Server Protocol), Debug Adapter Protocol—both JSON-RPC-based!
+
+---
+
+### **Summary Table**
+
+| Feature        | REST                     | JSON-RPC (used by MCP)        |
+| -------------- | ------------------------ | ----------------------------- |
+| Paradigm       | Resource/CRUD            | Remote Procedure Call (RPC)   |
+| Operations     | Limited to HTTP verbs    | Arbitrary named methods       |
+| Streaming      | Tricky, non-standard     | Native via WebSocket/SSE      |
+| Multiplexing   | New HTTP req for each op | Multiple in single connection |
+| Notifications  | Not idiomatic            | Built-in                      |
+| Error Handling | Varies, not standardized | Structured, part of protocol  |
+| Statefulness   | Stateless best practice  | Can support sessions/state    |
+| Extensibility  | Needs URL/method changes | Just add new methods          |
+
+---
+
+### **Forward-Looking Take:**
+
+Protocols like MCP are designed for the **future of AI orchestration**, not just simple CRUD APIs. They need:
+
+* Fine-grained control over model context and tools,
+* Real-time interactivity and notifications,
+* Consistency and extensibility.
+
+**JSON-RPC is purpose-built for these requirements**, making it a far better fit than REST for advanced agent/model protocols. If you're planning to design LLM-based systems or integrate AI agents at scale, understanding and leveraging these design choices puts you way ahead!
