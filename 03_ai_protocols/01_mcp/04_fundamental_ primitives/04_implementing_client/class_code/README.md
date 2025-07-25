@@ -168,7 +168,7 @@ After completing this project, students will understand:
 ## 🔗 Additional Resources
 
 - [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
-- [MCP Python SDK]([https://github.com/modelcontextprotocol/python-client](https://github.com/modelcontextprotocol/python-sdk))
+- [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 
 ## 📝 Notes
