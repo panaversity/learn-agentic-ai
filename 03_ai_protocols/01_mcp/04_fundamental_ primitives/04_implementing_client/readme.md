@@ -1,5 +1,6 @@
 # 04: Implementing a Client
 
+[Class-04 Code: Model Context Protocol - Implementing Core MCP Client](./class_code/)
 
 The MCP client abstracts away the complexity of server communication, letting you focus on your application logic while still getting access to powerful external tools and data sources.
 

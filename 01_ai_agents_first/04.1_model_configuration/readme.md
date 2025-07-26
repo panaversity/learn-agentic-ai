@@ -1,27 +1,11 @@
-🚀 **[Open in Google Colab](https://colab.research.google.com/drive/1T3JPcpC7B7_ASDFLifLwwDH0Ikgc68Am?usp=sharing)**
-# OpenAI Agents using Google Gemini Model
-
-https://openai.github.io/openai-agents-python/
-
-https://openai.github.io/openai-agents-python/models/
-
-https://ai.google.dev/gemini-api/docs/openai
-
-
-Create a .env file with your gemini key
-    
-    
-    uv init hello_agent
-
-    cd hello_agent
-
-    uv add openai-agents python-dotenv
-
-    uv run main.py
-
-## How to configure LLM Providers (Other than OpenAI) at different levels (Global, Run and Agent)?
+# [How to configure LLM Providers at different levels (Global, Run and Agent)](https://colab.research.google.com/drive/1nWQny-AxpqQB3HGkyFLBCuai3G4igx6X?usp=sharing)?
 
 Agents SDK is setup to use OpenAI as default providers. When using other providers you can setup at different levels:
+1. Agent Level
+2. RUN LEVEL
+3. Global Level
+
+We will always your Agent Level Configuration so each agent can use the LLM best fit for it.
 
 ### 1. AGENT LEVEL
 
