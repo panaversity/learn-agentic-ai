@@ -31,7 +31,7 @@ And to install packages in project
 
 To add a dependency:
 
-    uv add crewai
+    uv add openai-agents
 
 
 
