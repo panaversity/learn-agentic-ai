@@ -46,22 +46,36 @@ class GenericRAGPreprocessor:
         """Chunk text for embeddings, preserving meaning."""
         if len(text) <= max_chunk_size:
             return [text]
+
         chunks = []
         start = 0
-        while start < len(text):
+        iteration_count = 0
+        max_iterations = len(text) // (max_chunk_size - overlap) + 10  # Safety limit
+
+        while start < len(text) and iteration_count < max_iterations:
+            iteration_count += 1
             end = min(start + max_chunk_size, len(text))
+
             # Try to break at a sentence boundary
             if end < len(text):
                 for i in range(end, start, -1):
                     if text[i - 1] in ".!?":
                         end = i
                         break
+
             chunk = text[start:end].strip()
             if chunk:
                 chunks.append(chunk)
+
             start = end - overlap
             if start >= len(text):
                 break
+
+        if iteration_count >= max_iterations:
+            logger.warning(
+                f"Reached maximum iterations in chunking for text of length {len(text)}"
+            )
+
         return chunks
 
     async def process_all_files(self) -> List[Dict[str, Any]]:
@@ -71,52 +85,107 @@ class GenericRAGPreprocessor:
         processed = []
         for file_path in tqdm(files, desc="Processing files"):
             try:
+                logger.info(f"Starting to process {file_path.name}")
                 async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
                     content = await f.read()
-                    item = json.loads(content)
-                    # Try to get the main text field
-                    text = (
-                        item.get("content")
-                        or item.get("text")
-                        or item.get("markdown")
-                        or ""
-                    )
-                    text = self.clean_text(text)
-                    if not text:
-                        continue
-                    # Chunk if needed
-                    if len(text) > 1000:
-                        chunks = self.smart_chunk_text(text)
-                        for i, chunk in enumerate(chunks):
+                    logger.info(f"Read {len(content)} characters from {file_path.name}")
+
+                    data = json.loads(content)
+                    logger.info(f"Successfully parsed JSON from {file_path.name}")
+
+                    # Handle both single objects and arrays of objects
+                    items = []
+                    if isinstance(data, list):
+                        items = data
+                        logger.info(
+                            f"Processing {len(items)} items from array in {file_path.name}"
+                        )
+                    else:
+                        items = [data]
+                        logger.info(f"Processing single item from {file_path.name}")
+
+                    for item_index, item in enumerate(items):
+                        logger.info(
+                            f"Processing item {item_index + 1}/{len(items)} from {file_path.name}"
+                        )
+
+                        # Try to get the main text field
+                        text = (
+                            item.get("content")
+                            or item.get("text")
+                            or item.get("markdown")
+                            or ""
+                        )
+                        logger.info(
+                            f"Extracted {len(text)} characters of text from item {item_index}"
+                        )
+
+                        text = self.clean_text(text)
+                        logger.info(f"After cleaning: {len(text)} characters")
+
+                        if not text:
+                            logger.info(f"Skipping item {item_index} - no text content")
+                            continue
+
+                        # Create a unique ID for this item
+                        if isinstance(data, list):
+                            item_id = f"{file_path.stem}_item_{item_index}"
+                        else:
+                            item_id = file_path.stem
+
+                        # Chunk if needed
+                        if len(text) > 1000:
+                            logger.info(
+                                f"Chunking text of length {len(text)} for {item_id}"
+                            )
+                            chunks = self.smart_chunk_text(text)
+                            logger.info(f"Created {len(chunks)} chunks")
+
+                            for i, chunk in enumerate(chunks):
+                                processed.append(
+                                    {
+                                        "id": f"{item_id}_chunk_{i}",
+                                        "title": item.get("title", f"Chunk {i}"),
+                                        "content": chunk,
+                                        "metadata": {
+                                            "source_file": str(file_path),
+                                            "item_index": item_index,
+                                            "chunk_index": i,
+                                            "total_chunks": len(chunks),
+                                            "original_url": item.get("url", ""),
+                                            "processed_at": datetime.now().isoformat(),
+                                        },
+                                    }
+                                )
+                        else:
+                            logger.info(
+                                f"Adding single item {item_id} with {len(text)} characters"
+                            )
                             processed.append(
                                 {
-                                    "id": f"{file_path.stem}_chunk_{i}",
-                                    "title": item.get("title", f"Chunk {i}"),
-                                    "content": chunk,
+                                    "id": item_id,
+                                    "title": item.get("title", item_id),
+                                    "content": text,
                                     "metadata": {
                                         "source_file": str(file_path),
-                                        "chunk_index": i,
-                                        "total_chunks": len(chunks),
+                                        "item_index": item_index,
                                         "original_url": item.get("url", ""),
                                         "processed_at": datetime.now().isoformat(),
                                     },
                                 }
                             )
-                    else:
-                        processed.append(
-                            {
-                                "id": file_path.stem,
-                                "title": item.get("title", file_path.stem),
-                                "content": text,
-                                "metadata": {
-                                    "source_file": str(file_path),
-                                    "original_url": item.get("url", ""),
-                                    "processed_at": datetime.now().isoformat(),
-                                },
-                            }
+
+                        logger.info(
+                            f"Completed processing item {item_index + 1}/{len(items)} from {file_path.name}"
                         )
+
+                    logger.info(f"Completed processing {file_path.name}")
+
             except Exception as e:
                 logger.error(f"Error processing {file_path}: {e}")
+                import traceback
+
+                logger.error(f"Traceback: {traceback.format_exc()}")
         return processed
 
     async def run(self):
