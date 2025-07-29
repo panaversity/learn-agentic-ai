@@ -1,4 +1,4 @@
-### 🌟 What is OpenAI Agents SDK?
+### 🌟 [What is OpenAI Agents SDK?](https://openai.github.io/openai-agents-python/)
 
 Imagine you want to build a **smart assistant**—like a chatbot or an AI agent—that can:
 
