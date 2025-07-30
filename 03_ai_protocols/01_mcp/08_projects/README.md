@@ -1,4 +1,4 @@
-# 05: MCP Projects
+# 08: MCP Projects
 
 **Objective:** Apply the knowledge gained from the previous sections to build practical, real-world projects that solve complex problems using the Model Context Protocol.
 

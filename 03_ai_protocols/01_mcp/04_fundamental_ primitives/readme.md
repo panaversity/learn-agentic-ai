@@ -56,8 +56,8 @@ By the end of this module, you will be able to:
 
 - [03_defining_tools](./03_defining_tools/readme.md) - Creating tools with decorators and type hints
 - [04_implementing_client](./04_implementing_client/readme.md) - For mcp tools create a simple client.
-- [05_defining_resources.md](05_defining_resources.md) - Creating read-only data resources
-- [06. Working with Prompts](06_working_with_prompts.md) - Building pre-crafted prompts for common workflows
+- [05_defining_resources.md](05_defining_resources/readme.md) - Creating read-only data resources
+- [06. Working with Prompts](06_working_with_prompts/readme.md) - Building pre-crafted prompts for common workflows
 
 ## MCP Core Primitives
 
