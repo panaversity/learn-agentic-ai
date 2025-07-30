@@ -1,0 +1,1 @@
+These are extra stateful capabilities - we don't have to cover them for June 2025 MCP Specification. These can be considered if needed for a project or in future spec updates after evaluation.
