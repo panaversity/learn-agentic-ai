@@ -2,7 +2,7 @@ from typing import Dict, Optional, Any
 import os
 from datetime import datetime, timedelta
 import jwt
-from dotenv import load_load_dotenv
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -82,3 +82,10 @@ Please log in to continue:
 
 Your session will be valid for 24 hours.
 """ 
+async def main():
+    auth_config = await auth_middleware()
+    print(auth_config)
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
