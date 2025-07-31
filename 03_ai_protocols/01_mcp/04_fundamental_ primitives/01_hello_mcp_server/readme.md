@@ -22,8 +22,6 @@ This serves as the "Hello, World!" for MCP development. It provides the simplest
 
 -   **`FastMCP` Server:** A Python library that handles the low-level details of the MCP `2025-06-18` specification.
 -   **Stateless HTTP Transport (`stateless_http=True`):** A convenience mode in `FastMCP` where the server treats every request as a new, independent interaction. It handles and then immediately forgets the session, which is perfect for learning the basic request-response pattern without managing persistent state.
--   **`@mcp.tool()` Decorator:** The primary mechanism in `FastMCP` for exposing a Python function as a tool that AI agents can discover and call.
--   **`initialize`:** The mandatory first request in any MCP interaction. Even though our server is in stateless mode, a compliant client **MUST** always send this first, followed by `notifications/initialized`.
 
 ## Implementation Plan
 

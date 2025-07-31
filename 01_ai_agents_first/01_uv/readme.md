@@ -1,5 +1,7 @@
 # Python UV
 
+[How to install UV - Notion Guide?](https://www.notion.so/UV-Installation-236e9749823180b7ab82d96a3b5997fd?source=copy_link)
+
 [Python UV: The Ultimate Guide to the Fastest Python Package Manager](https://www.datacamp.com/tutorial/python-uv)
 
 [Official Docs](https://docs.astral.sh/uv/)
@@ -29,7 +31,7 @@ And to install packages in project
 
 To add a dependency:
 
-    uv add crewai
+    uv add openai-agents
 
 
 

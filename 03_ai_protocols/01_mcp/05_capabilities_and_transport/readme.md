@@ -7,6 +7,7 @@ A hands-on, curiosity-driven journey through advanced MCP features and Streamabl
 
 > **First Read** [Advanced MCP Course Lessons](https://docs.google.com/document/d/1mvWO9NzzomRea_uJuKHEoiyswGVJTpkuQqjUBGalptE/)
 
+> See [MCP 2025-06-18 Specification Schema](./mcp_schema_2025-06-18/schema.ts)
 
 ## 🎯 Module Overview
 

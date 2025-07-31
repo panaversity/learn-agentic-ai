@@ -19,14 +19,14 @@ The primary goal here is to show an `Agent` being initialized with an `MCPServer
 
 ### 1. Run the Shared MCP Server
 
-For this and subsequent examples in module `07_openai_agents_sdk_integration`, we will use a shared, standalone MCP server. This server is designed to be simple and provide a consistent target for our agent examples.
+For this and subsequent examples in module `06_openai_agents_sdk_integration`, we will use a shared, standalone MCP server. This server is designed to be simple and provide a consistent target for our agent examples.
 
-- **Location:** `05_ai_protocols/01_mcp/07_openai_agents_sdk_integration/shared_mcp_server/server.py`
+- **Location:** `05_ai_protocols/01_mcp/06_openai_agents_sdk_integration/shared_mcp_server/server.py`
 - **To Run:**
   1.  Open a new terminal.
   2.  Navigate to the `shared_mcp_server` directory:
   ```bash
-  cd 05_ai_protocols/01_mcp/07_openai_agents_sdk_integration/shared_mcp_server/
+  cd 05_ai_protocols/01_mcp/06_openai_agents_sdk_integration/shared_mcp_server/
   ```
   3.  Execute the server script (using `uv run`):
       ```bash
