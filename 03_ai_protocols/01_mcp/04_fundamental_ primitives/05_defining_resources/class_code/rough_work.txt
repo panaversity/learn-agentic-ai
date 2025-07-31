@@ -1,0 +1,49 @@
+scheme://host/endpoint
+URI = 
+TLDName: panaversity.org
+host: localhost or panaversity.org
+IP: 127.0.0.1
+
+http://panaversity.org/courses/?   
+
+http://127.0.0.1:8000/courses/?
+
+http://localhost:8000/courses/?
+
+docs://documents    > in memory / CMS
+binary://logo       > audio / pdf / images
+db://pana           > database / database api  
+file://C:\path\to\file.txt > file system
+s3://bucket-name/path/to/file.txt > AWS S3 storage
+google://drive/path/to/file.txt > Google Drive storage
+screen://capture > screen capture
+queue://task > message queue
+cache://key > cache storage
+ftp://user:password@host:port/path/to/file.txt > FTP server
+archive://path/to/archive.zip > archive file
+blob://container-name/blob-name > Azure Blob Storage
+config://path/to/config.json > configuration file
+docker://container-name > Docker container
+event://event-name > event bus
+git://repository-url > Git repository
+http://api.example.com/resource > REST API
+ipfs://Qm... > IPFS resource
+json://path/to/data.json > JSON data
+kafka://topic-name > Kafka topic
+local://path/to/local/resource > local resource
+mqtt://broker-url/topic > MQTT topic
+oauth://provider > OAuth provider
+proxy://host:port > proxy server
+query://param1=value1&param2=value2 > query parameters
+sql://username:password@host:port/database > SQL database
+tcp://host:port > TCP connection
+url://path/to/resource > generic URL
+video://path/to/video.mp4 > video file
+websocket://host:port > WebSocket connection
+xml://path/to/data.xml > XML data
+yaml://path/to/data.yaml > YAML data
+zip://path/to/archive.zip > ZIP archive
+
+
+
+[\n  "intro",\n  "readme",\n  guide"\n]')]

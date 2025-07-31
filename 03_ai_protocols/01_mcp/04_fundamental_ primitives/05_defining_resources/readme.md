@@ -1,5 +1,7 @@
 # 05. Working with Resources
 
+[Class-05: Model Context Protocol - Defining Resources and MCP Client](./class_code/)
+
 Resources in MCP servers allow you to expose data to clients, similar to GET request handlers in a typical HTTP server. They're perfect for scenarios where you need to fetch information rather than perform actions.
 
 ### 🏗️ MCP Resources vs. What You Know
