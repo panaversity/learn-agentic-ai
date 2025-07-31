@@ -23,8 +23,6 @@ mcp_client/
 ├── server.py            # FastMCP server with resources
 ├── rough_work.txt       # URI schemes and resource patterns
 ├── pyproject.toml       # Project dependencies
-├── data.txt             # Sample data file
-├── out.txt              # Output file
 └── README.md            # This file
 ```
 
@@ -113,7 +111,7 @@ async def read_resources(self, uri: str) -> types.ReadResourceResult:
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd mcp_client
+   cd /learn-agentic-ai/03_ai_protocols/01_mcp/04_fundamental_ 20primitives/05_defining_resources/class_code
    ```
 
 2. **Install dependencies:**
@@ -131,10 +129,10 @@ async def read_resources(self, uri: str) -> types.ReadResourceResult:
 
    ```bash
    # Start MCP Server (in one terminal)
-   python server.py
+   uv run uvicorn server:mcp_server --reload
    
    # Run Enhanced MCP Client (in another terminal)
-   python client.py
+   uv run client.py
    ```
 
 ## 📚 Dependencies
