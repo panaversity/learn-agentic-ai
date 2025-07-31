@@ -25,7 +25,7 @@ These two layers allow for both a broad view of the system's execution (through 
 
 ## Run LifeCycle in the OpenAI Agents SDK
 
-In the SDK, the **run lifecycle** is managed through **RunHooks**. These hooks allow you to observe and control events that occur across the entire run of one or more agents. They include callbacks for when an agent starts or ends, when a tool is about to run, and when control is handed off between agents. You can add callbacks on these (lifecycle events)[https://openai.github.io/openai-agents-python/ref/lifecycle/#agents.lifecycle.RunHooks] in an agent run:
+In the SDK, the **run lifecycle** is managed through **RunHooks**. These hooks allow you to observe and control events that occur across the entire run of one or more agents. They include callbacks for when an agent starts or ends, when a tool is about to run, and when control is handed off between agents. You can add callbacks on these [lifecycle events](https://openai.github.io/openai-agents-python/ref/lifecycle/#agents.lifecycle.RunHooks) in an agent run:
 
 1. **on_agent_start async:** Called before the agent is invoked. Called each time the current agent changes.
 2. **on_agent_end async:** Called when the agent produces a final output.
