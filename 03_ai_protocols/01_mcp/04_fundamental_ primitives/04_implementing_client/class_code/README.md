@@ -109,8 +109,8 @@ class MCPClient:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd mcp_client
+    git clone <repository-url>
+    cd /learn-agentic-ai/03_ai_protocols/01_mcp/04_fundamental_ 20primitives/04_implementing_client/class_code
    ```
 
 2. **Install dependencies:**
