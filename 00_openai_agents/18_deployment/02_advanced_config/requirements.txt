@@ -1,0 +1,6 @@
+dataclasses==0.8
+google-genai==1.27.0
+openai==1.97.1
+python-dotenv==1.1.1
+chainlit==2.6.3
+openai-agents==0.2.4
