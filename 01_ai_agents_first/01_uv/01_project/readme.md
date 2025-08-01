@@ -4,7 +4,7 @@
 
     uv help
 
-    uv init --package explore-uv
+    uv init explore-uv
 
 This command sets up a project structured for packaging, placing your code inside a src directory, aligning with best practices for Python project structures.
 
