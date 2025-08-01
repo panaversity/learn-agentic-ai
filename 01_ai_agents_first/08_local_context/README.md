@@ -1,5 +1,3 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1P3CCDLdmTLXZjsRCC7TQlHKsHj8KXK6t?usp=sharing)
-
 # Context Management
 
 Context management in the OpenAI Agents SDK refers to handling additional data that your code can use during an agent’s execution. This “context” comes in two main forms:
