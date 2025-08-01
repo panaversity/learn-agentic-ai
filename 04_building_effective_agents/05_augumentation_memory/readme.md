@@ -6,10 +6,7 @@ This step is designed to take you from the fundamentals of agentic memory to han
 
 Goal: Understand the core concepts and vocabulary of memory in AI systems i.e: Short Term Memory, Long Term Memoery (different types i.e: semantic, procedural, episodic)
 
-Resources:
-- [Overview of AI Agent Memory](https://www.ibm.com/think/topics/ai-agent-memory)
-- [Introduction to Agent Memory](https://www.deeplearning.ai/short-courses/long-term-agentic-memory-with-langgraph/) (only first lesson):
-- [Agentic Design Patterns - Reflection](https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection/)
+
 
 ## Step 2: Get Hands on Memory Augmentation
 
