@@ -9,6 +9,7 @@ Goal: Understand the core concepts and vocabulary of memory in AI systems i.e: S
 Resources:
 - [Overview of AI Agent Memory](https://www.ibm.com/think/topics/ai-agent-memory)
 - [Introduction to Agent Memory](https://www.deeplearning.ai/short-courses/long-term-agentic-memory-with-langgraph/) (only first lesson):
+- [Agentic Design Patterns - Reflection](https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection/)
 
 ## Step 2: Get Hands on Memory Augmentation
 
@@ -26,6 +27,10 @@ Goal: Build and interact with a real, graph-based memory system using Graphiti.
 
 4. BreakDown how Graphiti Works - Documentation
 - https://help.getzep.com/graphiti/getting-started/welcome
+
+5. Implement [OpenAI Agents SDK built-in session memory](https://openai.github.io/openai-agents-python/sessions/) and customize to manage tasks context.
+
+6. Connect MCP server to OpenAI Agents sDK and [Implement Reflect Design Pattern](https://www.deeplearning.ai/the-batch/agentic-design-patterns-part-2-reflection/)
 
 ## Step 3: Adopt a Researcher's Mindset
 Current Work on Memory is too early and will evolve a lot. 
