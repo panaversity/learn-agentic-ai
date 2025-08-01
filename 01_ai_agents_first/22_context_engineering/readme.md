@@ -1,6 +1,8 @@
 # Context Engineering
 
-https://blog.langchain.com/the-rise-of-context-engineering/
+[Rise of Context Engineering](https://blog.langchain.com/the-rise-of-context-engineering/)
+
+[How to Fix Your Context](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html)
 
 https://contextengineer.org/
 
