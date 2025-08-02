@@ -117,7 +117,7 @@ DEFAULT_EMBEDDER_MODEL=embedding-001
 
 ```bash
 # In the graphiti_mcp_server directory
-uv run python server.py
+uv run python mcp_server.py
 ```
 
 Success message: `"Graphiti client initialized successfully"`
