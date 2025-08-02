@@ -2,7 +2,6 @@
 
 https://www.anthropic.com/engineering/building-effective-agents
 
-
 The Anthropic article on "Building Effective Agents" is highly significant for the field of agentic AI because it provides a clear and practical framework for designing and building capable and reliable AI agents. It shifts the focus from complex, monolithic "do-everything" agents to a more modular and understandable approach based on composable patterns. This is a crucial step in moving agentic AI from a research concept to a practical engineering discipline. 
 
 ### **Key Contributions and Importance**
@@ -39,3 +38,14 @@ The principles and patterns outlined in the Anthropic article are important for 
 * **A Shift Towards Engineering Discipline:** This work helps to move the field of agentic AI from a purely research-oriented endeavor to a more structured engineering discipline with established best practices and design patterns.
 
 In conclusion, the Anthropic article provides a foundational guide for anyone looking to build effective and practical AI agents. Its emphasis on simplicity, modularity, and clear design patterns is a significant contribution to the field and will likely influence the development of agentic AI for years to come.
+
+## Research & Important Book Sections: Building Agentic AI Systems 
+
+1. Chapter 2: Principles of Agentic Systems[Full Chapter] (28-49)
+
+2. Chapter 3: Reasoning in intelligent Agents [This Sectio Onlyn] (57-60)
+
+With above chapter read: 
+- [Researchers improve multi-agent systems by studying how they tend to fail](https://www.deeplearning.ai/the-batch/researchers-improve-multi-agent-systems-by-studying-how-they-tend-to-fail/?utm_campaign=The%20Batch&utm_content=339887220&utm_medium=social&utm_source=twitter&hss_channel=tw-992153930095251456)
+- [How we built our multi-agent research system](https://www.anthropic.com/engineering/built-multi-agent-research-system)
+
