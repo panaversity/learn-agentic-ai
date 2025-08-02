@@ -1,0 +1,501 @@
+{
+    "info": {
+        "_postman_id": "graphiti-mcp-server",
+        "name": "Graphiti MCP Server",
+        "description": "Test collection for Graphiti MCP Server - temporal knowledge graph memory tools",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. List Available Tools",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains tools\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result).to.have.property('tools');",
+                            "});",
+                            "",
+                            "pm.test(\"Tools array contains memory tools\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    const tools = jsonData.result.tools;",
+                            "    const toolNames = tools.map(tool => tool.name);",
+                            "    pm.expect(toolNames).to.include('add_memory');",
+                            "    pm.expect(toolNames).to.include('search_memory_nodes');",
+                            "    pm.expect(toolNames).to.include('search_memory_facts');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/list\",\n  \"params\": {},\n  \"id\": 1\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "2. Add Memory - Text Episode",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains result\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('result');",
+                            "});",
+                            "",
+                            "pm.test(\"Memory addition successful\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('queued for processing');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"add_memory\",\n    \"arguments\": {\n      \"name\": \"Company Meeting\",\n      \"episode_body\": \"Alice mentioned she loves Italian food and works at Google as a software engineer. She has been there for 3 years and enjoys her work.\",\n      \"source\": \"text\",\n      \"source_description\": \"team meeting notes\",\n      \"group_id\": \"default\"\n    }\n  },\n  \"id\": 2\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "3. Add Memory - JSON Episode",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"JSON memory addition successful\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('queued for processing');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"add_memory\",\n    \"arguments\": {\n      \"name\": \"Customer Profile\",\n      \"episode_body\": \"{\\\"customer\\\": {\\\"name\\\": \\\"Bob Smith\\\", \\\"company\\\": \\\"Acme Corp\\\"}, \\\"preferences\\\": [\\\"coffee\\\", \\\"early meetings\\\"], \\\"projects\\\": [{\\\"name\\\": \\\"Website Redesign\\\", \\\"status\\\": \\\"active\\\"}]}\",\n      \"source\": \"json\",\n      \"source_description\": \"CRM data\",\n      \"group_id\": \"default\"\n    }\n  },\n  \"id\": 3\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "4. Search Memory Nodes",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Search returns nodes\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('nodes');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"search_memory_nodes\",\n    \"arguments\": {\n      \"query\": \"food preferences\",\n      \"group_ids\": [\"default\"],\n      \"max_nodes\": 5\n    }\n  },\n  \"id\": 4\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "5. Search Memory Facts",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Search returns facts\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('facts');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"search_memory_facts\",\n    \"arguments\": {\n      \"query\": \"Alice works at Google\",\n      \"group_ids\": [\"default\"],\n      \"max_facts\": 5\n    }\n  },\n  \"id\": 5\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "6. Get Recent Episodes",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Episodes retrieved\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('episodes');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_episodes\",\n    \"arguments\": {\n      \"group_id\": \"default\",\n      \"last_n\": 5\n    }\n  },\n  \"id\": 6\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "7. Add Message Episode",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Message episode added\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('queued for processing');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"add_memory\",\n    \"arguments\": {\n      \"name\": \"Customer Support Chat\",\n      \"episode_body\": \"user: What's your return policy?\\nassistant: You can return items within 30 days with receipt.\\nuser: What about online purchases?\\nassistant: Online purchases can be returned within 30 days, and we provide a prepaid return label.\",\n      \"source\": \"message\",\n      \"source_description\": \"customer support conversation\",\n      \"group_id\": \"default\"\n    }\n  },\n  \"id\": 7\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "8. Search for Return Policy",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Policy facts found\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('facts');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"search_memory_facts\",\n    \"arguments\": {\n      \"query\": \"return policy 30 days\",\n      \"group_ids\": [\"default\"],\n      \"max_facts\": 10\n    }\n  },\n  \"id\": 8\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "9. Search Nodes by Entity Type",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Entity-filtered search works\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('nodes');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"search_memory_nodes\",\n    \"arguments\": {\n      \"query\": \"food coffee preferences\",\n      \"group_ids\": [\"default\"],\n      \"max_nodes\": 5,\n      \"entity\": \"Preference\"\n    }\n  },\n  \"id\": 10\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "10. Clear Graph (Use with Caution)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Graph cleared successfully\", function () {",
+                            "    const jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.result.content[0].text).to.include('cleared successfully');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json, text/event-stream"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"clear_graph\",\n    \"arguments\": {}\n  },\n  \"id\": 11\n}"
+                },
+                "url": {
+                    "raw": "{{server_url}}",
+                    "host": [
+                        "{{server_url}}"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "server_url",
+            "value": "http://localhost:8000/mcp/",
+            "type": "string"
+        }
+    ]
+}

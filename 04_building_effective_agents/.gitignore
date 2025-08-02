@@ -1,0 +1,8 @@
+.venv
+.env
+.mypy_cache
+__pycache__
+.pytest_cache
+cc-ca.crt
+certs/*.pem
+.DS_Store

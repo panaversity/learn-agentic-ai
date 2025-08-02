@@ -1,0 +1,11 @@
+[project]
+name = "graphiti-mcp-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "graphiti-core[google-genai]>=0.18.2",
+    "mcp>=1.12.3",
+    "openai-agents>=0.2.4",
+]
