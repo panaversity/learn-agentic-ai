@@ -1,4 +1,4 @@
-# Step 4: From Temporal KG Theory to Practice with Graphiti
+# Step 5: From Temporal KG Theory to Practice with [Graphiti](https://help.getzep.com/graphiti/getting-started/overview)
 
 ## The Journey So Far
 
@@ -20,11 +20,13 @@ You now understand that temporal knowledge graphs are powerful for agent memory.
 
 **What if all this complexity could be hidden behind simple tools?**
 
-## The Solution: Graphiti MCP Server
+## The Solution: [Graphiti - Knowledge Graph Memory for an Agentic World](https://neo4j.com/blog/developer/graphiti-knowledge-graph-memory/)
 
-Graphiti is a framework that turns temporal knowledge graph theory into practical tools. It provides an MCP (Model Context Protocol) server that gives agents simple commands to work with sophisticated temporal memory.
+[What is Graphiti](https://help.getzep.com/graphiti/getting-started/overview)? Well it is a framework that turns temporal knowledge graph theory into practical tools. It provides an MCP (Model Context Protocol) server that gives agents simple commands to work with sophisticated temporal memory.
 
-### What Graphiti Does
+Graphiti have shipped an MCP Server for Agentic Applications.
+
+### What [Graphiti MCP Server](https://help.getzep.com/graphiti/getting-started/mcp-server) Does
 
 Graphiti implements everything you learned in Steps 1-3:
 - **Temporal knowledge graphs** (Step 3 concepts)
@@ -32,6 +34,8 @@ Graphiti implements everything you learned in Steps 1-3:
 - **Different memory types** (Step 1 foundations)
 
 All wrapped in simple tools that any agent can use.
+
+> Note: The MCP server here is derived from original graphitic server to use Stateless Streamalble HTTP Transport and gemini as llm and embeddings provider.
 
 ## The Simple Tools: Turning Complexity into Simplicity
 
@@ -84,7 +88,7 @@ When you call `add_episode("Alice works at Google and loves Italian food")`:
 
 ## Hands-On: See Temporal Memory in Action
 
-Let's set up Graphiti and watch temporal knowledge graphs work in real-time.
+Let's [set up Graphiti MCP Server](https://help.getzep.com/graphiti/getting-started/mcp-server) and watch temporal knowledge graphs work in real-time.
 
 ### Setup Requirements
 
@@ -122,14 +126,30 @@ uv run python mcp_server.py
 
 Success message: `"Graphiti client initialized successfully"`
 
-### Step 4: Test with Postman
+### Step 4: Test the MCP Server
 
-Use the provided Postman collection to try the tools:
+You can test the Graphiti MCP server using either:
 
-1. **Add an episode**:
+**Option A: Python Client**
+Use the provided `python_client.py` with httpx:
 
-2. **Search for facts**:
+```bash
+# Run the Python examples
+uv run python python_client.py
+```
 
+The Python client demonstrates:
+- Adding episodes (text, JSON)
+- Searching for facts and relationships
+- Finding entities and their summaries
+- Retrieving recent memories
+
+**Option B: Postman Collection**
+Use the provided `postman.json` collection to try the tools manually:
+
+1. **Add an episode**: Store information in the knowledge graph
+2. **Search for facts**: Query relationships between entities
+3. Try all other Tools
 
 ### Step 5: Visualize Your Knowledge Graph
 
@@ -140,8 +160,32 @@ MATCH (n)
 OPTIONAL MATCH (n)-[r]->(m)
 RETURN n, r, m
 ```
+### Step 6: Integrating with OpenAI Agents SDK
 
-**You'll see nodes (Alice, Italian food, Google) connected by relationships (LIKES, WORKS_AT)!**
+Finally let's connect our Memory MCP Server with OpenAI Agents SDK
+
+1. Keep your MCP Server running and run the python_client.py file.
+2. In new terminal switch to agent_connect folder 
+3. Setup .env file for this project - optionally add OpenAI Key for tracing.
+3. Review main.py - we have OpenAI Agents SDK connecting to an MCP server. 
+4. The queries are asking about Cloud Expert and sharing a Hiring update. The Agent can now use MCP Tools to manage memory about them
+
+Sample Response:
+
+```bash
+mjs@Muhammads-MacBook-Pro-3 agent_connect % uv run main.py
+
+[AGENT RESPONSE - AHMAD PROFILE]: Ahmad Hassan is a Senior Solutions Architect at Google Cloud. His expertise spans AI/ML, BigQuery, and GCP Architecture. He holds the Google Cloud Professional Architect certification, obtained in 2023.
+
+
+[AGENT RESPONSE - JAY PROFILE]: I've added Jay's profile to the memory, noting his role as Agent Native Cloud Expert, his position as Senior Cloud Architect at Microsoft Azure, and his expertise in Kubernetes, Azure DevOps, cloud security, and large-scale cloud migrations.
+```
+
+Above request traces:
+
+![](./agent_connect/trace_1.png)
+
+![](./agent_connect/trace_2.png)
 
 ## Complete Tool Reference
 
@@ -192,4 +236,13 @@ With Graphiti MCP server running, you can now:
 2. **Build Conversational Agents**: That remember and learn from every interaction
 3. **Setup your IDEs Unified Memory MCO Server**: That track preferences and adapt over time
 
-The foundation is complete. The tools are ready. **What will you build?**
+The foundation is complete. The tools are ready. **Now let's master Graphiti?**
+
+## Resources
+
+- https://www.youtube.com/watch?v=H2Cb5wbcRzo
+- https://blog.futuresmart.ai/building-ai-knowledge-graph-using-graphiti-and-neo4j
+- https://help.getzep.com/graphiti/getting-started/overview
+- https://help.getzep.com/graphiti/getting-started/quick-start
+- https://help.getzep.com/graphiti/getting-started/mcp-server
+- https://neo4j.com/blog/developer/graphiti-knowledge-graph-memory/
