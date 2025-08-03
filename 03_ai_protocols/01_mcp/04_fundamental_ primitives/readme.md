@@ -5,6 +5,12 @@
 
 > **First Read** [Introduction MCP Course Lessons](https://docs.google.com/document/d/1W7Ex0rAK2kMtqTHHHEGwTFu2Wrf-zmQJosifppqF-vQ/)
 
+
+MCP is not just about enhancing desktop applications with agentic functionality. It's about exposing reusable tools and resources to build agentic microservices. Watch:
+
+- [Model Context Protocol (MCP) Explained for Beginners: AI Flight Booking Demo!](https://www.youtube.com/watch?v=E2DEHOEbzks)
+- [Why MCP really is a big deal | Model Context Protocol with Tim Berglund](https://www.youtube.com/watch?v=FLpS7OfD5-s)
+
 Model Context Protocol (MCP) is a communication layer for Agents context and tools so you don't have to write a bunch of tedious integration code for each project. Use it to shift the burden of tool definitions and execution away from your server to MCP servers.
 
 - If Github have MCP server and my agent have to manage some GitHub Actions why write them again?
