@@ -16,14 +16,35 @@ class CliChat(Chat):
 
         self.doc_client: MCPClient = doc_client
 
+    async def run(self, query: str) -> str:
+        """Override run method to process resources before sending to agent"""
+        # Process query to extract resources and inject document content
+        await self._process_query(query)
+        
+        # Call agent service without passing query since _process_query already added to messages
+        response = await self.agent_serve.chat(
+            query="",  # Empty because _process_query already added enhanced prompt to messages
+            mcp_clients=self.clients,
+        )
+        
+        return response.final_output
+
     async def list_prompts(self) -> list[Prompt]:
         return await self.doc_client.list_prompts()
 
     async def list_docs_ids(self) -> list[str]:
-        return await self.doc_client.read_resource("docs://documents")
+        resource = await self.doc_client.read_resource("docs://documents")
+        # The docs://documents resource returns a JSON list
+        if isinstance(resource, list):
+            return resource
+        return []
 
     async def get_doc_content(self, doc_id: str) -> str:
-        return await self.doc_client.read_resource(f"docs://documents/{doc_id}")
+        resource = await self.doc_client.read_resource(f"docs://{doc_id}")
+        # Extract text from the resource object
+        if hasattr(resource, 'text'):
+            return resource.text
+        return str(resource)
 
     async def get_prompt(
         self, command: str, doc_id: str
