@@ -3,12 +3,15 @@
 Welcome to Graphiti! In this step, you'll create your first temporal knowledge graph and see how it works.
 
 ## 📚 Official Documentation
+
 - [Graphiti Getting Started](https://help.getzep.com/graphiti/getting-started/welcome) - Official introduction to Graphiti
-- [Quick Start Guide](https://help.getzep.com/graphiti/getting-started/quick-start) - How to install Graphiti Core
+- [Quick Start Guide](https://help.getzep.com/graphiti/getting-started/quick-start) - Quick Setup Graphiti Core
+- [Gemini Config](https://help.getzep.com/graphiti/configuration/llm-configuration)
 
 ## 🎯 What You'll Learn
 
 By the end of this step, you will:
+
 - Install and set up Graphiti
 - Add your first episode to create a knowledge graph
 - Search the graph to retrieve information
@@ -28,7 +31,7 @@ By the end of this step, you will:
 ```bash
 uv init hello_tkg
 
-uv add graphiti-core
+uv add "graphiti-core[google-genai]"
 ```
 
 ### 2. Environment Variables
@@ -36,10 +39,11 @@ uv add graphiti-core
 Create a `.env` file or export these variables:
 
 ```bash
-export GEMINI_API_KEY="your-openai-api-key"
-export NEO4J_URI="neo4j://localhost:7687"  # or your AuraDB URI
-export NEO4J_USER="neo4j"
-export NEO4J_PASSWORD="your-neo4j-password"
+GEMINI_API_KEY="your-openai-api-key"
+NEO4J_URI="neo4j://localhost:7687"  # or your AuraDB URI
+NEO4J_USER="neo4j"
+NEO4J_PASSWORD="your-neo4j-password"
+SEMAPHORE_LIMIT=5
 ```
 
 ## 🚀 Hello World Example
@@ -48,33 +52,117 @@ Let's create your first Graphiti program that adds a simple episode and verifies
 
 ### hello_graphiti.py
 
+1. Import libraries required
+
 ```python
 import asyncio
+import json
+import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
+from logging import INFO
+
+from dotenv import load_dotenv, find_dotenv
+
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
+from graphiti_core.search.search_config_recipes import NODE_HYBRID_SEARCH_RRF
+```
 
-async def hello_graphiti():
-    """Your first Graphiti program - Hello World!"""
-    
-    # Initialize Graphiti client
-    client = Graphiti(
-        uri=os.getenv("NEO4J_URI", "neo4j://localhost:7687"),
-        user=os.getenv("NEO4J_USER", "neo4j"),
-        password=os.getenv("NEO4J_PASSWORD", "password")
+2. Imports for Gemini Setup 
+```python
+from graphiti_core.llm_client.gemini_client import GeminiClient, LLMConfig
+from graphiti_core.embedder.gemini import GeminiEmbedder, GeminiEmbedderConfig
+from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerClient
+```
+
+3. Set up logging and environment variables for connecting to the Neo4j database:
+
+```python
+# Configure logging
+logging.basicConfig(
+    level=INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+logger = logging.getLogger(__name__)
+
+load_dotenv(find_dotenv())
+
+# Neo4j connection parameters
+# Make sure Neo4j Desktop is running with a local DBMS started
+neo4j_uri = os.environ.get('NEO4J_URI', 'bolt://localhost:7687')
+neo4j_user = os.environ.get('NEO4J_USER', 'neo4j')
+neo4j_password = os.environ.get('NEO4J_PASSWORD', 'password')
+if not neo4j_uri or not neo4j_user or not neo4j_password:
+    raise ValueError('NEO4J_URI, NEO4J_USER, and NEO4J_PASSWORD must be set')
+
+gemini_api_key = os.environ.get('GEMINI_API_KEY')
+if not gemini_api_key:
+    raise ValueError('GEMINI_API_KEY must be set')
+```
+
+
+4. Create an async main function to run all Graphiti operations:
+
+```python
+async def main():
+    # Main function implementation will go here
+    pass
+
+if __name__ == '__main__':
+    asyncio.run(main())
+
+```
+
+5. Connect to Neo4j and set up Graphiti indices. This is required before using other Graphiti functionality:
+
+```python
+    # Initialize Graphiti with Neo4j connection
+    graphiti = Graphiti(neo4j_uri, neo4j_user, neo4j_password,
+                            llm_client=GeminiClient(
+        config=LLMConfig(
+            api_key=gemini_api_key,
+            model="gemini-2.0-flash"
+        )
+    ),
+    embedder=GeminiEmbedder(
+        config=GeminiEmbedderConfig(
+            api_key=gemini_api_key,
+            embedding_model="embedding-001"
+        )
+    ),
+    cross_encoder=GeminiRerankerClient(
+        config=LLMConfig(
+            api_key=gemini_api_key,
+            model="gemini-2.0-flash-exp"
+        )
     )
-    
+
+                        )
+
     try:
-        print("🚀 Starting Hello World Graphiti Example...")
+        # Initialize the graph database with graphiti's indices. This only needs to be done once.
+        await graphiti.build_indices_and_constraints()
         
-        # Build the initial graph (creates indices)
-        print("🔧 Building initial graph structure...")
-        await client.build_indices_and_constraints()
+        # Additional code will go here
+
         
-        # Add your first episode - a simple text about AI learning
+    finally:
+        # Close the connection
+        await graphiti.close()
+        print('\nConnection closed')
+
+        pass
+
+```
+
+6. Adding Episodes and basic search
+- The simplest way to retrieve relationships (edges) from Graphiti is using the search method, which performs a hybrid search combining semantic similarity and BM25 text retrieval. 
+
+```python
         print("📝 Adding your first episode...")
-        await client.add_episode(
+        await graphiti.add_episode(
             name="hello_world_episode",
             episode_body=(
                 "Today I started learning Graphiti, a powerful Python framework for "
@@ -85,54 +173,36 @@ async def hello_graphiti():
             source_description="Learning journal entry",
             reference_time=datetime.now(),
         )
-        
+
         print("✅ Episode added successfully!")
-        
+
         # Verify the graph has data
         print("🔍 Verifying the knowledge graph...")
-        
-        # Search for information about Graphiti
-        search_results = await client.search(
-            query="What is Graphiti?",
-            limit=3
-        )
-        
-        if search_results.nodes or search_results.edges:
-            print(f"🎉 Success! Found {len(search_results.nodes)} nodes and {len(search_results.edges)} edges")
-            print("\n📊 Graph Contents:")
-            
-            # Display nodes
-            for i, node in enumerate(search_results.nodes[:3], 1):
-                print(f"  Node {i}: {node.name}")
-            
-            # Display edges
-            for i, edge in enumerate(search_results.edges[:3], 1):
-                print(f"  Edge {i}: {edge.source_node_name} → {edge.target_node_name} ({edge.name})")
-                
-        else:
-            print("⚠️ No data found. The episode may still be processing.")
-            
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        
-    finally:
-        # Close the client
-        await client.close()
-        print("🔒 Graphiti client closed.")
 
-if __name__ == "__main__":
-    # Run the hello world example
-    asyncio.run(hello_graphiti())
+        # Search for information about Graphiti
+        search_results: list[EntityEdge] = await graphiti.search(
+            query="What is Graphiti?",
+            num_results=3
+        )
+
+
+        print(f"🎉 Found {len(search_results)} results")
+
+        # data nodes
+        for i, data in enumerate(search_results):
+            print(f"  {i}:\nUUID: {data.episodes}")
+            print(f"  Fact: {data.fact}")
+            print("\n")
 ```
 
 ## ▶️ Running Your First Program
 
-1. **Save the code** as `hello_graphiti.py`
+1. **Save the code** as `main.py`
 2. **Set your environment variables** (see Setup section)
 3. **Run the program**:
 
 ```bash
-python hello_graphiti.py
+uv run python main.py
 ```
 
 ## 📊 Expected Output
@@ -147,45 +217,51 @@ You should see something like:
 🔍 Verifying the knowledge graph...
 🎉 Success! Found 3 nodes and 2 edges
 📊 Graph Contents:
-  Node 1: Graphiti
-  Node 2: Python framework
-  Node 3: temporal knowledge graphs
-  Edge 1: Graphiti → Python framework (is_a)
-  Edge 2: Graphiti → temporal knowledge graphs (helps_with)
+    ...
 🔒 Graphiti client closed.
 ```
+
+Challenge: [Do Node Search](https://help.getzep.com/graphiti/getting-started/quick-start#node-search-using-search-recipes)
 
 ## 🔍 What Just Happened?
 
 Let's break down what your first Graphiti program did:
 
 ### 1. **Client Setup**
+
 ```python
 client = Graphiti(uri=..., user=..., password=...)
 ```
+
 - Connected to your Neo4j database
 - Initialized the Graphiti framework
 
 ### 2. **Graph Structure Setup**
+
 ```python
 await client.build_indices_and_constraints()
 ```
+
 - Created necessary database indices for performance
 - Set up constraints for data integrity
 
 ### 3. **Episode Addition**
+
 ```python
 await client.add_episode(...)
 ```
+
 - Added text content to the knowledge graph
 - Graphiti automatically extracted entities and relationships
 - Created nodes for concepts like "Graphiti", "Python framework", etc.
 - Created edges showing relationships between concepts
 
 ### 4. **Knowledge Retrieval**
+
 ```python
 search_results = await client.search(query="What is Graphiti?")
 ```
+
 - Performed semantic search on the knowledge graph
 - Retrieved relevant nodes and edges
 - Demonstrated that information was successfully stored and can be retrieved
@@ -225,7 +301,7 @@ Try adding multiple episodes and see how they connect:
 ```python
 # Episode 1
 await client.add_episode(
-    name="alice_starts", 
+    name="alice_starts",
     episode_body="Alice started learning Python programming",
     reference_time=datetime.now() - timedelta(days=7)
 )
@@ -264,6 +340,7 @@ A: Yes! Open Neo4j Browser and run `MATCH (n) RETURN n LIMIT 25` to see the raw 
 ## 🎯 Next Steps
 
 Congratulations! You've successfully:
+
 - ✅ Created your first Graphiti knowledge graph
 - ✅ Added an episode with automatic entity extraction
 - ✅ Performed semantic search on the graph
@@ -294,4 +371,4 @@ Congratulations! You've successfully:
 
 ---
 
-*"The best way to learn Graphiti is to start simple and build up your understanding step by step."*
+_"The best way to learn Graphiti is to start simple and build up your understanding step by step."_

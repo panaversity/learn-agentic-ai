@@ -1,0 +1,15 @@
+# Copy this to .env file in your project root
+
+# Gemini API Configuration
+GEMINI_API_KEY=your-gemini-api-key-here
+
+# Neo4j Database Configuration  
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your-neo4j-password
+
+# Optional: Semaphore limit for concurrent operations
+SEMAPHORE_LIMIT=5
+
+# Note: Use the same .env file from previous steps
+# This file shows the required environment variables for Step 03
