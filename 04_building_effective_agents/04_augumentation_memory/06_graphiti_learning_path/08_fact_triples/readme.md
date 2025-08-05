@@ -1,41 +1,123 @@
-# Step 08: Adding Fact Triples - Precise Knowledge Representation
+# Step 08: Adding Fact Triples - The Building Blocks of Knowledge
 
-Now that you understand CRUD operations, let's learn how to add structured knowledge using fact triples for precise educational relationship modeling.
+Think of fact triples as **LEGO blocks for knowledge**. Just like LEGO blocks connect to build amazing structures, fact triples connect to build powerful knowledge graphs!
+
+## 🧩 What Are Fact Triples? (The Simple Truth)
+
+Imagine you want to teach a computer about relationships in your world:
+
+**In everyday language, you might say:**
+- "Alice is enrolled in CS101"
+- "Variables come before Loops in learning"
+- "Sarah passed the Python quiz"
+
+**Fact triples break this into 3 simple parts:**
+
+```
+Subject → Predicate → Object
+  Who      What       What/Who
+```
+
+**Real examples:**
+- `Alice` → `ENROLLED_IN` → `CS101`
+- `Variables` → `PREREQUISITE_FOR` → `Loops`
+- `Sarah` → `COMPLETED` → `Python_Quiz`
+
+It's like filling in a sentence: **"[Someone] [does something to] [someone/something]"**
+
+## 🤔 Why Should You Care About Fact Triples?
+
+### **The Problem They Solve**
+
+Imagine you're building an educational app. You have tons of information:
+- Students taking courses
+- Prerequisites between topics
+- Quiz results and grades
+- Learning progress tracking
+
+**Without fact triples:** Your data is scattered, hard to query, and relationships are unclear.
+
+**With fact triples:** Everything connects perfectly, like a web of knowledge that you can explore and query easily!
+
+### **Real-World Benefits**
+
+1. **🔍 Easy Querying**: "Show me all students who completed prerequisites for advanced topics"
+2. **📊 Smart Recommendations**: "Alice finished Variables, suggest Loops next"
+3. **🎯 Personalized Learning**: "Find topics Sarah is ready to learn based on her progress"
+4. **📈 Analytics**: "Which concepts are most challenging for students?"
 
 ## 📚 Official Documentation
 
-- [Adding Fact Triples](https://help.getzep.com/graphiti/working-with-data/adding-fact-triples) - Complete guide to fact triple creation
+- [Adding Fact Triples](https://help.getzep.com/graphiti/working-with-data/adding-fact-triples) - Complete technical guide
 
 ## 🎯 What You'll Learn
 
 By the end of this step, you will:
-- Master direct fact triple creation using subject-predicate-object structure
-- Understand when to use fact triples vs episodes vs CRUD operations
-- Implement precise educational relationship assertion  
-- Handle structured knowledge from external educational systems
-- Design curriculum and assessment modeling with fact triples
+- **Understand** what fact triples are and why they're useful
+- **Create** structured knowledge relationships easily
+- **Connect** educational concepts with clear relationships
+- **Query** your knowledge graph to find meaningful patterns
+- **Build** the foundation for intelligent educational systems
 
 ## 📋 Prerequisites
 
-- Completed Steps 01-07
-- Understanding of CRUD operations and search
-- Knowledge of RDF/semantic web concepts (helpful but not required)
+- Completed Steps 01-07 (especially CRUD operations)
+- Basic understanding that knowledge has relationships
+- Curiosity about how computers can understand connections!
 
-## 📚 What are Fact Triples?
+## 🎓 Learning Fact Triples Step-by-Step
 
-### The Concept
+### **Step 1: Think Like a Human**
 
-**Fact Triples** represent knowledge as structured statements in the form: `(Subject, Predicate, Object)`
+When you learn, you naturally make connections:
+- "I need to learn variables before I can understand loops"
+- "Alice got an A on her Python quiz"
+- "This course covers object-oriented programming"
 
-This creates precise, queryable relationships between known entities without requiring LLM processing.
+### **Step 2: Break It Into Parts**
 
-**Educational Examples:**
-- `(Alice, ENROLLED_IN, CS101)`
-- `(Variables, PREREQUISITE_FOR, Loops)`  
-- `(Python_Quiz_1, ASSESSES, Programming_Fundamentals)`
-- `(Sarah, ACHIEVED_MASTERY_IN, Functions)`
+Every relationship has **3 parts**:
 
-### Fact Triples vs Other Approaches
+```
+👤 WHO/WHAT → 🔗 RELATIONSHIP → 👤 WHO/WHAT
+   Subject      Predicate        Object
+```
+
+**Examples:**
+- `👤 Alice` → `🔗 ENROLLED_IN` → `📚 CS101`
+- `📖 Variables` → `🔗 PREREQUISITE_FOR` → `🔄 Loops` 
+- `👩‍🎓 Sarah` → `🔗 SCORED` → `💯 95_points`
+
+### **Step 3: Make It Computer-Friendly**
+
+Computers love structure! We format it like this:
+
+```python
+# Human: "Alice is enrolled in CS101"
+# Computer: (Alice, ENROLLED_IN, CS101)
+
+subject = "Alice"
+predicate = "ENROLLED_IN" 
+object = "CS101"
+```
+
+### **Step 4: Connect Everything**
+
+Once you have many fact triples, they form a **knowledge web**:
+
+```
+Alice → ENROLLED_IN → CS101
+  ↓
+COMPLETED → Variables_Quiz → ASSESSES → Variables
+  ↓
+Variables → PREREQUISITE_FOR → Loops
+```
+
+Now you can ask smart questions:
+- "What should Alice learn next?" (Answer: Loops!)
+- "Who's ready for advanced topics?" (Students who completed prerequisites!)
+
+## 🆚 Fact Triples vs Other Approaches
 
 | Method | Use When | Example |
 |--------|----------|---------|
@@ -43,27 +125,86 @@ This creates precise, queryable relationships between known entities without req
 | **Episodes** | Natural language content requiring LLM extraction | "Alice struggled with loops but mastered them after practice" |
 | **CRUD** | Direct manipulation of existing nodes/edges | Update student GPA from 3.5 to 3.7 |
 
-### Adding Fact Triples in Graphiti
+**Simple Rule:** 
+- **Know the exact relationship?** → Use Fact Triples
+- **Have natural language to process?** → Use Episodes  
+- **Need to update existing data?** → Use CRUD
 
-Graphiti provides the `add_triplet()` method for adding fact triples:
+## 🛠️ How Fact Triples Work in Graphiti
+
+### **The Magic Method**
+
+Graphiti makes it super simple with one method:
 
 ```python
-# Method signature
-await graphiti.add_triplet(source_node, edge, target_node)
+await graphiti.add_triplet(subject_node, relationship_edge, object_node)
 ```
 
-Where:
-- `source_node`: EntityNode representing the subject
-- `edge`: EntityEdge representing the predicate/relationship
-- `target_node`: EntityNode representing the object
+**What this does:**
+1. ✅ **Creates the nodes** (if they don't exist)
+2. ✅ **Creates the relationship** between them
+3. ✅ **Handles all the complex embedding stuff** automatically
+4. ✅ **Prevents duplicates** (smart deduplication)
 
-All components should share the same `group_id` for proper namespace isolation.
+### **Simple Example First**
+
+Let's create one fact triple to see how it works:
+
+```python
+# We want to say: "Alice is enrolled in CS101"
+
+# Step 1: Create the subject (Alice)
+alice = EntityNode(
+    uuid=str(uuid.uuid4()),
+    name="Alice",
+    group_id="my_school"
+)
+
+# Step 2: Create the object (CS101)  
+cs101 = EntityNode(
+    uuid=str(uuid.uuid4()),
+    name="CS101",
+    group_id="my_school"
+)
+
+# Step 3: Create the relationship (ENROLLED_IN)
+enrollment = EntityEdge(
+    uuid=str(uuid.uuid4()),
+    source_node_uuid=alice.uuid,
+    target_node_uuid=cs101.uuid,
+    group_id="my_school",
+    name="ENROLLED_IN",
+    fact="Alice is enrolled in CS101"
+)
+
+# Step 4: Add the fact triple (this is the magic!)
+await graphiti.add_triplet(alice, enrollment, cs101)
+```
+
+**That's it!** You just created structured knowledge that computers can understand and query.
+
+## 🎯 Why This Is Powerful
+
+Once you have fact triples, you can:
+
+```python
+# Find all students in CS101
+results = await graphiti.search("students enrolled CS101")
+
+# Find prerequisites for advanced topics  
+results = await graphiti.search("prerequisites required before loops")
+
+# Track learning progress
+results = await graphiti.search("Alice completed assessments scores")
+```
+
+The knowledge graph **connects everything intelligently**!
 
 ## 🚀 Complete Working Example
 
 Let's implement fact triple modeling for educational systems:
 
-### fact_triples_demo.py
+### hello_fact_triples/main.py
 
 ```python
 import asyncio
@@ -73,7 +214,8 @@ import uuid
 from dotenv import load_dotenv, find_dotenv
 
 from graphiti_core import Graphiti
-from graphiti_core.nodes import EntityNode, EntityEdge
+from graphiti_core.nodes import EntityNode
+from graphiti_core.edges import EntityEdge
 
 # Gemini setup (same as previous steps)
 from graphiti_core.llm_client.gemini_client import GeminiClient, LLMConfig
@@ -263,12 +405,12 @@ if __name__ == "__main__":
 
 ## ▶️ Running the Example
 
-1. **Save the code** as `fact_triples_demo.py`
+1. **Save the code** as `hello_fact_triples/main.py`
 2. **Use the same environment** from previous steps
 3. **Run the program**:
 
 ```bash
-uv run python fact_triples_demo.py
+uv run python main.py
 ```
 
 ## 📊 Expected Output
@@ -401,9 +543,7 @@ A: Yes, but often better to create new triples with timestamps to maintain histo
 
 **Outstanding work!** You now master precise knowledge representation using fact triples.
 
-**Ready to integrate with AI assistants?** Continue to **[09_mcp_server](../09_mcp_server/)** where you'll expose your Graphiti knowledge through the Model Context Protocol.
-
-**What's Coming**: Make your knowledge accessible to AI assistants and agents through standardized protocols!
+**Ready to integrate with AI assistants?** Continue to **[09_configuration](../09_configuration/)** where you'll learn about AI Models and Graph databases configuration.
 
 ---
 

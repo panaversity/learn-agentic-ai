@@ -1,29 +1,15 @@
-# Step 05: Graph Namespacing - Multi-Tenant Educational Systems
+# Step 05: [Graph Namespacing](https://help.getzep.com/graphiti/core-concepts/graph-namespacing) - Multi-Tenant Educational Systems
 
-Now that you understand communities, let's learn how to create isolated educational environments using `group_id` for multi-tenant systems.
+Graphiti supports the concept of graph namespacing through the use of group_id parameters. This feature allows you to create isolated graph environments within the same Graphiti instance, enabling multiple distinct knowledge graphs to coexist without interference.
 
-## 📚 Official Documentation
+Now that you understand communities, let's learn how to create isolated educational environments using `group_id` for multi-tenant systems. Graph namespacing is particularly useful for:
 
-- [Graph Namespacing](https://help.getzep.com/graphiti/core-concepts/graph-namespacing) - Complete guide to using group_ids
+- Multi-tenant applications: Isolate data between different customers or organizations
+- Testing environments: Maintain separate development, testing, and production graphs
+- Domain-specific knowledge: Create specialized graphs for different domains or use cases
+- Team collaboration: Allow different teams to work with their own graph spaces
 
-## 🎯 What You'll Learn
-
-By the end of this step, you will:
-- Understand multi-tenancy in educational knowledge graphs using `group_id`
-- Create isolated learning environments for different schools/courses
-- Query within specific namespaces for targeted results
-- Apply namespacing to real TutorsGPT scenarios
-- Handle cross-namespace analytics when appropriate
-
-## 📋 Prerequisites
-
-- Completed Steps 01-04
-- Understanding of communities and search
-- Knowledge of multi-tenant system concepts
-
-## 📚 What is Graph Namespacing?
-
-### The Concept
+## The Concept
 
 **Graph namespacing** in Graphiti uses `group_id` parameters to create isolated graph environments within the same Graphiti instance. This enables multiple distinct knowledge graphs to coexist without interference.
 
@@ -37,13 +23,6 @@ By the end of this step, you will:
 ### How Namespacing Works
 
 In Graphiti, every node and edge can be associated with a `group_id`. When you specify a `group_id`, you're effectively creating a namespace for that data. Nodes and edges with the same `group_id` form a cohesive, isolated graph that can be queried and manipulated independently.
-
-### Key Benefits
-
-- **Data Isolation**: Prevent data leakage between different namespaces
-- **Simplified Management**: Organize and manage related data together
-- **Performance Optimization**: Improve query performance by limiting search space
-- **Flexible Architecture**: Support multiple use cases within a single Graphiti instance
 
 ### Using group_ids in Graphiti
 
@@ -73,9 +52,9 @@ search_results = await graphiti.search(
 )
 ```
 
-## 🚀 Complete Working Example
+## 🚀 Simple Namespacing Example
 
-Let's create a multi-institution TutorsGPT system with proper namespace isolation:
+Let's create two separate course environments and see how `group_id` keeps them isolated:
 
 ### namespacing_demo.py
 
@@ -88,7 +67,6 @@ from dotenv import load_dotenv, find_dotenv
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
 
-# Gemini setup (same as previous steps)
 from graphiti_core.llm_client.gemini_client import GeminiClient, LLMConfig
 from graphiti_core.embedder.gemini import GeminiEmbedder, GeminiEmbedderConfig
 from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerClient
@@ -96,7 +74,7 @@ from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerCli
 load_dotenv(find_dotenv())
 
 async def main():
-    """Multi-institution educational platform with namespace isolation"""
+    """Simple namespace isolation demo"""
     
     # Initialize Graphiti (same setup as previous steps)
     graphiti = Graphiti(
@@ -106,7 +84,7 @@ async def main():
         llm_client=GeminiClient(
             config=LLMConfig(
                 api_key=os.environ.get('GEMINI_API_KEY'),
-                model="gemini-2.0-flash"
+                model="gemini-2.5-flash"
             )
         ),
         embedder=GeminiEmbedder(
@@ -118,203 +96,106 @@ async def main():
         cross_encoder=GeminiRerankerClient(
             config=LLMConfig(
                 api_key=os.environ.get('GEMINI_API_KEY'),
-                model="gemini-2.0-flash-exp"
+                model="gemini-2.0-flash-lite"
             )
         )
     )
     
     try:
         await graphiti.build_indices_and_constraints()
-        print("🏫 Starting Multi-Institution Namespacing Demo...")
+        print("🏫 Namespacing Demo - Creating Isolated Course Environments...")
         
-        # Define institutional namespaces
-        institutions = {
-            "stanford_cs": "stanford_university_computer_science",
-            "mit_eecs": "mit_electrical_engineering_computer_science", 
-            "berkeley_cs": "uc_berkeley_computer_science"
-        }
+        # Course A: CS101 
+        print("\n📘 Adding CS101 episodes...")
+        await graphiti.add_episode(
+            name="cs101_alice",
+            episode_body="Alice is learning Python basics in CS101. She understands variables and loops.",
+            source=EpisodeType.text,
+            source_description="CS101 student background",
+            group_id="course_cs101",  # CS101 namespace
+            reference_time=datetime.now() - timedelta(days=2)
+        )
         
-        # Create isolated institutional knowledge
-        print("\n🏛️ Creating isolated institutional environments...")
+        await graphiti.add_episode(
+            name="cs101_bob",
+            episode_body="Bob is struggling with Python functions in CS101. He needs help with parameters.",
+            source=EpisodeType.text,
+            source_description="CS101 student background",
+            group_id="course_cs101",  # CS101 namespace
+            reference_time=datetime.now() - timedelta(days=1)
+        )
+
+        await asyncio.sleep(60)
         
-        # Stanford CS101 Episodes
-        stanford_episodes = [
-            {
-                "name": "stanford_cs101_intro",
-                "body": "Stanford CS101 emphasizes theoretical foundations with practical Python applications. The course uses problem-based learning and covers algorithmic thinking, data structures, and software engineering principles.",
-                "namespace": institutions["stanford_cs"] + "_cs101"
-            },
-            {
-                "name": "stanford_student_alice",
-                "body": "Alice Johnson at Stanford is a sophomore majoring in Computer Science. She excels in mathematical reasoning and prefers structured learning approaches. Alice is working on machine learning applications.",
-                "namespace": institutions["stanford_cs"] + "_cs101"
-            },
-            {
-                "name": "stanford_professor_smith",
-                "body": "Professor David Smith teaches CS101 at Stanford. He has 15 years of experience and specializes in algorithms and computational complexity. His teaching emphasizes rigorous mathematical proofs.",
-                "namespace": institutions["stanford_cs"] + "_cs101"
-            }
-        ]
-        
-        # MIT EECS Episodes
-        mit_episodes = [
-            {
-                "name": "mit_6001_intro",
-                "body": "MIT 6.001 Structure and Interpretation of Computer Programs focuses on programming paradigms and computational thinking. The course emphasizes functional programming, recursion, and program design methodologies.",
-                "namespace": institutions["mit_eecs"] + "_6001"
-            },
-            {
-                "name": "mit_student_bob",
-                "body": "Bob Chen at MIT is a first-year student in EECS. He has strong programming background but struggles with theoretical concepts. Bob prefers hands-on experimentation and collaborative learning.",
-                "namespace": institutions["mit_eecs"] + "_6001"
-            },
-            {
-                "name": "mit_professor_garcia",
-                "body": "Professor Maria Garcia teaches 6.001 at MIT. She has expertise in programming languages and software systems. Her teaching combines theoretical depth with practical programming projects.",
-                "namespace": institutions["mit_eecs"] + "_6001"
-            }
-        ]
-        
-        # UC Berkeley CS Episodes
-        berkeley_episodes = [
-            {
-                "name": "berkeley_cs61a_intro",
-                "body": "UC Berkeley CS61A teaches programming paradigms through Python, Scheme, and SQL. The course emphasizes abstraction, recursion, and higher-order functions with a project-based approach.",
-                "namespace": institutions["berkeley_cs"] + "_cs61a"
-            },
-            {
-                "name": "berkeley_student_carol",
-                "body": "Carol Martinez at UC Berkeley is studying CS61A. She has diverse academic interests and excels in creative problem-solving. Carol benefits from visual learning aids and peer collaboration.",
-                "namespace": institutions["berkeley_cs"] + "_cs61a"
-            },
-            {
-                "name": "berkeley_ta_wilson",
-                "body": "Teaching Assistant James Wilson supports CS61A at Berkeley. He's a graduate student specializing in educational technology. James focuses on helping students with debugging and conceptual understanding.",
-                "namespace": institutions["berkeley_cs"] + "_cs61a"
-            }
-        ]
-        
-        # Add all episodes with appropriate namespacing
-        all_episodes = stanford_episodes + mit_episodes + berkeley_episodes
-        
-        for episode in all_episodes:
-            await graphiti.add_episode(
-                name=episode["name"],
-                episode_body=episode["body"],
+        # Course B: MATH201
+        print("📗 Adding MATH201 episodes...")
+        await graphiti.add_episode(
+            name="math201_carol",
+            episode_body="Carol is studying calculus in MATH201. She excels at derivatives and integration.",
                 source=EpisodeType.text,
-                source_description="Multi-institution knowledge base",
-                reference_time=datetime.now() - timedelta(days=30),
-                group_id=episode["namespace"]
-            )
-            institution = episode["namespace"].split("_")[0]
-            print(f"   ✅ {institution.upper()}: {episode['name']}")
+            source_description="MATH201 student background",
+            reference_time=datetime.now() - timedelta(days=3),
+            group_id="course_math201"  # MATH201 namespace
+        )
         
-        print(f"\n⏳ Processing {len(all_episodes)} namespaced episodes...")
+        await graphiti.add_episode(
+            name="math201_diana",
+            episode_body="Diana finds linear algebra challenging in MATH201. She needs help with matrices.",
+            source=EpisodeType.text,
+            source_description="MATH201 student background",
+            reference_time=datetime.now() - timedelta(days=2),
+            group_id="course_math201"  # MATH201 namespace
+        )
         
-        # Demonstrate namespace isolation
-        print("\n🔒 Demonstrating namespace isolation...")
+        print("✅ Episodes added to separate namespaces!")
+        await asyncio.sleep(60)
         
-        # Search within Stanford namespace only
-        stanford_search = await graphiti.search(
-            query="computer science programming student professor course",
-            group_id=institutions["stanford_cs"] + "_cs101",
+        # Search within CS101 namespace only
+        print("\n🔍 Searching within CS101 namespace...")
+        cs101_results = await graphiti.search(
+            query="programming Python students learning",
+            group_ids=["course_cs101"],  # Only search CS101
             num_results=10
         )
         
-        print(f"\n🏛️ Stanford CS101 Namespace Search:")
-        print(f"   Entities found: {len(stanford_search)}")
-        print(f"   Stanford-specific results:")
-        for i, result in enumerate(stanford_search[:3], 1):
-            print(f"     {i}. {result.fact}")
+        print(f"CS101 results: {len(cs101_results)} found")
+        for result in cs101_results:
+            print(f"  • {result.fact}")
         
-        # Search within MIT namespace only
-        mit_search = await graphiti.search(
-            query="computer science programming student professor course",
-            group_id=institutions["mit_eecs"] + "_6001",
+        # Search within MATH201 namespace only
+        print("\n🔍 Searching within MATH201 namespace...")
+        math201_results = await graphiti.search(
+            query="mathematics calculus students learning",
+            group_ids=["course_math201"],  # Only search MATH201
             num_results=10
         )
         
-        print(f"\n🔬 MIT EECS Namespace Search:")
-        print(f"   Entities found: {len(mit_search)}")
-        print(f"   MIT-specific results:")
-        for i, result in enumerate(mit_search[:3], 1):
-            print(f"     {i}. {result.fact}")
+        print(f"MATH201 results: {len(math201_results)} found")
+        for result in math201_results:
+            print(f"  • {result.fact}")
         
-        # Search within Berkeley namespace only
-        berkeley_search = await graphiti.search(
-            query="computer science programming student professor course",
-            group_id=institutions["berkeley_cs"] + "_cs61a",
-            num_results=10
+        # Global search (no group_id) - sees everything
+        print("\n🌍 Global search (no namespace restriction)...")
+        global_results = await graphiti.search(
+            query="students learning",
+            num_results=10  # No group_id = search all namespaces
         )
         
-        print(f"\n🐻 UC Berkeley CS61A Namespace Search:")
-        print(f"   Entities found: {len(berkeley_search)}")
-        print(f"   Berkeley-specific results:")
-        for i, result in enumerate(berkeley_search[:3], 1):
-            print(f"     {i}. {result.fact}")
+        print(f"Global results: {len(global_results)} found")
+        for result in global_results:
+            print(f"  • {result.fact}")
         
-        # Cross-namespace analytics (when appropriate)
-        print("\n📊 Cross-namespace analytics...")
-        
-        # Global search across all namespaces (for platform-level insights)
-        global_search = await graphiti.search(
-            query="teaching methodology programming education approaches",
-            num_results=15  # No group_id = search all namespaces
-        )
-        
-        print(f"\n🌍 Cross-Institution Analysis:")
-        print(f"   Total results: {len(global_search)}")
-        print(f"   Teaching methodology insights:")
-        for i, result in enumerate(global_search[:4], 1):
-            print(f"     {i}. {result.fact}")
-        
-        # Multi-tenant application example
-        print("\n🏢 Multi-tenant application pattern...")
-        
-        async def add_customer_data(tenant_id, customer_data):
-            """Add customer data to tenant-specific namespace"""
-            namespace = f"tenant_{tenant_id}"
-            
-            await graphiti.add_episode(
-                name=f"customer_data_{customer_data['id']}",
-                episode_body=customer_data,
-                source=EpisodeType.json,
-                source_description="Customer profile update",
-                reference_time=datetime.now(),
-                group_id=namespace  # Namespace by tenant
-            )
-        
-        async def search_tenant_data(tenant_id, query):
-            """Search within tenant's namespace"""
-            namespace = f"tenant_{tenant_id}"
-            
-            return await graphiti.search(
-                query=query,
-                group_id=namespace
-            )
-        
-        # Example tenant data
-        tenant_data = {"id": "001", "name": "Student Progress", "course": "CS101"}
-        await add_customer_data("university_a", tenant_data)
-        
-        tenant_results = await search_tenant_data("university_a", "student progress course")
-        print(f"   Tenant-specific results: {len(tenant_results)}")
-        
-        print("\n🎓 Namespacing demo completed successfully!")
+        print("\n🎓 Namespacing demo completed!")
+        print("\n👀 Now manually explore namespaces in Neo4j...")
         
     finally:
         await graphiti.close()
-        print("Connection closed.")
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
 ## ▶️ Running the Example
-
-1. **Save the code** as `namespacing_demo.py`
-2. **Use the same environment** from previous steps
-3. **Run the program**:
 
 ```bash
 uv run python namespacing_demo.py
@@ -323,191 +204,94 @@ uv run python namespacing_demo.py
 ## 📊 Expected Output
 
 ```
-🏫 Starting Multi-Institution Namespacing Demo...
+🏫 Namespacing Demo - Creating Isolated Course Environments...
 
-🏛️ Creating isolated institutional environments...
-   ✅ STANFORD: stanford_cs101_intro
-   ✅ STANFORD: stanford_student_alice
-   ✅ STANFORD: stanford_professor_smith
-   ✅ MIT: mit_6001_intro
-   ✅ MIT: mit_student_bob
-   ✅ MIT: mit_professor_garcia
-   ✅ BERKELEY: berkeley_cs61a_intro
-   ✅ BERKELEY: berkeley_student_carol
-   ✅ BERKELEY: berkeley_ta_wilson
+📘 Adding CS101 episodes...
+📗 Adding MATH201 episodes...
+✅ Episodes added to separate namespaces!
 
-🔒 Demonstrating namespace isolation...
+🔍 Searching within CS101 namespace...
+CS101 results: 9 found
+  • Alice is learning Python basics in CS101
+  • Alice is learning Python basics
+  • Python functions in CS101
+  • Python functions... parameters
+  • Bob is struggling with Python functions
+  • Bob is in CS101
+  • She understands variables
+  • He needs help with parameters
+  • She understands loops
 
-🏛️ Stanford CS101 Namespace Search:
-   Entities found: 5
-   Stanford-specific results:
-     1. Stanford CS101 emphasizes theoretical foundations with Python
-     2. Alice Johnson at Stanford excels in mathematical reasoning
-     3. Professor David Smith specializes in algorithms and complexity
+🔍 Searching within MATH201 namespace...
+MATH201 results: 8 found
+  • calculus in MATH201
+  • Carol is studying calculus
+  • Carol is studying in MATH201
+  • linear algebra challenging in MATH201
+  • Diana finds linear algebra challenging
+  • She needs help with matrices
+  • She excels at derivatives
+  • She excels at integration
 
-🔬 MIT EECS Namespace Search:
-   Entities found: 4
-   MIT-specific results:
-     1. MIT 6.001 focuses on programming paradigms and computational thinking
-     2. Bob Chen at MIT prefers hands-on experimentation
-     3. Professor Maria Garcia combines theoretical depth with practical projects
+🌍 Global search (no namespace restriction)...
+Global results: 10 found
+  • Carol is studying in MATH201
+  • calculus in MATH201
+  • Carol is studying calculus
+  • Alice is learning Python basics in CS101
+  • Bob is in CS101
+  • Alice is learning Python basics
+  • linear algebra challenging in MATH201
+  • She understands variables
+  • Python functions in CS101
+  • She needs help with matrices
 
-🐻 UC Berkeley CS61A Namespace Search:
-   Entities found: 4
-   Berkeley-specific results:
-     1. UC Berkeley CS61A teaches programming through Python, Scheme, and SQL
-     2. Carol Martinez excels in creative problem-solving
-     3. James Wilson focuses on helping with debugging and concepts
+🎓 Namespacing demo completed!
 
-📊 Cross-namespace analytics...
-
-🌍 Cross-Institution Analysis:
-   Total results: 12
-   Teaching methodology insights:
-     1. Problem-based learning approaches across institutions
-     2. Theoretical foundations combined with practical applications
-     3. Different programming paradigms and methodologies
-     4. Various teaching styles and student support approaches
-
-🎓 Namespacing demo completed successfully!
+👀 Now manually explore namespaces in Neo4j...
 ```
 
-## 🧪 Try It Yourself
+## 🔍 **Manual Exploration in Neo4j**
 
-### Exercise 1: Add More Institutions
+Open your **Neo4j Browser** and run these queries to see namespace isolation:
 
-Create additional educational namespaces:
-
-```python
-# Add more institutions
-new_institutions = {
-    "harvard_cs": "harvard_university_computer_science",
-    "caltech_cs": "caltech_computer_science"
-}
-
-# Create episodes for each new institution
-harvard_episodes = [
-    {
-        "name": "harvard_cs50_intro",
-        "body": "Harvard CS50 Introduction to Computer Science...",
-        "namespace": new_institutions["harvard_cs"] + "_cs50"
-    }
-]
+### **1. See All Nodes with Their Namespaces**
+```cypher
+MATCH (n:Entity) 
+RETURN n.name, n.group_id
+ORDER BY n.group_id
 ```
 
-### Exercise 2: Hierarchical Namespacing
-
-Create nested namespace structures:
-
-```python
-class NamespaceManager:
-    """Manage hierarchical namespace structures"""
-    
-    def __init__(self, institution: str, department: str, course: str, semester: str):
-        self.institution = institution
-        self.department = department
-        self.course = course
-        self.semester = semester
-    
-    @property
-    def full_namespace(self) -> str:
-        return f"{self.institution}_{self.department}_{self.course}_{self.semester}"
-    
-    @property
-    def course_namespace(self) -> str:
-        return f"{self.institution}_{self.department}_{self.course}"
-
-# Usage
-stanford_cs101 = NamespaceManager("stanford", "cs", "cs101", "fall2024")
-print(stanford_cs101.full_namespace)  # "stanford_cs_cs101_fall2024"
+```cypher
+MATCH (n)
+OPTIONAL MATCH (n)-[r]->(m)
+RETURN n, r, m
 ```
 
-### Exercise 3: Role-Based Namespace Access
+*Shows each entity and which namespace it belongs to*
 
-Implement intelligent namespace search based on user roles:
-
-```python
-async def intelligent_namespace_search(query: str, user_context: dict):
-    """Search across appropriate namespaces based on user role"""
-    
-    primary_namespace = user_context.get("primary_namespace")
-    user_role = user_context.get("role")  # student, instructor, admin
-    
-    if user_role == "student":
-        # Students search within their course namespace
-        return await graphiti.search(
-            query=query,
-            group_id=primary_namespace,
-            num_results=10
-        )
-    elif user_role == "instructor":
-        # Instructors can search across their courses
-        course_namespaces = user_context.get("course_namespaces", [])
-        all_results = []
-        for namespace in course_namespaces:
-            results = await graphiti.search(
-                query=query,
-                group_id=namespace,
-                num_results=5
-            )
-            all_results.extend(results)
-        return all_results
-    elif user_role == "admin":
-        # Admins can search across institution
-        return await graphiti.search(
-            query=query,
-            num_results=20  # No group_id restriction
-        )
+### **2. Find All Nodes in CS101 Namespace**
+```cypher
+MATCH (n:Entity) 
+MATCH (n)-[r]->(m)
+WHERE n.group_id = "course_cs101"
+RETURN n, r, m
 ```
-
-## 🎯 Key Concepts Explained
-
-### Best Practices for Graph Namespacing
-
-1. **Consistent Naming**: Use consistent naming conventions for `group_id` values
-2. **Documentation**: Maintain documentation of namespace structure and purpose
-3. **Granularity**: Choose appropriate level of granularity for namespaces
-   - Too many namespaces can lead to fragmented data
-   - Too few namespaces may not provide sufficient isolation
-4. **Cross-namespace Queries**: When necessary, perform multiple queries across namespaces and combine results in application logic
-
-### Multi-Tenant Application Pattern
-
-The example demonstrates the multi-tenant pattern where:
-- Each tenant (institution/course) gets its own namespace
-- Data isolation prevents leakage between tenants
-- Platform-level analytics can still be performed across namespaces when appropriate
-- Role-based access controls which namespaces users can access
-
-## ✅ Verification Checklist
-
-- [ ] Multiple namespaces created with proper `group_id` values
-- [ ] Namespace isolation demonstrated through separate searches
-- [ ] Cross-namespace analytics working when no `group_id` specified
-- [ ] Multi-tenant patterns implemented correctly
-- [ ] Role-based namespace access patterns understood
+*Only shows CS101 entities*
 
 ## 🤔 Common Questions
 
-**Q: Can entities exist in multiple namespaces?**
-A: No, each entity belongs to one namespace defined by its `group_id`. However, you can create similar entities in different namespaces.
-
-**Q: How do I share knowledge between namespaces?**
-A: Use cross-namespace searches (without `group_id`) or implement application-level data sharing patterns.
-
 **Q: What happens if I don't specify a group_id?**
-A: The entity/episode will exist in the default namespace and be accessible in global searches.
+A: The entity/episode goes to the default namespace and appears in global searches (searches without `group_id`).
 
-**Q: Can I change an entity's namespace after creation?**
-A: This requires careful migration - typically you'd create new entities in the target namespace and migrate relationships.
+**Q: Can CS101 students see MATH201 data?**
+A: No! That's the point of namespacing - complete isolation between courses for privacy and organization.
 
-## 📝 What You Learned
+**Q: How do I search across multiple specific namespaces?**
+A: You need to make separate searches for each namespace and combine results in your application code.
 
-✅ **Multi-Tenant Isolation**: Used `group_id` to create isolated educational environments
-✅ **Namespace-Constrained Search**: Searched within specific institutional contexts
-✅ **Cross-Namespace Analytics**: Performed platform-level analysis across institutions
-✅ **Hierarchical Organization**: Designed namespace structures for complex educational systems
-✅ **Role-Based Access**: Implemented user role-based namespace access patterns
+**Q: Why use namespaces instead of separate databases?**
+A: Namespaces are lighter weight and allow global analytics when needed, while still maintaining isolation.
 
 ## 🎯 Next Steps
 
@@ -519,6 +303,6 @@ A: This requires careful migration - typically you'd create new entities in the 
 
 ---
 
-**Key Takeaway**: Namespaces enable privacy, scalability, and organization in multi-tenant educational systems. Think of them as "institutional boundaries" that allow controlled sharing while maintaining data isolation! 🏫
+**Key Takeaway**: Namespaces are like "course classrooms" in your knowledge graph - each course gets its own isolated space, but you can still do university-wide analytics when needed! 🏫
 
-*"In education, privacy and personalization must coexist. Namespacing makes both possible at scale."*
+*"Namespaces solve the multi-tenant challenge: complete privacy when needed, global insights when appropriate."*

@@ -1,12 +1,6 @@
-# Step 02: Adding Episodes - The Three Data Types
+# Step 02: [Adding Episodes](https://help.getzep.com/graphiti/core-concepts/adding-episodes) - The Three Data Types
 
 Now that you've created your first Graphiti program, let's master episodes - the foundation of how Graphiti ingests and processes information.
-
-## 📚 Official Documentation
-
-- [Adding Episodes](https://help.getzep.com/graphiti/core-concepts/adding-episodes) - Complete guide to episode types
-- [Episode Types](https://help.getzep.com/graphiti/core-concepts/episodes) - Detailed episode concepts
-- [Temporal Data](https://help.getzep.com/graphiti/core-concepts/temporal-data) - Time-aware knowledge graphs
 
 ## 🎯 What You'll Learn
 
@@ -73,7 +67,7 @@ await graphiti.add_episode(
 
 ## 💬 **Message Episodes** - For Conversations
 
-**Use for:** Dialogues, chats, tutoring sessions, interviews, Q&A sessions
+**Use for:** Dialogues, chats, tutoring sessions, interviews, Q&A sessions. Using the EpisodeType.message type supports passing in multi-turn conversations in the episode_body. The text should be structured in {role/name}: {message} pairs.
 
 **Format requirement:** Use `Speaker: Message` pattern - this is crucial!
 
@@ -143,49 +137,136 @@ await graphiti.add_episode(
 
 Let's build a comprehensive educational scenario using all three episode types:
 
-### episodes_demo.py
+### main.py
 
-[The existing episodes_demo.py file content remains the same - it's already well-structured]
+```python
+import asyncio
+import os
+import json
+
+from datetime import datetime, timedelta
+from dotenv import load_dotenv, find_dotenv
+
+from graphiti_core import Graphiti
+from graphiti_core.nodes import EpisodeType
+
+# Gemini setup (same as Step 01)
+from graphiti_core.llm_client.gemini_client import GeminiClient, LLMConfig
+from graphiti_core.embedder.gemini import GeminiEmbedder, GeminiEmbedderConfig
+from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerClient
+
+load_dotenv(find_dotenv())
+
+
+async def main():
+    """Complete example using all three episode types"""
+
+    # Initialize Graphiti (same setup as Step 01)
+    graphiti = Graphiti(
+        os.environ.get('NEO4J_URI', 'bolt://localhost:7687'),
+        os.environ.get('NEO4J_USER', 'neo4j'),
+        os.environ.get('NEO4J_PASSWORD', 'password'),
+        llm_client=GeminiClient(
+            config=LLMConfig(
+                api_key=os.environ.get('GEMINI_API_KEY'),
+                model="gemini-2.5-flash"
+            )
+        ),
+        embedder=GeminiEmbedder(
+            config=GeminiEmbedderConfig(
+                api_key=os.environ.get('GEMINI_API_KEY'),
+                embedding_model="embedding-001"
+            )
+        ),
+        cross_encoder=GeminiRerankerClient(
+            config=LLMConfig(
+                api_key=os.environ.get('GEMINI_API_KEY'),
+                model="gemini-2.0-flash"
+            )
+        )
+    )
+
+    try:
+        await graphiti.build_indices_and_constraints()
+        print("🚀 Starting Episode Types Demo...")
+
+        # 3. JSON EPISODE - Assessment results
+        print("📊 Adding JSON episode (assessment data)...")
+        assessment_result = {
+            "student_id": "alice_chen_001",
+            "student_name": "Alice Chen",
+            "course": "Python 101",
+            "assessment_type": "loops_quiz",
+            "date": "2024-01-15",
+            "score": 88,
+            "max_score": 100,
+            "time_spent_minutes": 35,
+            "questions_correct": 7,
+            "questions_total": 8,
+            "topics_tested": ["for_loops", "while_loops", "nested_loops"],
+            "strengths": ["basic loop syntax", "iteration logic"],
+            "needs_improvement": ["nested loop complexity"],
+            "instructor_notes": "Great progress! Ready for functions next."
+        }
+
+        await graphiti.add_episode(
+            name="alice_loops_assessment",
+            episode_body=json.dumps(assessment_result),
+            source=EpisodeType.json,
+            source_description="Assessment system results",
+            reference_time=datetime.now() - timedelta(days=1),
+        )
+
+        print("✅ All episodes added successfully!")
+
+        # Specific searches by type
+        print("\n🎯 Searching for alice tutoring interactions...")
+        tutoring_results = await graphiti.search(
+            query="What is alice confusion",
+            num_results=5,
+        )
+
+        print(f"Tutoring insights: {len(tutoring_results)} results")
+        for result in tutoring_results[:3]:
+            print(f"  • {result.fact}")
+
+        print("\n🎓 Episode types demo completed!")
+
+    finally:
+        await graphiti.close()
+        print("Connection closed.")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+```
 
 ## ▶️ Running the Example
 
-1. **Save the code** as `episodes_demo.py`
+1. **Save the code** as `main.py`
 2. **Make sure your environment** from Step 01 is working
 3. **Run the program**:
 
 ```bash
-uv run python episodes_demo.py
+uv run python main.py
 ```
 
 ## 📊 Expected Output
 
 ```
 🚀 Starting Episode Types Demo...
-
-📝 Adding text episode (student background)...
-💬 Adding message episode (tutoring session)...
 📊 Adding JSON episode (assessment data)...
 ✅ All episodes added successfully!
 
-🔍 Searching across all episode types...
-📊 Found 8 results:
-  1. Alice Chen enrolled in Python 101 course
-  2. Alice Chen is biology student with analytical skills
-  3. Student struggled with for loop syntax errors
-  4. Tutor helped student fix missing colon syntax
-  5. Alice scored 88% on loops assessment quiz
-  6. Alice shows strength in basic loop syntax
-  7. Alice needs improvement with nested loops
-  8. Instructor notes Alice ready for functions
-
-🎯 Searching for tutoring interactions...
-Tutoring insights: 4 results
-  • Student asked about for loop confusion
-  • Tutor provided syntax guidance and examples
-  • Student learned missing colon was the issue
-  • Educational dialogue shows learning progression
+🎯 Searching for alice tutoring interactions...
+Tutoring insights: 5 results
+  • student_id: alice_chen_001
+  • questions_total: 8
+  • questions_correct: 7
 
 🎓 Episode types demo completed!
+Connection closed.
 ```
 
 ## 🧪 Try It Yourself
@@ -194,142 +275,13 @@ Tutoring insights: 4 results
 
 Create episodes for different educational scenarios:
 
-```python
-# Research project discussion (text episode)
-await graphiti.add_episode(
-    name="research_project_discussion",
-    episode_body=(
-        "The Advanced Biology Research Project requires students to analyze "
-        "real genomic data using Python. Teams of 2-3 students will choose "
-        "from datasets on cancer genetics, evolutionary biology, or "
-        "microbial genomics. The project spans 8 weeks and includes "
-        "data preprocessing, statistical analysis, and visualization."
-    ),
-    source=EpisodeType.text,
-    reference_time=datetime.now()
-)
-
-# Study group conversation (message episode)
-await graphiti.add_episode(
-    name="study_group_session",
-    episode_body=(
-        "Alice: I'm working on the genomic analysis project\n"
-        "Bob: Which dataset did you choose?\n"
-        "Alice: Cancer genetics - it's challenging but fascinating\n"
-        "Carol: I can help with the statistical analysis part\n"
-        "Alice: That would be amazing! I'm struggling with p-values\n"
-        "Bob: Let's meet tomorrow to work through it together"
-    ),
-    source=EpisodeType.message,
-    reference_time=datetime.now()
-)
-
-# Assignment submission data (JSON episode)
-submission_data = {
-    "assignment_id": "genomic_analysis_001",
-    "student_id": "alice_chen_001",
-    "submission_date": "2024-02-15",
-    "files_submitted": ["analysis.py", "visualization.ipynb", "report.pdf"],
-    "dataset_used": "cancer_genetics_tcga",
-    "code_quality_score": 92,
-    "analysis_accuracy": 87,
-    "collaboration_partners": ["bob_martinez", "carol_zhang"],
-    "instructor_feedback": "Excellent statistical approach, visualization needs improvement"
-}
-
-await graphiti.add_episode(
-    name="alice_project_submission",
-    episode_body=submission_data,
-    source=EpisodeType.json,
-    reference_time=datetime.now()
-)
-```
-
 ### Exercise 2: Understanding Episode Processing
 
-Add episodes and then search to see what was extracted:
-
-```python
-# Add an episode
-await graphiti.add_episode(
-    name="debugging_session",
-    episode_body="Alice spent 45 minutes debugging a Python function that calculates GC content in DNA sequences. The issue was an off-by-one error in the loop indexing.",
-    source=EpisodeType.text,
-    reference_time=datetime.now()
-)
-
-# Search to see what was extracted
-results = await graphiti.search("Alice debugging Python DNA GC content")
-for result in results:
-    print(f"Extracted: {result.fact}")
-```
+Add episodes and then search to see what was extracted.
 
 ## ⚡ Bulk Episode Loading
 
-For efficiency with large datasets, use bulk loading:
-
-### bulk_loading_demo.py
-
-```python
-from graphiti_core.nodes import RawEpisode
-import json
-
-async def bulk_loading_demo():
-    """Efficiently load multiple episodes"""
-    
-    # Same Graphiti setup as main demo
-    graphiti = Graphiti(...)  # Your configuration here
-    
-    try:
-        print("⚡ Starting Bulk Loading Demo...")
-        
-        # Prepare multiple episodes efficiently
-        episodes = []
-        
-        # Simulate importing student assessment data
-        for student_id in range(1, 11):  # 10 students
-            for week in range(1, 5):  # 4 weeks of assessments
-                assessment = {
-                    "student_id": f"student_{student_id:03d}",
-                    "week": week,
-                    "topic": f"Python Week {week}",
-                    "quiz_score": 70 + (student_id * 2) + (week * 3),  # Varied scores
-                    "assignment_score": 75 + (student_id * 1.5) + (week * 2),
-                    "participation": "High" if student_id % 2 == 0 else "Medium",
-                    "submission_date": f"2024-01-{week*7:02d}"
-                }
-                
-                episodes.append(RawEpisode(
-                    name=f"assessment_s{student_id:03d}_w{week}",
-                    content=json.dumps(assessment),
-                    source=EpisodeType.json,
-                    source_description="Bulk assessment import",
-                    reference_time=datetime.now() - timedelta(weeks=4-week)
-                ))
-        
-        # Bulk load all episodes (much faster than individual calls)
-        print(f"📦 Bulk loading {len(episodes)} assessment episodes...")
-        await graphiti.add_episode_bulk(episodes)
-        
-        print(f"✅ Successfully imported {len(episodes)} episodes")
-        
-        # Verify the bulk import worked
-        print("\n🔍 Searching bulk imported data...")
-        search_results = await graphiti.search(
-            query="student assessment quiz scores participation week",
-            num_results=15
-        )
-        
-        print(f"Found {len(search_results)} results from bulk import:")
-        for i, result in enumerate(search_results[:8], 1):
-            print(f"  {i}. {result.fact}")
-            
-    finally:
-        await graphiti.close()
-
-if __name__ == "__main__":
-    asyncio.run(bulk_loading_demo())
-```
+For efficiency with large datasets, use bulk loading.
 
 ## 🎯 Decision Guide: When to Use Each Episode Type
 
@@ -350,12 +302,7 @@ if __name__ == "__main__":
 3. **Knowledge Graph Update** → New nodes and edges are created
 4. **Searchable Knowledge** → Information becomes queryable and discoverable
 
-### Example: Text Episode Processing
-
-**Input episode:**
-```
-"Alice Chen scored 92% on her Python loops quiz and is ready to move on to functions."
-```
+#### Example: Text Episode Processing
 
 **What Graphiti extracts:**
 - **Entities**: `Alice Chen`, `Python loops quiz`, `functions`, `92%`
@@ -378,7 +325,6 @@ After processing, you can search for:
 - [ ] Message episodes preserve speaker relationships
 - [ ] JSON episodes capture structured data precisely
 - [ ] Temporal progression visible in search results
-- [ ] Bulk loading working for multiple episodes
 
 ## 🤔 Common Questions
 
@@ -394,26 +340,6 @@ A: If you get context window errors, break large JSON objects into smaller, focu
 **Q: Should I use text or JSON for grades?**
 A: Use JSON for pure data (scores, dates, IDs) and text when you want to capture context ("Alice improved dramatically after struggling initially").
 
-## 📝 What You Learned
-
-✅ **Episode Fundamentals**: Episodes are nodes that become part of your knowledge graph
-✅ **Three Episode Types**: Text (narrative), Message (conversations), JSON (structured data)  
-✅ **LLM Processing**: How episodes are analyzed to extract entities and relationships
-✅ **Temporal Tracking**: Every episode has a time context for historical analysis
-✅ **Search Integration**: How different episode types contribute to searchable knowledge
-✅ **Bulk Loading**: Efficient techniques for importing large datasets
-✅ **Decision Framework**: Clear rules for choosing the right episode type
-
 ## 🎯 Next Steps
 
-**Excellent work!** You now understand how to feed different types of data into Graphiti and how that data becomes searchable knowledge.
-
-**Ready for more precision?** Continue to **[03_custom_types](../03_custom_types/)** where you'll learn to define custom entities and relationships like `Student`, `Course`, and `ENROLLED_IN` instead of generic nodes and edges.
-
-**What's Coming**: Transform your knowledge graphs from generic entities to domain-specific, meaningful structures that understand your educational context!
-
----
-
-**Key Takeaway**: Episodes are the foundation of your knowledge graph. Choose the right episode type based on data structure, not content domain. A math conversation is still a `message` episode, and a math test result is still `json`! 🎯
-
-*"The right episode type makes your knowledge graph more accurate and searchable - think structure, not content!"*
+Continue to **[03_custom_types](../03_custom_types/)** where you'll learn to define custom entities and relationships like `Student`, `Course`, and `ENROLLED_IN` instead of generic nodes and edges.
