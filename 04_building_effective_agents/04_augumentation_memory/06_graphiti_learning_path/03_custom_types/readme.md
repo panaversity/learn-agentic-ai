@@ -345,4 +345,6 @@ A: Because you already understand memory theory! This bridges what you learned a
 
 **Key Takeaway**: Connect new concepts to what you already know! Using memory types you learned in Step 01 makes Graphiti custom types immediately familiar and practical. 🧠
 
+🔧 **Learning Challenge: Manual Data Insertion (Not LLM Extracted):** Sometimes you have data that should **not** be extracted by the LLM - like `student_id`, `course_code`, `topic_id`. These are system identifiers that you want to **manually control**.
+
 *"The best learning happens when new technical skills build on theoretical foundations you already understand."*
