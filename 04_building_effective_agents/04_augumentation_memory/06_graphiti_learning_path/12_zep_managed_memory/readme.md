@@ -23,6 +23,8 @@ getzep.com
 - Design scalable memory solutions for TutorsGPT
 - Master enterprise memory management strategies
 
+[Watch: Building a Memory Agent with the OpenAI Agents SDK and Zep](https://www.youtube.com/watch?v=IkwRG_MgAn4)
+
 ## 📚 Core Concepts
 
 ### Zep's Memory Architecture
