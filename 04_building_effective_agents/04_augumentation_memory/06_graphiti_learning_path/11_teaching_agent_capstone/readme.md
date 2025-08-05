@@ -1,4 +1,4 @@
-# Step 12: Personal Teaching Agent Implementation - Capstone Project
+# Step 11: Personal Teaching Agent Implementation - Capstone Project
 
 Welcome to the capstone! Apply everything you've learned to build a complete Teaching Agentic system powered by Graphiti's temporal knowledge graphs.
 

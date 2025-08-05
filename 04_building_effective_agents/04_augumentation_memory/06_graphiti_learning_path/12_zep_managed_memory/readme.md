@@ -1,8 +1,13 @@
-# Step 11: [Zep Memory Architecture](https://help.getzep.com/concepts) - Production Memory Systems
+# Step 12: [Zep Memory Architecture](https://help.getzep.com/concepts) - Production Memory Systems
 
 Understand how Graphiti powers Zep's production memory architecture for AI agents. Zep is layer to manage knowledge graphs you have to implement memory on top of it. 
 
-Zep have already done this for you. Purpose of this step is to explore zep so you can use it when needed and take it as reference for your agent memory and graph rag needs.
+## What is Zep?
+
+Zep is a closed-source “context engineering” platform that uses the open-source Graphiti engine to build a dynamic temporal knowledge graph from every conversation, user interaction, and business data stream. Zep explicitly supports agent memory and Graph RAG use cases: it “delivers structured, LLM-ready context” including user preferences and business facts and offers “Graph RAG for dynamic data” that answers queries over the temporal graph in milliseconds
+getzep.com
+- In benchmarks (Deep Memory Retrieval and LongMemEval), Zep outperformed MemGPT (Letta) by large margins – e.g. up to ~100% relative accuracy gains on multi-turn conversational reasoning and 90% latency reduction versus naively loading full chat logs.
+- Being a proprietary SaaS, Zep is closed-source (Graphiti itself is Apache‑2.0 open-source) and deployed as a hosted platform. It integrates with enterprise stacks (Neo4j or FalkorDB backends, LangGraph for memory persistence, etc.) and emphasizes business readiness (e.g. customer-authentication, RBAC, HIPAA-compliance likely supported via its cloud service)
 
 ## 📚 Official Documentation
 - [Zep Memory Platform](https://help.getzep.com/concepts) - Complete Zep documentation
@@ -60,9 +65,3 @@ Zep have already done this for you. Purpose of this step is to explore zep so yo
    - Retention policies (academic records)
    - Performance optimization
 ```
-
-## 🎯 Next Steps
-
-Continue to **[12_tutorsgpt_implementation](../12_tutorsgpt_implementation/)** for the capstone project integrating all Graphiti concepts.
-
-**Master's Tip**: Zep shows how Graphiti scales to production AI memory systems. Study their patterns to build robust educational memory architectures that can handle real-world complexity! 🏗️

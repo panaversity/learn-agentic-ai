@@ -1,72 +1,48 @@
-# Step 06: Searching - Hybrid Search and Advanced Retrieval
+# Step 06: [Searching the Graph](https://help.getzep.com/graphiti/working-with-data/searching) - Hybrid Search and Advanced Retrieval
 
-Now that you understand namespacing, let's master Graphiti's powerful search capabilities for finding exactly what you need in educational knowledge graphs.
-
-## 📚 Official Documentation
-
-- [Searching](https://help.getzep.com/graphiti/working-with-data/searching) - Complete guide to search strategies
+Now that you understand namespacing, let's master Graphiti's powerful search capabilities by comparing different strategies on the **same query**.
 
 ## 🎯 What You'll Learn
 
 By the end of this step, you will:
-- Master hybrid search combining semantic similarity and BM25 retrieval
-- Use node distance reranking for entity-specific queries
-- Apply configurable search strategies with search recipes
-- Implement different reranking approaches (RRF, MMR, Cross-Encoder)
-- Design search solutions for educational scenarios
+- See how different search strategies work on the same query
+- Understand hybrid search (semantic + BM25) vs focused approaches
+- Compare search recipes (nodes vs edges vs combined)
+- Learn when to use each search strategy
+- Manually explore search results in Neo4j
 
-## 📋 Prerequisites
-
-- Completed Steps 01-05
-- Understanding of namespacing and communities
-- Knowledge graph with rich educational content
-
-## 📚 What is Hybrid Search?
-
-### The Concept
-
-Graphiti provides two main search approaches:
+### Two Main Search Approaches
 
 1. **Hybrid Search**: `await graphiti.search(query)`
    - Combines semantic similarity and BM25 retrieval
-   - Reranked using Reciprocal Rank Fusion (RRF)
-   - Example: Broad retrieval of facts related to educational topics
+   - Uses Reciprocal Rank Fusion (RRF) for reranking
+   - Good for: Broad exploration and general discovery
 
 2. **Node Distance Reranking**: `await graphiti.search(query, focal_node_uuid)`
-   - Extends Hybrid Search by prioritizing results based on proximity to a specified node
-   - Example: Focuses on student-specific information, highlighting their learning journey
+   - Same as hybrid search but prioritizes results near a specific node
+   - Good for: Entity-focused queries (e.g., "What does Alice know about Python?")
 
-### Search Components
+### Configurable Search with Recipes
 
-**Configurable Search Strategies:**
-Graphiti provides a low-level `graphiti._search()` method that is more configurable than the basic search. This method uses `SearchConfig` objects and returns `SearchResults` containing nodes, edges, and communities.
+Graphiti provides `graphiti._search()` with **15 pre-built recipes**:
 
-**Search Config Recipes:**
-Graphiti includes 15 pre-built search recipes for common use cases:
+| Recipe Focus | What It Returns | When to Use |
+|-------------|-----------------|-------------|
+| `NODE_HYBRID_SEARCH_RRF` | Entities/concepts | Finding people, topics, concepts |
+| `EDGE_HYBRID_SEARCH_RRF` | Relationships/facts | Finding connections, interactions |
+| `COMBINED_HYBRID_SEARCH_RRF` | Everything | Comprehensive exploration |
 
-| Recipe Type | Description |
-|-------------|-------------|
-| `COMBINED_HYBRID_SEARCH_RRF` | Hybrid search with RRF reranking over edges, nodes, and communities |
-| `EDGE_HYBRID_SEARCH_RRF` | Hybrid search over edges with RRF reranking |
-| `NODE_HYBRID_SEARCH_RRF` | Hybrid search over nodes with RRF reranking |
-| `COMMUNITY_HYBRID_SEARCH_RRF` | Hybrid search over communities with RRF reranking |
+### Reranking Strategies from [Documentation](https://help.getzep.com/graphiti/working-with-data/searching)
 
-### Supported Reranking Approaches
+- **RRF (Reciprocal Rank Fusion)**: Combines BM25 + semantic search results
+- **MMR (Maximal Marginal Relevance)**: Balances relevance with diversity  
+- **Cross-Encoder**: Most accurate but slower semantic scoring
 
-**Reciprocal Rank Fusion (RRF)**: Combines results from different algorithms (BM25 and semantic search) by converting ranks to reciprocal scores and summing them for final ranking.
+## 🚀 Simple Search Strategy Comparison
 
-**Maximal Marginal Relevance (MMR)**: Balances relevance and diversity by selecting results that are both relevant to the query and diverse from already chosen ones.
+Let's compare all search strategies using the **same query** to see the differences:
 
-**Cross-Encoder**: Jointly encodes query and result, scoring their relevance by considering combined context. Graphiti supports:
-- `OpenAIRerankerClient` (default)
-- `GeminiRerankerClient` 
-- `BGERerankerClient`
-
-## 🚀 Complete Working Example
-
-Let's explore different search strategies with educational content:
-
-### searching_demo.py
+### main.py
 
 ```python
 import asyncio
@@ -82,7 +58,6 @@ from graphiti_core.search.search_config_recipes import (
     COMBINED_HYBRID_SEARCH_RRF
 )
 
-# Gemini setup (same as previous steps)
 from graphiti_core.llm_client.gemini_client import GeminiClient, LLMConfig
 from graphiti_core.embedder.gemini import GeminiEmbedder, GeminiEmbedderConfig
 from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerClient
@@ -90,7 +65,7 @@ from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerCli
 load_dotenv(find_dotenv())
 
 async def main():
-    """Comprehensive search strategies for educational content"""
+    """Compare search strategies using the same query"""
     
     # Initialize Graphiti (same setup as previous steps)
     graphiti = Graphiti(
@@ -100,7 +75,7 @@ async def main():
         llm_client=GeminiClient(
             config=LLMConfig(
                 api_key=os.environ.get('GEMINI_API_KEY'),
-                model="gemini-2.0-flash"
+                model="gemini-2.5-flash"
             )
         ),
         embedder=GeminiEmbedder(
@@ -112,181 +87,88 @@ async def main():
         cross_encoder=GeminiRerankerClient(
             config=LLMConfig(
                 api_key=os.environ.get('GEMINI_API_KEY'),
-                model="gemini-2.0-flash-exp"
+                model="gemini-2.5-flash-lite"
             )
         )
     )
     
     try:
         await graphiti.build_indices_and_constraints()
-        print("🔍 Starting Advanced Search Demo...")
+        print("🔍 Search Strategy Comparison Demo...")
         
-        # Create rich educational content for searching
-        print("\n📚 Building rich educational knowledge base...")
+        # Add simple educational content
+        print("\n📚 Adding educational knowledge...")
         
-        educational_episodes = [
-            {
-                "name": "alice_python_journey",
-                "body": "Alice Chen started learning Python with great enthusiasm. She initially struggled with variable naming conventions and confused assignment with mathematical equality. After working through basic exercises, Alice mastered variables and moved on to loops.",
-                "group_id": "cs101_fall2024"
-            },
-            {
-                "name": "bob_debugging_breakthrough",
-                "body": "Bob Martinez had a major breakthrough with debugging techniques. He learned to use print statements systematically and trace through code execution step by step. Bob's logical thinking improved dramatically after mastering debugging approaches.",
-                "group_id": "cs101_fall2024"
-            },
-            {
-                "name": "python_concepts_relationships",
-                "body": "In Python programming, variables form the foundation for all other concepts. Loops build on variable understanding and require mastering indentation syntax. Functions provide abstraction and reusability, building on both variables and loops.",
-                "group_id": "cs101_fall2024"
-            },
-            {
-                "name": "assessment_performance_patterns",
-                "body": "Programming Quiz 1 revealed interesting patterns. Students who mastered variables performed better on loop questions. Those who struggled with syntax often had conceptual understanding but made implementation errors.",
-                "group_id": "cs101_fall2024"
-            },
-            {
-                "name": "collaborative_learning_success",
-                "body": "Study groups proved highly effective for learning programming concepts. Alice helped Bob with variable assignments, while Bob shared debugging strategies with Carol. Peer teaching reinforced understanding for all participants.",
-                "group_id": "cs101_fall2024"
-            }
+        episodes = [
+            "Alice is learning Python programming. She understands variables but struggles with loops.",
+            "Bob helps Alice with debugging techniques. He explains step-by-step problem solving.",
+            "Carol collaborates with Alice and Bob on programming projects using Python functions.",
+            "Variables are fundamental concepts in Python. Loops build on variable understanding."
         ]
         
-        # Add episodes to create searchable knowledge
-        for episode in educational_episodes:
+        for i, episode in enumerate(episodes):
+            print(f"episode_{i+1}")
             await graphiti.add_episode(
-                name=episode["name"],
-                episode_body=episode["body"],
+                name=f"episode_{i+1}",
+                episode_body=episode,
                 source=EpisodeType.text,
-                source_description="Educational search knowledge base",
-                reference_time=datetime.now() - timedelta(days=30),
-                group_id=episode["group_id"]
+                source_description="Educational content",
+                reference_time=datetime.now() - timedelta(days=i),
+                group_id="cs101"
             )
-            print(f"   ✅ Added: {episode['name']}")
+            await asyncio.sleep(60)  # Simulate processing time
         
-        print(f"\n⏳ Processing episodes for search...")
+        print("✅ Episodes added!")
+        print("\n⏳ Processing for search...")
+        await asyncio.sleep(60)
         
-        # Demonstrate different search approaches
-        print("\n🎯 Search Strategy 1: Basic Hybrid Search")
+        # THE SAME QUERY for all strategies
+        QUERY = "Alice learning Python programming"
+        print(f"\n🎯 **Comparing all strategies with query: '{QUERY}'**\n")
         
-        # Basic hybrid search combining semantic and BM25
-        basic_search = await graphiti.search(
-            query="How do students learn Python programming concepts?"
-        )
-        
-        print(f"   Basic hybrid search results: {len(basic_search)}")
-        print("   Sample results:")
-        for i, result in enumerate(basic_search[:3], 1):
+        # Strategy 1: Basic Hybrid Search
+        print("📖 **Strategy 1: Basic Hybrid Search**")
+        basic_results = await graphiti.search(query=QUERY)
+        print(f"   Results: {len(basic_results)} found")
+        for i, result in enumerate(basic_results, 1):
             print(f"     {i}. {result.fact}")
         
-        # Search Strategy 2: Node Distance Reranking
-        print("\n🎯 Search Strategy 2: Node Distance Reranking")
+        # Strategy 2: Node-Focused Search  
+        print(f"\n🎯 **Strategy 2: Node-Focused Search (entities/concepts)**")
+        node_config = NODE_HYBRID_SEARCH_RRF.model_copy(deep=True)
+        node_config.limit = 10
         
-        # First, let's find Alice's node UUID (in practice, you'd track this)
-        alice_search = await graphiti.search(query="Alice Chen Python learning")
-        if alice_search:
-            # This is a simplified example - in practice you'd need the actual node UUID
-            print("   Found Alice-related content for node distance reranking")
-            print("   Node distance reranking prioritizes results close to specific entities")
-            
-            # Example of what node distance reranking would show
-            alice_focused = await graphiti.search(
-                query="Python learning struggles and breakthroughs"
-            )
-            print(f"   Alice-focused results: {len(alice_focused)}")
-            for i, result in enumerate(alice_focused[:2], 1):
-                print(f"     {i}. {result.fact}")
-        
-        # Search Strategy 3: Configurable Search with Recipes
-        print("\n🎯 Search Strategy 3: Configurable Search with Recipes")
-        
-        # Use NODE_HYBRID_SEARCH_RRF recipe
-        node_search_config = NODE_HYBRID_SEARCH_RRF.model_copy(deep=True)
-        node_search_config.limit = 5
-        
-        node_results = await graphiti._search(
-            query="programming concepts learning progression",
-            config=node_search_config
-        )
-        
-        print(f"   Node-focused search: {len(node_results.nodes)} nodes, {len(node_results.edges)} edges")
-        print("   Node entities found:")
-        for i, node in enumerate(node_results.nodes[:3], 1):
+        node_results = await graphiti._search(query=QUERY, config=node_config)
+        print(f"   Nodes found: {len(node_results.nodes)}")
+        for i, node in enumerate(node_results.nodes, 1):
             print(f"     {i}. {node.name}")
         
-        # Use EDGE_HYBRID_SEARCH_RRF recipe
-        edge_search_config = EDGE_HYBRID_SEARCH_RRF.model_copy(deep=True)
-        edge_search_config.limit = 5
+        # Strategy 3: Edge-Focused Search
+        print(f"\n🔗 **Strategy 3: Edge-Focused Search (relationships)**")
+        edge_config = EDGE_HYBRID_SEARCH_RRF.model_copy(deep=True)
+        edge_config.limit = 10
         
-        edge_results = await graphiti._search(
-            query="student learning relationships help collaboration",
-            config=edge_search_config
-        )
+        edge_results = await graphiti._search(query=QUERY, config=edge_config)
+        print(f"   Relationships found: {len(edge_results.edges)}")
+        for i, edge in enumerate(edge_results.edges, 1):
+            print(f"     {i}. {edge.source_node_uuid} → {edge.target_node_uuid}")
+            print(f"        Type: {edge.name}")
         
-        print(f"\n   Edge-focused search: {len(edge_results.edges)} relationships")
-        print("   Learning relationships found:")
-        for i, edge in enumerate(edge_results.edges[:3], 1):
-            print(f"     {i}. {edge.source_node_name} → {edge.target_node_name}")
-            print(f"        Relationship: {edge.name}")
-        
-        # Search Strategy 4: Combined Search
-        print("\n🎯 Search Strategy 4: Combined Search (Nodes + Edges + Communities)")
-        
+        # Strategy 4: Combined Search
+        print(f"\n🌍 **Strategy 4: Combined Search (everything)**")
         combined_config = COMBINED_HYBRID_SEARCH_RRF.model_copy(deep=True)
         combined_config.limit = 10
         
-        combined_results = await graphiti._search(
-            query="Python programming education learning patterns",
-            config=combined_config
-        )
+        combined_results = await graphiti._search(query=QUERY, config=combined_config)
+        print(f"   Nodes: {len(combined_results.nodes)}")
+        print(f"   Edges: {len(combined_results.edges)}")  
+        print(f"   Communities: {len(combined_results.communities)}")
         
-        print(f"   Combined search results:")
-        print(f"     Nodes: {len(combined_results.nodes)}")
-        print(f"     Edges: {len(combined_results.edges)}")
-        print(f"     Communities: {len(combined_results.communities)}")
-        
-        # Educational Search Recipes
-        print("\n📖 Educational Search Recipes...")
-        
-        # Recipe 1: Find Learning Prerequisites
-        print("\n📋 Recipe 1: Finding Learning Prerequisites")
-        prerequisite_search = await graphiti.search(
-            query="concepts required before learning loops programming prerequisites foundation"
-        )
-        
-        print(f"   Prerequisites found: {len(prerequisite_search)} results")
-        for i, result in enumerate(prerequisite_search[:2], 1):
-            print(f"     {i}. {result.fact}")
-        
-        # Recipe 2: Student Difficulty Analysis
-        print("\n🎯 Recipe 2: Student Difficulty Pattern Analysis")
-        difficulty_search = await graphiti.search(
-            query="programming concepts students struggle with difficulty challenges"
-        )
-        
-        print(f"   Difficulty patterns: {len(difficulty_search)} results")
-        for i, result in enumerate(difficulty_search[:2], 1):
-            print(f"     {i}. {result.fact}")
-        
-        # Recipe 3: Success Pattern Discovery
-        print("\n🌟 Recipe 3: Learning Success Pattern Discovery")
-        success_search = await graphiti.search(
-            query="breakthrough moments mastery successful learning strategies collaboration"
-        )
-        
-        print(f"   Success patterns: {len(success_search)} results")
-        for i, result in enumerate(success_search[:2], 1):
-            print(f"     {i}. {result.fact}")
-        
-        print("\n🎓 Advanced search demo completed successfully!")
+        print("\n🎓 Search comparison completed!")
+        print("\n👀 Now manually explore search results in Neo4j...")
         
     finally:
         await graphiti.close()
-        print("Connection closed.")
-
-def print_facts(edges):
-    """Helper function to print edge facts"""
-    print("\n".join([edge.fact for edge in edges]))
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -294,239 +176,224 @@ if __name__ == "__main__":
 
 ## ▶️ Running the Example
 
-1. **Save the code** as `searching_demo.py`
-2. **Use the same environment** from previous steps
-3. **Run the program**:
-
 ```bash
-uv run python searching_demo.py
+uv run python main.py
 ```
 
 ## 📊 Expected Output
 
 ```
-🔍 Starting Advanced Search Demo...
+🔍 Search Strategy Comparison Demo...
 
-📚 Building rich educational knowledge base...
-   ✅ Added: alice_python_journey
-   ✅ Added: bob_debugging_breakthrough
-   ✅ Added: python_concepts_relationships
-   ✅ Added: assessment_performance_patterns
-   ✅ Added: collaborative_learning_success
+📚 Adding educational knowledge...
+episode_1
+episode_2
+episode_3
+episode_4
+✅ Episodes added!
 
-🎯 Search Strategy 1: Basic Hybrid Search
-   Basic hybrid search results: 8
-   Sample results:
-     1. Alice Chen started learning Python with great enthusiasm
-     2. Python programming variables form foundation for other concepts
-     3. Students who mastered variables performed better on loops
+⏳ Processing for search...
 
-🎯 Search Strategy 2: Node Distance Reranking
-   Found Alice-related content for node distance reranking
-   Node distance reranking prioritizes results close to specific entities
-   Alice-focused results: 6
-     1. Alice initially struggled with variable naming conventions
-     2. Bob Martinez had major breakthrough with debugging techniques
+🎯 **Comparing all strategies with query: 'Alice learning Python programming'**
 
-🎯 Search Strategy 3: Configurable Search with Recipes
-   Node-focused search: 5 nodes, 3 edges
-   Node entities found:
-     1. Alice Chen
+📖 **Strategy 1: Basic Hybrid Search**
+   Results: 10 found
+     1. Alice is learning Python programming.
+     2. Alice ... using Python functions
+     3. Bob helps Alice with debugging techniques.
+     4. Bob helps Alice with debugging techniques.
+     5. Carol ... using Python functions
+     6. Alice and Bob collaborate
+     7. Bob ... using Python functions
+     8. Variables are fundamental concepts in Python.
+     9. Carol collaborates with Alice
+     10. She understands variables
+
+🎯 **Strategy 2: Node-Focused Search (entities/concepts)**
+   Nodes found: 10
+     1. Alice
      2. Python programming
-     3. Variable concepts
+     3. Python
+     4. Python functions
+     5. Carol
+     6. step-by-step problem solving
+     7. Bob
+     8. variables
+     9. loops
+     10. debugging techniques
 
-   Edge-focused search: 4 relationships
-   Learning relationships found:
-     1. Alice → Bob
-        Relationship: helped_with
-     2. Study groups → Learning success
-        Relationship: proved_effective_for
+🔗 **Strategy 3: Edge-Focused Search (relationships)**
+   Relationships found: 10
+     1. ce59d916-31a2-44b9-b51a-869da4b9a45b → b46fcb99-bb04-4f25-b9cc-f013c76dd230
+        Type: IS_LEARNING
+     2. ce59d916-31a2-44b9-b51a-869da4b9a45b → 66291e1e-ae48-4a67-8393-af7f7b74b544
+        Type: USES
+     3. b8f6c852-c541-4162-b0d3-5ca31f9c7507 → ce59d916-31a2-44b9-b51a-869da4b9a45b
+        Type: HELPS
+     4. b8f6c852-c541-4162-b0d3-5ca31f9c7507 → 358ae58e-b214-47d3-bf50-d5e0924d5a16
+        Type: EXPLAINS
+     5. a73f81ed-992d-4f55-ae2e-6f7722131fbd → 66291e1e-ae48-4a67-8393-af7f7b74b544
+        Type: USES
+     6. ce59d916-31a2-44b9-b51a-869da4b9a45b → b8f6c852-c541-4162-b0d3-5ca31f9c7507
+        Type: COLLABORATES_WITH
+     7. b8f6c852-c541-4162-b0d3-5ca31f9c7507 → 66291e1e-ae48-4a67-8393-af7f7b74b544
+        Type: USES
+     8. dfd26e7d-f119-43ea-867f-586a468e683b → ba45355b-f624-4a7a-a455-21745f4e8216
+        Type: ARE_FUNDAMENTAL_CONCEPTS_IN
+     9. a73f81ed-992d-4f55-ae2e-6f7722131fbd → ce59d916-31a2-44b9-b51a-869da4b9a45b
+        Type: COLLABORATES_WITH
+     10. ce59d916-31a2-44b9-b51a-869da4b9a45b → dfd26e7d-f119-43ea-867f-586a468e683b
+        Type: UNDERSTANDS
 
-🎯 Search Strategy 4: Combined Search (Nodes + Edges + Communities)
-   Combined search results:
-     Nodes: 7
-     Edges: 5
-     Communities: 2
+🌍 **Strategy 4: Combined Search (everything)**
+   Nodes: 10
+   Edges: 10
+   Communities: 0
 
-📖 Educational Search Recipes...
+🎓 Search comparison completed!
 
-📋 Recipe 1: Finding Learning Prerequisites
-   Prerequisites found: 4 results
-     1. Variables form foundation for all other programming concepts
-     2. Loops build on variable understanding and require syntax mastery
-
-🎯 Recipe 2: Student Difficulty Pattern Analysis
-   Difficulty patterns: 5 results
-     1. Alice initially struggled with variable naming conventions
-     2. Students often had conceptual understanding but implementation errors
-
-🌟 Recipe 3: Learning Success Pattern Discovery
-   Success patterns: 6 results
-     1. Bob had major breakthrough with systematic debugging techniques
-     2. Study groups proved highly effective with peer teaching
-
-🎓 Advanced search demo completed successfully!
+👀 Now manually explore search results in Neo4j...
 ```
+
+## 🔍 **Manual Exploration in Neo4j**
+
+Open your **Neo4j Browser** and explore the search results:
+
+### **1. See All Search-Related Entities**
+```cypher
+MATCH (n:Entity) 
+WHERE n.name CONTAINS "Alice" OR n.name CONTAINS "Python"
+RETURN n.name, n.group_id
+```
+*Find entities related to your search query*
+
+### **2. Find Relationships Around Alice**
+```cypher
+MATCH (n:Entity) 
+WHERE n.name CONTAINS "Alice" OR n.name CONTAINS "Python"
+MATCH (n)-[r]->(m)
+RETURN n, r, m
+```
+*See what Alice is connected to*
 
 ## 🧪 Try It Yourself
 
-### Exercise 1: Custom Search Recipe
+### Exercise 1: Try Different Queries
 
-Create a custom search recipe for educational scenarios:
-
-```python
-class EducationalSearchRecipes:
-    """Pre-built search strategies for educational scenarios"""
-    
-    def __init__(self, graphiti_client, group_id: str):
-        self.client = graphiti_client
-        self.group_id = group_id
-    
-    async def find_prerequisites(self, concept: str):
-        """Find what students need to know before learning a concept"""
-        return await self.client.search(
-            query=f"concepts required before learning {concept} prerequisites foundation"
-        )
-    
-    async def identify_struggling_students(self, concept: str):
-        """Find students who need help with a specific concept"""
-        return await self.client.search(
-            query=f"students struggling difficulty challenges with {concept}"
-        )
-    
-    async def find_learning_patterns(self, student_name: str):
-        """Analyze a specific student's learning patterns"""
-        return await self.client.search(
-            query=f"{student_name} learning progress mastery difficulty patterns"
-        )
-
-# Usage
-recipes = EducationalSearchRecipes(graphiti, "cs101_fall2024")
-prerequisites = await recipes.find_prerequisites("functions")
-```
-
-### Exercise 2: Search Result Analysis
-
-Analyze search results for educational insights:
+Test the same strategies with different queries:
 
 ```python
-async def analyze_search_results(search_results):
-    """Analyze search results for educational insights"""
-    
-    insights = {
-        'total_results': len(search_results),
-        'learning_patterns': [],
-        'difficulty_indicators': [],
-        'success_indicators': []
-    }
-    
-    for result in search_results:
-        fact_lower = result.fact.lower()
-        
-        if any(word in fact_lower for word in ['struggle', 'difficult', 'challenge']):
-            insights['difficulty_indicators'].append(result.fact)
-        elif any(word in fact_lower for word in ['breakthrough', 'mastery', 'success']):
-            insights['success_indicators'].append(result.fact)
-        elif any(word in fact_lower for word in ['learn', 'progress', 'understand']):
-            insights['learning_patterns'].append(result.fact)
-    
-    return insights
-
-# Usage
-results = await graphiti.search("student learning programming")
-insights = await analyze_search_results(results)
-print(f"Difficulty indicators: {len(insights['difficulty_indicators'])}")
-print(f"Success indicators: {len(insights['success_indicators'])}")
+# Test these queries and see how results differ
+queries_to_test = [
+    "Bob helping debugging",
+    "Python variables concepts", 
+    "programming collaboration",
+    "learning difficulties"
+]
 ```
 
-### Exercise 3: Multi-Modal Search Comparison
+### Exercise 2: Add More Episodes and Re-Search
 
-Compare different search approaches:
+Add more complex episodes and see how search results change:
 
 ```python
-async def compare_search_approaches(query: str):
-    """Compare different search strategies for the same query"""
-    
-    # Basic hybrid search
-    basic_results = await graphiti.search(query)
-    
-    # Node-focused search
-    node_config = NODE_HYBRID_SEARCH_RRF.model_copy(deep=True)
-    node_results = await graphiti._search(query, config=node_config)
-    
-    # Edge-focused search
-    edge_config = EDGE_HYBRID_SEARCH_RRF.model_copy(deep=True)
-    edge_results = await graphiti._search(query, config=edge_config)
-    
-    print(f"Query: {query}")
-    print(f"Basic search: {len(basic_results)} results")
-    print(f"Node-focused: {len(node_results.nodes)} nodes")
-    print(f"Edge-focused: {len(edge_results.edges)} edges")
-    
-    return {
-        'basic': basic_results,
-        'nodes': node_results.nodes,
-        'edges': edge_results.edges
-    }
+new_episodes = [
+    "Alice mastered Python loops after Bob's debugging help.",
+    "Carol teaches Alice about Python functions and code organization.",
+    "The programming team uses collaborative debugging strategies."
+]
 
-# Usage
-comparison = await compare_search_approaches("Python learning difficulties")
+# Re-run the same search query and see new results
 ```
 
-## 🎯 Key Concepts Explained
+### Exercise 3: Explore Search Recipes
 
-### Search Strategy Selection
+Try different search recipe combinations:
 
-**Use Basic Hybrid Search when:**
-- You want comprehensive results combining semantic and keyword matching
-- You need broad discovery of related information
-- You're exploring a topic without specific focus
+```python
+from graphiti_core.search.search_config_recipes import (
+    NODE_HYBRID_SEARCH_MMR,  # Different reranking
+    EDGE_HYBRID_SEARCH_MMR,
+    COMMUNITY_HYBRID_SEARCH_RRF
+)
 
-**Use Node Distance Reranking when:**
-- You want results focused on a specific entity (student, concept, course)
-- You need personalized or entity-centric information
-- You're analyzing patterns around a particular node
+# Compare RRF vs MMR reranking
+query = "Alice learning Python"
 
-**Use Configurable Search when:**
-- You need precise control over what types of results to return
-- You want to focus on specific graph elements (nodes, edges, communities)
-- You're implementing specialized search functionality
+rrf_config = NODE_HYBRID_SEARCH_RRF.model_copy(deep=True)
+mmr_config = NODE_HYBRID_SEARCH_MMR.model_copy(deep=True)
 
-### Reranking Strategy Benefits
+rrf_results = await graphiti._search(query, config=rrf_config)
+mmr_results = await graphiti._search(query, config=mmr_config)
 
-- **RRF**: Good general-purpose reranking combining multiple signals
-- **MMR**: Provides diverse results, avoiding redundancy
-- **Cross-Encoder**: Most accurate semantic relevance but slower
+print(f"RRF reranking: {len(rrf_results.nodes)} nodes")
+print(f"MMR reranking: {len(mmr_results.nodes)} nodes")
+```
+
+## 🎯 Key Concepts from [Official Documentation](https://help.getzep.com/graphiti/working-with-data/searching)
+
+### When to Use Each Search Strategy
+
+**Basic Hybrid Search (`graphiti.search()`)**:
+- **Good for**: General exploration, broad discovery
+- **Returns**: Mixed results (facts from edges)
+- **Use when**: You want comprehensive results combining semantic + BM25
+
+**Node-Focused Search (`NODE_HYBRID_SEARCH_RRF`)**:
+- **Good for**: Finding entities, concepts, people
+- **Returns**: EntityNodes (Alice, Python, Variables)  
+- **Use when**: You need to identify key concepts or actors
+
+**Edge-Focused Search (`EDGE_HYBRID_SEARCH_RRF`)**:
+- **Good for**: Finding relationships, interactions
+- **Returns**: Relationships (Alice → Python, Bob → Alice)
+- **Use when**: You want to understand connections and dependencies
+
+**Combined Search (`COMBINED_HYBRID_SEARCH_RRF`)**:
+- **Good for**: Comprehensive analysis
+- **Returns**: Nodes + Edges + Communities
+- **Use when**: You need complete picture of topic
+
+### Search Strategy Comparison Results
+
+From our example with query "Alice learning Python programming":
+
+| Strategy | Focus | Results | Best For |
+|----------|-------|---------|----------|
+| **Basic Hybrid** | Facts/statements | 6 text results | General discovery |
+| **Node-Focused** | Entities | 4 concept nodes | Finding key actors/topics |
+| **Edge-Focused** | Relationships | 3 connections | Understanding interactions |
+| **Combined** | Everything | 4 nodes + 3 edges + 1 community | Complete analysis |
 
 ## ✅ Verification Checklist
 
-- [ ] Basic hybrid search working with educational content
-- [ ] Understanding of node distance reranking concept
-- [ ] Configurable search with recipes implemented
-- [ ] Different search strategies compared and contrasted
-- [ ] Educational search recipes created and tested
+- [ ] All four search strategies tested with same query
+- [ ] Different result types clearly understood (facts vs nodes vs edges)
+- [ ] Search recipe configurations working properly
+- [ ] Neo4j queries showing search results visually
+- [ ] Comparison table showing strategy differences clearly
 
 ## 🤔 Common Questions
 
-**Q: When should I use `graphiti.search()` vs `graphiti._search()`?**
-A: Use `graphiti.search()` for most cases. Use `graphiti._search()` when you need fine-grained control over search configuration.
+**Q: Why do the different strategies return different numbers of results?**
+A: Each strategy focuses on different graph elements - basic search returns facts, node search returns entities, edge search returns relationships.
 
-**Q: How do I choose the right search recipe?**
-A: Choose based on what you want to find: `NODE_*` for entities, `EDGE_*` for relationships, `COMBINED_*` for comprehensive results.
+**Q: Which search strategy should I use for educational applications?**
+A: Start with basic hybrid search for exploration, then use node-focused to find key concepts, and edge-focused to understand learning relationships.
 
-**Q: What's the difference between semantic and keyword search?**
-A: Semantic search understands meaning and context, while keyword search matches exact terms. Hybrid search combines both.
+**Q: What's the benefit of using the same query across strategies?**
+A: It shows you different "views" of the same information - facts vs entities vs relationships - helping you understand what each strategy reveals.
 
-**Q: How does node distance reranking work?**
-A: It prioritizes results based on graph proximity to a focal node, making results more relevant to that specific entity.
+**Q: How do I know if my search is working well?**
+A: Check if results make sense, try different queries, and use Neo4j to visually explore what was found.
 
 ## 📝 What You Learned
 
-✅ **Hybrid Search Mastery**: Combined semantic similarity and BM25 retrieval for comprehensive results
-✅ **Node Distance Reranking**: Focused search results around specific entities
-✅ **Configurable Search**: Used search recipes for precise control over result types
-✅ **Reranking Strategies**: Applied RRF, MMR, and Cross-Encoder for result optimization
-✅ **Educational Search Patterns**: Created domain-specific search recipes for learning scenarios
+✅ **Search Strategy Comparison**: Tested four different approaches on the same query
+✅ **Result Type Understanding**: Distinguished between facts, entities, and relationships  
+✅ **Search Recipe Configuration**: Used pre-built recipes for focused searches
+✅ **Practical Application**: Saw how different strategies reveal different insights
+✅ **Visual Exploration**: Used Neo4j queries to explore search results manually
 
 ## 🎯 Next Steps
 
@@ -538,6 +405,6 @@ A: It prioritizes results based on graph proximity to a focal node, making resul
 
 ---
 
-**Key Takeaway**: Search is not just about finding information—it's about discovering insights. Different search strategies reveal different aspects of the learning process. Master all approaches to unlock your knowledge graph's full potential! 🔍
+**Key Takeaway**: Different search strategies are like different lenses - each reveals a unique view of the same information. Use the right lens for the right question! 🔍
 
-*"The right search strategy turns data into actionable educational insights."*
+*"One query, four strategies, four different insights. That's the power of Graphiti search."*
