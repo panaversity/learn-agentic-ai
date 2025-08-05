@@ -55,17 +55,17 @@ We follow proven learning principles:
 ### **Phase 3: Production Systems (Steps 09-12)**
 *Deploy and scale your knowledge graphs*
 
-**Step 09: [MCP Server](09_mcp_server/)** - AI assistant integration  
-*Connect Graphiti to Claude, Cursor, and other AI tools*
-
-**Step 10: [Configuration](10_configuration/)** - Performance optimization  
+**Step 09: [Configuration](09_configuration/)** - Performance optimization  
 *Configure LLMs, databases, and performance settings*
 
-**Step 11: [Zep Integration](11_zep_memory/)** - Production memory  
+**Step 10: [Official MCP Server Breakdown](10_official_mcp_breakdown/)** - AI assistant integration  
+
+**Step 11: [Teaching Agent Capstone Project](11_teaching_agent_capstone/)** - Complete system  
+*Build a full educational AI system using everything you've learned*
+
+**Step 12: [Zep Integration](12_zep_managed_memory/)** - Production memory  
 *Understand how Graphiti powers production AI systems*
 
-**Step 12: [TutorsGPT Project](12_tutorsgpt_implementation/)** - Complete system  
-*Build a full educational AI system using everything you've learned*
 
 ## 🛠️ How to Use This Path
 

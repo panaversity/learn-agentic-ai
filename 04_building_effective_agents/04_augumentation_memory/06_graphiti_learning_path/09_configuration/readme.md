@@ -1,4 +1,4 @@
-# Step 10: Configuration - Production Optimization
+# Step 09: Configuration - Production Optimization (Theory)
 
 Master Graphiti configuration for production systems with security, performance, and scalability in mind.
 
@@ -331,8 +331,6 @@ class CostOptimizedConfig:
 ## 🎯 Next Steps
 
 **Excellent work!** You now understand how to configure Graphiti for production educational systems with security, performance, and cost considerations.
-
-**Ready to understand the bigger picture?** Continue to **[11_zep_memory](../11_zep_memory/)** to see how Graphiti powers Zep's production memory architecture and fits into the broader agentic AI ecosystem.
 
 **What's Coming**: Understand how all these Graphiti concepts come together in real-world production systems!
 
