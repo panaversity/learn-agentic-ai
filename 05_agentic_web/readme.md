@@ -10,7 +10,7 @@ In this tutorial, we will delve into the Agentic Web with a focus on educational
 
 ## Historical Evolution: From PC Web to Mobile Web to Agentic Web
 
-[Evolution](/images/agentic_web.webp)
+![Evolution](/images/agentic_web.webp)
 
 Understanding the Agentic Web is easier if we trace how the Web has evolved over time in terms of user interaction:
 
