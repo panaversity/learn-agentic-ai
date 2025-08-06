@@ -224,3 +224,72 @@ If you want a “pure agentic” reading, #1–#3 are the core; #4–#5 are the 
 [11]: https://www.theregister.com/2025/07/12/ai_agent_protocols_mcp_a2a/?utm_source=chatgpt.com "MCP vs A2A: Agentic AI protocols take shape"
 [12]: https://arxiv.org/abs/2507.21206?utm_source=chatgpt.com "Agentic Web: Weaving the Next Web with AI Agents"
 
+# What is the “Agent Attention Economy”?
+
+In the agentic web, tools, APIs, and even other agents aren’t competing for *human* clicks anymore—they’re competing to be **selected and invoked by agents** during task execution. Think of registries/marketplaces where capabilities are indexed; when a principal agent plans a workflow, dozens of candidate services vie for a slot in that plan. That competition for being *called* (not *clicked*) is the “agent attention economy.” Expect agent-facing ranking, recommendation, referrals, and even auctions targeted at **influencing agent selection pipelines**, with metrics shifting from CTR and dwell time to things like **invocation frequency, capability relevance, and task success rate**.  &#x20;
+
+# Why micropayments matter
+
+Once agents select each other’s services on the fly, you need **fine-grained, usage-based billing** (per tool call, per token, per minute of GPU, etc.). Traditional subscriptions don’t map well to multi-agent, long-running workflows where costs sprawl across sub-agents and third-party APIs. The research flags this as a core open problem: you need **resource metering, cross-agent accounting, and auditable attribution** from the user’s top-level intent down to every delegated step—otherwise the economics fall apart. &#x20;
+
+Concretely, future stacks will likely include primitives like **resource metering** and a **Cross-Agent Billing Ledger (CABL)** to settle per-invocation fees, royalties, or chained services. (These appear in proposed “Agentic Web Roadmap” components.)&#x20;
+
+# How agents would *use* micropayments (design pattern)
+
+1. **Budgeting & policy.** A principal agent receives a user goal and a **spend policy** (max budget, per-call caps, approved counterparties).
+2. **Discovery & ranking.** The agent queries a registry; candidate services expose price signals (fixed fee, dynamic auction, rev-share). Ranking may include *price × quality × reliability*.&#x20;
+3. **Just-in-time payment.** On selection, the agent streams or posts a small payment per invocation (see solutions below).
+4. **Attribution trail.** Every sub-call appends to a tamper-evident **billing trace**, enabling end-to-end cost breakdown to the originating user.&#x20;
+5. **Reconciliation.** The CABL tallies micro-fees across agents/tools and closes channels/settles periodically.&#x20;
+
+# Micropayment rails you can use *today*
+
+Below are production-grade options you can integrate now (with trade-offs). None are “agent-native” yet, but they’re the most practical rails to pilot with:
+
+## Interledger / Web Monetization / Open Payments
+
+* **What it is:** An open, ledger-agnostic **payment interop layer** for *streaming micro-payments* across providers; **Web Monetization** is a browser/agent API that sends tiny real-time payments to a payment pointer; **Open Payments** defines standardized APIs for wallets and receipts.
+* **Why it fits agents:** Pull-based streams per session/URL match per-invocation billing; you can meter and stop anytime; no blockchain lock-in.
+* **Where to start:**
+
+  * Interledger “Web Monetization” explainer/spec shows pay-as-you-use streaming via wallet/payment pointer. ([Interledger Foundation][1]) ([webmonetization.org][2])
+  * Open Payments is the API layer Web Monetization uses under the hood. ([Interledger Foundation][3])
+  * Recent updates show **Open Payments** being used by the Web Monetization extension in 2025. ([The Interledger Community][4])
+
+**Agent pattern:** Give your agent a wallet/payment pointer; when it invokes a tool, it streams a few cents/second while the tool is in use; stop on completion or on policy breach; attach receipts to the billing trace.
+
+## Bitcoin Lightning Network (plus Taproot Assets for stablecoins)
+
+* **What it is:** A layer-2 network of payment channels enabling **instant, low-fee micro-transactions**; now increasingly used for **machine-to-machine** payments (IoT, pay-per-minute services). ([trustmachines.co][5]) ([yellow.com][6])
+* **Stable value:** Taproot Assets enables **USD-like stablecoin** rails over Lightning, reducing BTC volatility exposure; 2025 brought notable adoption signals. ([Aurpay][7])
+* **Agent pattern:** Maintain a Lightning wallet; open channels to popular services; pay per call or stream ppm/pps; settle off-chain, reconcile periodically on-chain. Good for low-latency, high-frequency calls. ([lightspark.com][8]) ([SimpleSwap][9])
+
+> Other candidates you’ll see: account-to-account **Open Banking** for larger, batched settlements; **in-app credits** (centralized ledgers) for closed ecosystems. They’re less “micro,” but can backstop retries and refunds.
+
+# Putting it together in the “attention” market
+
+Here’s how pricing + selection could play out in practice:
+
+* **Agent-facing listings:** Services publish **capabilities + price signals** (flat per call, dynamic auctions, or tiered streaming) in the registry. Agents select based on expected utility and policy.&#x20;
+* **Bidding for invocation:** When multiple providers can fulfill a subtask, they **bid** for agent attention (e.g., “\$0.002 per 1k tokens processed,” “\$0.01/min GPU,” “success-based royalty”). The planner picks the Pareto-best bundle.&#x20;
+* **Metrics shift:** Platforms optimize **service invocation frequency, capability relevance, and agent response success rate**—not human CTR.&#x20;
+
+# Practical guidance (short and actionable)
+
+* **Start with Interledger/Web Monetization** for streaming payments between your agent and your own tools (fastest to prototype). ([webmonetization.org][2])
+* **Add Lightning** if you need *global*, *instant* micro-settlement or want to experiment with machine-to-machine use cases. ([trustmachines.co][5])
+* **Implement metering + receipts now** (regardless of rail): log every call, attach a receipt/quote, and tally in a simple **cross-agent ledger**—this mirrors where the research says we’re headed. &#x20;
+
+If you want, I can sketch a reference architecture for **per-invocation streaming payments** (Open Payments for the API, Web Monetization in the agent adapter, and a billing trace that rolls up to user-visible cost previews) and a second variant using **Lightning** channels.
+
+[1]: https://interledger.org/web-monetization?utm_source=chatgpt.com "Web Monetization"
+[2]: https://webmonetization.org/specification/?utm_source=chatgpt.com "Web Monetization Specification"
+[3]: https://interledger.org/news/ad-filtering-dev-summit-23-web-monetization-100-ad-filter?utm_source=chatgpt.com "Ad Filtering Dev Summit '23 | Web Monetization - The 100 ..."
+[4]: https://community.interledger.org/interledger/web-monetization-updates-for-june-2025-d6o?utm_source=chatgpt.com "Web Monetization updates for June 2025"
+[5]: https://trustmachines.co/learn/what-is-lightning-network/?utm_source=chatgpt.com "Lightning Network and Bitcoin: What and How | ..."
+[6]: https://yellow.com/news/bitcoin-lightning-network-advances-5-real-world-applications-gaining-traction?utm_source=chatgpt.com "Bitcoin Lightning Network Advances: 5 Real-World ..."
+[7]: https://aurpay.net/aurspace/lightning-network-enterprise-adoption-2025/?utm_source=chatgpt.com "Lightning Network 2025: Enterprise Adoption Cuts Fees 50%"
+[8]: https://www.lightspark.com/blog/bitcoin/what-does-the-lightning-network-do?utm_source=chatgpt.com "What the Lightning Network Does for Bitcoin"
+[9]: https://simpleswap.io/blog/what-is-bitcoin-lightning-network?utm_source=chatgpt.com "What It Is Bitcoin Lightning Network and How It Works"
+
+
