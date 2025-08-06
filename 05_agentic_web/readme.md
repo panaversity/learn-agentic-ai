@@ -10,6 +10,8 @@ In this tutorial, we will delve into the Agentic Web with a focus on educational
 
 ## Historical Evolution: From PC Web to Mobile Web to Agentic Web
 
+[](/images/agentic_web.webp)
+
 Understanding the Agentic Web is easier if we trace how the Web has evolved over time in terms of user interaction:
 
 * **PC Web Era (1990s–2000s):** In the early Personal Computer era of the Web, content was mostly static and institutionally produced. Users primarily **consumed information** by browsing web pages or searching via keywords. Interaction was largely one-way (user -> content) and human-driven; the user manually navigated links, entered queries, and made decisions at each step. There were some intelligent tools like search engines and basic recommender systems, but the user remained the active operator of each task.
