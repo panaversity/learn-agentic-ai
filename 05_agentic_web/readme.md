@@ -10,7 +10,7 @@ In this tutorial, we will delve into the Agentic Web with a focus on educational
 
 ## Historical Evolution: From PC Web to Mobile Web to Agentic Web
 
-[](/images/agentic_web.webp)
+[Evolution](/images/agentic_web.webp)
 
 Understanding the Agentic Web is easier if we trace how the Web has evolved over time in terms of user interaction:
 
@@ -21,8 +21,6 @@ Understanding the Agentic Web is easier if we trace how the Web has evolved over
 * **Agentic Web Era (mid-2020s):** Now, we are at the cusp of the Agentic Web era. This is fueled by advances in large language models (LLMs) and AI agents that can handle complex, multi-step reasoning tasks. In the Agentic Web, **users delegate intents to autonomous agents** instead of directly interacting with pages or apps. Web content is no longer just static documents for humans, but becomes an **ecosystem of agents and services** that are interoperable. Hyperlinks evolve into actionable channels for agent coordination. In practical terms, the Web transforms from “a web of pages” to a **“web of agents”**. A human’s role shifts from clicking and typing to specifying goals and reviewing results, while agents take over browsing, data gathering, and execution tasks across sites and APIs.
 
 One useful way to visualize this shift is to compare the primary mode of interaction in each era. In the PC Web, a user might visit a dozen websites to plan a trip (searching flights, comparing prices, booking on an airline site). In the Agentic Web, the user simply tells their agent the goal (“plan a budget trip to London next month”), and the agent will orchestrate all those steps for them. The diagram below (from Yang et al., 2025) illustrates how an **Agentic Web task lifecycle** works as a continuous loop from user intent to multi-agent execution and back to the user:
-
-&#x20;*Figure 1: The Agentic Web process cycle. A user provides a high-level task request. The system plans the task and recruits appropriate agents/tools. These agents collaborate (sharing knowledge and dividing subtasks) and take actions (like fetching data or invoking services). Finally, results are aggregated and reported back to the user, completing the cycle. The user’s involvement is minimal after stating intent – the agents handle the workflow autonomously.*
 
 It’s important to note that the **end-users are still humans**, but *“mid-users”* in this paradigm are the AI agents themselves, which actively navigate and operate online resources on our behalf. This has deep implications: the Web is becoming **machine-first**, meaning web services and content must be accessible and understandable to agents just as they are to humans. We’ll discuss standards emerging to facilitate this (like agent communication protocols) shortly.
 
