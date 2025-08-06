@@ -35,7 +35,7 @@ async def analyze_project(ctx: Context) -> TextContent:
     print(f"<- Server: Received root: {root.uri}")
 
     # Parse the file URI to get the actual path
-    path = Path(urlparse(root.uri).path)
+    path = Path(urlparse(str(root.uri)).path)
 
     # Do a simple analysis
     py_files = list(path.glob("**/*.py"))
