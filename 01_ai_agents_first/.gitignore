@@ -5,3 +5,4 @@ __pycache__
 .pytest_cache
 cc-ca.crt
 .DS_Store
+conversations.db
