@@ -1,4 +1,4 @@
-# Using Vector Databases with AI Agents for Use Cases such as Personalized Teaching: A Beginner's Guide Using Vector Databases with AI Agents for Uses Case such as Personalized Teaching: A Beginner’s Guide
+# Using Vector Databases with AI Agents for Use Cases such as Personalized Teaching: A Beginner's 
 
 **Vector databases** (like Pinecone and Milvus) have become key components in advanced AI systems, enabling AI agents to retrieve and use external knowledge relevant to a task. In this tutorial, we will explore how vector databases integrate with AI agents (such as OpenAI’s Agents SDK) to create a personalized teaching assistant. We’ll cover foundational concepts (embeddings, vector search, RAG), discuss **pros and cons** of using vector stores with agents, examine **use cases** (focusing on personalized learning), distinguish **traditional RAG vs. agentic RAG**, and provide **practical Python examples** for Pinecone, Milvus, and OpenAI’s agent tools. Along the way, we include diagrams and tables to clarify workflows and comparisons.
 
