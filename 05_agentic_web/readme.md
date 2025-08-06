@@ -1,270 +1,207 @@
-# Agentic Web
+# Agentic Web for Developers: A Comprehensive Tutorial
 
-The **Agentic Web** is a paradigm shift in web architecture where autonomous AI agents, powered by advanced language models (LLMs), act as intermediaries to perform complex, goal-directed tasks on behalf of users. Unlike traditional web interactions, which involve human-driven browsing, searching, and manual task execution, the Agentic Web enables intelligent agents to reason, plan, and execute multi-step tasks across diverse web services and platforms. This concept is detailed in the document *Agentic Web: Weaving the Next Web with AI Agents* (arXiv:2507.21206v1).
+## Introduction to the Agentic Web
 
-### Key Features of the Agentic Web:
-1. **Autonomous Agents**:
-   - Agents act as independent entities capable of understanding user intent, decomposing tasks, and orchestrating actions across web services.
-   - They engage in long-term, goal-oriented interactions, moving beyond one-off, user-initiated requests to sustained, coordinated workflows.
+The **Agentic Web** represents a paradigm shift in internet architecture, where autonomous AI agents become first-class actors on the Web. Unlike the traditional Web — which connected users to static content or apps — the Agentic Web is a **distributed, interactive ecosystem** of goal-driven software agents that act on behalf of users. In this new era, a user’s query is no longer a simple information request, but rather a delegation of a complex task to an **AI agent** or team of agents. These agents can **plan workflows, coordinate with other agents, and execute actions** across various services to fulfill high-level user intents. The end user (the human) remains in charge, but much of the heavy lifting is done through machine-to-machine interactions on the user’s behalf.
 
-2. **Core Functional Paradigms**:
-   - **Transactional**: Agents execute tasks like e-commerce purchases, travel planning, or financial transactions autonomously, handling payments and negotiations.
-   - **Informational**: Agents perform dynamic knowledge discovery, synthesizing information from multiple sources for tasks like research or analysis.
-   - **Communicational**: Agents facilitate collaboration, forming coalitions to create content or coordinate between enterprises.
+To put it simply, the Agentic Web is about moving from manual, human-driven web interactions to **autonomous, agent-driven operations**. Instead of clicking links and navigating apps step by step, a user can instruct an AI agent with a goal (e.g. “find and book a budget flight for next weekend”) and the agent will handle the entire process – discovering information, calling APIs or websites, possibly negotiating with other agents, and finally delivering the result. This promises a more **personalized, proactive, and automated web experience** for users, and opens up new possibilities for developers to create intelligent services.
 
-3. **Architectural Transformations**:
-   - **Intelligence**: Agents leverage LLMs for contextual understanding, long-horizon planning, and adaptive learning, integrating multi-modal data (text, APIs, visuals).
-   - **Interaction**: Shifts from static request-response models to proactive, semantic-driven interactions, using protocols like MCP (Model Context Protocol) and A2A (Agent-to-Agent) for agent coordination.
-   - **Economic**: Introduces the **Agent Attention Economy**, where services compete for agent invocation, with new monetization models based on task completion and capability relevance.
+In this tutorial, we will delve into the Agentic Web with a focus on educational applications. We will cover its evolution and foundations, the key protocols (like MCP and A2A) that enable agents to work together, example use cases in education (such as AI tutoring and curriculum generation), tools and platforms you can experiment with, and best practices for evaluating such agent-based systems. This guide assumes you’re a developer new to the Agentic Web concept, so we’ll start from first principles and build up to practical considerations.
 
-4. **Infrastructure Requirements**:
-   - Standardized, machine-readable interfaces for web resources.
-   - Semantic interoperability to enable agents to understand and align service capabilities.
-   - Protocols like MCP and A2A to support agent discovery, communication, and task execution.
+## Historical Evolution: From PC Web to Mobile Web to Agentic Web
 
-5. **Process Cycle** (as shown in Figure 1 of the document):
-   - A user submits a task request.
-   - The system plans the task, identifies relevant agents and tools, and recruits them.
-   - Agents collaborate, execute tasks, and report results back to the user.
+Understanding the Agentic Web is easier if we trace how the Web has evolved over time in terms of user interaction:
 
-### Evolution from Previous Web Eras:
-- **PC Web Era**: Focused on static pages, search engines, and manual browsing (e.g., PageRank for link-based ranking).
-- **Mobile Web Era**: Emphasized personalized feeds and real-time recommendations, driven by user-generated content and mobile constraints.
-- **Agentic Web Era**: Shifts to action-oriented, autonomous task execution, with agents acting as both users and interfaces, orchestrating services dynamically (see Figure 7 for architectural evolution).
+* **PC Web Era (1990s–2000s):** In the early Personal Computer era of the Web, content was mostly static and institutionally produced. Users primarily **consumed information** by browsing web pages or searching via keywords. Interaction was largely one-way (user -> content) and human-driven; the user manually navigated links, entered queries, and made decisions at each step. There were some intelligent tools like search engines and basic recommender systems, but the user remained the active operator of each task.
 
-### Example Applications:
-- **E-commerce**: Agents autonomously handle product searches, price comparisons, and purchases.
-- **Travel Planning**: Agents coordinate flights, accommodations, and itineraries based on user preferences (illustrated in Figure 11).
-- **Enterprise Knowledge Assistants**: Agents manage data retrieval and collaboration across organizational systems.
+* **Mobile Web Era (2010s):** The rise of smartphones and social media brought an explosion of **user-generated content (UGC)** and mobile apps. The web’s scale and diversity grew tremendously, which made pure search less effective and led to the dominance of **recommendation systems** to match users with content. Interaction became more two-way: users both **consume and produce content** (posting, commenting, uploading). The “attention economy” emerged, as services competed to capture user attention with personalized feeds and notifications. Still, tasks were largely done manually by users through apps – albeit with more assistance from AI-driven features (like smart suggestions).
 
-### Challenges and Risks:
-- **Safety and Security**: Autonomous agents introduce risks like context injection, service registry poisoning, and unauthorized transactions (Tables 4-7).
-- **Governance**: Regulatory challenges arise from agents’ financial authority and cross-platform operations.
-- **Economic Models**: The shift from ad-based revenue to agent-driven economies requires new billing frameworks, as traditional advertising is disrupted.
+* **Agentic Web Era (mid-2020s):** Now, we are at the cusp of the Agentic Web era. This is fueled by advances in large language models (LLMs) and AI agents that can handle complex, multi-step reasoning tasks. In the Agentic Web, **users delegate intents to autonomous agents** instead of directly interacting with pages or apps. Web content is no longer just static documents for humans, but becomes an **ecosystem of agents and services** that are interoperable. Hyperlinks evolve into actionable channels for agent coordination. In practical terms, the Web transforms from “a web of pages” to a **“web of agents”**. A human’s role shifts from clicking and typing to specifying goals and reviewing results, while agents take over browsing, data gathering, and execution tasks across sites and APIs.
 
-### Emerging Directions:
-- **Agent-Oriented APIs**: APIs with semantic specifications to enable agent understanding and interaction.
-- **Safety Mechanisms**: Techniques like AGrail and SudoLM for dynamic safety checks and credential-aware access control.
-- **Multi-Agent Coordination**: Developing trust and collaboration frameworks for agent ecosystems.
+One useful way to visualize this shift is to compare the primary mode of interaction in each era. In the PC Web, a user might visit a dozen websites to plan a trip (searching flights, comparing prices, booking on an airline site). In the Agentic Web, the user simply tells their agent the goal (“plan a budget trip to London next month”), and the agent will orchestrate all those steps for them. The diagram below (from Yang et al., 2025) illustrates how an **Agentic Web task lifecycle** works as a continuous loop from user intent to multi-agent execution and back to the user:
 
-The Agentic Web represents a future where the web is not just a repository of information but a dynamic ecosystem of intelligent agents that act on behalf of users, transforming how digital tasks are performed and value is exchanged. For further exploration, the document references a continuously updated collection of studies at: [https://github.com/SafeRL-Lab/agentic-web](https://github.com/SafeRL-Lab/agentic-web).
+&#x20;*Figure 1: The Agentic Web process cycle. A user provides a high-level task request. The system plans the task and recruits appropriate agents/tools. These agents collaborate (sharing knowledge and dividing subtasks) and take actions (like fetching data or invoking services). Finally, results are aggregated and reported back to the user, completing the cycle. The user’s involvement is minimal after stating intent – the agents handle the workflow autonomously.*
 
-## Implementing Agentic Web
+It’s important to note that the **end-users are still humans**, but *“mid-users”* in this paradigm are the AI agents themselves, which actively navigate and operate online resources on our behalf. This has deep implications: the Web is becoming **machine-first**, meaning web services and content must be accessible and understandable to agents just as they are to humans. We’ll discuss standards emerging to facilitate this (like agent communication protocols) shortly.
 
-Implementing an Agentic Web using OpenAI’s Agents SDK, Model Context Protocol (MCP), and Agent-to-Agent (A2A) protocols is feasible, as these tools and protocols are designed to enable autonomous, interoperable AI agents that can interact with tools, data, and other agents to perform complex tasks. Below, we outline how these components can be combined to create an Agentic Web system, based on their respective capabilities and the principles outlined in the *Agentic Web* paradigm (arXiv:2507.21206v1). I’ll also provide a practical approach, including code snippets where applicable, to demonstrate the implementation.
+### Why the Agentic Web Emerged
 
-### Overview of Components
-1. **OpenAI Agents SDK**:
-   - A framework for building and orchestrating AI agents that can perform tasks autonomously, leveraging large language models (LLMs) like GPT-4o.
-   - Supports integration with external tools, multi-agent collaboration, and features like handoffs, guardrails, and observability.
-   - Compatible with MCP for tool integration, enabling agents to access external data and services.[](https://www.prompthub.us/blog/openais-agents-sdk-and-anthropics-model-context-protocol-mcp)[](https://cookbook.openai.com/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration)
+Two driving forces enabled the Agentic Web:
 
-2. **Model Context Protocol (MCP)**:
-   - An open standard by Anthropic (open-sourced November 2024) that standardizes how AI agents connect to external tools and data sources, acting like a “USB-C port for AI applications.”
-   - Supports multiple transport mechanisms (stdio, HTTP over SSE, Streamable HTTP) and provides secure, typed data exchange via JSON-RPC.
-   - Widely adopted by platforms like OpenAI, Google DeepMind, and Microsoft, with SDKs in Go, C#, Java, and Python.[](https://agnt.one/blog/the-model-context-protocol-for-ai-agents)[](https://openai.github.io/openai-agents-python/mcp/)[](https://www.anthropic.com/news/model-context-protocol)
+1. **Advanced AI Capabilities:** Modern AI models (especially LLMs) have gained the ability to reason, plan, and use tools in a way that goes far beyond traditional chatbots. They are not limited to single-turn Q\&A; they can remember context, decompose complex tasks, and even collaborate with other agents. This made it feasible to trust agents with non-trivial tasks (research projects, coding, customer service dialogues, etc.) that were once only human-led. Essentially, AI moved from being a *response generator* to a *proactive task solver*.
 
-3. **Agent-to-Agent (A2A) Protocol**:
-   - Introduced by Google in April 2025, A2A enables peer-to-peer communication between AI agents across different frameworks and vendors.
-   - Uses HTTP-based communication with JSON-RPC, Agent Cards (JSON descriptors for agent capabilities), and supports task delegation and long-running workflows.
-   - Complements MCP by focusing on agent-to-agent collaboration rather than agent-to-tool integration.[](https://www.descope.com/learn/post/a2a)[](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)
+2. **User Willingness to Delegate:** At the same time, people have grown more comfortable letting AI handle tasks. The success of digital assistants and automation tools showed that users appreciate offloading routine work. Now we see users delegating entire workflows lasting minutes or days to AI (e.g. “monitor these news sources and summarize any development on X”) rather than just asking one-off questions. This trend pushes the need for new interfaces and web mechanisms that support **long-running, autonomous agent activities**, as opposed to the click-refresh model of the past.
 
-4. **Agentic Web**:
-   - A vision where autonomous AI agents act as intermediaries, performing goal-directed tasks across web services, shifting from human-driven browsing to agent-driven workflows.
-   - Requires standardized interfaces (MCP for tools, A2A for agent collaboration), semantic interoperability, and robust infrastructure for task planning and execution.
+In summary, the Agentic Web arises from a **mismatch between powerful AI agents and the legacy Web**. The legacy Web is stateless and human-centric (each request–response is isolated, initiated by a person), whereas AI agents need a more persistent, dynamic environment to operate effectively. The Agentic Web is about bridging that gap – enabling the internet’s infrastructure to support *persistent, goal-oriented, multi-agent processes* instead of just static content retrieval.
 
-### Implementation Approach
-To implement an Agentic Web system, you can use the OpenAI Agents SDK to orchestrate agents, MCP to connect agents to external tools and data, and A2A to enable agent-to-agent collaboration. Below is a step-by-step guide, including practical examples for a simplified use case (e.g., a travel planning agent that books flights and hotels).
+## Core Foundations: Intelligence, Interaction, and Economics
 
-#### Step 1: Set Up the OpenAI Agents SDK
-The OpenAI Agents SDK simplifies agent creation and orchestration. You’ll need to install the SDK and configure it with your OpenAI API key. The SDK supports MCP servers for tool integration and can be extended for A2A compatibility.
+Building the Agentic Web requires rethinking three fundamental dimensions of the Web’s architecture. Yang et al. (2025) define these as **Intelligence, Interaction, and Economy** – together forming the “three pillars” of the Agentic Web’s conceptual framework. Let’s break down each dimension and what it means for developers:
 
-**Setup**:
-```bash
-pip install openai
-# Ensure you have an OpenAI API key set in environment variables
-export OPENAI_API_KEY='your-api-key'
-```
+* **Intelligence Dimension:** This refers to the AI capabilities an agent must have to function autonomously. Instead of narrow, hardcoded behaviors, agents need *generalizable intelligence*. Key skills include: understanding context (e.g. parsing natural language instructions, interpreting web content), **long-horizon planning** (strategizing over multiple steps to achieve a goal), **learning and adaptation** (improving from experience or feedback), and reliable reasoning processes. In practice, this dimension is about the **cognitive algorithms and models** powering agents – usually LLMs augmented with memory, tool-use abilities, and domain knowledge. For an educational agent (say a tutor bot), the intelligence dimension means it can comprehend a student’s question, plan a multi-turn teaching dialog, fetch relevant examples, and adjust its approach based on whether the student seems to understand (learning from the interaction).
 
-**Basic Agent Setup**:
-```python
-from openai.agents import Agent
-from openai.agents.run_context import RunContextWrapper
+* **Interaction Dimension:** This covers how agents **communicate and act** within digital environments. It includes agent-to-environment interaction (using tools, calling APIs) and agent-to-agent interaction (coordination protocols). To enable rich interactions, agents rely on standardized **semantic protocols** to exchange messages or call functions. In the Agentic Web, web services expose not just web pages for humans, but also **APIs and schemas that agents can utilize**. Agents may converse in natural language (for flexibility) but structured protocols ensure mutual understanding. We’ll explore specific protocols (MCP, A2A) in the next section. For developers, the interaction dimension means designing your services and agents to speak a common language. For example, an educational content repository might implement an API that agents (from any vendor) can query for articles, or two tutoring agents might negotiate a teaching strategy via a defined message format. Without common standards here, we’d end up with isolated “agent silos.” Indeed, researchers stress that **standardized communication** is imperative to avoid a fragmented, incompatible agent ecosystem.
 
-# Define an agent
-agent = Agent(
-    name="TravelPlanner",
-    instructions="Plan a trip by booking flights and hotels based on user preferences."
-)
-```
+* **Economic Dimension:** This dimension is about **value creation, exchange, and incentives** in an agent-driven ecosystem. When agents can autonomously produce and consume content or services, they effectively become economic actors. They might generate data or solutions that are **consumed by other agents** rather than directly by humans. This opens up the idea of **machine-to-machine markets** and an “Agent Attention Economy” where agents trade resources or services (possibly using digital credits or micropayments). For instance, an educational curriculum-building agent might pay another specialized agent for access to a premium dataset or for proofreading its generated content – all automatically. The economic dimension also involves **governance**: ensuring fair and trustworthy agent behavior when they make decisions with financial or ethical stakes. As a developer, this means thinking about how your agent can **access services sustainably** (will it need an API key or to pay per use?), how to prevent abuse if agents consume each other’s outputs, and how to incorporate human oversight in high-stakes decisions (like spending real money or grading students). This area is still emerging, but concepts like decentralized identity and secure value exchange between agents are being explored to support a healthy agent economy.
 
-#### Step 2: Integrate MCP for Tool Access
-MCP enables agents to connect to external tools (e.g., flight booking APIs, hotel databases). You can use an existing MCP server (e.g., for filesystem access or API calls) or create a custom one.
+The interplay of these three foundations can be summarized as: **Intelligence** gives agents the brains, **Interaction** gives them the common language and tools to operate, and **Economics** provides the rules and incentives of the ecosystem. All three are essential for an open Agentic Web. For example, if you have intelligent agents but no interaction protocol, they can’t work together; if they interact but have no economic model, you might have resource contention or no motivation for agents to share services, etc. As we implement educational agents, we must ensure they are smart enough (domain knowledge, reasoning), speak the right protocols, and adhere to usage policies or incentives (perhaps ensuring academic integrity, proper credit to content creators, etc.).
 
-**Example: Connecting to an MCP Filesystem Server**:[](https://openai.github.io/openai-agents-python/mcp/)
-```python
-from openai.agents.mcp import MCPServerStdio
-from openai.agents import Agent
+## Key Protocols and Infrastructure: MCP, A2A, and More
 
-async def setup_mcp_agent():
-    # Initialize an MCP server for filesystem access
-    async with MCPServerStdio(
-        params={
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/data"]
-        }
-    ) as mcp_server:
-        # Create an agent with the MCP server
-        agent = Agent(
-            name="TravelPlanner",
-            instructions="Use tools to access travel data and book services.",
-            mcp_servers=[mcp_server]
-        )
-        run_context = RunContextWrapper(context=None)
-        # List available tools
-        tools = await mcp_server.list_tools(run_context, agent)
-        print(f"Available tools: {tools}")
-        return agent
+To make the Agentic Web practical, industry and community leaders have introduced **open protocols** that standardize how agents communicate with each other and with tools. Two of the most important emerging standards are **MCP (Model Context Protocol)** and **A2A (Agent-to-Agent protocol)**. These are complementary: MCP focuses on connecting agents to external tools/data, and A2A focuses on agent-to-agent messaging. Let’s look at each in turn, as well as how they work together and other related efforts (like IBM’s ACP).
 
-# Run the agent (use asyncio to execute)
-import asyncio
-asyncio.run(setup_mcp_agent())
-```
+* **Model Context Protocol (MCP):** Developed by Anthropic in 2024, MCP is essentially an open standard for **connecting AI agents to external resources and tools** in a uniform way. The motivation is that today, every time you want an AI to use a new tool or dataset, you have to custom-integrate it. MCP instead defines a common interface: applications (tools, databases, services) expose their capabilities through an MCP **server**, and AI agents use an MCP **client** to discover and invoke those capabilities. Each tool provides metadata (function descriptions, input/output format, etc.) that agents can query via MCP, almost like an automatic API documentation. For example, an agent can ask the MCP registry what functions are available for, say, “image generation” and get a standardized description of how to call a particular image API. Then it can invoke it through a standardized request format. In short, MCP acts like a **“USB-C for AI tools”** – a universal plug that fits any tool into an agent’s context. This dramatically reduces the friction of enabling tool-use: as long as a tool has an MCP wrapper, any MCP-enabled agent can use it securely and consistently. Anthropic has open-sourced MCP with specifications and SDKs, and even provided pre-built connectors for common systems like Slack, GitHub, Google Drive, etc., to jumpstart the ecosystem. For developers, adopting MCP might mean using their SDK to expose your educational app’s functionality (e.g. a quiz bank or student database) via MCP, so that any agent (be it Claude, GPT-4, etc.) can interface with it. If you’re building an agent, using an MCP client library will let your agent tap into a growing pool of MCP-compliant tools without custom coding each integration. MCP ensures **tools are invoked in a safe, structured manner**, with authentication and usage rules standardized across platforms.
 
-**Custom MCP Server**:
-If you need a custom MCP server (e.g., for a travel API), you can implement one using the MCP Go SDK or Python frameworks like `mcp-agent`. For example, a server for a flight booking API might expose tools like `search_flights` and `book_flight`. Refer to the MCP documentation for server implementation details.[](https://agnt.one/blog/the-model-context-protocol-for-ai-agents)[](https://github.com/lastmile-ai/mcp-agent)
+* **Agent-to-Agent Protocol (A2A):** Launched by Google in early 2025, A2A is an open protocol for **direct agent-to-agent communication and collaboration**. Its goal is to allow agents (even from different vendors or frameworks) to talk to each other, exchange messages, and coordinate actions securely over the internet. A2A provides a few key mechanisms:
 
-#### Step 3: Enable A2A for Agent Collaboration
-A2A allows agents to communicate and delegate tasks. For example, one agent might handle flight searches while another negotiates hotel bookings. A2A uses Agent Cards (JSON descriptors) for capability discovery and HTTP-based communication for task coordination.
+  * Each agent publishes an **Agent Card** – a JSON descriptor at a well-known URL that lists the agent’s capabilities, APIs, and communication endpoints. This is like a public profile advertising what the agent can do.
+  * A discovery mechanism: given a task or need, an agent can find other agents’ Agent Cards (if they are registered or known) to identify who can help. For example, a “TutorAgent” might discover a “MathSolverAgent” via its Agent Card to help solve an equation.
+  * A standardized message format (built on familiar web standards like HTTP and JSON) for sending task requests and receiving results between agents. Agents establish a secure channel (with authentication akin to OpenAPI security) so that communication is trusted.
+  * Support for **long-running tasks and asynchronous interaction** – A2A isn’t limited to single query/response; it supports streaming updates, partial results, and event callbacks so agents can work on multi-step collaborations over time.
 
-**Example: A2A Integration**:
-Since A2A is newer and less widely adopted than MCP, you may need to implement a custom A2A client/server or use an existing framework like Google’s A2A SDK (if available) or Strands Agents from AWS. Below is a conceptual example of how A2A could be integrated with the OpenAI Agents SDK.[](https://aws.amazon.com/blogs/opensource/open-protocols-for-agent-interoperability-part-1-inter-agent-communication-on-mcp/)[](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)
+  The philosophy behind A2A is to enable a *true multi-agent ecosystem*, where an agent built by Company A can seamlessly invoke the help of an agent from Company B if needed, much like one web service calling another via an API. For developers, A2A opens the door to composing **agent services across organizations**. Imagine your educational tutoring agent could, on the fly, call an external “Language Translation agent” (because it discovered the student’s question is in Spanish and your agent doesn’t speak Spanish). If both follow A2A, this can happen dynamically and securely, rather than you having to hardcode that integration. The A2A spec is open-source (Linux Foundation is involved), with reference implementations and SDKs available. In practice, using A2A might involve deploying an endpoint for your agent (so it can receive tasks from others) and implementing logic to handle incoming agent requests. It also means configuring **authentication** (possibly decentralized IDs as the spec supports) so your agent trusts who it’s talking to. The benefit is that your agent can both **offer its own specialty** to others (maybe your agent is really good at physics problems and can accept A2A queries for that), and *outsource* subtasks to other agents rather than trying to do everything alone.
 
-```python
-import requests
-import json
+* **ACP and Other Protocols:** In addition to MCP and A2A, there are other notable efforts. IBM’s **Agent Communication Protocol (ACP)**, also introduced in 2025, has a similar aim of standardizing agent interoperability and is now a Linux Foundation project. ACP is REST-based and similarly allows agent messaging across systems. The good news is that these protocols are being designed to **work together, not compete**. In fact, the literature often mentions MCP (agent-to-tool) and A2A/ACP (agent-to-agent) as complementary layers. For a developer, it’s wise to keep an eye on all these standards. They share common principles (open, JSON/HTTP-based, secure) and your agent or service might implement multiple if needed. For example, you might use MCP to let agents use your “Algebra Solver” tool, and also give that tool an agent interface via A2A so that other agents can directly ask it questions. Major tech players are pushing for ubiquity of these protocols over perfecting one dialect, to avoid the “walled garden” scenario and ensure an open agentic web.
 
-# Define an A2A Agent Card (simplified)
-agent_card = {
-    "id": "TravelPlannerAgent",
-    "capabilities": ["search_flights", "book_flight", "coordinate_tasks"],
-    "endpoint": "https://travel-agent.example.com/a2a",
-    "auth": {"type": "OAuth2", "token_endpoint": "https://auth.example.com"}
-}
+In summary, **MCP provides the means for agents to use tools and data sources, and A2A (and ACP) provide the means for agents to talk to each other**. A developer guide from the A2A initiative succinctly says: use MCP for tools, A2A for agents. Embracing these standards in your development means your agent-based applications will be interoperable with the broader Agentic Web. This is particularly crucial in education: you wouldn’t want an educational agent that can’t query an external library database or collaborate with a scheduling agent just because of a protocol mismatch. By following open protocols, your educational agents can plug into a richer ecosystem of capabilities (and also contribute their own).
 
-# Register the agent with an A2A server
-def register_a2a_agent(card):
-    response = requests.post("https://a2a-registry.example.com/register", json=card)
-    return response.json()
+## Architectures and Tools for Building Agentic Web Applications
 
-# Delegate a task to another agent via A2A
-def delegate_task(task, remote_agent_endpoint):
-    task_payload = {
-        "task_id": "flight_search_001",
-        "description": "Search for flights from NYC to LAX on 2025-08-10",
-        "priority": "high"
-    }
-    response = requests.post(f"{remote_agent_endpoint}/tasks", json=task_payload)
-    return response.json()
+With the concepts in place, let’s discuss how you can **implement** agentic web solutions as a developer. This involves choosing the right architecture for multi-agent systems, leveraging existing frameworks, and understanding the tooling available.
 
-# Example usage
-registered = register_a2a_agent(agent_card)
-print(f"Agent registered: {registered}")
+**Multi-Agent Architectures:** A common design pattern in Agentic Web systems is to have a hierarchy or team of specialized agents orchestrated to handle complex tasks. A concrete example is the *AgentMaster* framework (Liao et al., 2025), which implemented a conversational multi-agent system using A2A and MCP. In AgentMaster’s architecture:
 
-# Delegate a task to a remote agent
-result = delegate_task("search_flights", "https://flight-agent.example.com/a2a")
-print(f"Task result: {result}")
-```
+* There is an **Orchestrator Agent** that receives the user’s request and decomposes it into subtasks, assigning each to the appropriate specialist agent.
+* **Domain Agents** are specialized (e.g., one for information retrieval, one for database queries, one for image analysis, etc.). They focus on a part of the task and may use tools via MCP. For instance, a “Math Tutor” agent could be a domain agent that knows how to use a math engine tool.
+* **General Agents** cover tasks that don’t fit a specialty – they are paired with general LLMs to handle open-ended reasoning or glue tasks.
+* All agents communicate through A2A messages in natural language (under the hood JSON), coordinated by the orchestrator. The orchestrator ensures they share context and work towards the common goal. A state management layer (like a shared memory or vector database) often supports longer context and tool results storage.
 
-**Note**: A2A adoption is still emerging, and specific SDKs may not be fully available. You may need to build custom HTTP-based A2A clients/servers based on the protocol’s JSON-RPC specification. Check Google’s A2A documentation for updates.[](https://www.descope.com/learn/post/a2a)
+The takeaway for developers: **consider structuring your agentic application as multiple cooperating agents rather than one monolithic agent**. This aligns with the microservices philosophy, but for AI behaviors. For an educational scenario, you might have:
 
-#### Step 4: Orchestrate the Agentic Web Workflow
-The Agentic Web requires agents to plan, decompose, and execute tasks across services. Using the OpenAI Agents SDK, you can create a multi-agent system where:
-- A **Head Agent** (orchestrator) decomposes the user’s request (e.g., “Plan a trip to Paris”).
-- **Specialized Agents** (e.g., Flight Agent, Hotel Agent) use MCP to access tools and A2A to collaborate.
-- The system returns a synthesized result to the user.
+* A “Lesson Planner” agent,
+* A “Quiz Generator” agent,
+* A “Student Interaction” agent (chatbot interface),
+* All overseen by a coordinator that breaks a high-level request (e.g., “Teach me calculus basics”) into tasks like “plan syllabus”, “deliver lesson 1”, “ask quiz”, etc., and assigns those to the appropriate agent. Such modular design can make the system more robust and extensible (you can upgrade one agent’s model without affecting others, or add a new agent for a new feature).
 
-**Example: Multi-Agent Travel Planning**:[](https://cookbook.openai.com/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration)
-```python
-from openai.agents import Agent, Orchestrator
-from openai.agents.mcp import MCPServerStdio
-from openai.agents.llm import OpenAIAugmentedLLM
+**Existing Frameworks & Platforms:** You don’t have to build everything from scratch. A growing number of libraries and platforms support agentic functionality:
 
-async def run_travel_workflow():
-    # Define MCP servers for tools (e.g., flight and hotel APIs)
-    flight_mcp = MCPServerStdio(params={"command": "npx", "args": ["@modelcontextprotocol/flight-api"]})
-    hotel_mcp = MCPServerStdio(params={"command": "npx", "args": ["@modelcontextprotocol/hotel-api"]})
+* **LangChain** (a popular LLM application framework) provides abstractions for agents and tools. It isn’t an agentic web platform per se, but it supports the idea of an AI agent that can use tools, and could potentially be extended to multi-agent scenarios. In fact, Google’s A2A launch included LangChain as a partner, which suggests LangChain may have or get integration for these protocols.
+* **Hugging Face Transformers Agents** is an initiative where you can use a transformer model that can call tools (like a calculator or web search) during its reasoning. This is more single-agent tool use, but it’s useful for prototyping the intelligence + interaction aspect.
+* **AutoGPT** and similar projects (BabyAGI, etc.) are early experiments in autonomous agents completing user-given goals by iteratively calling tools and improving their plan. They are not standardized (often just using OpenAI API and custom loops), but they demonstrated the appetite for agentic behavior. These can be instructive if you want to see how one might implement an agent that self-decomposes tasks and uses a vector store for memory. However, bridging them into a true Agentic Web context would mean adding support for protocols like A2A.
+* **AgentMaster (research prototype)** showed an end-to-end working system with A2A and MCP. While its code may not be publicly available (it was a research proof-of-concept), the description shows they used Flask microservices and achieved consistent performance on tasks like image analysis + Q\&A. This indicates that even today you can compose existing tech (LLM APIs, web servers, databases) to build a multi-agent system.
+* **Cloud Services:** Major cloud providers are starting to offer agentic services. For example, OpenAI’s function calling and plugins allow ChatGPT to act like an agent using tools (though not multi-agent yet). Microsoft’s “Copilot for Organizations” hints at orchestrating multiple AI tools for enterprise. And notably, Opera announced an “AI agentic browser” that supports agent scripts (an example of existing web software adapting to the agentic model). As a developer, keep an eye on such offerings; they might provide ready-made agent frameworks or hosting environments for agent-based apps (with considerations for security, monitoring, etc., which are crucial in enterprise/educational settings).
 
-    # Define specialized agents
-    flight_agent = Agent(
-        name="FlightAgent",
-        instructions="Search and book flights using the flight API.",
-        mcp_servers=[flight_mcp]
-    )
-    hotel_agent = Agent(
-        name="HotelAgent",
-        instructions="Search and book hotels using the hotel API.",
-        mcp_servers=[hotel_mcp]
-    )
+**Tool Integrations and Context:** For educational applications, integrating domain-specific tools will be very valuable. Think of an agent that can: query a **library database** for research papers, use a **calculator or algebra system** for solving equations, fetch **interactive simulations** for science experiments, etc. Using MCP, you can plug these in fairly easily if MCP connectors exist or you build one. For instance, Anthropic’s MCP repository might already have something like a Wikipedia or ArXiv plugin that an academic agent could leverage. If not, you can write an MCP server wrapper around an API (e.g., an open education resource) so any agent can utilize it. This modular approach means your tutoring agent can gain new abilities just by adding tools, without retraining its core AI. It also means if a tool updates (say a new version of a math solver), as long as the MCP interface remains consistent, your agent doesn’t need internal changes.
 
-    # Define orchestrator
-    orchestrator = Orchestrator(
-        llm_factory=OpenAIAugmentedLLM,
-        available_agents=[flight_agent, hotel_agent],
-        instructions="Plan a trip by coordinating flight and hotel bookings."
-    )
+**Safety and Control:** In building agentic systems, especially for education, you should design for safety from the start. Agents acting autonomously can raise concerns: giving wrong answers, accessing inappropriate content, or performing actions that users didn’t intend. Make use of **guardrails** – for example, define constraints in the agent’s prompting or use a framework like NVIDIA’s NeMo Guardrails (which can set policy rules for LLM agent behavior). Ensure there are **checkpoints for human oversight** if needed. For instance, an agent generating a curriculum might submit it for teacher approval before distributing to students. The Agentic Web doesn’t remove humans from the loop entirely; rather it optimizes our involvement. Especially in education, alignment with human values (no bias, age-appropriate responses, etc.) is paramount.
 
-    # Run the workflow
-    user_request = "Plan a trip to Paris from NYC for August 10-15, 2025."
-    response = await orchestrator.run(user_request, max_turns=20)
-    print(f"Travel plan: {response.final_output}")
+## Educational Use Cases and Examples
 
-# Execute the workflow
-asyncio.run(run_travel_workflow())
-```
+Now let’s explore how the Agentic Web can be applied in the education domain. Educational technology can benefit immensely from autonomous agents due to the personalized and dynamic nature of teaching and learning. We will discuss a few prominent use case scenarios:
 
-#### Step 5: Add Safety and Observability
-The Agentic Web emphasizes safety and governance. The OpenAI Agents SDK provides guardrails and observability features:
-- **Guardrails**: Restrict tool access or require human approval for sensitive actions (e.g., booking payments).
-- **Observability**: Use tracing to monitor agent actions and debug workflows.
+### 1. Intelligent Tutoring Agents
 
-**Example: Adding Guardrails**:[](https://www.prompthub.us/blog/openais-agents-sdk-and-anthropics-model-context-protocol-mcp)
-```python
-from openai.agents.mcp import createMCPToolStaticFilter
+Imagine a **tutoring system** where the student interacts not with a static program, but with a coalition of AI agents acting as instructors, mentors, and resource gatherers. In an Agentic Web paradigm:
 
-# Restrict tools to specific actions
-tool_filter = createMCPToolStaticFilter(allowed_tools=["search_flights", "book_flight"])
-agent = Agent(
-    name="FlightAgent",
-    instructions="Book flights with restrictions.",
-    mcp_servers=[flight_mcp],
-    tool_filters=[tool_filter]
-)
-```
+* A student asks a question (in natural language) or requests help on a problem. This request goes to a **Tutor Orchestrator Agent**.
+* The orchestrator agent may break down the task. For example, if the query is “I’m struggling with understanding photosynthesis”, the orchestrator could delegate to a **Teaching Agent** to explain the concept, a **Quiz Agent** to generate a few practice questions, and a **Motivator Agent** to interject with encouragement or analogies.
+* These agents might work in parallel: the Teaching Agent fetches diagrams and info (using an MCP connection to a science database or Wikipedia), the Quiz Agent uses a question bank tool to create relevant questions, etc. They might use A2A to coordinate (“I’ll cover the main concept, you prepare an example”).
+* The student experiences a seamless tutoring session where the AI provides an explanation (with dynamically retrieved images or examples), asks the student a few questions, evaluates the answers, and adapts the teaching style accordingly. All of this is done through agents reasoning and acting behind the scenes, rather than a fixed script.
 
-#### Step 6: Deploy and Scale
-- **Deployment**: Host MCP servers on cloud platforms like AWS or Vercel, which support MCP integration. Use A2A-compatible platforms (e.g., Google Cloud) for agent collaboration.[](https://agnt.one/blog/the-model-context-protocol-for-ai-agents)[](https://aws.amazon.com/blogs/opensource/open-protocols-for-agent-interoperability-part-1-inter-agent-communication-on-mcp/)
-- **Scaling**: Use frameworks like `mcp-agent` for model-agnostic multi-agent patterns (e.g., Swarm) and cache tool lists to reduce latency.[](https://github.com/lastmile-ai/mcp-agent)[](https://openai.github.io/openai-agents-js/guides/mcp/)
+Such a system could offer highly personalized teaching. Because agents can maintain a **persistent memory** of the student’s progress (e.g., a profile stored via MCP in a database), they can adapt difficulty and style over long term interactions. If one agent doesn’t know an answer or technique, it could invoke another agent that does (for instance, a **Foreign Language Agent** might be called in to translate a scientific term or converse in the student’s native language if the student didn’t understand the English explanation).
 
-### Challenges and Considerations
-1. **A2A Adoption**: As of August 2025, A2A is less mature than MCP, with limited SDK availability. You may need to implement custom A2A clients/servers, which requires familiarity with JSON-RPC and HTTP.[](https://agnt.one/blog/the-model-context-protocol-for-ai-agents)[](https://www.koyeb.com/blog/a2a-and-mcp-start-of-the-ai-agent-protocol-wars)
-2. **Security**: Ensure secure authentication (e.g., OAuth2, mTLS) for MCP and A2A interactions to prevent context injection or unauthorized access.[](https://aws.amazon.com/blogs/opensource/open-protocols-for-agent-interoperability-part-1-inter-agent-communication-on-mcp/)[](https://tutorials.botsfloor.com/what-every-ai-engineer-should-know-about-a2a-mcp-acp-8335a210a742?gi=5afddaa20e8e)
-3. **Interoperability**: While MCP is widely supported, A2A’s ecosystem is enterprise-focused and may not integrate seamlessly with all frameworks. Test compatibility with your stack (e.g., LangChain, CrewAI).[](https://www.knowi.com/blog/ai-agent-protocols-explained-what-are-a2a-and-mcp-and-why-they-matter/)
-4. **Naming Confusion**: A2A’s name overlaps with “account-to-account” in fintech, which may complicate resource discovery. Use precise search terms like “A2A Agent-to-Agent protocol.”[](https://agnt.one/blog/the-model-context-protocol-for-ai-agents)
+From a development standpoint, you would need to design the roles of these agents and ensure they have access to the right **knowledge resources**. Using the protocols, a Teaching Agent could call an external **knowledge base API** (for factual info), or even call out to a *domain expert agent* if one exists in the network (maybe there’s a publicly available “BiologyExpertAgent” it can A2A message for a deep explanation). This is far more flexible than a single monolithic tutor model – it’s like an ensemble of specialists teaching collaboratively.
 
-### Example Use Case: Travel Planning Agentic Web
-- **User Request**: “Plan a trip to Paris from NYC, August 10-15, 2025, budget $2000.”
-- **Head Agent**: Decomposes the task into flight search, hotel booking, and itinerary planning.
-- **MCP Integration**: Flight Agent uses an MCP server to query a flight API; Hotel Agent queries a hotel database.
-- **A2A Collaboration**: Flight Agent delegates to Hotel Agent via A2A to ensure hotel availability aligns with flight dates.
-- **Output**: A synthesized travel plan with booked flights, hotels, and a suggested itinerary.
+### 2. Academic Content Discovery and Research Assistance
 
-### Resources
-- **OpenAI Agents SDK**: [OpenAI MCP Docs](https://openai.github.io)[](https://openai.github.io/openai-agents-python/mcp/)[](https://openai.github.io/openai-agents-js/guides/mcp/)
-- **MCP Documentation**: [Model Context Protocol Official Docs](https://modelcontextprotocol.org)[](https://agnt.one/blog/the-model-context-protocol-for-ai-agents)
-- **A2A Documentation**: [Google Developers Blog](https://developers.googleblog.com)[](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)
-- **mcp-agent Framework**: [GitHub: lastmile-ai/mcp-agent](https://github.com/lastmile-ai/mcp-agent)[](https://github.com/lastmile-ai/mcp-agent)
-- **Agentic Web Paper**: [arXiv:2507.21206v1](https://arxiv.org/abs/2507.21206v1)
+Another educational application is helping students and researchers discover and synthesize content – essentially an **AI research assistant**. In the Agentic Web:
 
-### Conclusion
-Using the OpenAI Agents SDK, MCP, and A2A, you can implement an Agentic Web system where agents autonomously handle tasks by accessing tools (via MCP) and collaborating with other agents (via A2A). The SDK provides a robust foundation for orchestration, MCP ensures standardized tool access, and A2A enables scalable agent-to-agent communication. While MCP is mature and widely supported, A2A requires careful integration due to its emerging status. Start with MCP for tool integration and gradually incorporate A2A as its ecosystem grows. For a practical start, explore the `mcp-agent` framework and OpenAI’s sample code for multi-agent workflows.[](https://github.com/lastmile-ai/mcp-agent)[](https://cookbook.openai.com/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration)
+* A user might task an agent: “Find me the latest research papers on renewable energy and summarize the key trends.” This is a complex, open-ended task.
+* The agent might spawn multiple sub-agents: one agent searches academic databases (using tools like arXiv API, Google Scholar via MCP integration), another agent scans news articles or blogs for more layman explanations, and yet another agent could handle summarizing and collating the findings.
+* These agents coordinate. The Search Agent could use an **AgentCrawler** (a concept where an agent traverses links like a web crawler, but negotiating access as needed) to collect relevant documents. It might use A2A to ask a “Citation Analysis Agent” which of the found papers are most influential (if such an agent exists).
+* The Summary Agent then takes all this and produces a report or a slide deck with the findings, complete with references.
+
+This use case highlights the **proactive retrieval** aspect of the Agentic Web. Traditional search is reactive (user queries, engine returns docs). An agentic approach is more like having a research intern: it figures out what it needs (“I should look at both scientific and popular sources, maybe compare statistics”), it may iteratively refine the search (long-horizon planning: find papers, realize a gap, search that gap), and it can even reach out during the process for clarification from the user (“Should I focus on solar or wind energy?”) or to another agent (“Translate this French article, please”).
+
+Educationally, this could help students who are writing papers or learning how to research. The agent can not only fetch information but also teach the student how to interpret it, or quiz them on the material it found. Because the agent can use **MCP to parse documents** (e.g., an MCP tool for reading PDF content), it can extract only relevant parts, saving the student time. And by following a taxonomy of evaluation (discussed in next section), such an agent’s performance can be measured by the quality and relevance of info it provides.
+
+### 3. Autonomous Curriculum Generation
+
+One exciting possibility is using agents to automatically generate and evolve curricula or lesson plans. For instance:
+
+* A teacher or student could ask, “Create a 4-week learning plan for beginner Python programming, focusing on data science applications.”
+* An **Curriculum Planner Agent** takes this goal and breaks it down: it decides on learning objectives per week, finds or creates appropriate exercises, schedules topics, and compiles resources (videos, articles, datasets for projects).
+* It might collaborate with a **Content Creation Agent** to generate custom materials (e.g., simple tutorials or code examples) where existing ones are not found. That Content Agent might use an LLM to draft explanations, then perhaps call a **Proofreading Agent** or use an evaluation function to ensure the content is accurate and clear.
+* The Curriculum Planner could also use a **Student Modeling Agent** that uses data about the target audience (e.g., high school level vs college) to tailor the difficulty and context. If it’s connected to a class’s profiles (via MCP to a student info system), it might even personalize the curriculum to include topics the class struggled with previously.
+* The result is a structured curriculum delivered to the teacher for approval. But it doesn’t stop there – because agents persist, this curriculum can be a *living artifact*. After each week, the agent can evaluate progress (maybe via quiz results or assignments), and adjust future weeks accordingly (this is where a **Feedback Agent** might come in, analyzing which parts of the plan worked well and which didn’t).
+
+For a developer, building this would involve integrating **content repositories** (for existing lesson content), using generation models for new content, and following pedagogical constraints. An agentic system can enforce **educational standards** by having a rule-based agent or validation step – e.g., ensuring the curriculum aligns with certain competency frameworks (Common Core, etc.) by checking a database or using an ACP message to a standards agent. The multi-agent aspect is powerful here: content generation can be one agent, verification another, scheduling another. This separation of concerns improves reliability; one agent could flag if the generated lesson has inaccuracies (acting as a critic).
+
+### 4. Other Potential Examples
+
+* **Virtual Classrooms and Simulations:** Agents could populate a virtual classroom scenario, where a student practices a debate or a medical diagnosis with multiple AI characters. Each character (agent) has a role – one might be a coach giving feedback, another might simulate a patient or an opponent. Through A2A, these agents stay in sync with the scenario. This is beyond a single chatbot – it’s an orchestrated experience.
+* **Administrative Assistants in Education:** Beyond direct learning, think of agents helping with academic admin tasks. E.g., an **Enrollment Agent** that helps students pick courses (coordinating between student preferences, degree requirements, class schedules), or a **Grading Assistant Agent** that can distribute grading tasks (one agent per question or rubric aspect) and then aggregate results. In an Agentic Web, a grading agent could even outsource certain checks – for instance, sending a code snippet answer to a specialized “Code Evaluation agent” for accuracy.
+* **Peer Learning Networks:** Multiple student agents (representing individual learners) could communicate to find study partners or answers. Using A2A, a student’s personal agent might query others: “Has anyone solved problem 5 of the assignment? If so, can we discuss?” – establishing ad-hoc learning groups or Q\&A sessions autonomously (with privacy controls, of course). This leverages the agent economy concept: maybe an agent “rewards” another for a helpful explanation (digital token or reputation points).
+
+These examples illustrate that educational applications can be richly enhanced by agentic behavior. The common theme is **automation of complex workflows** (research, tutoring dialogue, content curation) that currently require significant human effort, and **personalization** at scale (each student can have an agent that knows their needs). Developers should, however, be mindful of challenges: ensuring factual accuracy, avoiding bias, keeping the human teacher in the loop, and protecting student data. Fortunately, the evaluation techniques we discuss next can help in these regards.
+
+## Evaluation and Benchmarking of Educational AI Agents
+
+Building a powerful agent is only half the battle – you must also **evaluate** it rigorously, especially in education where the stakes include student learning outcomes. Traditional NLP model evaluation (accuracy on a test set, etc.) is not sufficient for agents that **dynamically interact and perform tasks**. We need to assess not just *what* the agent outputs, but *how* it behaves over an extended interaction and whether it truly assists learning.
+
+A recent survey by Mohammadi et al. (2025) proposes a two-dimensional taxonomy for evaluating LLM-based agents. We can adapt its insights for educational agents:
+
+**Evaluation Objectives (What to Evaluate):**
+
+* **Task Performance (Agent Behavior):** Does the agent achieve the intended outcomes? For a tutoring agent, this might be measured in terms of **student improvement** or correct answers after using the tutor. You might evaluate task completion rates (e.g., agent was able to answer student questions X% of the time correctly) and output quality (clarity of explanations, correctness of solutions). User satisfaction surveys from students/teachers can also fall here.
+
+* **Capabilities and Process:** This looks at *how* the agent is operating. Is it effectively using its tools? Is it planning and reasoning well? For example, an agent might be evaluated on whether it uses the calculator tool when appropriate, or how many dialogue turns it needed to clarify a question. In multi-agent settings, you’d examine collaboration: did the tutoring agent call on the quiz generator agent when it should have? These metrics ensure the agent’s **internal decision-making** aligns with expectations (not just the final answer). In education, you might simulate some scenarios to see if the agent follows pedagogical strategies (like scaffolding questions, giving hints rather than direct answers immediately, etc.).
+
+* **Reliability and Robustness:** Does the agent behave consistently and handle variations well? In other words, if two students ask the same thing in different wording, does it give comparable help? Does it gracefully handle errors (like a tool failing or a question it doesn’t know)? An educational agent should avoid random behavior – you don’t want it giving wildly different hints to students of equal skill, unless context justifies it. Measuring this could involve stress-testing the agent with paraphrased inputs, out-of-scope questions, or even adversarial prompts to see if it stays on track.
+
+* **Safety and Alignment:** Particularly important in education – ensure the agent’s outputs are appropriate, unbiased, and align with ethical norms. This includes checking for harmful content (no inappropriate language or examples), fairness (not catering only to one demographic), and compliance (e.g., not giving students the direct answers to test questions if that’s against policy). Evaluating this might involve having human reviewers or another AI judge the agent’s conversations for any red flags. Many projects use **LLM-based evaluators** (like GPT-4 judging the quality/safety of another agent’s response) or checklists of behaviors to systematically go through potential issues.
+
+**Evaluation Process (How to Evaluate):**
+
+* **Static vs Interactive Testing:** Static evaluation uses predefined inputs (like a set of student questions) and looks at outputs, similar to traditional QA benchmarks. Interactive evaluation puts the agent in a simulated conversation or task environment to see how it performs over time. For a tutoring agent, interactive evaluation is crucial: you might run a simulated tutoring session with a scripted “fake student” to see how the agent adapts after each exchange. There are platforms for simulating such dialogs or even connecting agents to each other to test multi-agent interplay.
+
+* **Datasets and Benchmarks:** Create or use datasets relevant to education. For example, one could use the **MathMLU benchmark** (if exists) for math tutors, or a dialog dataset of student questions. Enterprise or domain-specific conditions (like role-based access in a corporate learning setting) might need custom scenarios. The evaluation survey highlights that enterprise (and by extension educational institutions) have extra demands: e.g., data privacy, compliance, long-horizon operation. So your evaluation should include those aspects: test the agent over a long session (does it forget earlier parts? Does it remain coherent for an hour-long tutoring session?), and test it under any access controls (can it retrieve only allowed data?).
+
+* **Metrics and Methods:** Traditional metrics like accuracy or BLEU (for language) might not fully capture an agent’s performance. You’ll likely use a mix of quantitative metrics (e.g., quiz score improvements, task success rate, time taken per task) and qualitative evaluations (human ratings of helpfulness, or using an LLM to judge the thoroughness of an explanation). There’s also **Holistic Evaluation of Agents** initiatives – for instance, some leaderboards have emerged (like the **HEA benchmark**) that evaluate agents on a suite of tasks in a unified way. In education, one might imagine a benchmark that requires the agent to teach a concept and then the student (simulated) takes a test – the agent’s score could be the student’s test score.
+
+* **Tooling:** Utilize frameworks that track and log agent behavior. Tools like **LangSmith** or **Arize AI** (mentioned in the survey) provide instrumentation to log each step an agent takes, so you can debug and analyze failures. For example, LangChain’s tracing can show each tool call and model response. This is invaluable when an agent makes a mistake – you can see the chain of thought that led there and improve it (maybe add a rule to avoid a certain tool in some context, etc.). Also, since educational agents might be deployed to students, having monitoring in place to catch any unsafe outputs in real time is wise (some systems have a “circuit breaker” to halt an agent if it starts going off-script).
+
+**Best Practices:** Based on the above, here are some concrete tips for evaluating educational agents:
+
+* **Define clear success criteria** for each use case. For a tutor, is success a high post-tutoring test score? A student rating of satisfaction? Both? This helps focus your evaluation design.
+* **Use a mix of automated and human evaluation.** Automated tests can cover wide ground (many questions, many variants), while human evaluators can judge nuances (was the explanation encouraging? did it motivate the student?).
+* **Test in stages:** Start with static tests (does it know the content?). Then test sub-modules (maybe test the Quiz Agent alone on generating questions). Finally, do full integration tests with the whole agent system interacting.
+* **Scenario-based evaluation:** Create realistic student personas or scenarios (e.g., “struggling student who gets frustrated easily”) and simulate those interactions. See if the agent adapts properly (does it detect frustration and respond supportively?). This can be done with either human-in-the-loop (someone roleplaying the student) or a carefully crafted script.
+* **Longitudinal evaluation:** If possible, evaluate the agent’s performance over time or multiple sessions. For example, do students actually improve after multiple uses? Does the agent maintain consistency between sessions (remembering what was taught before via its memory)?
+* **Safety checks:** Include adversarial testing for things like prompt injection (students might try to get the agent to just give answers or do their homework). Evaluate how the agent handles such situations – does it refuse or cleverly redirect the student to learn instead of cheat? There are research works focusing on prompt injection defenses for LLM agents which might be relevant to consult.
+
+By adopting a thorough evaluation strategy, you not only ensure your educational agent is effective and safe, but you also build trust with end-users (teachers, students, parents) and stakeholders. In education, transparency is key: you might even present some of the evaluation results (e.g., “Our tutor agent’s answers were rated 95% correct and free of bias in a blind review study”) to bolster confidence.
+
+## Getting Started and Further Resources
+
+Developing for the Agentic Web is an exciting frontier, and education is a domain poised to benefit greatly from these advancements. Here are some actionable steps and resources to continue your journey:
+
+* **Explore Open Standards Documentation:** Check out the official specs and guides for [**A2A Protocol**](https://github.com/a2a-org/A2A) and [**Anthropic’s MCP**](https://modelcontextprotocol.io) (Model Context Protocol). These will give you details on how to implement and use these protocols. For example, the A2A spec on GitHub provides message schemas and sample code, and Anthropic’s MCP quickstart shows how to spin up an MCP server and client. Even if you don’t implement them from scratch, understanding them will inform how you structure your agent interactions.
+
+* **Leverage SDKs and Libraries:** Use the SDKs provided – Google’s A2A has an SDK (and many partners like LangChain, as mentioned, likely will have integration). Anthropic’s MCP has SDKs in their GitHub (with connectors you can reuse). These can save you time in making your agent MCP or A2A-compatible. Also, monitor IBM’s ACP if it’s relevant to your context (especially if working in enterprise education environments).
+
+* **Prototype with Existing Tools:** Start small by giving a single agent tool-using capabilities. For instance, using OpenAI’s function calling or LangChain’s tool abstraction, make a mini agent that can fetch definitions from Wikipedia or do a simple quiz. This will get you familiar with how an agent can decide to use a tool when needed. Once comfortable, you can scale up to multi-agent – perhaps have two LangChain agents talk to each other (there are examples in the community of agents in conversation, often called “self-play” scenarios).
+
+* **Community and Research:** The Agentic Web is a fast-moving field. Join communities or forums like the [**A2A Community discussion**](https://github.com/a2a-org/A2A/discussions) or follow the SafeRL-Lab’s [Agentic Web GitHub](https://github.com/SafeRL-Lab/agentic-web) which curates research papers. Keeping abreast of new research will alert you to improved techniques for things like multi-agent coordination strategies, negotiation protocols, or safety approaches. For example, new research on “agent attention economy” might yield libraries for implementing economic incentives among agents, which could be interesting for educational resource sharing.
+
+* **Testing Environment:** Set up a sandbox environment to test agent interactions. This could be as simple as a local network where you run multiple agent instances (processes or containers) that communicate via HTTP (implementing basic A2A). Or use a platform like **Hugging Face Spaces** or **Streamlit** to deploy a prototype interface for your agentic tutor and iterate with user feedback. There are also academic environments like the BEAM benchmark (if available) for multi-agent emergent behaviors, or simulation environments for things like conversational agents.
+
+* **Measure and Iterate:** Use the evaluation methods discussed to continuously improve your agent. Start with a baseline (maybe your agent initially just answers questions with an LLM and no fancy orchestration) and measure its performance. Then add components (a tool here, an extra agent there) and see if metrics improve (did students get more answers right? did the session length drop because the agent was more efficient?). This empirical approach will guide you on where agentic design truly adds value versus where a simpler solution might suffice.
+
+* **Ethical and Privacy Considerations:** Particularly for education, ensure compliance with regulations like FERPA (in the US) or GDPR (if user data is involved). Agents will likely handle personal data (student records, performance data) when customizing learning. Design with privacy in mind – e.g., use on-device agents for sensitive data if possible, or at least clear context after a session and don’t log sensitive info unnecessarily. The Agentic Web doesn’t override the need for data ethics; if anything, it heightens it because of the autonomy involved. Include an “ethical agent” or just built-in constraints to avoid problematic content (for instance, if an agent is asked to do a student’s exam for them, it should refuse – essentially aligning with academic integrity policies).
+
+In conclusion, the Agentic Web offers a powerful vision for the next generation of educational technology: systems that are **intelligent, interactive, and interconnected** in ways previously impossible. By understanding its foundations and leveraging the emerging tools and protocols, developers can create applications that make learning more personalized, engaging, and effective. Whether it’s a tutor that feels like a personal teacher for every student, or a research assistant that brings the world’s knowledge to a learner’s fingertips, the possibilities are vast. As you embark on building these systems, remember to keep the human user’s goals and context at the center – the technology is there to augment human learning, not replace the human touch that is often vital in education.
+
+With careful design, rigorous evaluation, and responsible implementation, agentic web applications could become invaluable partners in education – empowering learners and educators alike in this new era of AI-driven collaboration.
+
+**Sources:** The concepts and examples in this tutorial draw upon recent research and proposals on the Agentic Web, multi-agent frameworks, and LLM agent evaluation methodologies, as cited throughout. These provide a foundation for interested readers to explore deeper. Happy building in the Agentic Web!
