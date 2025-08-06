@@ -58,20 +58,65 @@ The combination of AI agents and relational databases unlocks a wide array of po
 
 In conclusion, the synergy between AI agents and relational databases offers a compelling proposition for businesses seeking to leverage their structured data in more intelligent and dynamic ways. While the path requires careful consideration of the inherent limitations, the potential rewards in terms of enhanced decision-making, improved efficiency, and innovative applications are substantial. As AI technology continues to evolve, the bond between intelligent agents and the trusted realm of relational databases is only set to grow stronger.
 
-## Relational Databases Tutorial
+## Relational Databases Tutorial: The New NLP Database Paradigm
 
-This tutorial provides a comprehensive guide to using Neon Serverless, the Model Context Protocol (MCP), and the OpenAI Agents SDK to build powerful AI agents that can interact with a PostgreSQL database. We will cover the setup and configuration of each component and then walk through an example of creating an AI agent capable of querying a database using natural language.
+This tutorial provides a comprehensive guide to using **Neon Serverless PostgreSQL with pgvector**, the **Model Context Protocol (MCP)**, and the **OpenAI Agents SDK** to build powerful AI agents that can interact with both structured and semantic data. This represents the new paradigm of NLP-native databases that combine traditional relational capabilities with modern AI requirements.
+
+**Why This Matters**: Traditional databases were built for exact queries. Modern AI applications need databases that understand semantic similarity, handle natural language queries, and integrate seamlessly with AI agents. Neon + pgvector + MCP represents this evolution.
+
+We will cover the complete setup and walk through building an AI agent capable of both traditional SQL queries and hybrid vector-relational searches.
+
+## 3-Step Learning Progression
+
+### Step 1: Control DB using NLP - Neon MCP Server
+**Focus**: Natural language database control with Neon's MCP server
+**Learn**: How to use conversational commands to interact with PostgreSQL
+**Build**: AI agent that can query and modify databases using natural language
+**Time**: 2-3 hours
+**Guide**: [01_neon_mcp_nlp_control/readme.md](./01_neon_mcp_nlp_control/readme.md)
+
+### Step 2: Understanding pgvector - Hybrid Search Implementation  
+**Focus**: Combining relational data with vector embeddings for semantic search
+**Learn**: pgvector setup, hybrid queries, and semantic similarity in SQL
+**Build**: Database system that handles both exact and semantic queries
+**Time**: 3-4 hours
+**Guide**: [02_pgvector_hybrid_search/readme.md](./02_pgvector_hybrid_search/readme.md)
+
+### Step 3: Google MCP Toolbox - Production Integration
+**Focus**: Enterprise-grade database tooling with Google's MCP implementation
+**Learn**: Advanced MCP patterns, tool orchestration, and production deployment
+**Build**: Complete AI-database integration using Google's MCP Toolbox
+**Time**: 3-4 hours  
+**Guide**: [03_google_mcp_toolbox/readme.md](./03_google_mcp_toolbox/readme.md)
+
+## What You'll Achieve
+
+By completing this tutorial series, you'll be able to:
+- Build AI agents that can control databases using natural language
+- Implement hybrid search combining SQL and vector similarity
+- Deploy production-ready database integrations using MCP
+- Create sophisticated data interactions for AI applications
+
+**Prerequisites**: Basic SQL knowledge, understanding of AI/ML concepts
+**Total Time**: 8-11 hours
+**Outcome**: Production-ready NLP-native database system
 
 ### 1\. Introduction to the Technologies
 
-**Neon Serverless Postgres:**
+**Neon Serverless PostgreSQL:**
 
-Neon is a fully managed, serverless PostgreSQL service. Its key features include:
+Neon is a fully managed, serverless PostgreSQL service designed for the AI era. Its key features include:
 
   * **Serverless Architecture:** Eliminates the need to provision or manage servers, with automatic scaling based on load, including scaling to zero to save costs.
   * **Separation of Storage and Compute:** Allows for independent scaling of resources, high availability, and efficient resource management.
-  * **Branching:** Enables you to instantly create isolated copies of your database for development, testing, and schema migrations without impacting your production environment.
+  * **Database Branching:** Enables you to instantly create isolated copies of your database for development, testing, and schema migrations without impacting your production environment.
+  * **Native pgvector Support:** Built-in vector extension for hybrid relational + semantic search capabilities.
   * **AI Integration:** Neon seamlessly integrates with AI frameworks and tools through the Model Context Protocol (MCP).
+
+**The New Paradigm**: Unlike traditional databases that handle only exact queries, Neon + pgvector enables hybrid queries that combine:
+- Traditional SQL for structured data
+- Vector similarity search for semantic understanding
+- Natural language interfaces via AI agents
 
 **Model Context Protocol (MCP):**
 
