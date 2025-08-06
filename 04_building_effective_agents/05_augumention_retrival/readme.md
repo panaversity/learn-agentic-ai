@@ -133,3 +133,6 @@ Vector databases, relational databases, and graph databases each offer unique ad
 - [Vector database vs. graph database: use cases and popular tools - Redpanda](https://www.redpanda.com/blog/vector-vs-graph-database-streaming-data)
 - [Vector database vs graph database: Knowledge Graph impact - WRITER](https://writer.com/engineering/vector-database-vs-graph-database/)
 - [Building AI Agents With Your Enterprise Data: A Developer’s Guide - MindsDB](https://mindsdb.com/blog/building-ai-agents-with-your-enterprise-data-a-developers-guide)
+- [15 Best Open-Source RAG Frameworks in 2025](https://www.firecrawl.dev/blog/best-open-source-rag-frameworks)
+- [Best RAG tools: Frameworks and Libraries in 2025](https://research.aimultiple.com/retrieval-augmented-generation/)
+- [Nvidia Enterprise RAG pipeline](https://build.nvidia.com/nvidia/build-an-enterprise-rag-pipeline)
