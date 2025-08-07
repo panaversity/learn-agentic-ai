@@ -205,7 +205,7 @@ Here’s our take, focusing on protocols that actually make a “web of agents�
 
 3. **ACP (Agent Communication Protocol)** — an A2A-style alternative with Linux Foundation governance and a growing ecosystem (BeeAI). Important as a parallel, production-minded path to agent interop. ([IBM Research][8], [agentcommunicationprotocol.dev][9], [linuxfoundation.org][10])
 
-4. **OpenAPI/JSON Schema/JSON RPC (for capability description & tool contracts)** — not agent-specific, but still the lingua franca most agent protocols lean on for describing functions and payloads consistently. (Commonly referenced in A2A/MCP docs and implementations.) ([The Register][11])
+4. **JSON Schema/JSON RPC (for capability description & tool contracts)** — not agent-specific, but still the lingua franca most agent protocols lean on for describing functions and payloads consistently. (Commonly referenced in A2A/MCP docs and implementations.) ([The Register][11])
 
 5. **OAuth 2.0 / OIDC (for auth & identity between agents/services)** — the practical security layer most real deployments ride on for trust, consent, and scoped access when agents call tools or other agents. (Explicitly surfaced in A2A guidance for secure interop.) ([Google Cloud][3])
 
