@@ -1,5 +1,7 @@
 # Google Agent to Agent (A2A) Protocol - Agents Communicating with Agents
 
+[Agent2Agent (A2A) Crash Course: Full Walkthrough With Real Multi-Agent Examples](https://www.youtube.com/watch?v=mFkw3p5qSuA)
+
 A2A is a standardized protocol that allows AI agents to discover each other, securely exchange information, manage tasks, and collaborate without exposing their internal workings. 
 
 It is enabling agents to interoperate with each other, even if they were built by different vendors or in a different framework - this will increase autonomy and multiply productivity gains, while lowering long-term costs.
