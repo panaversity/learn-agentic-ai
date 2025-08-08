@@ -58,7 +58,7 @@ sequenceDiagram
     participant C as Client
     participant S as Server
     C->>S: Initialize with sampling capability
-    S->>C: Tool request (create_story)
+    C->>S: Tool request (create_story)
     S->>C: sampling/createMessage
     Note over C: LLM generates response
     C->>S: Sampling response
