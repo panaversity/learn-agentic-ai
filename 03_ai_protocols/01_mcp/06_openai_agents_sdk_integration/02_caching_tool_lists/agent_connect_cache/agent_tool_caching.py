@@ -2,7 +2,8 @@ import asyncio
 import os
 from dotenv import load_dotenv, find_dotenv
 
-from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, Runner
+from openai import AsyncOpenAI
+from agents import Agent, OpenAIChatCompletionsModel, Runner
 from agents.mcp import MCPServerStreamableHttp, MCPServerStreamableHttpParams
 
 
