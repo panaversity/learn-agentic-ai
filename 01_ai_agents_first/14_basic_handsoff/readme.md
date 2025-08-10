@@ -1,137 +1,74 @@
-# Handoff
+# 🤝 Handoffs
 
-https://openai.github.io/openai-agents-python/handoffs/
-
-In the OpenAI Agents SDK, **handoffs** enable an agent to delegate tasks to another agent, facilitating specialized handling of different tasks within a multi-agent system. This mechanism is particularly useful when different agents possess expertise in distinct domains. citeturn0search2
-
-**Table of Contents:**
-
-1. [Understanding Handoffs](#understanding-handoffs)
-2. [Creating Agents](#creating-agents)
-3. [Implementing Handoffs](#implementing-handoffs)
-4. [Running the Agent Orchestration](#running-the-agent-orchestration)
-5. [Advanced Handoff Customization](#advanced-handoff-customization)
-6. [Conclusion](#conclusion)
+**Handoff** = your current agent **transfers control** to another, more specialized agent to finish the task or the next stretch of the conversation. In the SDK, a handoff is exposed to the LLM **as a tool** (e.g., `transfer_to_refund_agent`). Use it when a specialist should *take over* and keep talking with the user.
 
 ---
 
-## 1. Understanding Handoffs
+## 💡 Why do we need handoffs?
 
-Handoffs allow an agent to delegate tasks to another agent. This is particularly useful in scenarios where different agents specialize in distinct areas. For example, a customer support application might have agents that each specifically handle tasks like order status, refunds, or frequently asked questions.
+When different parts of a problem are best handled by different specialists (billing, refunds, FAQs, research, etc.), handoffs let you route the conversation to the right agent at the right time. Think: **customer support** where a triage agent routes to “Order Status,” “Refunds,” or “FAQ” agents.
 
+**Mental model (analogy):**
 
+- *🛠 Agents-as-tools* = you keep the mic, briefly ask a colleague for a snippet.
+- **🔄 Handoff** = you **transfer the call** to that colleague; they continue the conversation with the user.
 
-## 2. Creating Agents
+Under the hood, the runner loop literally switches the “current agent” and continues from there.
 
-Define agents with specific roles and instructions.
+---
 
-**Example:**
+## 🛠 Core SDK pieces you’ll use
 
+- **📋Agent.handoffs** — list of agents (or `handoff(...)` objects) this agent can transfer to.
+- **📋`handoff(...)`** — customize the handoff: override the tool name/description, add `on_handoff` callbacks, accept typed input with `input_type`, or edit history with `input_filter`.
+- **📋Handoff is a tool** — the LLM sees a tool named like `transfer_to_<agent_name>`.
 
-```python
-from agents import Agent
+---
 
-# Agent specializing in billing inquiries
-billing_agent = Agent(
-    name="Billing Agent",
-    instructions="You handle all billing-related inquiries. Provide clear and concise information regarding billing issues."
-)
+## 📜 Minimal example — triage that hands off
 
-# Agent specializing in refund processes
-refund_agent = Agent(
-    name="Refund Agent",
-    instructions="You handle all refund-related processes. Assist users in processing refunds efficiently."
-)
-```
-
-
-## 3. Implementing Handoffs
-
-To enable an agent to delegate tasks to another agent, define handoffs during the agent's creation.
-
-**Example:**
-
+**Real-world story:** A “Triage Agent” decides whether to hand off to **Billing** or **Refunds**.
 
 ```python
-from agents import Agent
+from agents import Agent, Runner, handoff
+import asyncio
 
-# Triage agent that decides which specialist agent to hand off tasks to
+billing_agent = Agent(name="Billing agent", instructions="Handle billing questions.")
+refund_agent  = Agent(name="Refund agent",  instructions="Handle refunds.")
+
 triage_agent = Agent(
-    name="Triage Agent",
-    instructions="You determine which agent should handle the user's request based on the nature of the inquiry.",
-    handoffs=[billing_agent, refund_agent]
+    name="Triage agent",
+    instructions=(
+        "Help the user with their questions. "
+        "If they ask about billing, handoff to the Billing agent. "
+        "If they ask about refunds, handoff to the Refund agent."
+    ),
+    handoffs=[billing_agent, handoff(refund_agent)],  # either direct agent or `handoff(...)`
 )
-```
-
-
-In this setup, the `triage_agent` can delegate tasks to either the `billing_agent` or the `refund_agent` based on the user's request.
-
-## 4. Running the Agent Orchestration
-
-Use the `Runner` to execute the agent workflow.
-
-**Example:**
-
-
-```python
-from agents import Runner
 
 async def main():
-    user_input = "I need a refund for my recent purchase."
-    result = await Runner.run(triage_agent, user_input)
+    result = await Runner.run(triage_agent, "I need to check refund status.")
     print(result.final_output)
 
-# Execute the main function
-import asyncio
-asyncio.run(main())
+# asyncio.run(main())
+
 ```
 
+## Quick debug trick
 
-In this example, the `triage_agent` assesses the user's input and delegates the task to the appropriate specialist agent.
+After a run, check:
 
-Note:
+- `result.final_output` → the specialist’s reply.
+- `result.last_agent` → who actually answered (helpful for next turn continuity).
+- `result.new_items` → look for `HandoffCallItem` then `HandoffOutputItem` (proof a handoff occurred).
 
-Triage AI agents are artificial intelligence systems designed to assess, categorize, and prioritize tasks, ensuring that the most critical issues receive immediate attention. By automating the initial evaluation process, these agents enhance efficiency and accuracy across various sectors.
-How to pronounce:
+---
 
-https://www.google.com/search?q=pronounce+triage
+## 🧪 Interactive Lab 1 — make your first handoff
 
-## 5. Advanced Handoff Customization
+**Goal:** See the routing happen.
 
-For more control over handoffs, utilize the `handoff()` function to customize behavior.
+1. 📝 Change the user input to a billing-style question and re-run (e.g., “My card was charged twice”).
+2. 🔍 Print or inspect `result.new_items` to spot the **HandoffCallItem/HandoffOutputItem**—proof that a handoff happened.
 
-**Example:**
-
-
-```python
-from agents import Agent, handoff
-
-# Define the refund agent
-refund_agent = Agent(
-    name="Refund Agent",
-    instructions="You handle all refund-related processes."
-)
-
-# Customize the handoff to the refund agent
-custom_handoff = handoff(
-    agent=refund_agent,
-    tool_name_override="custom_refund_handoff",
-    tool_description_override="Handles refund processes with customized parameters."
-)
-
-# Triage agent with customized handoff
-triage_agent = Agent(
-    name="Triage Agent",
-    instructions="You determine which agent should handle the user's request.",
-    handoffs=[custom_handoff]
-)
-```
-
-
-In this scenario, the `triage_agent` uses a customized handoff to the `refund_agent`, allowing for specific configurations during the delegation process.
-
-## 6. Conclusion
-
-Implementing handoffs in the OpenAI Agents SDK enhances the modularity and specialization of your AI agents, enabling them to delegate tasks efficiently. By following this tutorial, you can create a multi-agent system where each agent operates within its domain expertise, leading to more efficient and effective task management.
-
-For more detailed information, refer to the [OpenAI Agents SDK Handoffs Documentation](https://openai.github.io/openai-agents-python/handoffs/). 
+> ✅ Checkpoint: You should see the final response come from the specialist agent and the “handoff” items present in new_items.
