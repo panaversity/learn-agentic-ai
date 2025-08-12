@@ -1,0 +1,10 @@
+[project]
+name = "hello-a2a"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "a2a-sdk>=0.3.0",
+    "uvicorn>=0.35.0",
+]

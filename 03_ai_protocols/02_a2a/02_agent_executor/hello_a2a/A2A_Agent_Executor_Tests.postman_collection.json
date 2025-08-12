@@ -1,0 +1,409 @@
+{
+  "info": {
+    "name": "A2A Agent Executor Tests",
+    "description": "Comprehensive test collection for A2A Agent Executor pattern tutorial",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "a2a-executor-tests-v1",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "item": [
+    {
+      "name": "01 - Agent Discovery",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Agent card has required fields', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('name');",
+              "    pm.expect(jsonData).to.have.property('description');",
+              "    pm.expect(jsonData).to.have.property('url');",
+              "    pm.expect(jsonData).to.have.property('skills');",
+              "});",
+              "",
+              "pm.test('Agent name matches expected', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.name).to.eql('Hello World Agent Executor');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/.well-known/agent-card.json",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ".well-known",
+            "agent-card.json"
+          ]
+        },
+        "description": "Discover agent capabilities and metadata"
+      }
+    },
+    {
+      "name": "02 - Basic Hello Message",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is valid JSON-RPC 2.0', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('jsonrpc', '2.0');",
+              "    pm.expect(jsonData).to.have.property('result');",
+              "    pm.expect(jsonData).to.have.property('id', 'req-hello-001');",
+              "});",
+              "",
+              "pm.test('Task completed successfully', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.result).to.have.property('kind', 'task');",
+              "    pm.expect(jsonData.result.status).to.have.property('state', 'completed');",
+              "});",
+              "",
+              "pm.test('Agent returned Hello World', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.result).to.have.property('artifacts');",
+              "    pm.expect(jsonData.result.artifacts).to.be.an('array');",
+              "    pm.expect(jsonData.result.artifacts[0].parts[0].text).to.eql('Hello World');",
+              "});",
+              "",
+              "// Store task ID for potential follow-up tests",
+              "pm.test('Store task ID', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.environment.set('last_task_id', jsonData.result.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"message/send\",\n  \"params\": {\n    \"message\": {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"hello\"\n        }\n      ],\n      \"messageId\": \"msg-hello-001\"\n    }\n  },\n  \"id\": \"req-hello-001\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Send a basic hello message to test the Agent Executor"
+      }
+    },
+    {
+      "name": "03 - Different Message Content",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is valid JSON-RPC 2.0', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('jsonrpc', '2.0');",
+              "    pm.expect(jsonData).to.have.property('result');",
+              "    pm.expect(jsonData).to.have.property('id', 'req-test-002');",
+              "});",
+              "",
+              "pm.test('Agent still returns Hello World (official behavior)', function () {",
+              "    const jsonData = pm.response.json();",
+              "    // Official HelloWorldAgent always returns 'Hello World' regardless of input",
+              "    pm.expect(jsonData.result.artifacts[0].parts[0].text).to.eql('Hello World');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"message/send\",\n  \"params\": {\n    \"message\": {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"What time is it?\"\n        }\n      ],\n      \"messageId\": \"msg-test-002\"\n    }\n  },\n  \"id\": \"req-test-002\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Test with different message content - official agent always returns Hello World"
+      }
+    },
+    {
+      "name": "04 - Empty Message Test",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Agent handles empty message gracefully', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.result.artifacts[0].parts[0].text).to.eql('Hello World');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"message/send\",\n  \"params\": {\n    \"message\": {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"\"\n        }\n      ],\n      \"messageId\": \"msg-empty-003\"\n    }\n  },\n  \"id\": \"req-empty-003\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Test how agent handles empty message content"
+      }
+    },
+    {
+      "name": "05 - Multiple Parts Message",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Agent processes multi-part message', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.result.artifacts[0].parts[0].text).to.eql('Hello World');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"message/send\",\n  \"params\": {\n    \"message\": {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"Part 1: Hello\"\n        },\n        {\n          \"text\": \"Part 2: How are you?\"\n        }\n      ],\n      \"messageId\": \"msg-multipart-004\"\n    }\n  },\n  \"id\": \"req-multipart-004\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Test message with multiple text parts"
+      }
+    },
+    {
+      "name": "06 - Invalid JSON-RPC Method",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 (JSON-RPC error handling)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response contains JSON-RPC error', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('jsonrpc', '2.0');",
+              "    pm.expect(jsonData).to.have.property('error');",
+              "    pm.expect(jsonData).to.have.property('id', 'req-invalid-005');",
+              "});",
+              "",
+              "pm.test('Error indicates method not found', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.have.property('code');",
+              "    // JSON-RPC method not found error code is -32601",
+              "    pm.expect(jsonData.error.code).to.eql(-32601);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"invalid/method\",\n  \"params\": {\n    \"message\": {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"test invalid method\"\n        }\n      ],\n      \"messageId\": \"msg-invalid-005\"\n    }\n  },\n  \"id\": \"req-invalid-005\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Test error handling with invalid JSON-RPC method"
+      }
+    },
+    {
+      "name": "07 - Enhanced Executor Test (if enabled)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Enhanced executor processes message content', function () {",
+              "    const jsonData = pm.response.json();",
+              "    const response = jsonData.result.artifacts[0].parts[0].text;",
+              "    ",
+              "    // If using enhanced executor, response should be different",
+              "    // If using basic executor, response will still be 'Hello World'",
+              "    pm.expect(response).to.not.be.empty;",
+              "    ",
+              "    // Log the response to see which executor is being used",
+              "    console.log('Agent response:', response);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"message/send\",\n  \"params\": {\n    \"message\": {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"hello enhanced executor\"\n        }\n      ],\n      \"messageId\": \"msg-enhanced-006\"\n    }\n  },\n  \"id\": \"req-enhanced-006\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Test message that would show difference between basic and enhanced executors"
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script",
+          "console.log('Testing A2A Agent Executor...');"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "pm.test('Response time is acceptable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "description": "Base URL for the A2A Agent Executor server"
+    },
+    {
+      "key": "last_task_id",
+      "value": "",
+      "description": "Store the last task ID for follow-up tests"
+    }
+  ]
+} 
