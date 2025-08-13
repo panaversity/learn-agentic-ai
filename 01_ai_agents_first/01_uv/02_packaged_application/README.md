@@ -26,7 +26,7 @@ Compared to a simple application, packaged applications handle:
 
 Before creating a **packaged** application, ensure:
 
-1. **`uv` is installed** – If not, follow the instructions in [`../00_uv_installation/README.md`](../00_uv_installation/README.md).
+1. **`uv` is installed** – If not, follow the instructions in [`../00_uv_installation/README.md`](../00_uv_installation/readme.md).
    Check installation:
 
    ```bash
