@@ -253,7 +253,7 @@ _The main event - complete multi-agent system_
 
 ```
 05_multi_agent_systems/     # Host + 3 remotes (ADK/CrewAI/LangGraph)
-                           # Complete pickleball scheduling demo
+                           # Complete Table Tennis scheduling demo
                            # ★ This is the "wow" moment ★
 ```
 
@@ -290,7 +290,7 @@ _Security, performance, and protocol convergence_
 └─────────────────┘             │  Calendar Agent  │
                                 └──────────────────┘
 
-User: "What time is everyone available tomorrow for pickleball?"
+User: "What time is everyone available tomorrow for Table Tennis?"
 
 Host Agent:
 1. 🔍 Discovers remote agents via Agent Cards

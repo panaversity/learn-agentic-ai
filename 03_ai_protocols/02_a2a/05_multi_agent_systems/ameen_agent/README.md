@@ -7,30 +7,35 @@
 ## 🧠 Learning Sciences Foundation
 
 ### **Specialization Learning Theory**
+
 - **Domain Expertise**: Deep focus on calendar and scheduling domain knowledge
 - **Framework Mastery**: Advanced ADK patterns and best practices
 - **Integration Skills**: Connecting domain logic with standardized A2A communication
 
 ### **Professional Agent Development**
-- **Production Patterns**: Building agents that work in enterprise environments  
+
+- **Production Patterns**: Building agents that work in enterprise environments
 - **API Integration**: Connecting with real calendar services (Google, Outlook)
 - **Error Handling**: Robust calendar operations with graceful failure handling
 
 ## 🎯 What You'll Learn
 
 ### **Core Concepts**
+
 - **ADK Agent Architecture** - Professional agent structure and patterns
 - **Calendar Domain Logic** - Scheduling, availability, and conflict resolution
 - **A2A Integration** - Seamless protocol integration with ADK
 - **Production Readiness** - Error handling, logging, and monitoring
 
 ### **Practical Skills**
+
 - Build production calendar agent with ADK framework
 - Integrate with real calendar APIs (Google Calendar, Outlook)
 - Implement complex scheduling logic and conflict resolution
 - Handle edge cases and error scenarios gracefully
 
 ### **Strategic Understanding**
+
 - How specialized agents contribute to multi-agent ecosystems
 - ADK framework advantages for production agent development
 - Calendar agent patterns that apply across business domains
@@ -40,11 +45,12 @@
 ✅ **Completed**: Host agent foundation understanding  
 ✅ **Knowledge**: ADK framework basics and A2A protocol  
 ✅ **API Access**: Google Calendar API credentials (optional but recommended)  
-✅ **Tools**: UV package manager, Python 3.10+, ADK SDK  
+✅ **Tools**: UV package manager, Python 3.10+, ADK SDK
 
 ## 🎯 Carly's Specialized Capabilities
 
 ### **Core Calendar Skills**
+
 ```
 📅 Calendar Agent Expertise
 ├── check_availability: Find free time slots for individuals/groups
@@ -55,9 +61,10 @@
 └── manage_recurring: Handle recurring meeting patterns
 ```
 
-### **Pickleball Scheduling Specialization**
+### **Table Tennis Scheduling Specialization**
+
 ```
-🏓 Pickleball-Specific Features
+🏓 Table Tennis-Specific Features
 ├── check_player_availability: Multi-player scheduling
 ├── find_court_time_slots: Integrate with court booking systems
 ├── weather_aware_scheduling: Consider outdoor court conditions
@@ -69,6 +76,7 @@
 ## 🏗️ ADK Implementation
 
 ### **Carly Agent Structure**
+
 ```python
 from google.adk import Agent, Skill, Context, Tool
 from google.calendar import CalendarService
@@ -79,21 +87,21 @@ import logging
 
 class CarlyCalendarAgent(Agent):
     """Specialized calendar agent using ADK framework"""
-    
+
     def __init__(self):
         super().__init__(
             agent_id="carly-calendar",
-            name="Carly Calendar Agent", 
+            name="Carly Calendar Agent",
             description="Specialized calendar and scheduling management"
         )
-        
+
         # Initialize calendar service
         self.calendar_service = CalendarService()
         self.logger = logging.getLogger(__name__)
-        
+
         # Configure A2A integration
         self.configure_a2a_integration()
-    
+
     def configure_a2a_integration(self):
         """Configure A2A protocol integration"""
         self.agent_card = AgentCard(
@@ -106,7 +114,7 @@ class CarlyCalendarAgent(Agent):
                     description="Check calendar availability for specified time periods",
                     parameters={
                         "start_time": "ISO 8601 datetime string",
-                        "end_time": "ISO 8601 datetime string", 
+                        "end_time": "ISO 8601 datetime string",
                         "participants": "List of email addresses"
                     }
                 ),
@@ -132,37 +140,37 @@ class CarlyCalendarAgent(Agent):
                 )
             ]
         )
-    
+
     @Skill(name="check_availability")
     async def check_availability(
-        self, 
+        self,
         context: Context,
         start_time: str,
         end_time: str,
         participants: List[str]
     ) -> Dict[str, Any]:
         """Check calendar availability for specified participants and time"""
-        
+
         try:
             self.logger.info(f"Checking availability for {len(participants)} participants")
-            
+
             # Convert time strings to datetime objects
             start_dt = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
             end_dt = datetime.fromisoformat(end_time.replace('Z', '+00:00'))
-            
+
             # Query calendar service for each participant
             availability_results = {}
-            
+
             for participant in participants:
                 try:
                     busy_times = await self.calendar_service.get_busy_times(
                         participant, start_dt, end_dt
                     )
-                    
+
                     free_slots = self._calculate_free_slots(
                         start_dt, end_dt, busy_times
                     )
-                    
+
                     availability_results[participant] = {
                         "available": len(free_slots) > 0,
                         "free_slots": free_slots,
@@ -171,17 +179,17 @@ class CarlyCalendarAgent(Agent):
                             slot['duration_hours'] for slot in free_slots
                         )
                     }
-                    
+
                 except Exception as e:
                     self.logger.error(f"Error checking {participant}: {e}")
                     availability_results[participant] = {
                         "available": False,
                         "error": str(e)
                     }
-            
+
             # Find common availability
             common_slots = self._find_common_availability(availability_results)
-            
+
             return {
                 "success": True,
                 "availability": availability_results,
@@ -191,7 +199,7 @@ class CarlyCalendarAgent(Agent):
                 ),
                 "checked_at": datetime.utcnow().isoformat()
             }
-            
+
         except Exception as e:
             self.logger.error(f"Availability check failed: {e}")
             return {
@@ -199,8 +207,8 @@ class CarlyCalendarAgent(Agent):
                 "error": str(e),
                 "checked_at": datetime.utcnow().isoformat()
             }
-    
-    @Skill(name="find_optimal_time") 
+
+    @Skill(name="find_optimal_time")
     async def find_optimal_time(
         self,
         context: Context,
@@ -210,30 +218,30 @@ class CarlyCalendarAgent(Agent):
         deadline: Optional[str] = None
     ) -> Dict[str, Any]:
         """Find optimal meeting time using AI-powered scheduling"""
-        
+
         try:
             # Set search window
             search_start = datetime.utcnow()
             search_end = datetime.fromisoformat(deadline) if deadline else (
                 search_start + timedelta(days=14)
             )
-            
+
             self.logger.info(
                 f"Finding optimal time for {len(participants)} participants, "
                 f"{duration_minutes} minutes, deadline: {deadline}"
             )
-            
+
             # Get availability for all participants
             availability = await self.check_availability(
                 context,
                 search_start.isoformat(),
-                search_end.isoformat(), 
+                search_end.isoformat(),
                 participants
             )
-            
+
             if not availability["success"]:
                 return availability
-            
+
             # Apply AI optimization
             optimal_slots = await self._optimize_scheduling(
                 availability["common_slots"],
@@ -241,7 +249,7 @@ class CarlyCalendarAgent(Agent):
                 preferred_times,
                 participants
             )
-            
+
             return {
                 "success": True,
                 "optimal_slots": optimal_slots,
@@ -255,14 +263,14 @@ class CarlyCalendarAgent(Agent):
                 },
                 "confidence_score": self._calculate_confidence_score(optimal_slots)
             }
-            
+
         except Exception as e:
             self.logger.error(f"Optimal time finding failed: {e}")
             return {
                 "success": False,
                 "error": str(e)
             }
-    
+
     @Tool(name="calendar_integration")
     async def _optimize_scheduling(
         self,
@@ -272,42 +280,42 @@ class CarlyCalendarAgent(Agent):
         participants: List[str]
     ) -> List[Dict[str, Any]]:
         """Apply AI optimization to scheduling decisions"""
-        
+
         scored_slots = []
-        
+
         for slot in common_slots:
             slot_start = datetime.fromisoformat(slot["start_time"])
             slot_duration = slot["duration_hours"] * 60  # Convert to minutes
-            
+
             # Skip slots too short for meeting
             if slot_duration < duration_minutes:
                 continue
-            
+
             # Calculate optimization score
             score = 0
-            
+
             # Time preference scoring
             if preferred_times:
                 for pref_time in preferred_times:
                     if self._time_matches_preference(slot_start, pref_time):
                         score += 10
-            
+
             # Business hours scoring (9 AM - 5 PM gets higher score)
             hour = slot_start.hour
             if 9 <= hour <= 17:
                 score += 5
-            
+
             # Participant count efficiency
             score += min(len(participants), 5)  # Cap at 5 points
-            
+
             # Morning meetings get slight preference
             if hour < 12:
                 score += 2
-            
+
             # Avoid fragmentation (prefer longer slots)
             if slot_duration > duration_minutes * 2:
                 score += 3
-            
+
             scored_slots.append({
                 **slot,
                 "score": score,
@@ -315,33 +323,33 @@ class CarlyCalendarAgent(Agent):
                 "meeting_end": (slot_start + timedelta(minutes=duration_minutes)).isoformat(),
                 "duration_minutes": duration_minutes
             })
-        
+
         # Sort by score descending
         scored_slots.sort(key=lambda x: x["score"], reverse=True)
-        
+
         return scored_slots
-    
+
     def _calculate_free_slots(
         self,
         start_dt: datetime,
-        end_dt: datetime, 
+        end_dt: datetime,
         busy_times: List[Dict[str, str]]
     ) -> List[Dict[str, Any]]:
         """Calculate free time slots from busy times"""
-        
+
         # Convert busy times to datetime objects
         busy_periods = []
         for busy in busy_times:
             busy_start = datetime.fromisoformat(busy["start"])
             busy_end = datetime.fromisoformat(busy["end"])
             busy_periods.append((busy_start, busy_end))
-        
+
         # Sort busy periods by start time
         busy_periods.sort(key=lambda x: x[0])
-        
+
         free_slots = []
         current_time = start_dt
-        
+
         for busy_start, busy_end in busy_periods:
             # Add free slot before this busy period
             if current_time < busy_start:
@@ -351,9 +359,9 @@ class CarlyCalendarAgent(Agent):
                     "end_time": busy_start.isoformat(),
                     "duration_hours": duration.total_seconds() / 3600
                 })
-            
+
             current_time = max(current_time, busy_end)
-        
+
         # Add final free slot after last busy period
         if current_time < end_dt:
             duration = end_dt - current_time
@@ -362,13 +370,14 @@ class CarlyCalendarAgent(Agent):
                 "end_time": end_dt.isoformat(),
                 "duration_hours": duration.total_seconds() / 3600
             })
-        
+
         return free_slots
 ```
 
 ## 🎮 Testing Scenarios
 
 ### **Scenario 1: Simple Availability Check**
+
 ```bash
 # Test Carly's availability checking
 curl -X POST http://localhost:8002/message/send \
@@ -388,6 +397,7 @@ curl -X POST http://localhost:8002/message/send \
 ```
 
 ### **Scenario 2: Optimal Time Finding**
+
 ```bash
 # Test AI-powered optimal scheduling
 curl -X POST http://localhost:8002/schedule/optimal \
@@ -403,6 +413,7 @@ curl -X POST http://localhost:8002/schedule/optimal \
 ## 🌟 Motivation & Relevance
 
 ### **Real-World Connection**
+
 ```
 📅 Enterprise Calendar Intelligence
 "Carly represents real enterprise calendar AI - systems that
@@ -411,14 +422,16 @@ resources across global time zones automatically."
 ```
 
 ### **Personal Relevance**
+
 ```
-🚀 Domain Expertise Skills  
+🚀 Domain Expertise Skills
 "Building specialized agents like Carly teaches you to
 combine domain knowledge with AI frameworks - essential
 for creating valuable business applications."
 ```
 
 ### **Immediate Reward**
+
 ```
 ⚡ Smart Scheduling
 "See Carly intelligently solve complex scheduling problems
@@ -428,12 +441,14 @@ that would take humans hours to figure out manually!"
 ## 📊 Success Metrics
 
 ### **Technical Validation**
+
 - [ ] ADK framework properly integrated with A2A protocol
 - [ ] Calendar API integration working with real data
 - [ ] Complex scheduling logic handling edge cases
 - [ ] Performance meets multi-agent coordination requirements
 
 ### **Calendar Intelligence**
+
 - [ ] Accurate availability checking across multiple participants
 - [ ] AI-powered optimal time finding with preference learning
 - [ ] Conflict detection and resolution recommendations
@@ -442,11 +457,13 @@ that would take humans hours to figure out manually!"
 ## 📖 Learning Resources
 
 ### **Primary Resources**
+
 - [ADK Agent Development Guide](https://google-adk.github.io/docs/agents/)
 - [Google Calendar API Documentation](https://developers.google.com/calendar/api)
 - [A2A-ADK Integration Patterns](https://google-a2a.github.io/A2A/latest/sdk/adk/)
 
 ### **Extension Resources**
+
 - Enterprise calendar integration patterns
 - AI-powered scheduling optimization techniques
 - Multi-calendar coordination strategies
