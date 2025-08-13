@@ -24,6 +24,15 @@
 └─────────────────────┘            │   (Availability Bot)  │
                                    └──────────────────────┘
 ```
+### Multi-Agent Flow
+
+1. **Host discovers** all remote agents via A2A agent cards
+2. **Parallel messaging** to all 3 agents simultaneously
+3. **Response aggregation** to find common availability
+4. **Court booking** using host's local tools
+5. **Final confirmation** sent to all participants
+
+**🎯 Result**: Complete end-to-end Table Tennis scheduling with zero manual coordination!
 
 ## 🔧 Installation & Dependencies
 
@@ -66,64 +75,6 @@ uv add openai-agents a2a-sdk uvicorn
 ### Environment Variables
 
 Create .env and add `GEMINI_API_Key` in each project. Optionally you can add `OPENAI_API_KEY` to enable tracing.
-
-## �🚀 Quick Start Demo
-
-### Step 1: Start All Agents
-
-```bash
-# Terminal 1: Start Ameen's Personal Calendar Agent
-cd ameen_agent
-uv run uvicorn main:app --port 8001 --reload
-# → Runs on http://localhost:8001
-
-# Terminal 2: Start Qasim's Schedule Manager Agent
-cd qasim_agent
-uv run uvicorn main:app --port 8002 --reload
-# → Runs on http://localhost:8002
-
-# Terminal 3: Start Ahmad's Availability Bot
-cd ahmad_agent
-uv run uvicorn main:app --port 8003 --reload
-# → Runs on http://localhost:8003
-
-# Terminal 4: Start Friends Host Orchestrator Agent
-cd friends_host
-uv run uvicorn main:app --port 8000 --reload
-# → Runs on http://localhost:8000
-
-# Sample CLI conversation:
-cd friends_host && uv run python cli_client.py
-```
-
-### Step 2: Test Multi-Agent Coordination
-
-```bash
-# Option 1: Web Interface Test
-curl http://localhost:8000
-# Visit the web interface and ask:
-# "What time is everyone available tomorrow for Table Tennis?"
-
-# Option 2: Direct API Test
-curl -X POST http://localhost:8000/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Schedule Table Tennis for tomorrow evening"}'
-
-# Option 3: Watch Agent Discovery
-curl http://localhost:8001/.well-known/agent-card.json  # Ameen
-curl http://localhost:8002/.well-known/agent-card.json  # Qasim
-curl http://localhost:8003/.well-known/agent-card.json  # Ahmad
-```
-
-### Step 3: Observe Multi-Agent Flow
-
-1. **Host discovers** all remote agents via A2A agent cards
-2. **Parallel messaging** to all 3 agents simultaneously
-3. **Response aggregation** to find common availability
-4. **Court booking** using host's local tools
-5. **Final confirmation** sent to all participants
-
-**🎯 Result**: Complete end-to-end Table Tennis scheduling with zero manual coordination!
 
 ## 🛠️ Build 1: Ameen's Personal Calendar Agent
 
