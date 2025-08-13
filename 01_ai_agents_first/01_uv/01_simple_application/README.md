@@ -240,7 +240,7 @@ uv run myapp
   uv sync --frozen
   ```
 
-- As the project grows (multiple modules, tests, distribution needs), consider switching to a **packaged application** (see [`../02_packaged_application`](../02_packaged_application/Readme.md)).
+- As the project grows (multiple modules, tests, distribution needs), consider switching to a **packaged application** (see [`../02_packaged_application`](../02_packaged_application/README.md)).
 
 ## 6. Quick Commands Reference
 
