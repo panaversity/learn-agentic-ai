@@ -1,0 +1,18 @@
+[project]
+name = "my-packaged-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Hassan Ali Khan", email = "73381969+hassan-ak@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+my-packaged-app = "my_packaged_app:main"
+my-packaged-app-main = "my_packaged_app.main:main"
+
+[build-system]
+requires = ["uv_build>=0.8.9,<0.9.0"]
+build-backend = "uv_build"
