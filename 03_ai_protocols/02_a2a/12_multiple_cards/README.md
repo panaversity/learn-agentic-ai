@@ -1,4 +1,4 @@
-# Step 11: Public vs Extended Agent Cards 🔐
+# Public vs Extended Agent Cards 🔐
 
 **Learn A2A agent card tiers - public discovery vs authenticated extended capabilities**
 
