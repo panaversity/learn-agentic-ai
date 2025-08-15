@@ -341,6 +341,11 @@ All communication secured with JWT tokens and RBAC!
 
 ### **Primary Resources**
 
+- https://a2a-protocol.org/latest/specification/#4-authentication-and-authorization
+- https://a2a-protocol.org/latest/topics/enterprise-ready/
+- https://a2a-protocol.org/latest/specification/#54-security-of-agent-cards
+- https://github.com/a2aproject/a2a-samples/tree/main/samples/python/agents/headless_agent_auth
+
 - [OAuth2 RFC 6749](https://tools.ietf.org/html/rfc6749)
 - [JWT RFC 7519](https://tools.ietf.org/html/rfc7519)
 - [JWKS RFC 7517](https://tools.ietf.org/html/rfc7517)
@@ -353,14 +358,5 @@ All communication secured with JWT tokens and RBAC!
 - JWT best practices and security considerations
 
 ---
-
-## 🚀 Ready to Secure Your Agent Ecosystem?
-
-**Next Action**: Implement enterprise authentication and secure your multi-agent system!
-
-```bash
-cd 09_authentication/
-# Add enterprise-grade security to your agents
-```
 
 **Remember**: Security isn't optional for production agents. The authentication patterns you implement here are essential for enterprise deployment and agent trust networks! 🔐

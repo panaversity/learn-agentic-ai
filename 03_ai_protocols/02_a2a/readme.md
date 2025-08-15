@@ -28,6 +28,7 @@ Without A2A, for each agent you want to communicate with, you need to:
 This creates redundant work and complexity as you scale to more agents.
 
 ### The Solution With A2A
+
 A2A standardizes agent communication by providing:
 
 - Uniform discovery: Standard way to find out what agents can do
@@ -88,6 +89,7 @@ The protocol doesn’t limit agents to plain text. Whether it’s **audio, video
 Agents find each other using **Agent Cards**, JSON files hosted at a well-known URI (e.g., `/.well-known/agent-card.json`). These cards detail an agent’s capabilities and how to connect.
 
 #### 1. Agent Cards
+
 Think of agent cards as business cards for AI agents. Each agent publishes a card that includes:
 
 - Name: The agent's identifier
@@ -98,6 +100,7 @@ Think of agent cards as business cards for AI agents. Each agent publishes a car
 - Example queries: Sample requests the agent can handle
 
 Example agent card structure:
+
 ```json
 {
   "name": "Hotel Booking Agent",
@@ -109,7 +112,7 @@ Example agent card structure:
       "description": "Book a hotel room for specified dates"
     },
     {
-      "name": "check_availability", 
+      "name": "check_availability",
       "description": "Check room availability for given dates"
     }
   ],
@@ -123,21 +126,22 @@ Example agent card structure:
 ### 2. Message and Tasks
 
 A2A uses two main communication types:
-1. Messages: For quick, immediate responses. Messages contain:
-    - Role: Who sent it (user, agent, etc.)
-    - Parts: The actual content (text, audio, etc.)
-    - Metadata: Message ID, task ID, context ID for state management
 
-Tasks: For long-running operations that take time to complete. Tasks include:
-    - Artifacts: Where the agent stores its work output
-    - Status: Current state (submitted, in-progress, completed, failed)
--  Updates: Real-time status changes
+1. Messages: For quick, immediate responses. Messages contain:
+   - Role: Who sent it (user, agent, etc.)
+   - Parts: The actual content (text, audio, etc.)
+   - Metadata: Message ID, task ID, context ID for state management
+
+Tasks: For long-running operations that take time to complete. Tasks include: - Artifacts: Where the agent stores its work output - Status: Current state (submitted, in-progress, completed, failed)
+
+- Updates: Real-time status changes
 
 Tasks are created to handle requests, with states like `working`, `completed`, or `input-required`. Clients can poll task status or receive updates via streaming or notifications.
 
 Artifacts Outputs (file, text, data) streamed or returned when complete
 
 ### 3. Agent Executor
+
 A wrapper class that standardizes how agents receive and process requests. Every A2A-compliant agent must implement:
 
 - execute(): Processes incoming requests
@@ -158,6 +162,7 @@ The agent executor bridges the gap between A2A's standard interface and your spe
 ### Communication Flow Example
 
 Personal Agent → Hotel Agent
+
 1. GET /well-known/agents.json (fetch agent card)
 2. POST /messages (send booking request)
 3. Response: Message with booking confirmation
@@ -213,36 +218,36 @@ MCP is **agent ↔ context**; A2A is **agent ↔ agent**. Both reuse JSON-RPC ov
 
 ## If use the agent to agent protocol to wrap a ai agent, is it stateful as per the a2a protocl?
 
-In the **Agent-to-Agent (A2A) protocol**, whether the wrapped AI agent is *stateful* depends on how the underlying agent is implemented, not just on the protocol itself.
+In the **Agent-to-Agent (A2A) protocol**, whether the wrapped AI agent is _stateful_ depends on how the underlying agent is implemented, not just on the protocol itself.
 
 Here’s the breakdown:
 
-* **The A2A protocol core itself is stateless by design.**
+- **The A2A protocol core itself is stateless by design.**
   It’s essentially a standardized message-passing interface — think of it like HTTP for agents. Each request from one agent to another is self-contained, carrying all the context needed for the receiving agent to respond. The protocol doesn’t require the receiver to remember anything from past interactions, and any “state” identifiers (`taskId`, `contextId`, etc.) are just metadata — the protocol doesn’t persist them automatically.
 
-* **Statefulness comes from the agent implementation, task store or memory layer.**
-  When wrapped AI agent keeps its own memory (session variables, conversation history, knowledge store, etc.) and uses some form of session ID or conversation context to retrieve that making wrapped agent will behave *statefully* across A2A calls.
+- **Statefulness comes from the agent implementation, task store or memory layer.**
+  When wrapped AI agent keeps its own memory (session variables, conversation history, knowledge store, etc.) and uses some form of session ID or conversation context to retrieve that making wrapped agent will behave _statefully_ across A2A calls.
 
-  Additionally if the runtime hosting your agent uses a **TaskStore** (in-memory or persistent) or other memory backend, it can link multiple messages together into a single *ongoing* task. This is what enables **multi-turn conversations** and intermediate states like `"input-required"`.
+  Additionally if the runtime hosting your agent uses a **TaskStore** (in-memory or persistent) or other memory backend, it can link multiple messages together into a single _ongoing_ task. This is what enables **multi-turn conversations** and intermediate states like `"input-required"`.
 
-  If it doesn’t keep memory, then each A2A call will be *stateless*, even if the protocol is the same.
+  If it doesn’t keep memory, then each A2A call will be _stateless_, even if the protocol is the same.
 
-* **Statefulness comes from the agent’s task store or memory layer.**
-  If the runtime hosting your agent uses a **TaskStore** (in-memory or persistent) or other memory backend, it can link multiple messages together into a single *ongoing* task. This is what enables **multi-turn conversations** and intermediate states like `"input-required"`.
+- **Statefulness comes from the agent’s task store or memory layer.**
+  If the runtime hosting your agent uses a **TaskStore** (in-memory or persistent) or other memory backend, it can link multiple messages together into a single _ongoing_ task. This is what enables **multi-turn conversations** and intermediate states like `"input-required"`.
   Without such a store, each A2A call is processed independently — even if it carries a `taskId`.
 
-* **Typical patterns:**
+- **Typical patterns:**
 
   1. **Stateless** — Every request contains the full context (prompt + data) needed for the agent to respond. No `taskId` or history retrieval is involved.
   2. **Stateful** — The request includes a `taskId` and/or `contextId` that the agent runtime uses to fetch stored conversation state or task progress from a backend store.
 
 **Bottom line:**
 
-A2A ≠ stateful by default — but it is **state-friendly by design**. You *can* make it stateful by designing your agent to persist and retrieve context between calls.
+A2A ≠ stateful by default — but it is **state-friendly by design**. You _can_ make it stateful by designing your agent to persist and retrieve context between calls.
 
-Its message format includes IDs and metadata so that implementations *can* maintain state if they choose. The LangGraph examples show this in action: they store state in a `TaskStore` and resume work when the same IDs come back in later calls.
+Its message format includes IDs and metadata so that implementations _can_ maintain state if they choose. The LangGraph examples show this in action: they store state in a `TaskStore` and resume work when the same IDs come back in later calls.
 
-Think of A2A like a phone line: it doesn’t “remember” your last conversation, but you can still call the same person who keeps a diary of what you talked about. 📒📞 Recipient *can* look up past notes if they want. 
+Think of A2A like a phone line: it doesn’t “remember” your last conversation, but you can still call the same person who keeps a diary of what you talked about. 📒📞 Recipient _can_ look up past notes if they want.
 
 ### Example
 
@@ -306,16 +311,17 @@ Agent: "Booked. Confirmation XYZ."
 
 ### Key Differences
 
-| Feature                       | Pure A2A (Stateless) | A2A + TaskStore (Stateful)      |
-| ----------------------------- | -------------------- | ------------------------------- |
-| Remembers past turns?         | ❌ No                 | ✅ Yes                           |
-| Needs full context each call? | ✅ Yes                | ❌ No (can rely on stored state) |
-| Protocol changes?             | ❌ Same A2A format    | ❌ Same A2A format               |
-| Extra component?              | ❌ None               | ✅ TaskStore / memory backend    |
+| Feature                       | Pure A2A (Stateless) | A2A + TaskStore (Stateful)       |
+| ----------------------------- | -------------------- | -------------------------------- |
+| Remembers past turns?         | ❌ No                | ✅ Yes                           |
+| Needs full context each call? | ✅ Yes               | ❌ No (can rely on stored state) |
+| Protocol changes?             | ❌ Same A2A format   | ❌ Same A2A format               |
+| Extra component?              | ❌ None              | ✅ TaskStore / memory backend    |
 
 ![alt text](./public/image.png)
 
 Learning Resources:
+
 - https://chatgpt.com/share/689ea4a7-44d4-8002-b66d-c001f0459357
 - https://a2a-protocol.org/latest/specification/#94-multi-turn-interaction-input-required
 - https://a2a-protocol.org/latest/tutorials/python/7-streaming-and-multiturn/#key-features-demonstrated
@@ -343,7 +349,7 @@ _Discovery, agent cards, skills, and ecosystem understanding_
 ```
 01_a2a_fundamentals/        # Complete A2A discovery system
                            # - Agent cards and capabilities
-                           # - Skills definition and examples  
+                           # - Skills definition and examples
                            # - Multiple agent ecosystem
                            # - Visual browser examples
 ```
@@ -379,8 +385,7 @@ _Security, performance, and protocol convergence_
 09_mcp_a2a_bridge/          # MCP-A2A protocol convergence (MCPAgent pattern)
 10_grpc_production/         # Dual transport, monitoring, CI/CD deployment
 11_multiple_cards/          # Advanced agent card patterns
-12_latency_routing/         # Health checks, fastest-agent selection
-13_security_hardening/      # TLS/mTLS, signed cards, replay protection
+12_security_hardening/      # TLS/mTLS, signed cards, replay protection
 ```
 
 ## 🚀 The Multi-Agent Demo (Step 5)
@@ -418,8 +423,8 @@ Response: "Everyone is available tomorrow at 8 PM, and I've booked Court 1!"
 
 | Step   | Focus                    | Key Concepts                        | Framework                | Time     | Testing              |
 | ------ | ------------------------ | ----------------------------------- | ------------------------ | -------- | -------------------- |
-| **00** | Protocol Transport Spec | HTTPS, JSON-RPC 2.0, gRPC specs   | Specification Study      | 1hr      | Spec comprehension   |
-| **01** | A2A Fundamentals         | Agent cards, skills, ecosystem      | Static JSON + Python    | 2hrs     | Browser + curl       |
+| **00** | Protocol Transport Spec  | HTTPS, JSON-RPC 2.0, gRPC specs     | Specification Study      | 1hr      | Spec comprehension   |
+| **01** | A2A Fundamentals         | Agent cards, skills, ecosystem      | Static JSON + Python     | 2hrs     | Browser + curl       |
 | **02** | Agent Executor           | execute(), cancel(), RequestContext | Python A2A               | 2hrs     | curl + test script   |
 | **03** | Client Messaging         | Discovery, messaging, A2A client    | Python A2A               | 3hrs     | curl + test script   |
 | **04** | Streaming & Tasks        | SSE, status updates, artifacts      | Python A2A               | 3hrs     | curl + browser       |
@@ -452,7 +457,7 @@ Response: "Everyone is available tomorrow at 8 PM, and I've booked Court 1!"
 ### **After Phase 2 (Steps 2-4)**: Protocol Mastery
 
 - ✅ Build A2A-compliant agents from scratch
-- ✅ Handle all core A2A methods (message/send, message/stream, tasks/*)
+- ✅ Handle all core A2A methods (message/send, message/stream, tasks/\*)
 - ✅ Implement client discovery and messaging patterns
 - ✅ Master streaming and task management
 

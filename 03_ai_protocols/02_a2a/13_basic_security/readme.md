@@ -1,0 +1,4 @@
+- https://a2a-protocol.org/latest/specification/#4-authentication-and-authorization
+- https://a2a-protocol.org/latest/topics/enterprise-ready/
+- https://a2a-protocol.org/latest/specification/#54-security-of-agent-cards
+- https://github.com/a2aproject/a2a-samples/tree/main/samples/python/agents/headless_agent_auth
