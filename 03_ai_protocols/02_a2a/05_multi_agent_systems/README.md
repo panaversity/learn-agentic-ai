@@ -45,7 +45,7 @@ We will setup 3 different agents and the host agent
 uv init friends_host
 cd friends_host
 # Main project dependencies
-uv add openai-agents a2a-sdk uvicorn
+uv add openai-agents uv add "a2a-sdk[http-server]"
 ```
 
 2. Ameen Agent
@@ -53,7 +53,7 @@ uv add openai-agents a2a-sdk uvicorn
 uv init ameen_agent
 cd ameen_agent
 # Main project dependencies
-uv add openai-agents a2a-sdk uvicorn
+uv add openai-agents uv add "a2a-sdk[http-server]"
 ```
 
 3. Qasim Agent
@@ -61,7 +61,7 @@ uv add openai-agents a2a-sdk uvicorn
 uv init qasim_agent
 cd qasim_agent
 # Main project dependencies
-uv add openai-agents a2a-sdk uvicorn
+uv add openai-agents uv add "a2a-sdk[http-server]"
 ```
 
 4. Ahmad Agent
@@ -69,7 +69,7 @@ uv add openai-agents a2a-sdk uvicorn
 uv init ahmad_agent
 cd ahmad_agent
 # Main project dependencies
-uv add openai-agents a2a-sdk uvicorn
+uv add openai-agents uv add "a2a-sdk[http-server]"
 ```
 
 ### Environment Variables

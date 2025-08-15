@@ -7,7 +7,7 @@
 By the end of this step, you will:
 
 - ✅ **Understand the Executor Pattern**: Why agent→executor→queue flow exists
-- ✅ **Master Request Routing**: Route A2A requests to appropriate agent skills  
+- ✅ **Master Request Routing**: Route A2A requests to appropriate agent skills
 - ✅ **Handle RequestContext**: Extract and use request information properly
 - ✅ **Manage EventQueue**: Send proper responses back through A2A protocol
 - ✅ **Implement Skill Routing**: Map AgentSkill IDs to actual methods
@@ -35,23 +35,26 @@ By the end of this step, you will:
 │   A2A Protocol      │ ← JSON-RPC, HTTP, message structure
 ├─────────────────────┤
 │   Agent Executor    │ ← Translation layer (this step!)
-├─────────────────────┤  
+├─────────────────────┤
 │   Business Logic    │ ← Your actual agent functionality
 └─────────────────────┘
 ```
 
 **Layer 1: A2A Protocol**
+
 - Handles JSON-RPC 2.0 message format
 - Manages HTTP transport details
 - Provides standard `.well-known/agent-card.json`
 
 **Layer 2: Agent Executor** ⭐ (This is what you'll master)
+
 - **Translates** A2A requests → Your agent methods
 - **Routes** requests based on skills and content
 - **Manages** RequestContext and EventQueue flow
 - **Handles** errors, cancellation, and edge cases
 
 **Layer 3: Business Logic**
+
 - Your actual agent functionality (calendar, data, etc.)
 - Pure Python methods without A2A concerns
 - Easy to test and maintain independently
@@ -64,7 +67,7 @@ By the end of this step, you will:
 1. A2A Request arrives (JSON-RPC)
    ↓
 2. A2A Server creates RequestContext
-   ↓  
+   ↓
 3. AgentExecutor.execute(context, event_queue) called
    ↓
 4. Executor extracts user input from context
@@ -85,12 +88,12 @@ By the end of this step, you will:
 ```python
 class RequestContext:
     """Contains everything about the incoming A2A request."""
-    
+
     def get_user_input(self) -> str:
         """Extract the actual user message text."""
         # This is the main method you'll use
         pass
-    
+
     # Additional context methods (implementation specific):
     # - get_skill_id() -> str | None
     # - get_message_metadata() -> dict
@@ -103,7 +106,7 @@ class RequestContext:
 ```python
 class EventQueue:
     """Sends responses back through A2A protocol."""
-    
+
     async def enqueue_event(self, event: Event) -> None:
         """Send a response event back to the client."""
         # This is how you send ALL responses
@@ -116,10 +119,12 @@ from a2a.utils import new_agent_text_message
 message = new_agent_text_message("Hello from agent!")
 await event_queue.enqueue_event(message)
 ```
+
 - **Formats** your responses → A2A protocol responses
 - **Handles** errors, cancellation, timeouts
 
 **Layer 3: Business Logic**
+
 - Your actual agent functionality
 - Pure business logic (no protocol concerns)
 - Easy to test and maintain
@@ -136,8 +141,8 @@ uv init hello_a2a
 cd hello_a2a
 
 # Add official A2A SDK and dependencies
-uv add a2a-sdk uvicorn openai-agents
-# After next released i.e: 3.1 it may change to uv add a2a-sdk[http-server]
+uv add "a2a-sdk[http-server]" uvicorn openai-agents
+# After next released i.e: 3.1 it may change to uv add "a2a-sdk[http-server]"[http-server]
 # see: https://github.com/a2aproject/a2a-python/pull/217
 ```
 
@@ -167,7 +172,7 @@ sleeping_agent = Agent(
     name="SleepingAssistant",
     model=OpenAIChatCompletionsModel(model="gemini-2.0-flash", openai_client=client),
 )
-    
+
 async def run_sleeping_agent(message: str):
     return await Runner.run(sleeping_agent, message)
 
@@ -189,26 +194,26 @@ from basic_agent import run_sleeping_agent
 
 class SimpleCalendarExecutor(AgentExecutor):
     """Agent Executor - handles A2A protocol."""
-    
+
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         """
         This is THE method that bridges A2A → Your Agent
-        
+
         Flow:
         1. Extract user input from A2A request
         2. Route to appropriate agent method
         3. Get result from agent
         4. Send response via A2A protocol
         """
-        
+
         # Step 1: Get user input from A2A request
         user_input = context.get_user_input()
-        
+
         result = await run_sleeping_agent(user_input)
-        
+
         # Step 3: Send response back through A2A
         await event_queue.enqueue_event(new_agent_text_message(result))
-    
+
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
         """Handle request cancellation."""
         await event_queue.enqueue_event(new_agent_text_message("Request cancelled"))

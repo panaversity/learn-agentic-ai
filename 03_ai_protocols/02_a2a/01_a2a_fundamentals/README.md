@@ -70,8 +70,8 @@ uv init hello_a2a
 cd hello_a2a
 
 # Add official A2A SDK and dependencies
-uv add a2a-sdk uvicorn
-# After next released i.e: 3.1 it may change to uv add a2a-sdk[http-server]
+uv add "a2a-sdk[http-server]" uvicorn
+# After next released i.e: 3.1 it may change to uv add "a2a-sdk[http-server]"[http-server]
 # see: https://github.com/a2aproject/a2a-python/pull/217
 ```
 
@@ -107,17 +107,17 @@ class CalendarAgent:
     async def invoke(self, message) -> str:
         """Invoke the Agent"""
         return "Not taking any task"
-    
+
 # 🎯 CONCEPT 2: Agent Executor (A2A Protocol Bridge)
 class CalendarAgentExecutor(AgentExecutor):
     """
-    This is the A2A protocol handler - it connects A2A messages 
+    This is the A2A protocol handler - it connects A2A messages
     to your agent's business logic. Think of it as a 'translator'.
     """
-    
+
     def __init__(self):
         self.agent = CalendarAgent()  # Connect to your business logic
-    
+
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         """
         This method receives A2A requests and calls your agent methods.
@@ -125,14 +125,14 @@ class CalendarAgentExecutor(AgentExecutor):
         """
         # Demo: Show how agent processes a request
         result = await self.agent.invoke(context.get_user_input())
-        
+
         # Send response back through A2A protocol
         await event_queue.enqueue_event(new_agent_text_message(result))
-    
+
     async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
         """Handle request cancellation."""
         raise Exception('cancel not supported in this example')
-    
+
 # 🎯 CONCEPT 3: Agent Skills (What You Advertise to Others)
 calendar_skills = [
     AgentSkill(
@@ -220,10 +220,10 @@ if __name__ == "__main__":
     print("🔗 A2A Endpoint: http://localhost:8001/a2a")
     print("🛠️ Skills Available:", [skill.id for skill in calendar_skills])
     print("\n💡 Try: curl http://localhost:8001/.well-known/agent-card.json")
-    
+
     import uvicorn
     from fastapi import FastAPI
-    
+
     app: FastAPI = server.build()
 
     uvicorn.run(server.build(), host="localhost", port=8001)
@@ -233,7 +233,7 @@ if __name__ == "__main__":
 
 1. **Save the complete calendar agent** as `calendar_agent.py`
 
-3. **Run your agent**:
+2. **Run your agent**:
 
 ```bash
 uv run python calendar_agent.py
@@ -340,7 +340,6 @@ if __name__ == "__main__":
     asyncio.run(test_calendar_agent())
 ```
 
-
 2. Test with Official A2A Client
 
 **File**: `test_client.py`
@@ -374,7 +373,6 @@ You've mastered A2A fundamentals when you can:
 - [ ] **Modify agent capabilities**: Add new skills and see them reflected in the agent card
 - [ ] **Understand the A2A pattern**: See how the official SDK handles protocol compliance
 
-
 ## 🎓 Key Takeaways
 
 1. **Focus on One Thing**: One comprehensive example teaches more than multiple simple ones
@@ -385,6 +383,7 @@ You've mastered A2A fundamentals when you can:
 6. **Build Incrementally**: Start simple, add features step by step
 
 ## 📖 Official References
+
 - [A2A Python SDK Documentation](https://google-a2a.github.io/A2A/latest/sdk/python/)
 - [AgentCard Specification](https://google-a2a.github.io/A2A/latest/specification/#55-agentcard-object-structure)
 - [AgentSkill Types](https://google-a2a.github.io/A2A/latest/sdk/python/#a2a.types.AgentSkill)
