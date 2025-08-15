@@ -60,7 +60,7 @@ Inside the `hello-mcp/` subdirectory, we will:
     - Install the necessary packages using `uv`:
 
       ```bash
-      uv add mcp uvicorn httpx
+      uv add mcp httpx
       ```
 
 3.  Update (`server.py`):

@@ -213,7 +213,7 @@ Per the specification:
 
 ### **Terminal 1: Start the Enhanced Server**
 ```bash
-uv add mcp uvicorn httpx
+uv add mcp httpx
 uv run uvicorn server:mcp_app --host 0.0.0.0 --port 8000 --reload
 ```
 
