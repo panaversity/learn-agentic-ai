@@ -6,3 +6,5 @@ __pycache__
 cc-ca.crt
 certs/*.pem
 .DS_Store
+conversations.db
+conversations.db*

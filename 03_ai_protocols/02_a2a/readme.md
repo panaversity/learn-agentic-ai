@@ -211,6 +211,117 @@ MCP is **agent ↔ context**; A2A is **agent ↔ agent**. Both reuse JSON-RPC ov
 
 ---
 
+## If use the agent to agent protocol to wrap a ai agent, is it stateful as per the a2a protocl?
+
+In the **Agent-to-Agent (A2A) protocol**, whether the wrapped AI agent is *stateful* depends on how the underlying agent is implemented, not just on the protocol itself.
+
+Here’s the breakdown:
+
+* **The A2A protocol core itself is stateless by design.**
+  It’s essentially a standardized message-passing interface — think of it like HTTP for agents. Each request from one agent to another is self-contained, carrying all the context needed for the receiving agent to respond. The protocol doesn’t require the receiver to remember anything from past interactions, and any “state” identifiers (`taskId`, `contextId`, etc.) are just metadata — the protocol doesn’t persist them automatically.
+
+* **Statefulness comes from the agent implementation, task store or memory layer.**
+  When wrapped AI agent keeps its own memory (session variables, conversation history, knowledge store, etc.) and uses some form of session ID or conversation context to retrieve that making wrapped agent will behave *statefully* across A2A calls.
+
+  Additionally if the runtime hosting your agent uses a **TaskStore** (in-memory or persistent) or other memory backend, it can link multiple messages together into a single *ongoing* task. This is what enables **multi-turn conversations** and intermediate states like `"input-required"`.
+
+  If it doesn’t keep memory, then each A2A call will be *stateless*, even if the protocol is the same.
+
+* **Statefulness comes from the agent’s task store or memory layer.**
+  If the runtime hosting your agent uses a **TaskStore** (in-memory or persistent) or other memory backend, it can link multiple messages together into a single *ongoing* task. This is what enables **multi-turn conversations** and intermediate states like `"input-required"`.
+  Without such a store, each A2A call is processed independently — even if it carries a `taskId`.
+
+* **Typical patterns:**
+
+  1. **Stateless** — Every request contains the full context (prompt + data) needed for the agent to respond. No `taskId` or history retrieval is involved.
+  2. **Stateful** — The request includes a `taskId` and/or `contextId` that the agent runtime uses to fetch stored conversation state or task progress from a backend store.
+
+**Bottom line:**
+
+A2A ≠ stateful by default — but it is **state-friendly by design**. You *can* make it stateful by designing your agent to persist and retrieve context between calls.
+
+Its message format includes IDs and metadata so that implementations *can* maintain state if they choose. The LangGraph examples show this in action: they store state in a `TaskStore` and resume work when the same IDs come back in later calls.
+
+Think of A2A like a phone line: it doesn’t “remember” your last conversation, but you can still call the same person who keeps a diary of what you talked about. 📒📞 Recipient *can* look up past notes if they want. 
+
+### Example
+
+Here’s a **side-by-side diagram** showing how **pure A2A (stateless)** differs from **A2A + TaskStore (stateful)**, based the official A2A LangGraph example.
+
+---
+
+```
+          ┌───────────────────────────────┐
+          │     Pure A2A (Stateless)       │
+          └───────────────────────────────┘
+         ┌─────────────┐       ┌─────────────┐
+User →→→ │   A2A Msg    │ →→→  │   Agent      │
+         │ (no task ID) │       │ Runtime     │
+         └─────────────┘       └─────────────┘
+                 │                     │
+                 │ No stored state     │
+                 │                     │
+                 ▼                     ▼
+         Each call processed      Agent has no
+         in isolation — no        memory of past
+         conversation history     interactions
+
+Example:
+User: "Book a flight."
+Agent: "Where to?"
+Next call: Agent forgets the first question.
+```
+
+---
+
+```
+      ┌─────────────────────────────────────────┐
+      │    A2A + TaskStore (Stateful Behavior)   │
+      └─────────────────────────────────────────┘
+         ┌─────────────┐        ┌────────────────┐
+User →→→ │  A2A Msg     │  →→→   │   Agent        │
+         │ (taskId +    │        │  Runtime       │
+         │ contextId)   │        │  + TaskStore   │
+         └─────────────┘        └────────────────┘
+                │                         │
+                │ Uses IDs to look up     │
+                │ conversation/task state │
+                ▼                         ▼
+          Runtime fetches          Agent continues
+          stored history           the same conversation
+          from TaskStore           seamlessly
+
+Example:
+Turn 1:
+User: "Book a flight."
+Agent: "Where to?"
+(TASK CREATED: id=123)
+
+Turn 2:
+User (taskId=123): "From JFK to LHR, Oct 10."
+Agent: "Booked. Confirmation XYZ."
+```
+
+---
+
+### Key Differences
+
+| Feature                       | Pure A2A (Stateless) | A2A + TaskStore (Stateful)      |
+| ----------------------------- | -------------------- | ------------------------------- |
+| Remembers past turns?         | ❌ No                 | ✅ Yes                           |
+| Needs full context each call? | ✅ Yes                | ❌ No (can rely on stored state) |
+| Protocol changes?             | ❌ Same A2A format    | ❌ Same A2A format               |
+| Extra component?              | ❌ None               | ✅ TaskStore / memory backend    |
+
+![alt text](./public/image.png)
+
+Learning Resources:
+- https://chatgpt.com/share/689ea4a7-44d4-8002-b66d-c001f0459357
+- https://a2a-protocol.org/latest/specification/#94-multi-turn-interaction-input-required
+- https://a2a-protocol.org/latest/tutorials/python/7-streaming-and-multiturn/#key-features-demonstrated
+
+---
+
 ## A2A Learning Path 🛠️
 
 ### **Phase 0: A2A Transport Specification (Step 0)**
