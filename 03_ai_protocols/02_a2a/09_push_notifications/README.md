@@ -1,4 +1,4 @@
-# Step 6: [Asynchronous Push Notifications](https://a2a-protocol.org/latest/topics/streaming-and-async/#2-push-notifications-for-disconnected-scenarios)
+# [Asynchronous Push Notifications](https://a2a-protocol.org/latest/topics/streaming-and-async/#2-push-notifications-for-disconnected-scenarios)
 
 > **Goal**: Learn A2A push notifications for long-running tasks when clients can't maintain persistent connections.
 
