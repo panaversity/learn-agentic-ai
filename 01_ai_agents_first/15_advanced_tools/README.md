@@ -4,21 +4,20 @@ Welcome to the next level of tool calling. If basic tools are about giving your 
 
 > **The Big Idea:** You are a manager, and your tools are your team. Advanced features are your management playbook for telling them *when* to work, *if* they can work, and *what to do* when they run into trouble.
 
-### What We'll Master in This Step?
+### What We'll Master in This Step
 
 To give you a roadmap, here are the key questions we will answer. By the end of this guide, you'll be able to confidently control your agent's behavior in complex, real-world scenarios:
 
-*   **Controlling Execution Flow:** How can I force my agent to stop after its first action (`stop_on_first_tool`), or only after a specific "finalizing" tool is used (`stop_tool_names`)?
-*   **Preventing Runaway Agents:** What is the ultimate safety net (`max_turns`) to prevent agents from getting stuck in loops, and how does it interact with other settings?
-*   **Creating Context-Aware Tools:** How do I make certain tools available *only* under specific conditions, like creating an "admin-only" tool using the dynamic `is_enabled` flag?
-*   **Building Resilient Agents:** How can my agent handle tool failures gracefully so it can recover and try a different approach instead of crashing?
-*   **Managing Stateful Tools:** For the rare cases where a tool needs to remember information between calls, how do we build one using a class (`FunctionTool`), and why is this advanced pattern used sparingly?
+*   **Controlling Execution Flow:** How can I use `tool_use_behavior` to stop my agent after its first action (`"stop_on_first_tool"`), or only after a specific "finalizing" tool (`StopAtTools`)?
+*   **Preventing Runaway Agents:** What is the `max_turns` safety net, how does it limit LLM calls, and how does it raise an exception when reached?
+*   **Creating Context-Aware Tools:** How do I make tools available *only* under specific conditions, like creating an "admin-only" tool using the dynamic `is_enabled` flag?
+*   **Building Resilient Agents:** How can my agent handle tool failures gracefully with `try/except` so it can recover instead of crashing?
+*   **Managing Stateful Tools:** For rare cases where a tool needs to remember information, how do we build one using the `FunctionTool` class, and why is this pattern used sparingly?
+*   **Applying Production Patterns:** How do these features map to real-world architectures like API Gateways, Data Pipelines, and Interactive Assistants?
 
-## 🤔 Why Do We Need Advanced Tools MasterClass?
+## 🤔 Why Do We Need an Advanced Tools MasterClass?
 
-Without advanced controls, agents can get stuck in loops, crash on a simple error, or try to use tools they shouldn't have access to. This costs time and money.
-
-Advanced tools solve these critical problems:
+Without advanced controls, agents can get stuck in loops, crash on a simple error, or try to use tools they shouldn't have access to. This costs time and money. Advanced tools solve these critical problems:
 *   **Control:** Stop your agent from running forever or calling tools unnecessarily.
 *   **Context:** Enable or disable tools based on the user's permissions or the situation.
 *   **Resilience:** Handle failures without crashing the entire process.
@@ -26,42 +25,34 @@ Advanced tools solve these critical problems:
 
 ---
 
-## Part 1: Controlling the Flow – How to Stop Your Agent
+## Part 1: Mastering `tool_use_behavior` – The Agent's Control Knob
 
-Your first job as a manager is to prevent your team from working endlessly. These controls stop your agent at the right moment.
+Your primary tool for managing workflow is the `Agent`'s `tool_use_behavior` parameter. It dictates what happens after a tool is successfully executed.
 
-### The "One and Done" Rule: `stop_on_first_tool`
+### Mode 1: `"run_llm_again"` (The Default Thinker)
+This is the standard behavior. After a tool runs, its output is sent **back to the LLM**. The LLM then analyzes the result and decides what to do next.
 
-This tells your agent to stop immediately after it successfully uses **any** tool. It's perfect for simple, single-action tasks.
+### Mode 2: `"stop_on_first_tool"` (The Direct Responder)
+This mode stops execution immediately after the **first tool call**. The raw output of that tool becomes the agent's final answer. The LLM does *not* see the tool's result.
 
-*   **Use Case:** An agent whose only job is to send an email. Once the email is sent, its work is done.
+### Mode 3: `StopAtTools` (The Workflow Finisher)
+This mode gives you surgical control. You provide a list of "finalizing" tool names. The agent will run its workflow but stop immediately after one of those specific tools is called.
 
 ```python
+from agents import Agent, StopAtTools
+
 agent = Agent(
-    name="Email Sender",
-    instructions="Send an email and then stop.",
-    tools=[send_email],
-    tool_use_behavior="stop_on_first_tool", # Formerly stop_at_first_tool
+    name="DataPipeline",
+    tools=[fetch_data, process_data, save_data],
+    tool_use_behavior=StopAtTools(stop_at_tool_names=["save_data"]),
 )
 ```
 
-### The "Final Action" Rule: `stop_tool_names`
+---
 
-This tells the agent to stop only after using a *specific* tool. This is essential for workflows that have a clear finishing move.
+## Part 2: The Runner's Safety Net – `max_turns`
 
-*   **Use Case:** A research agent that first searches for information (`web_search`) and then saves the result (`save_to_file`). You want it to stop only after it saves.
-
-```python
-agent = Agent(
-    name="Researcher",
-    tools=[web_search, save_to_file],
-    stop_tool_names=["save_to_file"], # Stop after this tool is called
-)
-```
-
-### The "Hard Limit" Rule: `Runner.max_turns`
-
-This is your ultimate safety net. It sets the maximum number of back-and-forth cycles (LLM calls) the agent can perform. It prevents infinite loops and contains costs.
+The `Runner.run` `max_turns` parameter is your ultimate safety net against infinite loops.
 
 *   **Use Case:** A complex research task where you want to allow up to 5 web searches before stopping, no matter what.
 
@@ -69,13 +60,16 @@ This is your ultimate safety net. It sets the maximum number of back-and-forth c
 result = await Runner.run(agent, "Find articles about AI agents. You can think and act a maximum of 5 times.", max_turns=6)
 ```
 
+*   **What it is:** A hard limit on the number of **calls to the LLM**.
+*   **What happens when it's reached:** It **raises a `MaxTurnsReachedError` exception**. Your application code must be prepared to catch this.
+
 > **🧠 Think About It:** What happens if `max_turns` is 1 and the agent needs to call a tool (search)? The runner will stop it after the first tool call, before taking tool response to llm. Always set `max_turns` high enough for the expected workflow.
 
 ---
 
-## Part 2: Context is King – Making Tools Appear & Disappear
+## Part 3: Context is King – Making Tools Appear & Disappear
 
-A good manager doesn't give every tool to every team member. The `is_enabled` flag lets you make tools available only when the conditions are right.
+A good manager doesn't give every tool to every team member. The `is_enabled` flag on a `@function_tool` lets you make tools available only when conditions are right.
 
 ### The Static On/Off Switch
 
@@ -102,19 +96,14 @@ def is_user_admin(context: RunContextWrapper, agent: Agent) -> bool:
 @function_tool(is_enabled=is_user_admin)
 def delete_user_database():
     """[ADMIN ONLY] Deletes the entire user database."""
-    # ... dangerous logic here ...
     return "Database has been deleted."
 ```
 
 ---
 
-## Part 3: When Things Go Wrong – Graceful Error Handling
+## Part 4: When Things Go Wrong – Graceful Error Handling
 
-Tools can fail—APIs go down, files are missing, math is impossible. A resilient agent doesn't crash; it handles the error.
-
-### The Easy Way: `try/except` in the Tool
-
-For most cases, a simple `try/except` block inside your tool is enough. You catch the error and return a helpful message to the agent, so it knows what went wrong and can try something else.
+Tools can fail. A resilient agent doesn't crash; it handles the error, and a simple `try/except` block is usually the best way.
 
 ```python
 @function_tool
@@ -124,7 +113,7 @@ def divide(a: int, b: int) -> str:
         result = a / b
         return str(result)
     except ZeroDivisionError:
-        return "Error: You cannot divide by zero. Please ask the user for a different number."
+        return "Error: You cannot divide by zero. Please ask for a different number."
 ```
 
 ### The Advanced Way: Custom Error Functions
@@ -133,13 +122,11 @@ For more complex scenarios, like custom logging or routing, you can provide a `f
 
 ---
 
-## Part 4: The Specialist – Stateful Tools (Use with Caution)
+## Part 5: The Specialist – Stateful Tools (Use with Caution)
 
-Sometimes you need a tool that *remembers* things between calls. While the `@function_tool` decorator is best for 99% of cases, you can build a tool from a class to manage internal state.
+While `@function_tool` is best for 99% of cases, you can build a tool from the `FunctionTool` class to manage internal state (memory between calls).
 
-*   **Use Case:** A counter tool that increments a number each time it's called.
-
-> **⚠️ Recommendation:** This pattern is complex and can make your agent's behavior harder to predict. Always prefer a simple `@function_tool` if possible.
+> **⚠️ Recommendation:** This pattern is complex and can make agent behavior harder to predict. Always prefer a simple `@function_tool` if possible.
 
 ```python
 from agents import FunctionTool
@@ -161,30 +148,31 @@ class CounterTool(FunctionTool):
 # You would then add an instance of this class to your agent's tool list.
 # agent_tools = [CounterTool()]
 ```
+---
 
+## Part 6: Production Patterns
+
+These features map directly to common, real-world agent architectures:
+
+*   **🌐 The API Gateway:** Fast, direct, single-action. Use `tool_use_behavior="stop_on_first_tool"`.
+*   **🔄 The Data Pipeline:** A sequence with a clear end. Use `tool_use_behavior=StopAtTools(...)`.
+*   **💬 The Interactive Assistant:** Needs to think about results. Use the default `tool_use_behavior="run_llm_again"`.
 ---
 
 ## Your Turn: A Mini-Lab
 
-Let's put it all together. Here is a starter template. Your task is to modify it based on the comments.
+Let's build an agent that uses these advanced controls.
 
 ```python
-from agents import Agent, Runner, function_tool, RunContextWrapper
+from agents import Agent, Runner, function_tool, RunContextWrapper, StopAtTools
 import asyncio
 
-# A tool that can sometimes fail.
 @function_tool
 def get_user_data(user_id: str) -> str:
-    """Looks up user data. Fails if the user ID is 'error'."""
-    try:
-        if user_id == "error":
-            raise ConnectionError("Could not connect to the database.")
-        return f"Data for {user_id}: Name - Alex, Role - user"
-    except ConnectionError as e:
-        return f"Error: {e}. I cannot proceed."
+    """Looks up user data."""
+    return f"Data for {user_id}: Name - Alex, Role - user"
 
-# TODO 1: Make this an admin-only tool.
-# Add an `is_enabled` check that looks for `context.get("role") == "admin"`.
+# TODO 1: Make this an admin-only tool using `is_enabled`.
 @function_tool
 def delete_user(user_id: str) -> str:
     """Deletes a user. This is a final action."""
@@ -194,37 +182,45 @@ admin_agent = Agent(
     name="Admin Agent",
     instructions="Help manage users. First get data, then delete if asked.",
     tools=[get_user_data, delete_user],
-    # TODO 2: Make the agent stop after a user is deleted.
-    # Add the correct `stop_tool_names` configuration here.
+    # TODO 2: Make the agent stop immediately after a user is deleted
+    # using `tool_use_behavior` and `StopAtTools`.
+    tool_use_behavior=StopAtTools(stop_at_tool_names=["delete_user"]),
 )
 
 async def main():
     print("--- Running as a regular user ---")
-    # This run should fail because the delete_user tool is not enabled.
     result_user = await Runner.run(
-        admin_agent,
-        "Please delete user client_456.",
-        # The context provides the user's role.
-        context={"role": "user"}
+        admin_agent, "Please delete user client_456.", context={"role": "user"}
     )
-    print(result_user.final_output)
+    print(f"Final Output: {result_user.final_output}")
 
     print("\n--- Running as an admin ---")
     # TODO 3: Set max_turns to 3 for this run as a safety limit.
     result_admin = await Runner.run(
-        admin_agent,
-        "Get data for user_123 and then delete them.",
-        context={"role": "admin"}
+        admin_agent, "Get data for user_123 and then delete them.",
+        context={"role": "admin"}, max_turns=3,
     )
-    print(result_admin.final_output)
+    print(f"Final Output: {result_admin.final_output}")
 
 # asyncio.run(main())
 ```
 
+#### ✅ Expected Outcome
+```
+--- Running as a regular user ---
+Final Output: I'm sorry, I don't have the permission or capability to delete users. I can only get user data.
+
+--- Running as an admin ---
+Final Output: User user_123 has been deleted.```
 ---
+```
 
 ## 🏁 Wrap-Up
 
-*   **What it is:** A set of controls to make your agent's tool use precise, safe, and context-aware.
-*   **When to use it:** For any real-world application where you need reliability and control over costs and actions.
-*   **How to do it:** Start with `stop` rules and `max_turns`. Add `is_enabled` for context and `try/except` for resilience. Use the `FunctionTool` class only when absolutely necessary.
+*   **What it is:** A set of precise controls for managing how and when your agent uses tools.
+*   **Key Controls:** Use `tool_use_behavior` to manage the workflow, `Runner.max_turns` as a safety limit, and `is_enabled` for context-aware tools.
+*   **Best Practices:** Handle errors inside your tools with `try/except` and match the agent's configuration to its real-world pattern (Gateway, Pipeline, or Assistant).
+
+- https://openai.github.io/openai-agents-python/tools/
+- https://github.com/openai/openai-agents-python/tree/main/examples/tools
+- https://github.com/mjunaidca/agents-sdk-decoded/blob/main/01_agent/09_tool_behavior.py
