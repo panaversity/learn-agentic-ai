@@ -61,7 +61,7 @@ result = await Runner.run(agent, "Find articles about AI agents. You can think a
 ```
 
 *   **What it is:** A hard limit on the number of **calls to the LLM**.
-*   **What happens when it's reached:** It **raises a `MaxTurnsReachedError` exception**. Your application code must be prepared to catch this.
+*   **What happens when it's reached:** It **raises a `MaxTurnsExceeded` exception**. Your application code must be prepared to catch this.
 
 > **🧠 Think About It:** What happens if `max_turns` is 1 and the agent needs to call a tool (search)? The runner will stop it after the first tool call, before taking tool response to llm. Always set `max_turns` high enough for the expected workflow.
 
