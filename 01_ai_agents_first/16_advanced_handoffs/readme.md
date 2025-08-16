@@ -1,181 +1,142 @@
-# 🤝Advanced Handoff
+# Advanced Handoffs MasterClass
 
-Go beyond “just route”: 
+You've learned how to transfer a conversation from one agent to another—the basic "call transfer." Now, it's time to upgrade that to a **VIP transfer**, where the next agent receives a full briefing, knows exactly what to do, and sees only the information relevant to their task.
 
-1. **Rename the handoff tool**
-2. **Attach callbacks**
-3. **Pass structured input** to the target agent
-4. **Filter/clean history** for the receiving agent
-5. **Prime prompts** so LLMs route confidently
+> **The Big Idea:** Advanced handoffs are not just about routing; they are about orchestrating a clean, intelligent, and context-rich transition between specialists. You're the director, ensuring every actor has the right script and cues.
 
-## 🎨 1. Customizing handoffs (name, description, callback)
+### What We'll Master in This Step
 
-You can refine how the handoff appears to the LLM and run side effects at the moment of transfer:
+This guide will equip you with the skills to manage sophisticated, multi-agent workflows. We will answer these key questions:
+
+*   **Customizing the Handoff:** How can I change the handoff's name and description for the LLM, and how do I run code (like logging) the moment a handoff is triggered?
+*   **Passing Structured Data:** How can I make the first agent pass a detailed "briefing" (like an escalation reason) to the next agent using structured data?
+*   **Controlling the Narrative:** How do I clean up the conversation history before the next agent sees it, so they aren't confused by irrelevant tool calls?
+*   **Ensuring Reliability:** What's the best way to prompt an agent so it knows when and how to hand off correctly?
+*   **Managing Multi-Turn Conversations:** After a handoff, how do I ensure the user continues talking to the correct specialist agent?
+
+---
+
+## Part 1: The VIP Briefing – Customizing and Passing Data
+
+A basic handoff is a blind transfer. An advanced handoff includes a detailed briefing note. You can customize how the handoff looks to the LLM and pass critical data along with it.
+
+This is all done with the `handoff()` function.
+
+### Customizing the Tool & Adding Callbacks
+
+You can change the `tool_name` and `description` the LLM sees and trigger an `on_handoff` function the moment the transfer is initiated.
+
+*   **Use Case:** Rename `transfer_to_refund_agent` to `escalate_to_refunds` for clarity and log the event for auditing purposes.
 
 ```python
 from agents import Agent, handoff, RunContextWrapper
 
-def on_handoff(ctx: RunContextWrapper[None]):
-    print("About to hand off — prefetch user profile, start timers, etc.")
+def log_handoff_event(ctx: RunContextWrapper):
+    print(f"HANDOFF INITIATED: Transferring to the Escalation Agent at {ctx.current_timestamp_ms}")
 
-specialist = Agent(name="Escalation agent", instructions="Take over complex cases.")
-to_escalation = handoff(
+specialist = Agent(name="Escalation Agent")
+custom_handoff = handoff(
     agent=specialist,
-    tool_name_override="route_to_escalations",
-    tool_description_override="Transfer this user to the Escalations agent.",
-    on_handoff=on_handoff,
+    tool_name_override="escalate_to_specialist",
+    tool_description_override="Use this for complex issues that require a specialist.",
+    on_handoff=log_handoff_event,
 )
-triage = Agent(name="Triage", instructions="Escalate only when needed.", handoffs=[to_escalation])
-
 ```
 
-- 🏷`tool_name_override` lets you control the tool name text.
-- 📢`on_handoff` fires right when the LLM invokes the handoff—handy for logging or prefetch.
-- 📦 You can also accept structured input with `input_type` (next section).
+### Passing Structured Data with `input_type`
 
----
+This is the most powerful feature. You can require the LLM to provide structured data (using a Pydantic model) when it calls the handoff. This is the "briefing note."
 
-## 📦 2. Pass structured data with `input_type`
-
-Sometimes you want the LLM to also pass **structured info** to the receiving agent (e.g., “escalation reason”). Use `input_type`:
+*   **Use Case:** When escalating to a refunds agent, force the triage agent to provide a `reason` and `order_id`.
 
 ```python
 from pydantic import BaseModel
-from agents import Agent, handoff, RunContextWrapper
 
 class EscalationData(BaseModel):
     reason: str
+    order_id: str
 
-async def on_escalation(ctx: RunContextWrapper[None], input_data: EscalationData):
-    print(f"Escalating because: {input_data.reason}")
+async def on_escalation(ctx: RunContextWrapper, input_data: EscalationData):
+    print(f"Escalating order {input_data.order_id} because: {input_data.reason}")
 
-escalation_agent = Agent(name="Escalation agent", instructions="Explain next steps and resolve.")
-escalation_handoff = handoff(agent=escalation_agent, on_handoff=on_escalation, input_type=EscalationData)
-
-triage = Agent(
-    name="Triage",
-    instructions="If the user is upset or blocked, call the escalation handoff with a reason.",
-    handoffs=[escalation_handoff],
+escalation_agent = Agent(name="Escalation agent")
+escalation_handoff = handoff(
+    agent=escalation_agent,
+    on_handoff=on_escalation,
+    input_type=EscalationData, # The LLM must provide this data
 )
-
 ```
-
-The model can now **provide a JSON object** that conforms to `EscalationData` when it invokes the handoff.
 
 ---
 
-## 🧹 3. Controlling what history the new agent sees (input filters)
+## Part 2: A Clean Slate – Filtering Conversation History
 
-By default, the new agent sees **the entire prior conversation**. You can edit that input with an `input_filter`—for example, 🗑 **remove all tool calls** so the next agent sees a cleaner history:
+By default, the new agent sees the *entire* conversation history, including all previous tool calls. This can be noisy. You can use an `input_filter` to clean it up.
+
+The SDK provides pre-built filters in `agents.extensions.handoff_filters`.
+
+*   **Use Case:** A triage agent uses several tools to diagnose a problem. When handing off to an FAQ agent, hide all that technical "noise" so the FAQ agent just sees the user's questions.
 
 ```python
-from agents import Agent, handoff
 from agents.extensions import handoff_filters
 
-faq_agent = Agent(name="FAQ agent", instructions="Answer concisely from known FAQs.")
-faq_handoff = handoff(agent=faq_agent, input_filter=handoff_filters.remove_all_tools)
-
-router = Agent(
-    name="Router",
-    instructions="If a FAQ matches, handoff to the FAQ agent.",
-    handoffs=[faq_handoff],
+faq_agent = Agent(name="FAQ agent")
+faq_handoff = handoff(
+    agent=faq_agent,
+    # This removes all tool call/output history for the next agent.
+    input_filter=handoff_filters.remove_all_tools,
 )
-
 ```
 
-🌐 There’s also a **global** `handoff_input_filter` you can set for the whole run via `RunConfig`.
-
 ---
 
-## 🧪 Interactive Lab 2 — add a reason and sanitize history
+## Part 3: Managing the Full Conversation
 
-1. 📝 Add `input_type=EscalationData` with a reason like “angry customer; shipment lost.”
-2. 🧹 Apply `handoff_filters.remove_all_tools` and confirm the receiving agent doesn’t see tool noise.
-3. 🕵 Print `result.last_agent` to verify who ended the turn; store it for your next user turn if you want to continue with the same agent.
+A handoff isn't the end; it's the middle. You need to prompt the agent to make smart handoff decisions and then ensure the conversation continues with the right specialist.
 
-> ✅ Checkpoint: You should see your on_handoff log fire, and the receiving agent respond based only on the cleaned conversation.
-> 
+### Prompting for Success
 
----
-
-## 🧠 4. Prompting best practices (make handoffs obvious)
-
-📌 Include explicit handoff instructions in your prompts so the LLM **knows** when to transfer. 
-
-🛠 The SDK ships a ready-made prompt prefix and a helper:
+Make your handoff instructions explicit. The SDK provides a recommended text snippet to add to your prompts to make them more reliable.
 
 ```python
-from agents import Agent
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 
-billing_agent = Agent(
-    name="Billing agent",
+triage_agent = Agent(
+    name="Triage Agent",
     instructions=f"""{RECOMMENDED_PROMPT_PREFIX}
-Use the billing policies below to resolve issues..."""
+    Your primary job is to diagnose the user's problem.
+    If it is about billing, handoff to the Billing Agent.
+    If it is about refunds, handoff to the Refund Agent."""
 )
-
 ```
 
-Alternatively, use `prompt_with_handoff_instructions(...)` to inject the recommended blurb automatically.
+### Continuing the Conversation with the Specialist
 
-## 📝5. Continue the Conversation with the Same Specialist:
+After a handoff, who handles the user's next message? You have two patterns.
 
-### 📃Pattern A — keep Triage in front, pass the whole thread forward:
-
-Use `result.to_input_list()` (it bundles your original input + all items generated during the run) and then append the user’s next message. Run again with the **same entry agent** (e.g., Triage).
+1.  **Resume with the Triage Agent (Simple & Safe):** Pass the entire history back to your main entry agent. It will see the previous handoff and can decide to route to the same specialist again.
+2.  **Resume with the Specialist (Efficient):** Get the agent that replied last (`result.last_agent`) and start the next turn directly with them. This avoids going through triage again.
 
 ```python
-# turn 1: user asks about a refund → Triage hands off to Refunds
-result1 = await Runner.run(triage, "I was double charged. Can I get a refund?")
-print("Reply:", result1.final_output)
+# Turn 1: Triage hands off to the Refunds specialist
+result1 = await Runner.run(triage_agent, "I need a refund for order #123.")
+print(f"Reply from: {result1.last_agent.name}")
+print(f"Message: {result1.final_output}")
 
-# turn 2: user follows up → keep Triage as the entry, pass prior thread + new msg
-followup_input = result1.to_input_list() + [
-    {"role": "user", "content": "Thanks. Also, how long will it take?"}
-]
-result2 = await Runner.run(triage, followup_input)
-print("Reply:", result2.final_output)
+# The user replies: "Thanks, how long will it take?"
+follow_up_message = {"role": "user", "content": "Thanks, how long will it take?"}
 
+# --- PATTERN 2: CONTINUE WITH THE SPECIALIST ---
+# Get the agent that answered last (e.g., the Refunds Agent)
+specialist = result1.last_agent
+# Create the input for the next turn, including all prior history
+follow_up_input = result1.to_input_list() + [follow_up_message]
+
+# Run the next turn starting directly with the specialist
+result2 = await Runner.run(specialist, follow_up_input)
+print(f"Reply from: {result2.last_agent.name}")
+print(f"Message: {result2.final_output}")
 ```
-
-Why this works: the SDK explicitly supports turning a result into inputs for the next turn with `to_input_list()`, so you can keep all prior context intact. 
-
-### 📃Pattern B — resume directly with the **same specialist:**
-
-If your UI shows you’re already “with Refunds,” you can **start the next turn from that specialist** by reusing `result.last_agent` (the actual agent that produced the final reply). This avoids bouncing back to Triage unnecessarily.
-
-```python
-# turn 1: triage → refunds
-result1 = await Runner.run(triage, "I was double charged. Can I get a refund?")
-specialist = result1.last_agent            # ← who actually answered last time
-# e.g., "Refunds agent"
-
-# turn 2: continue with the same specialist
-followup_input = result1.to_input_list() + [
-    {"role": "user", "content": "Great. What info do you need from me?"}
-]
-result2 = await Runner.run(specialist, followup_input)  # start at Refunds
-print("Reply:", result2.final_output)
-```
-
-Why this works: the SDK exposes `last_agent` *specifically* so you can carry the baton to the same specialist on the next user turn (super common after a handoff). 
-
-> Quick tip: Both patterns rely on `to_input_list()` to maintain the entire prior conversation state before appending the new user message.
-> 
-
----
-
-## ⚙ Under the hood: runner loop (what actually happens)
-
-The runner:
-
-1. 🔄 Calls the current agent
-2. 📦 If the model **returns a handoff**, it **switches the current agent** and re-runs the loop with the updated input
-3. 🛠 If the model uses tools, it runs them, appends results, and loops again
-4. ✅ Ends when a final output is produced (or `max_turns` is exceeded)
-
-> Debugging tip: Inspect new_items to see a HandoffCallItem followed by HandoffOutputItem; that’s the tell-tale sign.
-> 
 
 ---
 
@@ -194,69 +155,77 @@ The runner:
 
 ---
 
-## 📚 Step-by-step mini-lesson
+## Your Turn: A Mini-Lab
 
-1. **Build three agents**: `Triage`, `Billing`, `Refunds`. Add both specialists to `Triage.handoffs`.
-2. **Run three queries**: billing-ish, refunds-ish, and random. Confirm only relevant ones hand off.
-3. **Add `on_handoff`** to log transitions; simulate prefetch.
-4. **Add `input_type`** to pass `EscalationData(reason=...)`.
-5. **Apply `input_filter`** to remove tool noise.
-6. **Use the prompt prefix** so the LLM routes confidently.
-7. **Inspect `new_items`** for `Handoff*` entries; celebrate.
-
----
-
-## Starter template you can copy
+Let's build an advanced customer support handoff system.
 
 ```python
-from agents import Agent, Runner, handoff
+from agents import Agent, Runner, handoff, RunContextWrapper
 from agents.extensions import handoff_filters
 from pydantic import BaseModel
+import asyncio
 
-# Specialists
-billing = Agent(name="Billing agent", instructions="Resolve billing issues.")
-refunds = Agent(name="Refunds agent", instructions="Process and explain refunds.")
+# --- Define the data for our "briefing note" ---
+class HandoffData(BaseModel):
+    summary: str
 
-# Optional: typed input and on_handoff callback
-class EscalationData(BaseModel):
-    reason: str
+# --- Define our specialist agents ---
+billing_agent = Agent(name="Billing Agent", instructions="Handle billing questions.")
+technical_agent = Agent(name="Technical Support Agent", instructions="Troubleshoot technical issues.")
 
-def log_handoff(ctx, input_data: EscalationData | None = None):
-    print("HANDOFF:", getattr(input_data, "reason", "<no reason>"))
+# --- Define our on_handoff callback ---
+def log_the_handoff(ctx: RunContextWrapper, input_data: HandoffData):
+    print(f"\n[SYSTEM: Handoff initiated. Briefing: '{input_data.summary}']\n")
 
-# Customized handoff (rename tool, accept typed input, log on handoff)
-to_refunds = handoff(
-    agent=refunds,
-    tool_name_override="transfer_to_refunds",
-    tool_description_override="Send this to the refunds specialist.",
-    on_handoff=log_handoff,
-    input_type=EscalationData,
+# --- TODO 1: Create the advanced handoffs ---
+
+# Create a handoff to `billing_agent`.
+# - Override the tool name to be "transfer_to_billing".
+# - Use the `log_the_handoff` callback.
+# - Require `HandoffData` as input.
+to_billing_handoff = handoff(
+    # Your code here
 )
 
-# Optional: sanitize history for the receiving agent
-to_billing = handoff(agent=billing, input_filter=handoff_filters.remove_all_tools)
-
-# Orchestrator / Triage
-triage = Agent(
-    name="Triage",
-    instructions=("Decide whether the user needs Billing or Refunds. "
-                  "If escalating, include a short reason."),
-    handoffs=[to_billing, to_refunds],
+# Create a handoff to `technical_agent`.
+# - Use the `log_the_handoff` callback.
+# - Require `HandoffData` as input.
+# - Add an input filter: `handoff_filters.remove_all_tools`.
+to_technical_handoff = handoff(
+    # Your code here
 )
 
-# Run
-# result = await Runner.run(triage, "I was double charged last month.")
-# print(result.final_output)
+# --- Triage Agent uses the handoffs ---
+triage_agent = Agent(
+    name="Triage Agent",
+    instructions="First, use the 'diagnose' tool. Then, based on the issue, handoff to the correct specialist with a summary.",
+    tools=[
+        # A dummy tool for the triage agent to use
+        function_tool(lambda: "The user's payment failed.")("diagnose")
+    ],
+    handoffs=[to_billing_handoff, to_technical_handoff],
+)
 
+
+async def main():
+    print("--- Running Scenario: Billing Issue ---")
+    result = await Runner.run(triage_agent, "My payment won't go through.")
+    print(f"Final Reply From: {result.last_agent.name}")
+    print(f"Final Message: {result.final_output}")
+
+# asyncio.run(main())
 ```
 
-This template pulls together: **handoff list**, **custom tool naming**, **typed inputs**, **input filters**, and a **triage** pattern.
+#### ✅ Expected Outcome
+
+When you complete the `TODO`s and run the lab, your output should show:
+1.  A system message logging the handoff with a summary like "User's payment failed."
+2.  The final reply coming from the "Billing Agent."
 
 ---
 
-## 🏁 Wrap-up
+## 🏁 Wrap-Up
 
-- **📌 What a handoff is:** a **control transfer** to another agent (exposed to the LLM as `transfer_to_<agent>`).
-- **🎯 When to use it:** when a specialist should **own** the conversation from this point onward (e.g., refunds, billing).
-- **🛠 How to do it:** list handoffs on the agent, optionally customize with `handoff(...)` (name, description, `on_handoff`, `input_type`, `input_filter`).
-- **🔄 How it runs:** the loop **switches current agent** and continues until a final output.
+*   **What it is:** A set of powerful controls to manage the transfer of a conversation between agents.
+*   **When to use it:** When building multi-agent systems that require clear roles, context passing, and clean conversation flows.
+*   **How to do it:** Use the `handoff()` function to customize the `tool_name`, trigger `on_handoff` callbacks, pass structured data with `input_type`, and clean the conversation with `input_filter`. Always give clear handoff instructions in your prompts.
