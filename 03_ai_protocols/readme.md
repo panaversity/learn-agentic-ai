@@ -10,7 +10,7 @@ The protocols are organized in a layered approach, starting from fundamental com
 
 This directory contains the underlying communication technologies that serve as the transport layer for more complex interactions, organized in a suggested learning path. Understanding these is crucial for designing efficient and reliable data exchange in distributed agent systems. See the `01_base/readme.md` for the detailed learning progression.
 
-- **[`01_Http/`] Defines standards and best practices for using Hypertext Transfer Protocol.
+- **[`01_Http/`]** Defines standards and best practices for using Hypertext Transfer Protocol.
 - **[`02_REST/`]**: Focuses on the architectural principles of REST for building scalable web services.
 - **[`03_Streamable_HTTP/`]**: Covers protocols and techniques for streaming data over HTTP.
 - **[`03_JSON_RPC/`]**: Outlines the use of JSON Remote Procedure Call for simple and efficient inter-service communication.
