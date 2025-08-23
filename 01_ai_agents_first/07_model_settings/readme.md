@@ -39,7 +39,7 @@ agent_creative = Agent(
 - **Medium (0.4-0.6)**: General conversation, explanations
 - **High (0.7-0.9)**: Creative writing, brainstorming
 
-Note: For gemini temprature range extends to 2.
+Note: For Gemini temperature range extends to 2.
 
 ### 2. **Tool Choice** - The "Can I Use Tools?" Switch
 
