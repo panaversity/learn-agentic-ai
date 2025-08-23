@@ -160,7 +160,7 @@ async def main():
   result = await Runner.run(agent, "What is the weather like today?")
   print(result.final_output)
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     asyncio.run(main())
 
 ```
@@ -252,5 +252,3 @@ If later you need stricter control, replace a tool with a `@function_tool` that 
 - **📌 What it is**: Treat other agents like **callable tools** to keep orchestration in one place.
 - **✅ When to use**: Short, focused subtasks—translate, extract, format—while preserving one conversational owner.
 - **🔨 How to do it**: Start with `agent.as_tool(...)`; switch to a function tool that calls `Runner.run(...)` when you need more control.
-
-If you want, I can turn this into a printable cheat-sheet or a small lab with checkpoints and expected outputs.
