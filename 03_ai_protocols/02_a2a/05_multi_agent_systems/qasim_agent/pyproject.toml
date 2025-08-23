@@ -1,0 +1,11 @@
+[project]
+name = "qasim-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "a2a-sdk>=0.3.0",
+    "openai-agents>=0.2.6",
+    "uvicorn>=0.35.0",
+]
