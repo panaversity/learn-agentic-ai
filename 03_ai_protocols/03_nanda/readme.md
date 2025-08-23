@@ -1,6 +1,14 @@
 # NANDA (Networked Agents And Decentralized AI)
 
+[Make A Decentralized Internet With AI: NANDA Is Coming](https://www.forbes.com/sites/johnwerner/2025/05/13/make-a-decentralized-internet-with-ai-nanda-is-coming/)
+
+[They’re Making TCP/IP For AI, And It’s Called NANDA](https://www.forbes.com/sites/johnwerner/2025/04/29/theyre-making-tcpip-for-ai-and-its-called-nanda/)
+
 [Official Website](https://nanda.media.mit.edu/)
+
+[Beyond DNS: Unlocking the Internet of AI Agents via the NANDA Index and Verified AgentFacts](https://arxiv.org/abs/2507.14263)
+
+[A Survey of AI Agent Registry Solutions](https://arxiv.org/html/2508.03095v1)
 
 “Project NANDA” refers to **Networked Agents And Decentralized AI**—an ambitious initiative developed at MIT that’s essentially building the “Internet for AI agents.” 
 

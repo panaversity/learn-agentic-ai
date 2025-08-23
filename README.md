@@ -2,15 +2,23 @@
 
 This repo is part of the [Panaversity Certified Agentic & Robotic AI Engineer](https://panaversity.org/) program. You can also review the certification and course details in the [program guide](https://docs.google.com/document/d/1BygAckkfc_NFQnTfEM6qqUvPdlIHpNItmRtvfRMGp38/edit?usp=sharing). This repo provides learning material for Agentic AI and Cloud courses.
 
-We have Two Hunches, the future of Pakistan depends on it, let's make sure that we are not wrong:
+We have four Hunches, the future of Pakistan depends on it, let's make sure that we are not wrong:
 
 It is very important for Pakistan that we bet on the right horses for the upcoming age of Agentic AI. We will be training millions of Agentic AI Developers all over Pakistan and online around the world and building startups, we cant afford to be wrong.
 
 Hunch #1: Dapr
-We feel Dapr, Dapr Actors, Dapr Workflows, and Dapr Agents will be the core technology in building the next generation multi ai agentic systems, is my hunch correct?
+We feel Dapr, Dapr Actors, Dapr Workflows, and Dapr Agents combined with Ray will be the core technology in building the next generation multi cloud ai agentic systems, is my hunch correct?
 
 Hunch #2: OpenAI Agents SDK
 We also have a hunch that OpenAI Agents SDK will be the go to framework for beginners to start learning Agentic AI?
+
+Hunch #3: The Learning Gap
+The biggist issue when implementing Agentic AI is not that LLMs weren’t capable enough but the learning gap — people and organizations simply did not understand how to use the AI tools properly or how to design workflows that could capture the benefits of AI while minimizing downside risks.
+[An MIT report that 95% of AI pilots fail spooked investors. But it’s the reason why those pilots failed that should make the C-suite anxious](https://fortune.com/2025/08/21/an-mit-report-that-95-of-ai-pilots-fail-spooked-investors-but-the-reason-why-those-pilots-failed-is-what-should-make-the-c-suite-anxious/)
+
+Hunch #4: The Agentic Web
+The web’s next phase is agentic: interoperable software agents coordinate via open protocols—MCP for standardized capability discovery and shared context, A2A for authenticated agent-to-agent messaging and delegation, and NANDA for identity, authorization, and verifiable audit. Together, these standards enable composable automation across applications, devices, and clouds, shifting the browser from a tab list to an outcome orchestrator with trust, accountability, and user consent built in.
+
 
 Let us see what the best AI has to say about our hunches:
 
