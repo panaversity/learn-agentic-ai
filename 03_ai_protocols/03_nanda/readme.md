@@ -22,20 +22,23 @@ Here’s a breakdown of what that entails and why it matters:
 
 ## What Is Project NANDA?
 
-**NANDA** is an open, decentralized infrastructure aiming to enable a vast ecosystem of autonomous AI agents to discover, verify, communicate, and collaborate across diverse platforms and protocols.
+**NANDA** ( Networked Agents And Decentralized AI ) is a decentralized system that enables AI Agents to securely Discover,  verify , communicate and collaborate with other AI Agents across different diverse platforms and protocols.
 
-* It builds upon protocols like Anthropic’s MCP (Model Context Protocol) and Google’s A2A (Agent-to-Agent), orchestrating them within a unified, decentralized network.([nanda.media.mit.edu][1], [numorpho.org][2], [LinkedIn][3])
-* Project NANDA provides the infrastructure necessary for an **“Internet of AI Agents”**, where agents—from individuals, businesses, or institutions—can operate, transact, and evolve across a federated landscape.([LinkedIn][3], [Forbes][4], [numorpho.org][2])
+It provides a unified system for independent AI agents to securely discover, verify, communicate, and collaborate across different platforms and networks. Instead of developers creating custom, one-off integrations for each AI, NANDA provides a shared infrastructure, allowing agents to work together seamlessly.
+
+* It leverages standards like Anthropic’s MCP (Model Context Protocol) and Google’s A2A (Agent-to-Agent), bringing them together into one unified, decentralized network.([nanda.media.mit.edu][1], [numorpho.org][2], [LinkedIn][3])
+* Project NANDA lays the foundation for an **‘Internet of AI Agents’**, enabling agents from individuals, businesses, and institutions to interact, transact, and grow within a connected, federated ecosystem.([LinkedIn][3], [Forbes][4], [numorpho.org][2])
 
 ---
 
 ## Why It Matters
 
-Think of NANDA as building the **TCP/IP or DNS layer for AI agents**—creating the backbone they need to interact securely, seamlessly, and scalably.
+NANDA matters because it provides the missing layer of **Trust** and **interoperability** for the growing world of AI agents.It creates the backbone they need to interact securely, seamlessly, and scalably.
 
-* It functions as a **universal adapter**: NANDA allows agents across different frameworks to understand and communicate with each other without needing shared protocol languages.([LinkedIn][5], [Forbes][4])
-* It offers a **decentralized registry system** (akin to domain resolution), enabling agents to find one another across a federated network.([Forbes][4], [LinkedIn][3], [Medium][6], [Wikipedia][7])
-* NANDA includes **secure identity, trust, and verification layers**, ensuring interactions are auditable, trustworthy, and resistant to impersonation.([Medium][6], [arXiv][8], [LinkedIn][3])
+* Think of it as the TCP/IP + DNS + SSL for agents: the basic plumbing that makes large-scale, secure collaboration possible.
+* NANDA acts as a universal adapter, enabling agents built on different frameworks to communicate and collaborate without requiring the same protocol.([LinkedIn][5], [Forbes][4])
+* NANDA provides a **decentralized registry**, similar to domain name resolution, that allows agents to reliably discover each other across a shared network.([Forbes][4], [LinkedIn][3], [Medium][6], [Wikipedia][7])
+* NANDA adds **secure identity**, **trust**, and **verification layers**, making every interaction verifiable, reliable, and protected against impersonation([Medium][6], [arXiv][8], [LinkedIn][3])
 
 ---
 
