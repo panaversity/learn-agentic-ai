@@ -1,5 +1,9 @@
 # Agentic Web for Developers: A Comprehensive Tutorial
 
+[The Agentic Web - Part 1](https://www.youtube.com/watch?v=bmHJFRNHmoc)
+
+[The Agentic Web: A conversation with Jay Parikh - Part 2](https://www.youtube.com/watch?v=xvZdki3FqzY)
+
 ## Introduction to the Agentic Web
 
 The **Agentic Web** represents a paradigm shift in internet architecture, where autonomous AI agents become first-class actors on the Web. Unlike the traditional Web — which connected users to static content or apps — the Agentic Web is a **distributed, interactive ecosystem** of goal-driven software agents that act on behalf of users. In this new era, a user’s query is no longer a simple information request, but rather a delegation of a complex task to an **AI agent** or team of agents. These agents can **plan workflows, coordinate with other agents, and execute actions** across various services to fulfill high-level user intents. The end user (the human) remains in charge, but much of the heavy lifting is done through machine-to-machine interactions on the user’s behalf.

@@ -188,7 +188,7 @@ Here’s how the pieces fit:
 1. **Discover**: Client asks NANDA for “who can `calendar.schedule`?” (no more yelling into the void).
 2. **Verify & Resolve**: NANDA returns **AgentFacts** + endpoints (IDs checked, fake moustaches removed).
 3. **Negotiate**: Agents coordinate via **A2A** (who does what, when, with which artifacts).
-4. **Execute**: The doer calls **MCP** tools to act (sharp knives, safe kitchen). ([ar5iv][4], [modelcontextprotocol.io][2], [Google Developers Blog][6])
+4. **Execute**: The doer calls **MCP** tools to act (sharp knives, safe kitchen). 
 
 **Security & governance (why CISOs sleep)**
 
