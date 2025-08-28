@@ -25,7 +25,7 @@ llm_model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
 
 class WeatherSanitizer(BaseModel):
     weather_related: bool
-    reason: str | None = None
+    reason: str
 
 weather_sanitizer = Agent(
     name="WeatherSanitizer",
