@@ -59,7 +59,7 @@ weather_agent: Agent = Agent(
     name="WeatherAgent",
     instructions=f"You are weather expert - share weather updates as I travel a lot. For all Tech and News let the NewsAgent handle that part by delegation. {RECOMMENDED_PROMPT_PREFIX}",
     model=llm_model,
-    handoffs=[handoff(agent=news_agent, is_enabled=news_region("us-east-1")), planner_agent]
+    handoffs=[handoff(agent=news_agent, is_enabled=news_region("us-east-1"))]
 )
 
 res = Runner.run_sync(weather_agent, 
