@@ -32,7 +32,7 @@ mem0 = MemoryClient()
 def add_memory(query: str, user_id: str) -> str:
     """Add a new memory for the user"""
     try:
-        result = mem0.add([{"role": "user", "content": query}], user_id=user_id)
+        result = mem0.add([{"role": "user", "content": query}], user_id=user_id, version="v2", output_format="v1.1")
         return f"Memory added: {result}"
     except Exception as e:
         return f"Error adding memory: {str(e)}"
@@ -42,7 +42,7 @@ def add_memory(query: str, user_id: str) -> str:
 def search_memory(query: str, user_id: str) -> str:
     """Search through past conversations and memories"""
     try:
-       memories = mem0.search(query, user_id=user_id, limit=3)
+       memories = mem0.search(query, user_id=user_id, limit=3, version="v2", output_format="v1.1")
        
        if memories and isinstance(memories, list) and len(memories) > 0:
             return "\n".join([f"- {mem['memory']}" for mem in memories])
