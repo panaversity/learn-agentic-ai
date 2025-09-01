@@ -105,6 +105,10 @@ mcp_app = mcp.streamable_http_app()
     ```bash
     npx @modelcontextprotocol/inspector
     ```
+    or
+    ```
+    mcp dev server.py
+    ```
     - Run and Open MCP Inspector at: http://127.0.0.1:6274
 
     
