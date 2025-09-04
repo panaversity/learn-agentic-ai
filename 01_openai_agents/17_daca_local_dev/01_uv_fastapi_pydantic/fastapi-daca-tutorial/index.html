@@ -1,0 +1,23 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test CORS</title>
+</head>
+<body>
+    <h1>Test CORS with FastAPI</h1>
+    <button onclick="fetchData()">Fetch Data</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch("http://localhost:8000/", {
+                method: "GET",
+                credentials: "include"
+            });
+            const data = await response.json();
+            document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
