@@ -11,7 +11,7 @@ import asyncio
 import os
 
 from custom_sessions.redis_session import RedisSession
-from openai_agents import Agent, Runner, Tool
+from agents import Agent, Runner, Tool
 
 # from custom_sessions.supabase_session import SupabaseSessionMinimal
 # from custom_sessions.postgres_session import PostgresSession

@@ -246,11 +246,10 @@ asyncio.run(main())
 #### ✅ Expected Outcome
 ```
 --- Running as a regular user ---
-Final Output: User client_456 has been deleted.
+Final Output: The deletion of users is not supported by the current system. However, I can help you retrieve user data if you'd like. Could you clarify if you need information about user client_456?
 
 --- Running as an admin ---
 Final Output: User user_123 has been deleted.
----
 ```
 
 ## 🏁 Wrap-Up

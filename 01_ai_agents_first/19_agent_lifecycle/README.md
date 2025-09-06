@@ -68,7 +68,7 @@ async def on_llm_start(context, agent, system_prompt, input_items):
 **When this happens:**
 - The agent needs to "think" or generate text
 - The agent calls the Large Language Model (LLM) for reasoning
-- This can happen **multiple times** during one agent's turn
+- This can occur **exactly once** during each agent's turn
 - The agent is asking: "How should I respond?" or "What should I do?"
 
 **Real Example:**
@@ -106,7 +106,7 @@ async def on_tool_start(context, agent, tool):
 **When this happens:**
 - The agent needs to perform a specific action
 - The agent calls an external function/API/database
-- This can happen **multiple times** during one agent's turn
+- This can occur **exactly once** during each agent's turn
 - Common tools: database_lookup, send_email, web_search, calculator
 
 **Real Example:**
@@ -195,7 +195,7 @@ This is the **most confusing part** for beginners! Let's clarify:
 - Like clocking in at work
 
 **📞 `on_llm_start` - Agent Needs to Think**
-- Can happen **multiple times** during agent's turn
+- Can happen **multiple times** during agent's execution
 - The agent asks the AI brain for help with reasoning
 - Like calling an expert consultant for advice
 
@@ -205,6 +205,7 @@ This is the **most confusing part** for beginners! Let's clarify:
 📞 on_llm_start: "AI, how should I respond to this?"
 ✅ on_llm_end: AI gives advice
 🔧 on_tool_start: Use a tool based on AI advice  
+🔧 on_tool_end: Finished using the tool  
 📞 on_llm_start: "AI, how should I format the results?"
 ✅ on_llm_end: AI gives formatting advice
 🏁 on_end: "Task complete!"
@@ -215,7 +216,7 @@ This is the **most confusing part** for beginners! Let's clarify:
 ## Simple Example
 
 ```python
-from openai_agents import Agent, AgentHooksBase
+from agents import Agent, AgentHooksBase
 
 # Create a custom hook class for our agent
 class MyAgentHooks(AgentHooksBase):
@@ -250,7 +251,7 @@ my_agent.hooks = MyAgentHooks()
 ## Advanced Example with Detailed Tracking
 
 ```python
-from openai_agents import Agent, AgentHooksBase
+from agents import Agent, AgentHooksBase
 import time
 from datetime import datetime
 
@@ -374,7 +375,7 @@ async def on_start(self, context, agent):  # Proper async
     print("Started")
 
 async def on_tool_end(self, context, agent, tool, result):
-    # Just observe and log, don't try to modify
+    # Just observe and log, don't try to return
     print(f"Tool {tool.name} returned: {result}")
 ```
 
