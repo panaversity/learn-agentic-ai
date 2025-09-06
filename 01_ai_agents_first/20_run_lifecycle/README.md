@@ -172,7 +172,6 @@ User: "My premium account isn't working and I need a refund"
 📞 on_llm_start: CustomerService asks AI about escalation
 🧠✨ on_llm_end: AI suggests escalating to TechnicalSupport
 🏃‍♂️➡️🏃‍♀️ on_handoff: CustomerService → TechnicalSupport
-✅ on_agent_end: CustomerService finished with "Escalating to tech support"
 
 🌅 on_agent_start: TechnicalSupport becomes active  
 📞 on_llm_start: TechnicalSupport asks AI about account issues
@@ -182,7 +181,6 @@ User: "My premium account isn't working and I need a refund"
 📞 on_llm_start: TechnicalSupport asks AI about refunds
 🧠✨ on_llm_end: AI suggests escalating to BillingManager
 🏃‍♂️➡️🏃‍♀️ on_handoff: TechnicalSupport → BillingManager
-✅ on_agent_end: TechnicalSupport finished with "Issue confirmed, escalating"
 
 🌅 on_agent_start: BillingManager becomes active
 📞 on_llm_start: BillingManager asks AI about refund process
@@ -223,8 +221,7 @@ Run Hooks See:                    Agent Hooks See:
 ## Simple Example
 
 ```python
-from openai_agents import Agent, RunHooksBase
-from openai_agents.orchestration import run
+from agents import Agent, RunHooksBase, Runner
 
 # Create a system-wide monitoring class
 class SystemMonitor(RunHooksBase):
@@ -271,10 +268,10 @@ billing_manager = Agent(name="BillingManager")
 system_monitor = SystemMonitor()
 
 # Run with system-wide monitoring
-result = await run(
-    agents=customer_service,
+result = Runner.run_sync(
+    starting_agent=customer_service,
     input="I need help with my account",
-    run_hooks=system_monitor,  # This monitors EVERYTHING
+    hooks=system_monitor,  # This monitors EVERYTHING
 )
 ```
 
@@ -372,7 +369,6 @@ Agent A:
 4. 🔨 on_tool_start (Agent A uses tool)
 5. ✅🔨 on_tool_end (Agent A tool completes)
 6. 🏃‍♂️➡️🏃‍♀️ on_handoff (A → B)
-7. ✅ on_agent_end (Agent A finishes)
 
 Agent B:
 8. 🌅 on_agent_start (Agent B becomes active)
@@ -449,17 +445,17 @@ class UserExperienceTracker(RunHooksBase):
 # Confusing run hooks with agent hooks
 agent.hooks = RunHooksBase()  # Wrong! Use AgentHooksBase for agents
 
-# Forgetting to pass run_hooks to run()
-result = run(agents=agent1)  # No monitoring!
+# Forgetting to pass run hooks to Runner methods
+result = Runner.run_sync(starting_agent=agent1)  # No monitoring!
 ```
 
 ### ✅ Do This Instead:
 ```python
 # Correct setup for run hooks
 system_monitor = MyRunHooks()
-result = await run(
-    agents=agent1 
-    run_hooks=system_monitor  # Correct!
+result = await Runner.run(
+    starting_agent=agent1,
+    hooks=system_monitor # Correct!
 )
 
 # Agent hooks are separate

@@ -77,7 +77,7 @@ Think of it like a stage play:
 
 ---
 
-Sure! Here's a **comprehensive tutorial on Context Engineering**, ideal for developers, product designers, and AI enthusiasts working with language models.
+Here's a **comprehensive tutorial on Context Engineering**, ideal for developers, product designers, and AI enthusiasts working with language models.
 
 ---
 
