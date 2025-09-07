@@ -29,7 +29,7 @@ You can use a **function** that changes the instructions:
 ```python
 from agents import RunContextWrapper, Agent
 
-def dynamic_instructions(context: RunContextWrapper, agent: Agent) -> str:
+def dynamic_instructions(ctx: RunContextWrapper, agent: Agent) -> str:
     return f"You are {agent.name}. Adapt to the user's needs."
 
 agent = Agent(
@@ -47,15 +47,15 @@ Dynamic instruction functions receive two parameters:
 ```python
 from agents import RunContextWrapper, Agent
 
-def dynamic_instructions(context: RunContextWrapper, agent: Agent) -> str:
-    return f"The user's name is {context.context.name}. Help them with their questions."
+def dynamic_instructions(ctx: RunContextWrapper, agent: Agent) -> str:
+    return f"The user's name is {ctx.context.name}. Help them with their questions."
 ```
 
 ### 📋 Parameters Explained
 
 | Parameter | Type | What It Contains |
 |-----------|------|------------------|
-| **`context`** | `RunContextWrapper` | The conversation context, user data, messages |
+| **`ctx`** | `RunContextWrapper` | The ctx object with context, usage |
 | **`agent`** | `Agent` | The agent object with name, tools, settings |
 | **Returns** | `str` | The instructions string for the agent |
 
@@ -68,7 +68,7 @@ def dynamic_instructions(context: RunContextWrapper, agent: Agent) -> str:
 ```python
 from agents import RunContextWrapper, Agent
 
-def basic_dynamic(context: RunContextWrapper, agent: Agent) -> str:
+def basic_dynamic(ctx: RunContextWrapper, agent: Agent) -> str:
     return f"You are {agent.name}. Be helpful and friendly."
 
 agent = Agent(
@@ -80,9 +80,9 @@ agent = Agent(
 ### 2. **Context-Aware Instructions**
 
 ```python
-def context_aware(context: RunContextWrapper, agent: Agent) -> str:
+def context_aware(ctx: RunContextWrapper, agent: Agent) -> str:
     # Check how many messages in the conversation
-    message_count = len(getattr(context, 'messages', []))
+    message_count = len(getattr(ctx.context, 'messages', []))
     
     if message_count == 0:
         return "You are a welcoming assistant. Introduce yourself!"
@@ -102,7 +102,7 @@ agent = Agent(
 ```python
 import datetime
 
-def time_based(context: RunContextWrapper, agent: Agent) -> str:
+def time_based(ctx: RunContextWrapper, agent: Agent) -> str:
     current_hour = datetime.datetime.now().hour
     
     if 6 <= current_hour < 12:
@@ -129,7 +129,7 @@ class StatefulInstructions:
     def __init__(self):
         self.interaction_count = 0
     
-    def __call__(self, context: RunContextWrapper, agent: Agent) -> str:
+    def __call__(self, ctx: RunContextWrapper, agent: Agent) -> str:
         self.interaction_count += 1
         
         if self.interaction_count == 1:
@@ -152,7 +152,7 @@ agent = Agent(
 ```python
 import asyncio
 
-async def async_instructions(context: RunContextWrapper, agent: Agent) -> str:
+async def async_instructions(ctx: RunContextWrapper, agent: Agent) -> str:
     # Simulate fetching data from database
     await asyncio.sleep(0.1)
     current_time = datetime.datetime.now()
@@ -169,36 +169,43 @@ agent = Agent(
 
 ---
 
-## 🔍 Understanding Context and Agent
+## 🔍 Understanding Ctx and Agent
 
-### **Context Parameter**
-The `context` contains:
-- **Messages**: Conversation history
-- **User data**: Custom user information
-- **Run state**: Current execution state
-- **Metadata**: Additional information
-
+### **Ctx Parameter**
+The `ctx` contains context and usage:
+1. **Context** can contain any data you provide:
+    - **Messages**: Conversation history
+    - **User data**: Custom user information
+    - **Run state**: Current execution state
+    - **Metadata**: Additional information
+2. **Usage** contains model usage:
+    - **requests**: Total requests made to the LLM API
+    - **input_tokens**: Total input tokens sent, across all requests
+    - **input_tokens_details**: Details about the input tokens
+    - **output_tokens**: Total output tokens received
+    - **more**: output_tokens_details, total_tokens, add method
 ```python
-def explore_context(context: RunContextWrapper, agent: Agent) -> str:
+def explore_context(ctx: RunContextWrapper, agent: Agent) -> str:
     # Access conversation messages
-    messages = getattr(context, 'messages', [])
+    messages = getattr(ctx.context, 'messages', [])
     message_count = len(messages)
     
     # Access user context (if available)
-    user_name = getattr(context.context, 'name', 'User')
+    user_name = getattr(ctx.context, 'name', 'User')
     
     return f"You are {agent.name}. Talking to {user_name}. Message #{message_count}."
 ```
 
 ### **Agent Parameter**
 The `agent` contains:
-- **Name**: Agent's identity
-- **Tools**: Available tools
-- **Settings**: Model settings
-- **Configuration**: Agent configuration
+- **name**: Agent's identity
+- **tools**: Available tools
+- **model_settings**: Model settings
+- **handoffs**: Agent handoffs
+- **many more**: hooks, input_guardrails, output_type etc...
 
 ```python
-def explore_agent(context: RunContextWrapper, agent: Agent) -> str:
+def explore_agent(ctx: RunContextWrapper, agent: Agent) -> str:
     # Access agent properties
     agent_name = agent.name
     tool_count = len(agent.tools)
@@ -227,7 +234,7 @@ def explore_agent(context: RunContextWrapper, agent: Agent) -> str:
 ```python
 from agents import RunContextWrapper, Agent
 
-def my_dynamic_instructions(context: RunContextWrapper, agent: Agent) -> str:
+def my_dynamic_instructions(ctx: RunContextWrapper, agent: Agent) -> str:
     return f"You are {agent.name}. You love helping people learn Python!"
 
 agent = Agent(
@@ -242,8 +249,8 @@ print(result.final_output)
 ### Exercise 2: Message Count Aware
 
 ```python
-def message_count_aware(context: RunContextWrapper, agent: Agent) -> str:
-    message_count = len(getattr(context, 'messages', []))
+def message_count_aware(ctx: RunContextWrapper, agent: Agent) -> str:
+    message_count = len(getattr(ctx.context, 'messages', []))
     
     if message_count == 0:
         return "You are a welcoming assistant. Say hello!"
@@ -282,8 +289,8 @@ agent = Agent(
 
 - Try the examples in the `hello_agent/` folder
 - Experiment with your own dynamic instructions
-- Learn about [Context Management](../10_context_management/)
-- Explore [Advanced Agent Patterns](../11_advanced_patterns/)
+- Learn about [Context Management](../08_local_context/readme.md)
+- Explore [Context Engineering](../28_context_engineering/readme.md)
 
 ---
 
