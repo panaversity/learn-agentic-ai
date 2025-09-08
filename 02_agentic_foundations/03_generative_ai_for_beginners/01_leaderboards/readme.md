@@ -8,8 +8,6 @@
 
 **[Berkeley Function-Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html)**
 
-**[Berkeley Function-Calling Leaderboard](https://gorilla.cs.berkeley.edu/leaderboard.html)**
-
 **[Creative Writing: Emotional Intelligence Benchmarks for LLMs](https://eqbench.com/creative_writing.html)**
 
 **[ArtificialAnalysis/Video-Generation-Arena-Leaderboard](https://huggingface.co/spaces/ArtificialAnalysis/Video-Generation-Arena-Leaderboard)**
