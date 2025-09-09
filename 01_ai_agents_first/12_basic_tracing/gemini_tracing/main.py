@@ -45,3 +45,4 @@ res = Runner.run_sync(base_agent, "What's the weather in Karachi?")
 print(res)
 
 # Now check the trace in 
+# https://platform.openai.com/traces
