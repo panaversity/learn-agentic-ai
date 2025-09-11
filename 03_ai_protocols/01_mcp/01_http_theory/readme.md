@@ -129,7 +129,7 @@ HTTP's story is one of constant improvement, driven by the web's hunger for spee
 *   **The "Protocol":** Extremely simple. A client sent a single line: `GET /path/to/document`. There were no versions, no headers, no status codes. The server responded only with the HTML content and then closed the connection.
 *   **The Takeaway:** It worked for its limited purpose but lacked the features for any richer interaction. Imagine trying to send data *to* a server or even know if your request failed – impossible with HTTP/0.9.
 
-### [HTTP/1.0](https://http.dev/1.0): Adding Structure (RFC 1945 - 1996)
+### [HTTP/1.0](https://http.dev/1.0): Adding Structure (RFC 1995 - 1996)
 
 *   **The Need:** HTTP/0.9 was too primitive. The web needed ways to exchange more information about requests and responses.
 *   **Key Improvements:**
