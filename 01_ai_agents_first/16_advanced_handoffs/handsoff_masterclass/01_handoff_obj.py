@@ -47,3 +47,4 @@ print("\nAGENT NAME", res.last_agent.name)
 print("\n[RESPONSE:]", res.final_output)
 
 # Now check the trace in 
+# https://platform.openai.com/traces
