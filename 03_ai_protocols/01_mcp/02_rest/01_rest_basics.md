@@ -212,8 +212,6 @@ And it doesn’t need to memorize anything!
 
 > **The server is a tour guide** — it doesn’t give you the whole city map at once, but at every step, it tells you what places you can go next.
 
----
-Sure! Let’s explain **Idempotence** in **very simple and easy words**, so you can understand it without any confusion. We'll also use real-life examples. 😊
 
 ---
 
