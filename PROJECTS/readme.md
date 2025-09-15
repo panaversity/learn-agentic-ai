@@ -124,6 +124,7 @@ Watch to Learn: https://www.youtube.com/watch?v=pX8OG4P9_V0
 * **Kubernetes with KubeRay**: deploy a RayCluster CRD on your local Rancher Desktop or cloud—autoscale like a champ.
 * **Pipelines**: integrate with your Study Mode or Accounts Agent for heavy jobs (e.g., batch scoring, feature calc)—big muscles behind a friendly face. 
 * **Dapr**: use pub/sub to trigger Ray jobs; experimental, but fun—like pineapple on pizza for microservices.
+* **Agentic AI:** https://www.anyscale.com/blog/massively-parallel-agentic-simulations-with-ray
 
 ---
 
