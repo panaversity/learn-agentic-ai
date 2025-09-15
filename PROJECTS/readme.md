@@ -105,6 +105,8 @@
 ---
 ## Project 9 — Distributed Python with Ray (Anyscale Tutorial)
 
+Watch to Learn: https://www.youtube.com/watch?v=pX8OG4P9_V0
+
 **Link:** [https://www.anyscale.com/blog/writing-your-first-distributed-python-application-with-ray](https://www.anyscale.com/blog/writing-your-first-distributed-python-application-with-ray)
 **Goal:** Learn Ray’s task/actor model by building a small distributed Python app, then level it up toward production—so your laptop stops pretending it’s a data center. 
 
