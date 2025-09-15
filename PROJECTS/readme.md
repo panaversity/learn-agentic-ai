@@ -1,4 +1,4 @@
-# Agentic AI Projects — Roadmap
+# Agentic AI Projects
 
 ## Project 1 — Clone “OpenAI Study Mode”
 
