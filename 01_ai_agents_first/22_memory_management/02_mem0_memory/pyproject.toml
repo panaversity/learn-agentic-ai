@@ -1,0 +1,10 @@
+[project]
+name = "mem0-memory"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mem0ai>=0.1.116",
+    "openai-agents>=0.2.10",
+]
