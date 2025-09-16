@@ -142,9 +142,9 @@ weather_agent:Agent = Agent(
 
 
 @function_tool
-def weather_agent_fun(query: str) -> str:
+async def weather_agent_fun(query: str) -> str:
 
-  result:Runner = Runner.run_sync(weather_agent, query)
+  result= await Runner.run(weather_agent, query)
   return result.final_output
 
 
