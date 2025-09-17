@@ -1,8 +1,9 @@
-# Agentic AI Dilemma — Decode the Meaning for Value Creation
+# Agentic AI Dilemma: What Truly Creates Value?
  
 People call many things “AI agents” today. That causes confusion. This short guide explains, in simple terms, when a system is truly an AI agent, how to check claims, what a real agent needs to look like, and what safety steps to take.
 
 Many LLM + tool calling systems are labeled ‘agentic’ without clear evaluation. “An agent without metrics is little more than a toy built from LLM calls. Evaluation-first thinking separates real value from hype.
+
 ---
 
 ## 1. What is Actually Agentic AI?
