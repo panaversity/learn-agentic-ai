@@ -2,11 +2,7 @@
  
 People call many things “AI agents” today. That causes confusion. This short guide explains, in simple terms, when a system is truly an AI agent, how to check claims, what a real agent needs to look like, and what safety steps to take.
 
-  > “For leaders, the real question is not ‘Does it answer well?’ but ‘Can it act, adapt, and deliver value safely at scale?’ That is the true measure of agentic AI.”
-
 Many LLM + tool calling systems are labeled ‘agentic’ without clear evaluation. “An agent without metrics is little more than a toy built from LLM calls. Evaluation-first thinking separates real value from hype.
-
-![](./agentic-ai-dilemma.png)
 ---
 
 ## 1. What is Actually Agentic AI?
@@ -15,7 +11,7 @@ Agentic AI refers to autonomous AI systems with agency – meaning they can unde
 
 **Central to Agentic AI is measurable evaluation:** every plan, action, and adaptation must be testable and observable. Without that, claims of autonomy are unverified. In short: an agent without evaluations is a collection of LLM calls, not a production system.
 
-**Key attributes:** evaluations, autonomy, persistence, planning, execution, observation, adaptation, tool-use, memory.
+![](./is-it-agentic.png)
 
 In practice, agentic AI agents have a feedback loop to:
 1. interpret high-level objectives
@@ -23,7 +19,7 @@ In practice, agentic AI agents have a feedback loop to:
 3. execute actions (often using external tools or APIs)
 4. and continually monitor and refine their progress. 
 
-Think of an agent as a small project manager: it accepts goals, forms strategies, and carries out complex tasks while recording what worked and what didn’t.
+Think of an agent as a small project manager: it accepts goals, forms strategies, and carries out complex tasks while recording what worked and what didn’t. **Key attributes:** evaluations, autonomy, persistence, planning, execution, observation, adaptation, tool-use, memory.
 
 ## 2. The Current Confusion: What's NOT Agentic AI
 
