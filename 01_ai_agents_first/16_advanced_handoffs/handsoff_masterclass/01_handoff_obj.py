@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv, find_dotenv
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, function_tool, handoff
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, function_tool, handoff, RunContextWrapper
 
 _: bool = load_dotenv(find_dotenv())
 
