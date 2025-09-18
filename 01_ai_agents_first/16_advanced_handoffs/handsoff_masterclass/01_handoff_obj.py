@@ -26,6 +26,8 @@ def get_weather(city: str) -> str:
     """A simple function to get the weather for a user."""
     return f"The weather for {city} is sunny."
 
+def on_handoff(ctx: RunContextWrapper[None]):
+    print(f"\nHanding off to NewsAgent...\n")
 
 news_agent: Agent = Agent(
     name="NewsAgent",
