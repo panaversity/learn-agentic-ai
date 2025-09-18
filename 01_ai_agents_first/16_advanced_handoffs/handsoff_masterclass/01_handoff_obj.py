@@ -26,6 +26,7 @@ def get_weather(city: str) -> str:
     """A simple function to get the weather for a user."""
     return f"The weather for {city} is sunny."
 
+# Function to call when the handoff is invoked
 def news_agent_handoff(ctx: RunContextWrapper[None]):
     print(f"\nHanding off to NewsAgent...\n")
 
