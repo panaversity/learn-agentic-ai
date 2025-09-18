@@ -41,7 +41,7 @@ weather_agent: Agent = Agent(
     instructions="You are weather expert - share weather updates as I travel a lot. For all Tech and News let the NewsAgent handle that part by delegation.",
     model=llm_model,
     tools=[get_weather],
-    handoffs=[handoff(agent=news_agent, on_handoff=news_agent_handoff)]
+    handoffs=[handoff(agent=news_agent, on_handoff=news_agent_handoff)] # Added callback function in on_hadoff parameter 
 )
 
 res = Runner.run_sync(weather_agent, "Check if there's any news about OpenAI after GPT-5 launch?")
