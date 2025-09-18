@@ -26,7 +26,7 @@ def get_weather(city: str) -> str:
     """A simple function to get the weather for a user."""
     return f"The weather for {city} is sunny."
 
-def on_handoff(ctx: RunContextWrapper[None]):
+def news_agent_handoff(ctx: RunContextWrapper[None]):
     print(f"\nHanding off to NewsAgent...\n")
 
 news_agent: Agent = Agent(
@@ -41,7 +41,7 @@ weather_agent: Agent = Agent(
     instructions="You are weather expert - share weather updates as I travel a lot. For all Tech and News let the NewsAgent handle that part by delegation.",
     model=llm_model,
     tools=[get_weather],
-    handoffs=[handoff(agent=news_agent, on_handoff=)]
+    handoffs=[handoff(agent=news_agent, on_handoff=news_agent_handoff)]
 )
 
 res = Runner.run_sync(weather_agent, "Check if there's any news about OpenAI after GPT-5 launch?")
