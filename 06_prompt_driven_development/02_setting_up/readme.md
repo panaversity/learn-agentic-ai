@@ -1,7 +1,7 @@
-# Setting Up AI-Enhanced Development Environments: Dual Setup - VS Code + GPT-5 Codex and Standalone Cursor for Python Projects
+# Setting Up AI-Enhanced Development Environments: Dual Setup PDD - VS Code + GPT-5 Codex and Standalone Cursor for Python Projects
 
 ### Overview
-Cursor is an AI-first integrated development environment (IDE) forked from Visual Studio Code (VS Code), designed to embed AI assistance directly into the coding workflow. It leverages large language models (LLMs) like Claude 3.5 Sonnet for features such as autocomplete, inline editing, and codebase chatting. On the other hand, ChatGPT 5 Codex (often referred to as GPT-5-Codex) is a specialized version of OpenAI's GPT-5 model, optimized for agentic coding. It functions as a cloud-based software engineering agent accessible through ChatGPT, capable of handling parallel tasks like code generation, refactoring, and automation across codebases.
+Cursor is an AI-first integrated development environment (IDE) forked from Visual Studio Code (VS Code), designed to embed AI assistance directly into the coding workflow. It leverages large language models (LLMs) like Claude Opus 4.1 for features such as autocomplete, inline editing, and codebase chatting. On the other hand, ChatGPT 5 Codex (often referred to as GPT-5-Codex) is a specialized version of OpenAI's GPT-5 model, optimized for agentic coding. It functions as a cloud-based software engineering agent accessible through ChatGPT, capable of handling parallel tasks like code generation, refactoring, and automation across codebases.
 
 Below, I'll compare and contrast them based on key aspects, drawing from their features, use cases, strengths, and limitations.
 
