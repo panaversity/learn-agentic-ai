@@ -27,7 +27,11 @@ Here are recent, credible references that (taken together) make a strong case th
 
 * **ICPC World Finals (Summer 2025):** OpenAI and Google DeepMind both showcased historic performances at the 2025 International Collegiate Programming Contest (ICPC) World Finals, the world’s premier coding competition.
 OpenAI’s reasoning system, powered by GPT-5 and an experimental model, went flawless with a perfect 12/12 score in the AI track, a result that would have ranked first among all human teams.
-DeepMind’s Gemini 2.5 “Deep Think” also impressed, solving 10 of 12 problems under the same conditions. That performance would have placed it second overall and was recognized as gold-medal level. 
+DeepMind’s Gemini 2.5 “Deep Think” also impressed, solving 10 of 12 problems under the same conditions. That performance would have placed it second overall and was recognized as gold-medal level.
+
+[The ICPC World Finals was dominated by AI. The GPT-5 combined system solved all 12 problems correctly and topped the rankings, while humans could only fight tooth and nail for the third place](https://eu.36kr.com/en/p/3471527119574404)
+
+[Google and OpenAI’s coding wins at university competition show enterprise AI tools can take on unsolved algorithmic challenges](https://venturebeat.com/ai/google-and-openais-coding-wins-at-university-competition-show-enterprise-ai)
 
 ### 3) Enterprises are reorganizing around agents/AI copilots
 
