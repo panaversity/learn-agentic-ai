@@ -1,6 +1,6 @@
 # What is a Pull Request?
 
-In our software/dev context, **PR = Pull Request**.
+In our software/dev context, **PR = [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)**.
 
 It’s a proposal to merge your changes from one branch into another (e.g., `feature/x` → `main`) on platforms like GitHub/GitLab/Bitbucket. A PR bundles:
 
