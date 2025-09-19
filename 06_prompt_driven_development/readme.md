@@ -1,8 +1,8 @@
 # Executive Summary — Summer 2025: The AI-First Turning Point (and How to Harness It)
 
-Summer 2025 is a structural break in software development. Frontier LLMs (e.g., GPT-5 class systems, Claude 4.1x, Gemini 2.5+), AI-first IDEs (Cursor), and production-grade development agents have transformed coding from “manual by default” to **AI-assisted by default**. Adoption is mainstream; capability milestones are public; enterprises are reorganizing around agents. The new risk isn’t *whether* to use AI—it’s *how*. Teams that “vibe code” (loose, ad-hoc prompting) ship fast but brittle. Teams that apply **Prompt-Driven Development (PDD)**—small, spec-guided prompt increments—paired with **Test-Driven Development (TDD)**, **ADRs (Architecture Decision Records)**, and **PR (Pull Request) gates** ship fast **and** durable. In short: keep the creative spark, **but with a suit on**.
+Summer 2025 is a structural break in software development. Frontier LLMs (e.g., GPT-5 class systems, Claude 4.1x, Gemini 2.5+), AI-first IDEs (Cursor), and production-grade development agents (GPT-5-Codex)have transformed coding from “manual by default” to **AI-assisted by default**. Adoption is mainstream; capability milestones are public; enterprises are reorganizing around agents. The new risk isn’t *whether* to use AI—it’s *how*. Teams that “vibe code” (loose, ad-hoc prompting) ship fast but brittle. Teams that apply **Prompt-Driven Development (PDD)**—small, spec-guided prompt increments—paired with **Test-Driven Development (TDD)**, **ADRs (Architecture Decision Records)**, and **PR (Pull Request) gates** ship fast **and** durable. In short: keep the creative spark, **but with a suit on**.
 
-## What This Series Delivers
+## What This Chapter Delivers
 
 * **Method, not folklore.** A paste-ready workflow for **PDD × TDD** (Plan → Red → Green → Refactor → Explain → Record → PR) so the AI does the typing while your prompts define *what right looks like*.
 * **Governance you’ll actually use.** Lightweight **ADRs** to record “why,” a **PR policy** (“no green, no merge”), coverage targets, contract tests, and tracing—turning velocity into maintainability.
