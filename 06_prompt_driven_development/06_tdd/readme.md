@@ -1,6 +1,6 @@
 # Test-Driven Development (TDD)
 
-Test-Driven Development (TDD) is a software development practice where you write automated tests **before** writing the production code. The rhythm is tight and iterative: you specify behavior with a failing test, write the minimum code to pass it, then clean up the design—repeating until the feature is complete. This keeps you focused on behavior, produces a living safety net of tests, and naturally drives better design.
+[Test-Driven Development](https://www.geeksforgeeks.org/software-engineering/test-driven-development-tdd/) (TDD) is a software development practice where you write automated tests **before** writing the production code. The rhythm is tight and iterative: you specify behavior with a failing test, write the minimum code to pass it, then clean up the design—repeating until the feature is complete. This keeps you focused on behavior, produces a living safety net of tests, and naturally drives better design.
 
 ## The core loop (red → green → refactor)
 
