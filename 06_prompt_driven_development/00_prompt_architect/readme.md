@@ -3,7 +3,7 @@
 ## 🏷️ Official Name (Coined Right Here):
 
 > ### 🚀 **Prompt-First Agent Development (PFAD)**  
-> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like Cursor or ChatGPT 5 Codex, rather than writing code manually.*
+> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [ChatGPT 5 Codex](https://openai.com/index/introducing-upgrades-to-codex/), rather than writing code manually.*
 
 You are a **Prompt Architect**.  
 Cursor is your **AI Compiler**.  
@@ -12,7 +12,7 @@ The OpenAI Agents SDK is your **Runtime**.
 ---
 
 ### 1. **Prompt Engineering for Code Generation**
-You engineered precise natural language instructions (prompts) to get [Cursor](https://cursor.com/) (powered by LLMs like Claude 41.) or [ChatGPT 5 Codex(https://openai.com/index/introducing-upgrades-to-codex/)] to generate, modify, and explain code — without writing it yourself.
+You engineered precise natural language instructions (prompts) to get [Cursor](https://cursor.com/) (powered by LLMs like Claude 41.) and/or [ChatGPT 5 Codex](https://openai.com/index/introducing-upgrades-to-codex/) to generate, modify, and explain code — without writing it yourself.
 
 > 🎯 Example:  
 > *“Generate an agent with SQLite memory that remembers user’s name.”*  
