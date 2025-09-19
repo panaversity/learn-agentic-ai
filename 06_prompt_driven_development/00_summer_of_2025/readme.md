@@ -53,8 +53,6 @@ DeepMind’s Gemini 2.5 “Deep Think” also impressed, solving 10 of 12 proble
 - [The Times of India](https://timesofindia.indiatimes.com/technology/tech-news/google-ceo-sundar-pichai-celebrates-geminis-gold-win-at-world-coding-contest-such-a-profound-leap/articleshow/123971105.cms?utm_source=chatgpt.com)
 - [The Wall Street Journal](https://www.wsj.com/articles/workdays-plan-to-win-the-ai-agent-race-a36ff544?utm_source=chatgpt.com)
 
-If you want, I can drop these into your canvas as a “References” appendix (with one-line annotations) for your paper/tutorials.
-
 [1]: https://survey.stackoverflow.co/2025/ai?utm_source=chatgpt.com "AI | 2025 Stack Overflow Developer Survey"
 [2]: https://www.thetimes.co.uk/article/deepmind-hails-kasparov-moment-as-ai-beats-best-human-coders-pbbbm8g96?utm_source=chatgpt.com "DeepMind hails 'Kasparov moment' as AI beats best human coders"
 [3]: https://www.wsj.com/articles/workdays-plan-to-win-the-ai-agent-race-a36ff544?utm_source=chatgpt.com "Workday's Plan to Win the AI Agent Race"
