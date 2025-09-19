@@ -1,6 +1,16 @@
 
 # Vibe Coding vs. Prompt‑Driven Development
 
+|Aspect|Vibe Coding|Prompt-Driven Dev |
+|---|---|---|
+|Mindset|“Let’s see what happens”|“Here’s exactly what I want, how to validate it, and why.”|
+|Process|Exploratory, chaotic, iterative|Structured, repeatable, documented|
+|Output|Might work. Might not. Might break later.|Versioned, tested, explainable, deployable|
+|Tools|“Hey AI, make something cool”|“Cursor, generate agent with SQLite memory, CalculatorTool, guardrails, and pytest coverage — then explain the architecture.”|
+|Accountability|“It vibes.”|“It passes tests, follows ADR #3, and meets spec in Workspace Rules v1.2.”|
+|Team Scaling|Doesn’t scale — tribal knowledge|Scales — prompts are specs, tests are contracts, ADRs are history|
+|Professionalism|Hoodie + coffee|Suit + briefcase (but still creative)|
+
 This tutorial clarifies the difference between **vibe coding** and **prompt‑driven development (PDD)** and shows how to practice PDD in **incremental baby steps** using a sequence of focused prompts (the AI writes the code; you write the specs). Keep the creativity of vibes—**but with a suit on**: tight prompts, tests, docs, and traceability.
 
 ---

@@ -3,6 +3,8 @@
 
 > Build a production‑ready chatbot **without writing a single line of code by hand**—we’ll make Cursor do the typing while you keep the big brain energy. It’s vibe coding **but with a suit on**: prompts define the work, tests guard the work, ADRs explain the work, and PRs gate the work.
 
+
+
 ---
 
 ## Who this is for
