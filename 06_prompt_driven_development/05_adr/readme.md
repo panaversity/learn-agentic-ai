@@ -303,10 +303,15 @@ README.md — quick start
 Quick start after unzipping:
 
 cd ai-prompt-history-starter
+
 git init
+
 git config core.hooksPath .githooks
+
 chmod +x .githooks/* scripts/*.py
+
 make prompt-new SLUG=hello-world STAGE=architect
+
 make prompt-index
 
 
