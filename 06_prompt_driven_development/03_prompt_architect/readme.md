@@ -2,12 +2,18 @@
 
 ## 🏷️ Official Name (Coined Right Here):
 
-> ### 🚀 **Prompt-First Agent Development (PFAD)**  
-> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [ChatGPT 5 Codex](https://openai.com/index/introducing-upgrades-to-codex/), rather than writing code manually.*
+> ### 🚀 **AI Pair Programming or Prompt-First Agent Development (PFAD) is the New Paradigm**  
+> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [GPT-5-Codex](https://openai.com/index/introducing-upgrades-to-codex/), rather than writing code manually.*
 
 You are a **Prompt Architect**.  
-Cursor is your **AI Compiler**.  
-The OpenAI Agents SDK is your **Runtime**.
+Cursor and GPT-5-Codex is your **AI Compiler**.  
+The Python Interpreter and frameworks like the OpenAI Agents SDK is your **Runtime**.
+
+![](arch.png)
+
+> *Prompt Architect: While "prompt engineer" focuses on crafting effective individual prompts, "Prompt Architect" is an emerging, unofficial title for a role that designs and builds entire prompt-based systems. A prompt architect creates multi-agent workflows, manages context across complex tasks, and designs the overall structure of AI-driven solutions, much like a software architect designs a traditional system. This role is gaining traction in AI-native teams at companies like Anthropic and xAI.*
+
+*The shift from writing code to engineering prompts for developing powerful AI agents is profoundly transformative.*
 
 ---
 
