@@ -1,5 +1,12 @@
 # The Definitive Guide to Evaluation-Driven Development (EDD)
 
+**[Must Read: From TDD to EDD: Why Evaluation-Driven Development Is the Future of AI Engineering](https://medium.com/@nimrodbusany_9074/from-tdd-to-edd-why-evaluation-driven-development-is-the-future-of-ai-engineering-a5e5796b2af4)**
+
+# What we’d recommend for EDD (our stack)
+
+1. **Use [promptfoo](https://www.promptfoo.dev/) for day-to-day EDD gates** (on every PR): run matrix tests across prompts/models, post pass/fail & diffs on PRs.
+2. **Add [OpenAI Evals](https://github.com/openai/evals) for deeper, model-graded checks** on golden sets (faithfulness, task success) and optionally call the **Evaluation API** as part of nightly jobs or release candidates.
+
 Here is a detailed, step-by-step tutorial for implementing Evaluation-Driven Development (EDD). This guide is designed to slot directly into your AI-First Engineering Playbook, enhancing it with a robust layer of behavioral quality assurance.
 
 
