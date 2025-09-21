@@ -7,10 +7,51 @@
 1. **Use [promptfoo](https://www.promptfoo.dev/) for day-to-day EDD gates** (on every PR): run matrix tests across prompts/models, post pass/fail & diffs on PRs.
 2. **Add [OpenAI Evals](https://github.com/openai/evals) for deeper, model-graded checks** on golden sets (faithfulness, task success) and optionally call the **Evaluation API** as part of nightly jobs or release candidates.
 
+## Can we use OpenAI Evals with Google Gemini Flash
+
+Short answer: **Yes for the open-source repo, no for the hosted Evaluation API.**
+
+* **Open-source “OpenAI Evals” (the GitHub framework):** it uses the OpenAI Python SDK under the hood. Because Google provides an **OpenAI-compatible endpoint**, you can point Evals at **Gemini (e.g., gemini-2.5-flash)** by setting an OpenAI client with `base_url` and a Gemini API key. In other words, the eval *runner* can call Gemini via the OpenAI library. ([Google AI for Developers][1])
+* **OpenAI’s managed Evaluation/Evals API & UI:** these run *on OpenAI’s platform* and don’t evaluate third-party models like Gemini. Use the OSS repo if you want Gemini.
+
+# How to wire it up (OSS Evals → Gemini Flash)
+
+1. Get a Gemini API key; install the latest `openai` Python SDK.
+2. Set the client to Google’s OpenAI-compatible endpoint and choose a Gemini model:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+# Example model: "gemini-2.5-flash" (or "gemini-1.5-flash")
+```
+
+Google’s docs show this exact “update three lines” approach and list supported models (Flash, Pro, etc.). ([Google AI for Developers][1])
+
+3. In your evals where the code creates an OpenAI client (or reads env vars), ensure it uses that client / base URL. Many setups also work by exporting:
+
+```bash
+export OPENAI_API_KEY="GEMINI_API_KEY"
+export OPENAI_BASE_URL="https://generativelanguage.googleapis.com/v1beta/openai/"
+```
+
+(If your eval harness instantiates its own `OpenAI()` internally, these env vars usually take effect.)
+
+[Getting Started with OpenAI Evals](https://cookbook.openai.com/examples/evaluation/getting_started_with_openai_evals)
+
+### Notes & gotchas
+
+* **Feature coverage:** Google’s compatibility layer is **beta**; most common endpoints like `chat.completions` are supported, including **function calling** and “thinking” controls via params, but some features/params may differ. Test your specific evaluators (tools, JSON mode, batch) before relying on them in CI. ([Google AI for Developers][1])
+* **Hosted OpenAI Evaluation API:** keeps requiring an OpenAI key and runs on OpenAI models—**not** Gemini. For Gemini you must stay with the OSS runner (or a vendor-neutral tool like promptfoo). ([OpenAI Platform][2])
+
+
 Here is a detailed, step-by-step tutorial for implementing Evaluation-Driven Development (EDD). This guide is designed to slot directly into your AI-First Engineering Playbook, enhancing it with a robust layer of behavioral quality assurance.
 
 
-**A tutorial for guaranteeing AI agent quality and preventing behavioral regressions.**
+## A tutorial for guaranteeing AI agent quality and preventing behavioral regressions.
 
 Welcome to the next evolution of your AI engineering practice. You have mastered Test-Driven Development (TDD) to ensure your code is functionally correct—the engine runs, the wheels turn. But in the world of AI agents, that's only half the battle. **Evaluation-Driven Development (EDD) is the driving test.** It puts your agent on a simulated road with real-world challenges to ensure its *behavior* is safe, reliable, and aligned with its purpose.
 
