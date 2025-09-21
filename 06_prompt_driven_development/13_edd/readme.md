@@ -42,6 +42,8 @@ export OPENAI_BASE_URL="https://generativelanguage.googleapis.com/v1beta/openai/
 
 [Getting Started with OpenAI Evals](https://cookbook.openai.com/examples/evaluation/getting_started_with_openai_evals)
 
+[OpenAI Evals Guide](https://platform.openai.com/docs/guides/evals)
+
 ### Notes & gotchas
 
 * **Feature coverage:** Google’s compatibility layer is **beta**; most common endpoints like `chat.completions` are supported, including **function calling** and “thinking” controls via params, but some features/params may differ. Test your specific evaluators (tools, JSON mode, batch) before relying on them in CI. ([Google AI for Developers][1])
