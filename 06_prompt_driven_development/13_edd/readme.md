@@ -2,6 +2,8 @@
 
 **[Must Read: From TDD to EDD: Why Evaluation-Driven Development Is the Future of AI Engineering](https://medium.com/@nimrodbusany_9074/from-tdd-to-edd-why-evaluation-driven-development-is-the-future-of-ai-engineering-a5e5796b2af4)**
 
+**[From TDD to EDD: A New Paradigm for AI Development](https://www.linkedin.com/pulse/from-tdd-edd-new-paradigm-ai-development-piyush-m-agarwal-xqqgf/)**
+
 # What we’d recommend for EDD (our stack)
 
 1. **Use [promptfoo](https://www.promptfoo.dev/) for day-to-day EDD gates** (on every PR): run matrix tests across prompts/models, post pass/fail & diffs on PRs.
