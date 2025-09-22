@@ -16,6 +16,36 @@ The Python Interpreter and frameworks like the OpenAI Agents SDK is your **Runti
 *The shift from writing code to engineering prompts for developing powerful AI agents is profoundly transformative.*
 
 
+---
+
+## Prompt-Driven Development: The Cost Advantage
+
+AI has reset the economics of software. The fastest, lowest-cost path to delivery is to put prompts—clear intent, constraints, and acceptance criteria—at the center of engineering.
+
+**Why this wins**
+
+* **Radical cost compression:** Token-priced generation and automated repetition cut build and rework costs while accelerating cycle time.
+* **Focus on value:** Engineers spend less time producing code and more time on architecture, quality, security, and reliability.
+* **Compounding leverage:** Reusable prompts, patterns, and evaluation suites improve with every project, driving down marginal cost.
+
+**How to execute PDD**
+
+1. **Define:** State outcomes, interfaces, non-functional requirements, and test oracles as precise prompts.
+2. **Compose:** Use AI to draft code, tests, and docs aligned to those prompts.
+3. **Evaluate:** Auto-check with linters, unit/prop tests, security scans, and benchmark gates.
+4. **Integrate:** Refine with human review, enforce governance, and ship via automated CI/CD.
+5. **Learn:** Capture winning prompts and failures in a shared library; measure throughput, quality, and cost per release.
+
+**Operating principles**
+
+* Specify before you generate.
+* Automate everything repeatable.
+* Guard with tests, policies, and telemetry.
+* Promote reusable prompt assets as first-class IP.
+
+**Commitment**
+Adopt PDD across teams, tools, and governance. Automate the repeatable, elevate human judgment, and scale delivery with confidence and control.
+
 ## What This Chapter Delivers
 
 * **Method, not folklore.** A paste-ready workflow for **PDD × TDD** (Plan → Red → Green → Refactor → Explain → Record → PR) so the AI does the typing while your prompts define *what right looks like*.
