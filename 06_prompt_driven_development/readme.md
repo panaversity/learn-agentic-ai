@@ -65,5 +65,134 @@ The winners of 2025 aren’t just “using AI”; they’re **professionalizing*
 
 **Call to action:** Open the first tutorial. Paste the prompts. Let the AI type. You conduct.
 
+## From Prompt-Driven Development (PDD) to **GPS Engineering** — The Progressive Journey
+
+> **GPS Engineering** = **Spec-Driven Development (SDD)** × **Prompt-Driven Development (PDD)** × **Test-Driven Development (TDD)** × **Evaluation-Driven Development (EDD)** × **ADRs** × **PHRs** × **PR gates** — *“build with AI, but with a suit on.”*
+
+---
+
+## 1) Why Summer 2025 is Different
+
+Frontier LLMs (GPT-5 class, Claude 4.1x, Gemini 2.5+) plus **AI-first IDEs** (Cursor) and **agentic coding** (GPT-5 Codex) make AI assistance the default. Teams report drastic cycle-time drops—**when** they pair speed with governance. Unstructured “vibe coding” is fast but fragile; the winners adopt a method that keeps creativity while enforcing quality.
+
+---
+
+## 2) From PDD → Governance: the **GPS** Mindset
+
+* **PDD** proved we can *drive development through prompts*, incrementally (“baby steps”): Architect → Red → Green → Refactor → Explainer.
+* **GPS Engineering** keeps that loop and **adds guardrails**: thin specs up front, tests/evals as executable contracts, decisions recorded, merges gated, traceability preserved.
+
+---
+
+## 3) The Journey in Stages (progressive, slice by slice)
+
+Think staircase: each step is small, testable, and shippable.
+
+### Stage 0 — Foundations (Repo hygiene)
+
+* `.env.sample`, `pyproject.toml`, **uv** for deps, multi-stage **Dockerfile**, `Makefile`.
+* Baseline **CI** (ruff, pytest; optional EDD smoke).
+* **PR template** with **Spec-Compliance** checkbox.
+
+### Stage 1 — **Specify** (SDD)
+
+* Write a **thin spec** per slice (e.g., `/chat` JSON, then **SSE**): behavior, constraints (e.g., length ≤ 1200), acceptance checks.
+* Store in `docs/specs/`.
+
+### Stage 2 — **Prompt** (PDD, “baby steps”)
+
+* Drive changes via sequenced prompts: **Architect → Red → Green → Refactor → Explainer**.
+* Capture each step as a **PHR** in `docs/prompts/`. Cursor/Codex produce diffs; you control scope and acceptance.
+
+### Stage 3 — **Test** (TDD)
+
+* **Red**: add failing unit/contract tests first (offline/mocked).
+* **Green**: smallest change to pass.
+* **Refactor**: tidy internals, keep green.
+* Tests encode the spec so the model aligns with intent.
+
+### Stage 4 — **Evaluate** (EDD)
+
+* Add **promptfoo** suites to detect **behavior drift** (e.g., scope discipline, “tool-first” math/time).
+* Run **smoke** on PRs; **full** nightly.
+
+### Stage 5 — **Record & Review** (ADR, PHR, PR)
+
+* **ADR**: consequential decisions (e.g., SSE vs WebSocket)—context, options, decision, consequences.
+* **PHR**: the exact prompts and outcomes for each slice.
+* **PR**: small, CI-gated; links **Spec + PHR + ADR**, **Spec-Compliance** checked.
+
+### Stage 6 — **Tools That Fit the Loop** (Dual environment)
+
+* **VS Code + GPT-5 Codex** (agent-centric): init projects, repo-wide refactors, PR prep & reviews.
+* **Cursor** (editor-centric): inline tab-completion, fast multi-file edits, composer/chat.
+* Git-sync lets you switch fluidly—**Swiss-army knife + laser scalpel**.
+
+### Stage 7 — **First Product Slice** (worked example)
+
+1. **Spec** `/healthz` + `/chat` JSON contract.
+2. **Red** tests for `/chat`:
+
+   * 400 with top-level `{ "error_code": "MISSING_USER_MESSAGE" }`
+   * 200 `ChatReply { text, used_tool?, handoff }`
+3. **Green** minimal diff via PDD prompts; enforce **guardrails** (Pydantic shape, length).
+4. Add **SSE**: write spec → **Red** streaming tests → **Green** with `Content-Type: text/event-stream`, `data:<token>\n\n`, end `data:[DONE]\n\n`.
+5. Record **ADR** for streaming choice.
+6. Open a **PR** linking Spec/PHRs/ADR; CI + EDD must pass.
+
+### Stage 8 — **Metrics** (prove it)
+
+Track:
+
+* **Lead time to change** (hrs per small PR)
+* **Change-failure rate** (% PRs causing rollback/hotfix)
+* **MTTR**
+* **Coverage & contract tests**
+* **ADR density** (# decisions per significant change)
+* **AI utilization** (% diffs generated via prompts)
+
+### Stage 9 — **90-Day Rollout**
+
+* **Days 0–10**: Repo hygiene, CI gates, PR template, baseline specs.
+* **Days 10–30**: Pilot one service; 10–20 small PRs through the GPS loop.
+* **Days 30–60**: Scale to more repos; add EDD smoke; strengthen contracts.
+* **Days 60–90**: Institutionalize: rules bundles for Cursor/Codex, prompt libraries, dashboards.
+
+---
+
+## 4) Where Things Live (Artifacts)
+
+* **Specs (SDD)** → `docs/specs/…md`
+* **PHRs (prompts)** → `docs/prompts/…prompt.md`
+* **Tests (TDD)** → `tests/…`
+* **Evals (EDD)** → `promptfoo.config.yaml`, `evals/behavior/*.yaml`
+* **ADRs** → `docs/adr/*.md`
+* **PR gates** → `.github/workflows/*.yml` + `.github/PULL_REQUEST_TEMPLATE.md` (with **Spec-Compliance**)
+
+---
+
+## 5) Governance in One Slide
+
+* **Thin slices, tight specs.**
+* **Smallest change to green.**
+* **No green, no merge.**
+* **Trace everything** (PHR + ADR).
+* **Model-agnostic**; tools are pluggable (Codex/Cursor/others).
+
+---
+
+## 6) Quality-of-Life Packs (ready to use)
+
+* **Cursor Composer / Codex prompts** for each phase (Architect/Red/Green/Refactor/Explainer/Fix-only).
+* **Nano Banana** copy-paste diagram prompts (system context, sequences, SSE, PR lifecycle, traceability, KPIs, roadmap).
+* Keep them in `docs/prompts/` and `docs/diagrams/` so every repo stays aligned.
+
+---
+
+## TL;DR
+
+We evolved from **PDD** (prompts drive code) to **GPS Engineering** (prompts **governed** by specs, tests, evals, decisions, and PR gates). You still move fast—just **with a suit on**: **Specify** narrowly, **Prompt** in baby steps, **Test/Evaluate** as gates, **Record** decisions and prompts, and **Review** through small, CI-green PRs.
+
+
 
 
