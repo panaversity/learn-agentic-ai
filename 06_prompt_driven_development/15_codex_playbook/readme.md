@@ -393,6 +393,49 @@ Summer 2025 made AI pair-dev **table stakes**. The teams who win aren’t just �
 [5]: https://openai.github.io/openai-agents-python/?utm_source=chatgpt.com "OpenAI Agents SDK"
 [6]: https://platform.openai.com/docs/guides/evals?utm_source=chatgpt.com "Evaluating model performance - OpenAI API"
 
+## Attachments
+
+Here are the two **Codex + VS Code** deliverables:
+
+* **Starter repo (VS Code + Codex PDD + TDD + ADR + PHR + CI + Docker + uv):**
+  vscode-codex-pdd-starter.zip
+
+* **Codex “Prompting House Rules” bundle (copy into your repo or paste into Codex prompts as guidance):**
+  codex-rules.json
+
+### What’s inside the starter repo
+
+* **App scaffold**: FastAPI with `/healthz` and a stubbed `/chat`, guardrail model, streaming helper.
+* **Tests**: `tests/test_healthz.py` (green out of the box).
+* **Docs**:
+
+  * PHR template: `docs/prompts/0000-template.prompt.md`
+  * ADR template: `docs/adr/0000-template.md`
+  * PR example: `docs/pr/0001-bootstrap-and-chat-contract.md`
+* **Governance**:
+
+  * CI pipeline: `.github/workflows/ci.yml` (ruff + pytest)
+  * PR template: `.github/PULL_REQUEST_TEMPLATE.md`
+  * Git hooks: `.githooks/` (gentle PHR nudges)
+* **VS Code**:
+
+  * `.vscode/tasks.json` for `lint`, `test`, `run`, and **EDD** tasks (`edd:smoke`, `edd:full`)
+* **Optional EDD (promptfoo)**:
+
+  * `promptfoo.config.yaml` (+ seed behavior tests in `evals/behavior/`)
+
+### Quickstart
+
+```bash
+unzip vscode-codex-pdd-starter.zip -d ./vscode-codex-pdd-starter
+cd vscode-codex-pdd-starter
+uv venv && source .venv/bin/activate
+uv sync
+uv run pytest -q
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+curl -s http://localhost:8000/healthz
+```
+
 
 Below is an **extension** to the *OpenAI Codex + VS Code IDE Playbook (2025): PDD “…with a suit on”*, plus a full **Appendix: Evaluation-Driven Development (EDD) with promptfoo**. It plugs cleanly into the PDD × TDD × ADR × PR workflow you already have.
 
