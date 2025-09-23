@@ -29,7 +29,7 @@ Cursor's AI agent can:
 ## Prerequisites
 
 You only need:
-- Cursor IDE installed ([download from cursor.sh](https://cursor.sh))
+- Cursor IDE installed ([download from cursor](https://cursor.com/download))
 - Internet connection for AI features
 
 That's it! Cursor will help with everything else.
