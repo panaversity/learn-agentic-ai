@@ -31,7 +31,7 @@ Each item lists options, then the **correct answer inline** with a brief explana
    * B) EDD measures lint quality; TDD measures latency
    * C) EDD replaces tests; TDD becomes optional
    * D) EDD requires GPUs; TDD doesn’t
-   * * **Answer: A.** EDD focuses on scenario behaviors and drift; TDD on binary contracts. **B** confuses scopes; **C** wrong—EDD complements; **D** not inherent.
+   * **Answer: A.** EDD focuses on scenario behaviors and drift; TDD on binary contracts. **B** confuses scopes; **C** wrong—EDD complements; **D** not inherent.
 
 5. A good **ADR** must include:
    * A) Decision only

@@ -6,18 +6,18 @@ Each item includes 4 options, followed by the **correct answer inline** with **d
 ---
 
 1. What is the core purpose of **Spec-Driven Development (SDD)** in GPS Engineering?
-   A) Replace code reviews with automation
-   B) Translate product intent into verifiable, testable contracts and constraints
-   C) Increase token counts and creativity in generations
-   D) Shorten CI runtime by skipping stages
-   **Answer: B.** SDD defines behavior, constraints, and acceptance criteria so intent becomes an executable contract. **A** overstates—reviews still matter. **C** is unrelated to contracts. **D** is not the goal; reliability is.
+* A) Replace code reviews with automation
+* B) Translate product intent into verifiable, testable contracts and constraints
+* C) Increase token counts and creativity in generations
+* D) Shorten CI runtime by skipping stages
+*  **Answer: B.** SDD defines behavior, constraints, and acceptance criteria so intent becomes an executable contract. **A** overstates—reviews still matter. **C** is unrelated to contracts. **D** is not the goal; reliability is.
 
 2. Why does **PDD** emphasize “baby steps”?
-   A) To produce large diffs for dramatic progress
-   B) To isolate cause/effect, stabilize scope, and keep reviews precise
-   C) To avoid writing tests until later
-   D) To discourage ADRs and PHRs
-   **Answer: B.** Small, sequenced prompts reduce confounding variables and improve reviewability. **A** harms attribution. **C** violates GPS. **D** removes traceability.
+* A) To produce large diffs for dramatic progress
+* B) To isolate cause/effect, stabilize scope, and keep reviews precise
+* C) To avoid writing tests until later
+* D) To discourage ADRs and PHRs
+* **Answer: B.** Small, sequenced prompts reduce confounding variables and improve reviewability. **A** harms attribution. **C** violates GPS. **D** removes traceability.
 
 3. The most accurate description of **GPS Engineering** is:
    A) A prompt style guide
