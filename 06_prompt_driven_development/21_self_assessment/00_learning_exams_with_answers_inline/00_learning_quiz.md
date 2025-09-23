@@ -27,11 +27,11 @@ Each item lists options, then the **correct answer inline** with a brief explana
    * **Answer: B.** CI gates must be green to merge. **A/C/D** are not implied by the policy.
 
 4. What uniquely distinguishes **EDD** from TDD?
-   A) EDD checks rubric-based model behaviors; TDD asserts programmatic contracts
-   B) EDD measures lint quality; TDD measures latency
-   C) EDD replaces tests; TDD becomes optional
-   D) EDD requires GPUs; TDD doesn’t
-   * **Answer: A.** EDD focuses on scenario behaviors and drift; TDD on binary contracts. **B** confuses scopes; **C** wrong—EDD complements; **D** not inherent.
+   * A) EDD checks rubric-based model behaviors; TDD asserts programmatic contracts
+   * B) EDD measures lint quality; TDD measures latency
+   * C) EDD replaces tests; TDD becomes optional
+   * D) EDD requires GPUs; TDD doesn’t
+   * * **Answer: A.** EDD focuses on scenario behaviors and drift; TDD on binary contracts. **B** confuses scopes; **C** wrong—EDD complements; **D** not inherent.
 
 5. A good **ADR** must include:
    * A) Decision only
