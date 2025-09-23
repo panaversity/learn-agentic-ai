@@ -1,0 +1,3 @@
+# Self Assessment Exams
+
+We’ve built a series of 60-question, MCQ exams that emphasizes concepts (not trivia) from “Prompt-Driven Development” materials (PHRs, ADRs, PRs, Cursor workflow, TDD/SDD, prompt-driven chatbots, diagram prompts, governance, evals, safety, and the “Prompt Architect” mindset). The objective of these assessments is that they will help you learn by giving you feedback on your level of understanding of the PDD process and make you an expert in GPS Engineering.
