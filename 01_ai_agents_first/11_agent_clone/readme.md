@@ -163,7 +163,6 @@ weather_agent = base_agent.clone(
 # Clone with different tools
 math_agent = base_agent.clone(
     name="MathAssistant",
-    tools=[calculate_area],  # Same tools
     instructions="You are a math specialist."
 )
 ```
