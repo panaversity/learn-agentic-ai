@@ -5,425 +5,424 @@ Each item includes 4 options, followed by the **correct answer inline** with **d
 
 ---
 
-1. What is the core purpose of **Spec-Driven Development (SDD)** in GPS Engineering?
-* A) Replace code reviews with automation
-* B) Translate product intent into verifiable, testable contracts and constraints
-* C) Increase token counts and creativity in generations
-* D) Shorten CI runtime by skipping stages
-*  **Answer: B.** SDD defines behavior, constraints, and acceptance criteria so intent becomes an executable contract. **A** overstates—reviews still matter. **C** is unrelated to contracts. **D** is not the goal; reliability is.
+1. What is the primary purpose of **Spec-Driven Development (SDD)** in GPS Engineering?  
+* A) Reduce CI runtime only  
+* B) Convert intent into testable contracts and constraints  
+* C) Increase token counts for creativity  
+* D) Replace code review entirely  
+* **Answer: B.** SDD formalizes behavior, constraints, and acceptance so the system has an executable contract. **D** doesn’t follow—reviews still matter; **C** is unrelated; **A** is a side effect at best, not the goal.
 
-2. Why does **PDD** emphasize “baby steps”?
-* A) To produce large diffs for dramatic progress
-* B) To isolate cause/effect, stabilize scope, and keep reviews precise
-* C) To avoid writing tests until later
-* D) To discourage ADRs and PHRs
-* **Answer: B.** Small, sequenced prompts reduce confounding variables and improve reviewability. **A** harms attribution. **C** violates GPS. **D** removes traceability.
+2. In **Prompt-Driven Development (PDD)**, why use “baby steps”?  
+* A) To isolate cause/effect and keep changes reviewable  
+* B) To bypass tests when prototyping  
+* C) To avoid writing ADRs  
+* D) To maximize diff size for learning  
+* **Answer: A.** Small, scoped prompts make attribution and review easier. **D** undermines control; **B** violates GPS; **C** weakens traceability.
 
-3. The most accurate description of **GPS Engineering** is:
-   A) A prompt style guide
-   B) Governed Prompt Software Engineering: specs + prompts + tests + evals + decisions + PR gates
-   C) A Docker build trick
-   D) A single-IDE feature set
-   **Answer: B.** GPS unifies governance artifacts and gates. **A/C/D** are narrow or tool-specific.
+3. The “**No green, no merge**” policy enforces what?  
+* A) Passing tests/evals as gates before integration  
+* B) Automatic release to prod on green  
+* C) Fast-tracking large PRs  
+* D) Skipping PR reviews on weekends  
+* **Answer: A.** CI gates must be green to merge. **C/D/B** are not implied by the policy.
 
-4. Conceptually, **TDD** contributes by:
-   A) Optimizing cost per token
-   B) Encoding behavioral expectations independent of the LLM’s stochasticity
-   C) Replacing specs entirely
-   D) Measuring UI fidelity
-   **Answer: B.** Tests assert binary behaviors regardless of model variance. **A/D** are orthogonal. **C** is wrong; TDD complements specs.
+4. What uniquely distinguishes **EDD** from TDD?  
+* A) EDD checks rubric-based model behaviors; TDD asserts programmatic contracts  
+* B) EDD measures lint quality; TDD measures latency  
+* C) EDD requires GPUs; TDD doesn’t  
+* D) EDD replaces tests; TDD becomes optional  
+* **Answer: A.** EDD focuses on scenario behaviors and drift; TDD on binary contracts. **B** confuses scopes; **D** wrong—EDD complements; **C** not inherent.
 
-5. **EDD** adds what beyond TDD?
-   A) Visual snapshots only
-   B) Scenario-level behavior scoring and drift detection across versions
-   C) Faster CPU instructions
-   D) Automatic PR merging
-   **Answer: B.** EDD evaluates model behaviors under rubrics and detects drift. **A/C/D** don’t address behavior quality.
+5. A good **ADR** must include:  
+* A) Decision only  
+* B) Screenshots of the IDE  
+* C) Context, options, decision, consequences  
+* D) Final code snippets  
+* **Answer: C.** ADRs preserve rationale and trade-offs. **A/B/D** omit critical reasoning or are irrelevant.
 
-6. **ADRs** exist primarily to:
-   A) Track build artifacts
-   B) Preserve decision context, options, trade-offs, and consequences
-   C) Store commit hashes
-   D) Replace PHRs
-   **Answer: B.** ADRs capture the “why” for future reasoning. **A/C** are different artifacts. **D** is wrong—PHRs capture prompts/intent, not architecture decisions.
+6. **PHRs** (Prompt History Records) are kept to:  
+* A) Track GPU utilization  
+* B) Preserve prompts, scope, acceptance, outcomes per slice  
+* C) Store Docker layers  
+* D) Replace commit history  
+* **Answer: B.** PHRs capture intent and evidence for each change. **D/C/A** are unrelated.
 
-7. **PHRs** (Prompt History Records) are necessary because they:
-   A) Replace git entirely
-   B) Provide immutable evidence mapping prompts → diffs → acceptance
-   C) Eliminate the need for CI
-   D) Track GPU fan speed
-   **Answer: B.** PHRs create auditable links between intent and changes. **A/C/D** are irrelevant.
+7. Why prefer **structured outputs** (e.g., Pydantic models) in AI apps?  
+* A) Larger payloads improve creativity  
+* B) Better syntax highlighting  
+* C) Faster UI rendering  
+* D) Deterministic parsing and validation downstream  
+* **Answer: D.** Structure enables reliable integration. **B/A/C** are incidental or false.
 
-8. The PR template’s **Spec-Compliance** checkbox exists to:
-   A) Enforce branding
-   B) Affirm that implementation matches spec via tests/evals before merge
-   C) Skip review on small PRs
-   D) Trigger production deploys automatically
-   **Answer: B.** It’s a governance gate for contract alignment. **A/C/D** misrepresent intent.
+8. The top-level error envelope for `/chat` on missing user_message is:  
+* A) `{"error_code":"MISSING_USER_MESSAGE"}`  
+* B) `{"status":"MISSING_USER_MESSAGE"}`  
+* C) `{"detail":"MISSING_USER_MESSAGE"}`  
+* D) `{"error":{"code":"MISSING_USER_MESSAGE"}}`  
+* **Answer: A.** Contract specifies top-level `error_code`. **C/D/B** violate the agreed shape.
 
-9. Why prefer **structured outputs** (e.g., Pydantic models)?
-   A) Nicer formatting
-   B) Deterministic parsing/validation enabling safer integrations
-   C) More tokens for style
-   D) Faster rendering
-   **Answer: B.** Structure supports validation and downstream reliability. **A/C/D** are not the aim.
+9. For SSE, which terminator signals end of stream?  
+* A) `event:done\n\n`  
+* B) `data:complete\n`  
+* C) `data:[DONE]\n\n`  
+* D) `data:[END]\n`  
+* **Answer: C.** `data:[DONE]` with a blank line is the agreed sentinel. Others aren’t the chosen contract.
 
-10. A top-level error envelope like `{"error_code":"MISSING_USER_MESSAGE"}` is valuable because:
-    A) It increases payload size
-    B) It simplifies client parsing and failure handling across languages
-    C) It improves color themes
-    D) It reduces test needs
-    **Answer: B.** A consistent, shallow shape reduces client complexity. **A/C/D** are irrelevant.
+10. Which OpenAI **Agents SDK** features we rely on for separation of concerns?  
+* A) Agents, Tools, Sessions, Handoffs, Guardrails  
+* B) Lambda layers  
+* C) Ingress controllers  
+* D) Sessions only  
+* **Answer: A.** That’s the core SDK set we use. **D/C/B** are incomplete or unrelated.
 
-11. The **tool-first** policy primarily aims to:
-    A) Maximize generation length
-    B) Route deterministic subproblems (math/time) to functions to reduce hallucinations
-    C) Remove model reasoning steps
-    D) Disable handoffs
-    **Answer: B.** Deterministic tools shrink hallucination surface. **A/C/D** are misinterpretations.
+11. The **tool-first** policy exists to:  
+* A) Route math/time to deterministic functions to cut hallucinations  
+* B) Force all work into code tools  
+* C) Increase verbosity  
+* D) Reduce test counts  
+* **Answer: A.** Deterministic tools minimize model guessing. **C/D/B** misstate intent.
 
-12. **Handoffs** in multi-agent systems conceptually represent:
-    A) Random agent selection
-    B) Intent-conditioned control transfer with schema/state invariants
-    C) Static function calls only
-    D) UI event hooks
-    **Answer: B.** Handoffs are governed routing between specialized agents. **A/C/D** miss the intent dimension.
+12. **Cursor** is strongest at:  
+* A) GPU provisioning  
+* B) Inline tab-completion, predictive multi-file edits, interactive flow  
+* C) Repo-wide autonomous refactors without oversight  
+* D) License scanning by default  
+* **Answer: B.** Cursor shines in interactive editor flows. **C/D/A** not its core value.
 
-13. Why is **SSE** often chosen for v1 streaming?
-    A) Binary frame support
-    B) Simpler infra, proxy-friendly, monotonic token emission
-    C) Full-duplex control channels
-    D) Mandatory compression
-    **Answer: B.** SSE is minimal and deploys easily for one-way token streams. **A/C/D** aren’t primary needs.
+13. **VS Code + Codex** is strongest at:  
+* A) Pure tab-completion  
+* B) Managing container registries  
+* C) Agentic, repo-scale tasks and PR preparation  
+* D) Uvicorn tuning  
+* **Answer: C.** Codex excels at broader agentic tasks. **A/B/D** are not its main strengths.
 
-14. The **SSE** terminator `data:[DONE]\n\n` exists to:
-    A) Reduce payload size
-    B) Signal stream completion so clients finalize safely
-    C) Activate backpressure
-    D) Enable binary transfer
-    **Answer: B.** The sentinel provides a clear completion contract. **A/C/D** not applicable.
+14. A **thin spec** should avoid:  
+* A) Acceptance checks  
+* B) Contract examples  
+* C) Implementation detail that overconstrains design  
+* D) Error envelopes  
+* **Answer: C.** Specs state *what*, not detailed *how*. **B/A/D** belong.
 
-15. “**Smallest change to green**” optimizes:
-    A) CI billing
-    B) Causal attribution for failing/growing tests
-    C) Token creativity
-    D) Reviewer humor
-    **Answer: B.** Small diffs isolate causes, speeding diagnosis. **A/C/D** off-target.
+15. Why keep tests **offline/mocked** by default?  
+* A) To bypass coverage  
+* B) To ensure determinism and avoid network/model variance  
+* C) To hide bugs  
+* D) To skip CI  
+* **Answer: B.** Offline tests stabilize signals. **C/D/A** are bad practice.
 
-16. The dual environment approach (Cursor + Codex) is justified because:
-    A) They are identical tools
-    B) Each optimizes different cognitive modes (interactive edits vs agentic wide tasks)
-    C) Only Cursor supports Python
-    D) Codex replaces CI
-    **Answer: B.** Use the right environment for the task. **A/C/D** are false.
+16. In PDD, the **Architect prompt** should:  
+* A) Ask to skip tests  
+* B) State micro-spec, constraints, acceptance, risks before code  
+* C) Request code immediately  
+* D) Change unrelated files  
+* **Answer: B.** Architect prompts set scope and checks. **C/D/A** contradict process.
 
-17. **Model-agnosticism** at the spec level means:
-    A) Vendor-specific contracts
-    B) Contracts/evals stay valid when swapping providers
-    C) Ignoring latency or cost
-    D) Fixing one decoding strategy permanently
-    **Answer: B.** Specs/evals must survive provider changes. **A/C/D** contradict portability.
+17. The purpose of the **Explainer prompt** is to:  
+* A) Compile docs  
+* B) Generate architecture diagrams automatically  
+* C) Summarize diffs, trade-offs, residual risk succinctly  
+* D) Replace PR description  
+* **Answer: C.** It clarifies intent and changes. **D/B/A** aren’t the goal.
 
-18. The key difference between **tests** and **evals** is:
-    A) Tests are visuals; evals are numeric
-    B) Tests assert binary conformance; evals score scenario behaviors via rubrics
-    C) Tests are optional; evals mandatory
-    D) They are equivalent
-    **Answer: B.** Tests = binary; evals = graded behaviors. **A/C/D** incorrect.
+18. The **smallest change to green** principle primarily reduces:  
+* A) Token usage only  
+* B) Confounding variables in failure diagnosis  
+* C) CI bill  
+* D) Reviewers needed  
+* **Answer: B.** It improves causal attribution. **C/A/D** are secondary or wrong.
 
-19. A **thin spec** should avoid:
-    A) Pre/postconditions and examples
-    B) Implementation detail that overconstrains design choices
-    C) Error envelopes
-    D) Acceptance criteria
-    **Answer: B.** Specs express “what,” not “how.” **A/C/D** belong.
+19. In GPS, **refactor** means:  
+* A) Improving internals with tests kept green  
+* B) Rewriting specs mid-PR  
+* C) Changing public contracts routinely  
+* D) Skipping evaluations  
+* **Answer: A.** Behavior preserved, internals improved. **C/B/D** oppose governance.
 
-20. Why keep **offline/mocked tests** by default?
-    A) To avoid writing docs
-    B) To minimize nondeterminism from networks/providers and keep signals stable
-    C) To skip CI
-    D) To remove coverage needs
-    **Answer: B.** Determinism improves reliability. **A/C/D** are anti-patterns.
+20. **Traceability** is best achieved by linking:  
+* A) Branch ↔ Tag alone  
+* B) Spec ↔ PHR ↔ ADR ↔ PR ↔ CI artifacts  
+* C) Logs to screenshots  
+* D) README ↔ LICENSE only  
+* **Answer: B.** That end-to-end chain is the backbone. Others are partial.
 
-21. **Observability** in agent systems should capture at minimum:
-    A) Editor theme
-    B) Spans for tools/handoffs with inputs shape, outputs, timing, errors
-    C) Token art
-    D) Window titles
-    **Answer: B.** These signals enable debugging and governance. Others are noise.
+21. The PR template’s **Spec-Compliance** checkbox ensures:  
+* A) Automatic release notes  
+* B) Style consistency  
+* C) Implementation matches spec/acceptance (tests/evals)  
+* D) Version bump  
+* **Answer: C.** It’s a gate for contract adherence. **B/D/A** not guaranteed.
 
-22. **Policy-as-code** succeeds when:
-    A) Rules live in slides
-    B) CI enforces lint, unit/contract tests, eval thresholds, and secret scanning as merge gates
-    C) Humans remember
-    D) Everything is manual
-    **Answer: B.** Automated gates make governance real. **A/C/D** are brittle.
+22. Why choose **SSE** for v1 streaming?  
+* A) Mandatory bidirectional control  
+* B) Simplicity, proxy compatibility, low infra complexity  
+* C) Binary frame support  
+* D) Built-in compression  
+* **Answer: B.** SSE fits minimal, one-way token flow. **C/A/D** not decisive.
 
-23. A **PHR ID** scheme should optimize:
-    A) Aesthetics only
-    B) Temporal ordering, slice mapping, and reproducibility in audits
-    C) Random UUIDs with no meaning
-    D) Minimal length regardless of clarity
-    **Answer: B.** IDs must support traceability and analysis. **A/C/D** hinder audits.
+23. Which CI gate most increases reliability for LLM apps?  
+* A) Lint + contract tests + EDD smoke **before** build/publish  
+* B) Only lint  
+* C) Build first, test later  
+* D) Post-deploy tests only  
+* **Answer: A.** Upfront gates catch issues earlier. Others miss risks.
 
-24. The **Explainer prompt** adds value by:
-    A) Generating code samples
-    B) Summarizing intent, diffs, rationale, and residual risks concisely
-    C) Replacing the PR entirely
-    D) Hiding ADR links
-    **Answer: B.** It makes reasoning explicit for reviewers. **A/C/D** miss the purpose.
+24. A **scope discipline** eval should:  
+* A) Penalize unrequested fields/format drift  
+* B) Score verbosity higher  
+* C) Reward extra fields  
+* D) Ignore structure  
+* **Answer: A.** We enforce schema. **C/D/B** conflict with discipline.
 
-25. A **governed refactor** should:
-    A) Change public contracts freely
-    B) Preserve external behavior and keep tests green while improving internals
-    C) Skip documentation
-    D) Add dependencies casually
-    **Answer: B.** Behavior preservation is the point. **A/C/D** reduce safety.
+25. **Model-agnosticism** at spec level means:  
+* A) Fixing a single decoding strategy forever  
+* B) Contracts/evals valid across providers  
+* C) Hard-coding a vendor  
+* D) Ignoring latency  
+* **Answer: B.** We keep portability. **C/D/A** narrow or ignore realities.
 
-26. **Traceability** in GPS is best delivered by linking:
-    A) README ↔ LICENSE
-    B) Spec ↔ PHR ↔ ADR ↔ PR ↔ CI artifacts
-    C) Branch ↔ Tag only
-    D) Screenshot ↔ Slack
-    **Answer: B.** That chain reconstructs decisions and outcomes. Others are partial.
+26. Why keep **PHRs** in the repo (not chat only)?  
+* A) Better Docker layers  
+* B) Versioned, reviewable, linkable evidence tied to diffs  
+* C) Emoji reactions  
+* D) Lower token bills  
+* **Answer: B.** Governance requires permanence and links. Others are irrelevant.
 
-27. A **scope discipline** eval should penalize:
-    A) Matching schema exactly
-    B) Adding unrequested fields or formats, even if “helpful”
-    C) Returning required fields only
-    D) Using structured outputs
-    **Answer: B.** Discipline requires staying inside contract. **A/C/D** are compliant.
+27. A **good acceptance test** for `/chat` checks:  
+* A) Response matches `ChatReply` schema and required fields  
+* B) README exists  
+* C) Server uptime  
+* D) Docker layer count  
+* **Answer: A.** Contract tests validate schema/fields. **C/B/D** are orthogonal.
 
-28. **Spec versioning** matters because it:
-    A) Changes editor shortcuts
-    B) Aligns behavior changes with migrations, deprecations, and historical analysis
-    C) Reduces PR text
-    D) Improves font ligatures
-    **Answer: B.** Versioned specs enable safe evolution. **A/C/D** irrelevant.
+28. The **handoff** concept in agents supports:  
+* A) Token pooling  
+* B) Random switching  
+* C) Specialization via intent-conditioned control transfer  
+* D) Cache flushing  
+* **Answer: C.** Handoffs route to specialized agents. Others are unrelated.
 
-29. Which metric pair best reflects **delivery health**?
-    A) Stars and image size
-    B) Lead time to change + change-failure rate (with MTTR context)
-    C) Lines of code and comments
-    D) PR emojis and velocity
-    **Answer: B.** These directly correlate with flow and stability. Others are proxies/noise.
+29. The best reason to **version specs** is to:  
+* A) Reduce CI logs  
+* B) Improve font rendering  
+* C) Align behavior changes with artifacts and migrations  
+* D) Change IDE shortcuts  
+* **Answer: C.** Versioned specs track evolution and deprecations. Others are cosmetic.
 
-30. **Red-team EDD** checks should include:
-    A) GIF counts
-    B) Prompt-injection attempts and policy-violation scoring against tool misuse
-    C) PR word counts
-    D) Readme length
-    **Answer: B.** Safety is behavioral; test it. **A/C/D** don’t measure safety.
+30. Which **metric pair** is most diagnostic for delivery health?  
+* A) Lead time to change + change-failure rate (with MTTR)  
+* B) Image size + theme  
+* C) Lines of code + stars  
+* D) PR emoji count + velocity  
+* **Answer: A.** Those directly reflect flow and stability. Others are noise.
 
-31. The **SSE** response header must be:
-    A) `Content-Type: application/json`
-    B) `Content-Type: text/event-stream`
-    C) `Accept: text/event-stream`
-    D) `X-Stream: on`
-    **Answer: B.** The server sets SSE content type. **C** is a client request header.
+31. A **red-team EDD** check should include:  
+* A) Screenshot diffs  
+* B) Prompt-injection tests scoring policy violations/tool misuse  
+* C) GIFs in PR  
+* D) GPU fan speed  
+* **Answer: B.** Safety is a behavior domain. Others are irrelevant.
 
-32. A **contract test** ensures:
-    A) Training dataset freshness
-    B) Interface stability regardless of internal implementation changes
-    C) GPU throttle correctness
-    D) CLI color fidelity
-    **Answer: B.** That’s the essence of contract testing. Others unrelated.
+32. **Offline unit tests** guard primarily against:  
+* A) Disk quotas  
+* B) Model/provider outages and nondeterminism  
+* C) Color themes  
+* D) Spelling errors in comments  
+* **Answer: B.** They stabilize correctness signals. Others are minor.
 
-33. **Spec creep** should be handled by:
-    A) Mutating scope inside an ongoing PR
-    B) Creating new micro-spec + PR for the extra scope
-    C) Deleting tests to fit schedule
-    D) Ignoring evals
-    **Answer: B.** New scope → new slice/PR. **A/C/D** erode governance.
+33. A **governed refactor prompt** should require:  
+* A) Delete flaky tests  
+* B) Keep tests green, preserve behavior; summarize rationale  
+* C) Add new dependencies freely  
+* D) Change public contract  
+* **Answer: B.** Preserve interfaces; document intent. Others are anti-patterns.
 
-34. A mature **prompt library** ought to be:
-    A) Ephemeral and private
-    B) Versioned, ID’d, and mapped to specs/tests/evals
-    C) Screenshots only
-    D) Opaque to reviewers
-    **Answer: B.** Reuse with governance. Others block traceability.
+34. A **governance smell** is when PRs:  
+* A) Are small and reviewed  
+* B) Include EDD artifacts  
+* C) Merge on red or without PHR/ADR references  
+* D) Link specs and ADRs  
+* **Answer: C.** That breaks gates/traceability. **D/A/B** are good.
 
-35. The **best justification** for “No green, no merge” is:
-    A) It looks strict
-    B) It converts informal confidence into formal, scalable quality gates
-    C) It saves CI credits
-    D) It prevents PR creation
-    **Answer: B.** Formal gates scale quality. **A/C/D** aren’t the reason.
+35. A **prompt library** should be:  
+* A) Versioned, ID’d, mapped to specs/tests  
+* B) Hidden from reviewers  
+* C) Ephemeral & untracked  
+* D) Screenshots only  
+* **Answer: A.** Reuse + governance needs versioned prompts. Others defeat purpose.
 
-36. **Evaluation drift** is mitigated by:
-    A) Longer prompts
-    B) Versioned suites run on changes with thresholds and replicates
-    C) Random spot checks only
-    D) Turning evals off after v1
-    **Answer: B.** Regular controlled runs detect regressions. **A/C/D** are weak.
+36. **Observability** for agents should record:  
+* A) Spans of tools/handoffs with inputs (shape), outputs, timing, errors  
+* B) Editor font  
+* C) Only total tokens  
+* D) Theme changes  
+* **Answer: A.** Observability supports debugging/governance. Others irrelevant.
 
-37. A statistically sound eval protocol includes:
-    A) One sample per item with random seed
-    B) Replicates with fixed seeds per model version and stratified aggregation
-    C) No logging to save time
-    D) Changing datasets without tracking
-    **Answer: B.** Replication + control reduces variance. **A/C/D** undermine inference.
+37. A **thin slice** heuristic:  
+* A) 1–3 prompts plus a handful of tests to done  
+* B) Always excludes tests  
+* C) Spans multiple subsystems at once  
+* D) Requires large diffs  
+* **Answer: A.** Keep scope small and testable. **D/C/B** are wrong.
 
-38. **Model substitution** should be accompanied by:
-    A) New logos
-    B) Re-running suites with equivalence thresholds and rollback criteria
-    C) Skipping tests to move fast
-    D) Manual QA only
-    **Answer: B.** Verify parity; protect against regressions. Others unsafe.
+38. **Evaluation drift** is best mitigated by:  
+* A) Skipping evals after initial pass  
+* B) Versioned suites re-run on changes with thresholds  
+* C) Manual screenshots  
+* D) Longer prompts  
+* **Answer: B.** Regularized, versioned evals guard against regressions. Others don’t.
 
-39. A **thin slice** is ideally:
-    A) 1–3 prompts and a handful of tests from spec to green
-    B) A week-long mega-change
-    C) An untested refactor
-    D) Diagram-only deliverable
-    **Answer: A.** Keep slices small and testable. **B/C/D** miss the point.
+39. A statistically sound eval protocol uses:  
+* A) No logging  
+* B) Replicates with fixed seeds per version and stratified analysis  
+* C) One shot at temp 1.0  
+* D) Changing datasets at random  
+* **Answer: B.** Replication + controls detect change reliably. Others increase noise.
 
-40. **Observability** should include handoff metadata to:
-    A) Entertain dashboards
-    B) Support debugging and post-hoc analysis of routing decisions
-    C) Inflate logs
-    D) Reduce tests
-    **Answer: B.** It makes routing auditable. **A/C/D** add no reliability.
+40. A **privacy-aware** eval should:  
+* A) Ignore privacy  
+* B) Use real PII in logs  
+* C) Disable outputs  
+* D) Use synthetic PII and verify redaction policies  
+* **Answer: D.** Test redaction safely. **B/A/C** unsafe or useless.
 
-41. The **Explainer prompt** differs from codegen by:
-    A) Asking for colors
-    B) Stating rationale, risks, and summary of changes tied to tests
-    C) Changing public API
-    D) Increasing temperature
-    **Answer: B.** It communicates reasoning, not code. **A/C/D** irrelevant/harmful.
+41. **uv** is recommended because it:  
+* A) Provides fast, reproducible Python dependency management suited for CI  
+* B) Generates UML  
+* C) Replaces Docker entirely  
+* D) Is a new linter  
+* **Answer: A.** uv speeds and locks deps. **C/D/B** are wrong.
 
-42. A **governance smell** is when:
-    A) PRs link Spec + PHR + ADR + CI
-    B) Merges happen on red tests or without PHR/ADR references
-    C) CI enforces eval thresholds
-    D) Prompt libraries are versioned
-    **Answer: B.** This breaks gates/traceability. Others are good practice.
+42. **SSE** requires the server to set:  
+* A) `Content-Type: text/event-stream`  
+* B) `X-Stream: yes`  
+* C) `Accept: text/event-stream`  
+* D) `Content-Type: application/json`  
+* **Answer: A.** Server response header must be SSE. **C** is a client request header; **D/B** wrong.
 
-43. **Guardrails** add value by:
-    A) Enforcing output shape/limits/policies and enabling corrective retries
-    B) Replacing tests entirely
-    C) Removing evals
-    D) Increasing token counts
-    **Answer: A.** Guardrails constrain outputs; tests/evals still needed. **B/C/D** wrong.
+43. A **contract test** ensures:  
+* A) GPU utilization limits  
+* B) Training corpus freshness  
+* C) Interface stability regardless of internal changes  
+* D) Repo size thresholds  
+* **Answer: C.** That’s the essence of contract tests. Others are not.
 
-44. **Retry logic** is warranted when:
-    A) Guardrail/schema checks fail and a correction hint can be applied
-    B) The IDE freezes briefly
-    C) Any flake occurs anywhere
-    D) Coverage drops
-    **Answer: A.** Targeted retries recover from structured violations. **B/C/D** misuse.
+44. A **Spec creep** control is to:  
+* A) Merge everything at once  
+* B) Split into new micro-specs and PRs  
+* C) Delete tests  
+* D) Mutate scope mid-PR  
+* **Answer: B.** Micro-slicing keeps control. Others add risk.
 
-45. **Monotonic streaming** means:
-    A) Only decreasing latency
-    B) Append-only token emission with stable framing so clients reconstruct progressively
-    C) Binary frames required
-    D) Fixed chunk sizes
-    **Answer: B.** Monotonicity ensures predictable reconstruction. Others aren’t necessary.
+45. Why keep **ADRs next to code**?  
+* A) Decisions co-evolve with implementation; change context is preserved  
+* B) Emojis render better  
+* C) Shorter URLs  
+* D) Save repo space  
+* **Answer: A.** Co-location aids discovery and maintenance. Others trivial.
 
-46. The most persuasive **postmortem evidence** pair is:
-    A) Emojis and screenshots
-    B) PHRs with exact prompts plus before/after eval artifacts
-    C) Lines of code changed
-    D) PR comment counts
-    **Answer: B.** Shows intent, change, and effect. Others are weak proxies.
+46. In GPS, **model substitution** should be accompanied by:  
+* A) Skipping tests for speed  
+* B) Re-running suites with equivalence thresholds and rollback rules  
+* C) Only lint  
+* D) Logo updates  
+* **Answer: B.** Behavior parity must be verified. Others unsafe.
 
-47. A **reproducible EDD** setup requires:
-    A) Informal notes
-    B) Fixed datasets, versioned configs, seeds, and captured execution environment
-    C) Randomized everything
-    D) Cloud only
-    **Answer: B.** Reproducibility depends on controlled inputs and envs. Others lack control.
+47. The **dual-environment** recommendation rests on:  
+* A) Different cognitive modes (agentic vs interactive) improve productivity  
+* B) Avoiding Git  
+* C) One tool is always superior  
+* D) Identical UI skins  
+* **Answer: A.** Each environment is best at different tasks. Others false.
 
-48. **Cross-functional reviews** are valuable because they:
-    A) Slow teams by design
-    B) Surface non-functional risks (security, privacy, reliability) within the same governance loop
-    C) Replace tests with opinions
-    D) Obviate specs
-    **Answer: B.** They complement engineering checks. **A/C/D** are misconceptions.
+48. The **PR** is the place to:  
+* A) Merge on yellow  
+* B) Paste raw model dumps only  
+* C) Attach links to Spec, PHR IDs, ADR IDs, and CI/EDD artifacts  
+* D) Skip description  
+* **Answer: C.** PR centralizes traceability. Others degrade governance.
 
-49. The conceptual value of **contract tests** in LLM apps is to:
-    A) Guarantee perfect reasoning
-    B) Keep interfaces stable as models/tools change under the hood
-    C) Save GPU time
-    D) Modify UI speed
-    **Answer: B.** Contracts decouple internals from clients. **A/C/D** irrelevant.
+49. **Retry logic** should be used when:  
+* A) The editor lags  
+* B) Guardrails/schema fail and a correction hint is provided  
+* C) You want more tokens  
+* D) Tests are red for any reason  
+* **Answer: B.** Retries help recover from structured failures. **A/D/C** misuse.
 
-50. **KPIs** aligned with GPS include:
-    A) Theme colors
-    B) Lead time, change-failure rate, MTTR, coverage, ADR density
-    C) Lines per file
-    D) Number of branches
-    **Answer: B.** These are reliability/flow metrics. Others are weak proxies.
+50. A **good scope discipline** failure looks like:  
+* A) Exact fields per spec  
+* B) Extra keys and formats not requested  
+* C) Matching schema precisely  
+* D) Validated structure  
+* **Answer: B.** Extra fields violate the contract. **A/C/D** are compliant.
 
-51. A principled **risk triage** during review prioritizes:
-    A) Commit message poetry
-    B) Change surface × component criticality with rollback plan noted
-    C) Alphabetical import order
-    D) PR emoji density
-    **Answer: B.** Focus on impact and reversibility. Others are stylistic.
+51. A **post-mortem** with strongest evidence uses:  
+* A) PHRs (exact prompts) and before/after eval artifacts  
+* B) Emojis + screenshots  
+* C) Lines of code changed  
+* D) README diffs  
+* **Answer: A.** These directly show cause & effect. Others are weak.
 
-52. The main **epistemic benefit** of ADRs is:
-    A) Better syntax highlighting
-    B) Decision provenance enabling counterfactual reasoning when incidents occur
-    C) Fewer PRs
-    D) Smaller images
-    **Answer: B.** ADRs enable “what if” analyses later. Others are unrelated.
+52. **Monotonic streaming** means:  
+* A) Binary frames only  
+* B) Append-only token emission with stable framing so clients reconstruct progressively  
+* C) Fixed chunk sizes  
+* D) Only decreasing latency  
+* **Answer: B.** That’s the property clients rely on. Others off.
 
-53. **Cursor** vs **Codex** at the conceptual level:
-    A) Cursor only for Python, Codex only for JS
-    B) Cursor optimizes interactive, inline edits; Codex optimizes agentic, repo-scale tasks and PR prep
-    C) Cursor replaces CI; Codex replaces tests
-    D) They are interchangeable
-    **Answer: B.** Different strengths for different modes. **A/C/D** false.
+53. A mature **policy-as-code** setup:  
+* A) Enforces lint/tests/evals/secret scanning as CI merge gates  
+* B) Trusts memory  
+* C) Uses manual checklists only  
+* D) Posts guidelines in slides  
+* **Answer: A.** Automation makes governance reliable. Others stale.
 
-54. A **thin spec** should include which trio?
-    A) UI color palette, font sizes, logos
-    B) I/O contracts, constraints/limits, acceptance checks
-    C) IDE preferences, keybindings, theme
-    D) Build flags, compiler switches, linters
-    **Answer: B.** Those are enforceable contracts. Others are environment details.
+54. A **learning KPI** that indicates slice health:  
+* A) Frequent small PRs with high pass rate and low rework  
+* B) LOC growth  
+* C) Number of files touched  
+* D) Comment length  
+* **Answer: A.** That correlates with healthy, testable slices. Others are poor proxies.
 
-55. **Evaluation overfitting** looks like:
-    A) High scores on narrow fixtures without generalization in the field
-    B) Stable performance across suites
-    C) Slower CI times
-    D) More tests than before
-    **Answer: A.** Overfitting to fixtures harms real-world behavior. Others don’t define it.
+55. The **Explainer prompt** should:  
+* A) Increase temperature  
+* B) Just restate code  
+* C) Change public API  
+* D) Summarize intent, diffs, risks, next steps in ≤8 bullets  
+* **Answer: D.** It clarifies impact and risk. Others misapply.
 
-56. A mature **policy-as-code** system:
-    A) Provides optional guidelines
-    B) Enforces lint/tests/evals/secret scanning as hard gates in CI
-    C) Uses manual checklist screenshots
-    D) Depends on memory
-    **Answer: B.** Automation ensures consistency. **A/C/D** are brittle.
+56. **Guardrails** add value by:  
+* A) Replacing tests  
+* B) Restricting output to shape/length/policy, enabling retries on violation  
+* C) Increasing GPU usage  
+* D) Removing evals  
+* **Answer: B.** They constrain outputs and enable recovery. Others false.
 
-57. **Guardrail violations** should trigger:
-    A) Silent ignoring
-    B) A bounded retry with corrective hints or a graceful error per contract
-    C) Model swap without tests
-    D) Rerun CI only
-    **Answer: B.** Controlled recovery or explicit error is safe. Others are unsafe.
+57. **Contract stability** across models is verified by:  
+* A) Reading docs  
+* B) Running the same contract tests & error envelopes after substitution  
+* C) Asking a teammate  
+* D) Skipping CI for speed  
+* **Answer: B.** Execute contracts to prove stability. Others are anecdotal.
 
-58. The conceptual benefit of **small PRs** is:
-    A) Aesthetics
-    B) Clearer scope, faster review, easier attribution of effects
-    C) More merges for vanity
-    D) Fewer tests written
-    **Answer: B.** Small deltas increase quality and speed. Others are noise.
+58. A **risk triage** lens for review prioritizes:  
+* A) Change surface × component criticality, with rollback noted  
+* B) Removing CI steps  
+* C) UI polish first  
+* D) Commit message puns  
+* **Answer: A.** Focus on impact and reversibility. Others distract.
 
-59. **Model choice** should be governed by:
-    A) Blog popularity alone
-    B) Spec-linked eval deltas under cost/latency/stability constraints
-    C) Long prompts by personal taste
-    D) Default IDE settings
-    **Answer: B.** Choose based on measured behavior vs constraints. Others are subjective.
+59. The **governed definition** of GPS Engineering is:  
+* A) A Dockerfile recipe  
+* B) Governed Prompt Software Engineering unifying specs, prompts, tests, evals, decisions, PR gates  
+* C) Prompting technique only  
+* D) A single IDE feature  
+* **Answer: B.** It’s a method combining these artifacts and gates. Others narrow it.
 
-60. The shift from **PDD → GPS** is fundamentally:
-    A) From prompts to hand coding
-    B) From speed alone to auditable velocity with formal contracts and evaluation
-    C) From tests to diagrams
-    D) From specs to intuition
-    **Answer: B.** GPS keeps PDD speed but adds governance and traceability. **A/C/D** regress.
+60. The shift from **PDD → GPS** is best described as:  
+* A) From prompts to pure coding  
+* B) From speed alone to auditable velocity with formal contracts & evaluation  
+* C) From specs to vibes  
+* D) From tests to drawings  
+* **Answer: B.** GPS adds governance and traceability to PDD speed. Others are regressions.
 
 ---
-
