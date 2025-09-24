@@ -57,7 +57,30 @@ Here’s an apples-to-apples snapshot of **SWE-bench Verified** results for the 
 * **Cursor Pro** – Big productivity win (indexing, apply-diffs, background agents). Quality maps to the model you choose (GPT-5 Codex, Gemini, Claude, etc.). Pricing is transparent and reasonable for daily use.
 
 ---
-## Pricing
+## Free-Tier Ranking
+
+Here’s a **free-tier ranking** (most to least generous), across the five you’re tracking:
+
+|  Rank | Tool / Model                    | What you get for free                                                                                                                                                       | Source              |
+| ----: | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| **1** | **Qwen Code (open-weights)**    | Run locally = **no API fees** (you only pay your own compute). If you use Alibaba’s hosted API, **new users get free token quotas** (e.g., 1M tokens on select Qwen tiers). 2,000 requests/day at no charge for Code| ([AlibabaCloud][1]) |
+| **2** | **Gemini CLI (Gemini 2.5 Pro)** | Official blog: **up to 60 requests/min and 1,000 requests/day at no charge** for CLI usage.                                                                                 | ([blog.google][2])  |
+| **3** | **Claude Code**                 | **Claude Free** tier includes coding features, but with **daily usage limits** (no precise numbers published; resets daily).                                                |   |
+| **4** | **Cursor (Hobby)**              | **Free IDE plan** with **limited Agent requests** and **limited tab completions**.                                                                                          | (      |
+| **5** | **GPT-5 Codex**                 | **No meaningful free tier**: access is via **ChatGPT paid plans** or **paid API**; free ChatGPT doesn’t include GPT-5/Codex.                                                |       |
+
+**Notes**
+
+* If you can run models locally, **Qwen open-weights** is the most “free” (no per-token bill). Hosted Qwen still starts with a **promotional free quota** for new Alibaba Cloud accounts.
+* **Gemini CLI**’s free allowance is the most concrete/quantified among hosted options (1,000 req/day).
+* **Claude Free** clearly exists, but Anthropic doesn’t publish strict daily numbers; multiple roundups confirm the tier and that heavy users hit caps.
+* **Cursor** is an IDE: its Hobby plan is free, but actual **LLM usage limits are tight** until you subscribe—and model tokens are billed by the provider when you connect paid APIs.
+
+
+
+
+---
+## Pricing Ranking
 
 Here’s a **price-ranked** comparison (cheapest → most expensive) using current list prices for coding-capable models. We’ve split **API token pricing** (per 1M tokens) from **subscription seats** like Cursor.
 
@@ -65,20 +88,20 @@ Here’s a **price-ranked** comparison (cheapest → most expensive) using curre
 
 |    Rank | Model / Tool                          |       Input |      Output | Notes                                                                |
 | ------: | ------------------------------------- | ----------: | ----------: | -------------------------------------------------------------------- |
-|       1 | **Qwen3-Coder-Flash** (Alibaba Cloud) | **\$0.144** | **\$0.574** | Tiered by prompt size (0–32k bucket shown). ([AlibabaCloud][1])      |
-|       2 | **Qwen3-Coder-Plus** (Alibaba Cloud)  |  **\$1.00** |  **\$5.00** | Also tiered by prompt size (0–32k bucket). ([AlibabaCloud][1])       |
-| 3 (tie) | **OpenAI GPT-5 / GPT-5-Codex**        |  **\$1.25** | **\$10.00** | OpenAI states Codex is **same price as GPT-5**. ([OpenAI][2])        |
-| 3 (tie) | **Google Gemini 2.5 Pro**             |  **\$1.25** | **\$10.00** | Higher tier for >200k-token prompts. ([Google AI for Developers][3]) |
-|       5 | **Anthropic Claude Sonnet 4**         |  **\$3.00** | **\$15.00** | Standard (short-context) rates. ([Anthropic][4])                     |
-|       6 | **Anthropic Claude Opus 4.1**         | **\$15.00** | **\$75.00** | Flagship Claude tier. ([Anthropic][5])                               |
+|       1 | **Qwen3-Coder-Flash** (Alibaba Cloud) | **\$0.144** | **\$0.574** | Tiered by prompt size (0–32k bucket shown).      |
+|       2 | **Qwen3-Coder-Plus** (Alibaba Cloud)  |  **\$1.00** |  **\$5.00** | Also tiered by prompt size (0–32k bucket).       |
+| 3 (tie) | **OpenAI GPT-5 / GPT-5-Codex**        |  **\$1.25** | **\$10.00** | OpenAI states Codex is **same price as GPT-5**.         |
+| 3 (tie) | **Google Gemini 2.5 Pro**             |  **\$1.25** | **\$10.00** | Higher tier for >200k-token prompts.  |
+|       5 | **Anthropic Claude Sonnet 4**         |  **\$3.00** | **\$15.00** | Standard (short-context) rates.                      |
+|       6 | **Anthropic Claude Opus 4.1**         | **\$15.00** | **\$75.00** | Flagship Claude tier.                              |
 
-> **Note:** Qwen open-weights can be run **locally** (no API fee; you still pay infra). The Alibaba Cloud prices above apply when you use their hosted API. ([AlibabaCloud][1])
+> **Note:** Qwen open-weights can be run **locally** (no API fee; you still pay infra). The Alibaba Cloud prices above apply when you use their hosted API. 
 
 ### Subscription / seat pricing (not per token)
 
 | Product              |                                                                     Price | What it covers                                                                      |
 | -------------------- | ------------------------------------------------------------------------: | ----------------------------------------------------------------------------------- |
-| **Cursor Pro (IDE)** | **\$20 / user / month** (individual). Teams from **\$40 / user / month**. | Editor features; LLM usage billed at provider’s API rates you choose. ([Cursor][6]) |
+| **Cursor Pro (IDE)** | **\$20 / user / month** (individual). Teams from **\$40 / user / month**. | Editor features; LLM usage billed at provider’s API rates you choose. |
 
 
 
