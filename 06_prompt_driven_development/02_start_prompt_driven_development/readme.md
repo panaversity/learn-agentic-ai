@@ -40,10 +40,10 @@ Here’s an apples-to-apples snapshot of **SWE-bench Verified** results for the 
 
 | Model / Tool                       | SWE-bench Verified score | Notes (harness / caveats)                                                                                                                                                                                     |
 | ---------------------------------- | -----------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Anthropic – Claude Opus 4.1**    |                **74.5%** | Anthropic’s own announcement for Opus 4.1; update over Opus 4.0’s 72.5%. ([Anthropic][1])                                                                                                                     |
-| **OpenAI – GPT-5 Codex**           |           **74.5–74.9%** | 74.9% stated in GPT-5 launch (initially on 477/500 tasks); follow-up post clarifies reporting; tech press widely quotes **74.5%** for Codex variant. Treat as \~74.5–74.9 depending on harness. ([OpenAI][2]) |
-| **Google – Gemini 2.5 Pro**        |                **63.8%** | Google/DeepMind blog cites **63.8%** using a **custom agent**; product page also shows **31.6% (single attempt)** / **42.6% (multi-attempt)** without the custom agent. ([blog.google][3])                    |
-| **Qwen – Qwen3-Coder / Qwen3-Max** |               **≈69.6%** | Reported in multiple roundups for **500-turn** runs; Qwen’s blog claims SOTA among open-source but doesn’t pin a single number. Use \~69.6% as the current ballpark. ([X (formerly Twitter)][4])              |
+| **Anthropic – Claude Opus 4.1**    |                **74.5%** | Anthropic’s own announcement for Opus 4.1; update over Opus 4.0’s 72.5%.                                                                                                                      |
+| **OpenAI – GPT-5 Codex**           |           **74.5–74.9%** | 74.9% stated in GPT-5 launch (initially on 477/500 tasks); follow-up post clarifies reporting; tech press widely quotes **74.5%** for Codex variant. Treat as \~74.5–74.9 depending on harness.  |
+| **Google – Gemini 2.5 Pro**        |                **63.8%** | Google/DeepMind blog cites **63.8%** using a **custom agent**; product page also shows **31.6% (single attempt)** / **42.6% (multi-attempt)** without the custom agent.                    |
+| **Qwen – Qwen3Max-Coder / Qwen3-Max** |               **≈69.6%** | Reported in multiple roundups for **500-turn** runs; Qwen’s blog claims SOTA among open-source but doesn’t pin a single number. Use \~69.6% as the current ballpark.              |
 | **Cursor Pro (IDE)**               |                        — | Not a model—no SWE-bench score; performance depends on which model/agent you run inside Cursor.                                                                                                               |
 
                                                           
@@ -53,7 +53,7 @@ Here’s an apples-to-apples snapshot of **SWE-bench Verified** results for the 
 
 * **Gemini CLI (2.5 Pro)** – Very capable agentic runs with generous free limits; excels in terminal-centric workflows, huge context, and easy pairing with Google’s Code Assist/MCP. **SWE-bench Verified** \~**63.8%** 
 
-* **Qwen Code (Qwen2.5-Coder)** – Excellent free/open models for local/offline and repo-friendly code gen & repair; top open-source results on classic code benchmarks; for agentic repo-wide tasks you’ll likely pair it with a framework and careful tooling.
+* **Qwen Code (Qwen3Max-Coder)** – Excellent free/open models for local/offline and repo-friendly code gen & repair; top open-source results on classic code benchmarks; for agentic repo-wide tasks you’ll likely pair it with a framework and careful tooling.
 * **Cursor Pro** – Big productivity win (indexing, apply-diffs, background agents). Quality maps to the model you choose (GPT-5 Codex, Gemini, Claude, etc.). Pricing is transparent and reasonable for daily use.
 
 ---
