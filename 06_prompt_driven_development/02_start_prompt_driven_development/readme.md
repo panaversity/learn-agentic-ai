@@ -36,10 +36,16 @@ Below is a comparison of the four PDD tool options, tailored to different budget
 
 In short: SWE-bench Verified is the most commonly cited, cleaner benchmark for end-to-end, agentic code fixing on real repositories, scored by passing the project’s tests after your patch.
 
-* **Qwen Code** (Qwen3-Coder): **69.6%** on SWE-bench Verified in a 500-turn setting (repo tools + OpenHands harness). Some summaries also list **\~67%** under “standard” settings; scores vary with the agent/harness.
-* **Gemini CLI** (uses **Gemini 2.5 Pro**): **63.8%** on SWE-bench Verified with Google’s custom agent setup.
-* **Cursor Pro**: **N/A** — Cursor is an IDE; SWE-bench is reported for models/agents, not editors. Its performance depends on the model you run inside. (No official SWE-bench score for Cursor itself.)
-* **GPT-5 Codex**: **\~74.9%** on SWE-bench Verified per OpenAI’s GPT-5 launch page; tech trade coverage reports **\~74.5%** for the Codex variant.
+Here’s an apples-to-apples snapshot of **SWE-bench Verified** results for the four we care about. We list the **most recent, citable scores**, and call out when the number depends on the evaluation harness (single/multi-attempt, custom agent, or 500-turn runs).
+
+| Model / Tool                       | SWE-bench Verified score | Notes (harness / caveats)                                                                                                                                                                                     |
+| ---------------------------------- | -----------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Anthropic – Claude Opus 4.1**    |                **74.5%** | Anthropic’s own announcement for Opus 4.1; update over Opus 4.0’s 72.5%. ([Anthropic][1])                                                                                                                     |
+| **OpenAI – GPT-5 Codex**           |           **74.5–74.9%** | 74.9% stated in GPT-5 launch (initially on 477/500 tasks); follow-up post clarifies reporting; tech press widely quotes **74.5%** for Codex variant. Treat as \~74.5–74.9 depending on harness. ([OpenAI][2]) |
+| **Google – Gemini 2.5 Pro**        |                **63.8%** | Google/DeepMind blog cites **63.8%** using a **custom agent**; product page also shows **31.6% (single attempt)** / **42.6% (multi-attempt)** without the custom agent. ([blog.google][3])                    |
+| **Qwen – Qwen3-Coder / Qwen3-Max** |               **≈69.6%** | Reported in multiple roundups for **500-turn** runs; Qwen’s blog claims SOTA among open-source but doesn’t pin a single number. Use \~69.6% as the current ballpark. ([X (formerly Twitter)][4])              |
+| **Cursor Pro (IDE)**               |                        — | Not a model—no SWE-bench score; performance depends on which model/agent you run inside Cursor.                                                                                                               |
+
                                                           
 ## Practical performance (what you’ll feel day-to-day)
 
