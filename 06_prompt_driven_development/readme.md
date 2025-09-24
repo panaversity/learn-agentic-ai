@@ -1,8 +1,94 @@
 # Executive Summary — Summer 2025: The AI-First Turning Point (and How to Harness It)
 
+References:
+
 **[Watch: According to Anthropic's CEO, Claude is already writing 90% of the code](https://www.facebook.com/share/v/1GiTbVdxfs/)**
 
+**[Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)**
 
+Here is a concise, summary of the article:
+
+* **AI adoption is mainstream.** Google Cloud’s DORA study reports that approximately **90% of software professionals now use AI**, an increase of **14 percentage points** year over year, with a **median of about two hours per day** spent using AI in core workflows. *(Business Insider)*
+
+* **Engineering roles are evolving.** According to Google’s Ryan J. Salva, engineers will devote **less time to typing code** and **more to product architecture, problem framing, and delivery**, while adjacent roles (e.g., product managers) will increasingly build prototypes and move closer to deployment. *(Business Insider)*
+
+* **Technical fluency remains essential.** Despite AI assistance, **knowledge of programming syntax has grown in perceived importance**. Google’s Nathen Harvey cautions that engineers who cannot read the underlying language will be **“entirely unsuccessful.”** *(Business Insider)*
+
+* **Trust varies across teams.** Roughly **30% of respondents** trust AI **“a little” or “not at all,”** indicating continued reliance on human review and oversight. *(Business Insider)*
+
+* **Internal productivity claims.** CEO Sundar Pichai cites an approximate **10% increase in engineering velocity** attributable to AI and indicates plans to **hire additional engineers** in the coming year. *(Business Insider)*
+
+* **Publication details.** Business Insider; **September 23, 2025**. The article draws on **Google Cloud’s DORA research** and interviews with Google leaders. *(Business Insider)*
+
+
+**[2025 DORA State of AI-assisted Software Development Report](https://cloud.google.com/resources/content/2025-dora-ai-assisted-software-development-report?hl=en)**
+
+Note: The report is also available in the dora_report directory.
+
+Here’s a crisp summary of **DORA – State of AI-assisted Software Development (2025)**:
+
+* **Core thesis:** AI is an *amplifier*—it magnifies the strengths of high-performing orgs and the friction of struggling ones. Value comes less from tools and more from the surrounding system (platform quality, clear workflows, team alignment).
+
+* **Method & scope:** Based on **\~5,000 survey responses** (global) plus **100+ hours of interviews**; fielded **June 13–July 21, 2025**.
+
+* **Adoption & usage:** **\~95%** report using AI; **>80%** say it boosts productivity, yet **\~30%** have little/no trust in AI-generated code—“trust but verify” remains the norm. Median **2 hours/day** hands-on with AI; median experience **\~16 months**.
+
+* **Delivery outcomes:** Compared with last year, **throughput now improves with AI**, but **instability still increases**—teams are getting faster, but safety nets/controls lag.
+
+* **Seven team profiles:** The report clusters teams from **“Foundational challenges”** to **“Harmonious high-achievers.”** Top performers disprove a speed-vs-stability trade-off by excelling at both; others either suffer both or achieve impact with poor cadence/stability.
+
+* **DORA AI Capabilities Model (7 foundations):**
+
+  1. Clear, communicated AI stance; 
+  2. Healthy data ecosystem; 
+  3. AI-accessible internal data; 
+  4. Strong version control; 
+  5. Working in small batches; 
+  6. User-centric focus; 
+  7. Quality internal platform. 
+  
+  These *amplify* AI’s benefits when present. 
+
+* **Platforms & VSM as multipliers:** **\~90%** report platform engineering; high-quality internal platforms correlate with better ability to unlock AI value. **Value Stream Management (VSM)** further *amplifies* AI’s impact by turning local gains into org-level outcomes. 
+
+* **Practical stance:** Don’t rush AI adoption blindly. Treat it as an **organizational transformation**—invest in platform quality, data, and user-centric practices; train teams to guide and validate AI outputs.
+
+Here’s a beginner-friendly take on the **DORA – State of AI-Assisted Software Development (2025)**—plain English, no buzzword bingo:
+
+* **What this report is about:** It looks at how software teams use AI at work and what actually improves results. Think of it as “what’s real vs. hype” for coding with AI. (Magic wands not included 🪄)
+
+* **Who they asked:** Thousands of people across many companies, plus lots of interviews. So it’s not just one team’s story. (More than a couple of coffee chats ☕)
+
+* **Big picture:** AI acts like an **amplifier**. If your team’s processes are good, AI makes them better. If your processes are messy, AI can make the mess faster. (Louder is not the same as better 🔊)
+
+* **How much people use AI:** Almost everyone uses it now, usually **about 2 hours a day**. Most say it helps productivity—but many still **double-check** AI’s work. (Trust, but verify… like checking the oven twice 🍪)
+
+* **Impact on delivery:** Teams are getting **faster**, but if they don’t improve testing and safeguards, they can get **less stable** (more bugs, more rollbacks). (Speed without seatbelts is… exciting, but risky 🚗)
+
+* **What high-performing teams do well:**
+
+  1. **Clear AI policy** (what to use it for, and what not).
+  2. **Good data** (clean, accessible, and safe).
+  3. **Easy access to internal knowledge** (docs, code, designs).
+  4. **Version control discipline** (Git done right).
+  5. **Small, frequent changes** (tiny steps beat giant leaps).
+  6. **User focus** (build what people need, not just what’s cool).
+  7. **Solid internal platforms** (tools and pipelines that “just work”).
+     (It’s like a kitchen: sharp knives, clean counters, clear recipes 🍽️)
+
+* **Why platforms matter:** When your internal tools and pipelines are smooth, AI’s benefits **stack up** across the whole org—not just one coder’s laptop. (Team sport, not solo speedrun 🏟️)
+
+* **What to do next (simple plan):**
+
+  * Start with **small, safe tasks** for AI (drafts, tests, refactoring).
+  * Keep **humans in the loop** for review.
+  * Invest in **tests, CI/CD, and monitoring** so speed doesn’t break things.
+  * Improve **docs and data hygiene** so AI has good info to work with.
+  * Teach teams **how to prompt and verify** AI results.
+    (Measure twice, cut once—then let AI sand the edges 🪚)
+
+
+---
 
 Summer 2025 is a structural break in software development. Frontier LLMs (e.g., GPT-5 class systems, Claude 4.1x, Gemini 2.5+), AI-first IDEs (Cursor), and production-grade development agents (GPT-5-Codex)have transformed coding from “manual by default” to **AI-assisted by default**. Adoption is mainstream; capability milestones are public; enterprises are reorganizing around agents. The new risk isn’t *whether* to use AI—it’s *how*. Teams that “vibe code” (loose, ad-hoc prompting) ship fast but brittle. Teams that apply **Prompt-Driven Development (PDD)**—small, spec-guided prompt increments—paired with **Test-Driven Development (TDD)**, **ADRs (Architecture Decision Records)**, and **PR (Pull Request) gates** ship fast **and** durable. In short: keep the creative spark, **but with a suit on**.
 
