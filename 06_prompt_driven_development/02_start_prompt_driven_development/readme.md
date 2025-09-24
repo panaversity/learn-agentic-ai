@@ -1,7 +1,17 @@
-# Setting Up AI-Enhanced Development Environments: Dual Setup PDD - VS Code + GPT-5 Codex and Standalone Cursor for Python Projects
+# Setting Up AI-Enhanced Development Environments
 
-### Overview
-Cursor is an AI-first integrated development environment (IDE) forked from Visual Studio Code (VS Code), designed to embed AI assistance directly into the coding workflow. It leverages large language models (LLMs) like Claude Opus 4.1 for features such as autocomplete, inline editing, and codebase chatting. On the other hand, ChatGPT 5 Codex (often referred to as GPT-5-Codex) is a specialized version of OpenAI's GPT-5 model, optimized for agentic coding. It functions as a cloud-based software engineering agent accessible through ChatGPT, capable of handling parallel tasks like code generation, refactoring, and automation across codebases.
+This guide uses a budget-based toolkit while keeping the same Prompt‑Driven Development (PDD) method. 
+1. At the free tier, you can start with two terminal tools: **Qwen Code (CLI)**—a coding agent with strong codebase exploration, git automation, and optional vision support; and **Gemini CLI**—a terminal‑native assistant with a larger context window that’s great for long prompts and scripts. 
+2. For a professional editor experience, **Cursor Pro** provides an AI‑native IDE with Agent Mode, parallel agents, multi‑file awareness, and fast tab completion. 
+3. For advanced automation and repo‑wide work, **GPT‑5 Codex** operates as a cloud agent that can run parallel tasks, propose PRs with tests/docs, and coordinate larger changes. Choose the tool that fits your budget and workflow; the disciplined loop remains the same: Spec → Plan → Prompt → Test/Evaluate → Refactor → Record → Review.
+
+![Budget-based picks](./image.png)
+
+> Choose tools by budget; the PDD method stays the same.
+> - Free ($0/mo): Qwen Code CLI + Gemini CLI — generous quotas, CLI-first.
+> - Pro ($20/mo): Cursor Pro — AI‑native IDE with Agent Mode, parallel agents, fast tab completion.
+> - Premium ($40+/mo): GPT‑5 Codex + Cursor Pro — autonomous, parallel, repo‑wide work and PRs with tests.
+> Start free, then upgrade as your needs grow.
 
 Below, I'll compare and contrast them based on key aspects, drawing from their features, use cases, strengths, and limitations.
 
@@ -13,18 +23,18 @@ Below, I'll compare and contrast them based on key aspects, drawing from their f
 - **Availability and Ecosystem**: Both are accessible to developers—Cursor as a downloadable IDE, and GPT-5-Codex through ChatGPT subscriptions or integrations like VS Code extensions. They compete in the AI coding space alongside tools like GitHub Copilot.
 
 ### Differences
-Cursor and GPT-5-Codex differ fundamentally in their approach: Cursor is an interactive, editor-centric tool for real-time collaboration with AI, while GPT-5-Codex emphasizes autonomous, cloud-based agentic execution. Here's a detailed breakdown:
+Cursor and GPT-5-Codex/Other Coding CLIs differ fundamentally in their approach: Cursor is an interactive, editor-centric tool for real-time collaboration with AI, while GPT-5-Codex emphasizes autonomous, cloud-based agentic execution. Here's a detailed breakdown expanded to include Qwen Code and Gemini CLI as free-tier options:
 
-| Aspect              | Cursor (AI-First IDE)                                                                 | ChatGPT 5 Codex (GPT-5-Codex)                                                         |
-|---------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| **Core Design**    | Forked from VS Code with built-in AI; acts as a full IDE with seamless UI integration for features like autocomplete and inline edits. | Cloud-based agent optimized for agentic coding; runs tasks in parallel via ChatGPT or CLI, focusing on automation rather than editing. |
-| **User Interaction**| Highly interactive and local; AI suggestions appear in-editor, with real-time previews and chatting directly with code files or projects. | More autonomous and conversational; users describe tasks in natural language via ChatGPT, and it executes them agentically, often without constant oversight. |
-| **Strengths**      | Excels in speed and seamlessness for daily coding; better for small edits, debugging, and learning curves in familiar VS Code-like environments. Users praise its minimalist design and multi-model support. | Superior for complex, parallel tasks like full app development or codebase-wide changes; handles context better in agentic scenarios and is seen as a "coding partner" for production work. |
-| **Limitations**    | Requires manual review of AI outputs, especially for refactoring; can have a learning curve and may not handle massive-scale automation as efficiently. | Slower for simple tasks compared to in-editor tools; cloud dependency can lead to latency, and it's less suited for interactive, real-time editing without extensions. |
-| **Integration & Extensibility** | Natively supports VS Code extensions; can integrate with external LLMs. Recent updates allow compatibility with tools like Codex extensions. | Available as a ChatGPT feature, CLI, or IDE extension; excels in cloud automation but relies on OpenAI's ecosystem, limiting model flexibility. |
-| **Use Cases**      | Ideal for individual developers or teams needing an enhanced IDE for daily coding, prototyping, and quick iterations. | Best for agentic workflows like automating large-scale code changes, building apps from scratch, or handling tasks across repositories in a hands-off manner. |
-| **Pricing & Access**| Free tier available with paid plans for advanced features; runs locally after download. | Tied to ChatGPT subscriptions (e.g., Plus or Enterprise); cloud-based, with potential costs for heavy usage. |
-| **Performance Feedback** | Often faster and more reliable for in-editor tasks; users note it's a "game-changer" for seamless integration but can vary by project size. | Excels in tenacity for complex problems but can be slower overall; praised for agentic capabilities but criticized for not matching interactive tools in speed. |
+| Aspect              | Qwen Code (CLI) | Gemini CLI | Cursor (AI-First IDE) | ChatGPT 5 Codex (GPT-5-Codex) |
+|---------------------|-----------------|------------|------------------------|-------------------------------|
+| **Core Design**     | Terminal-based coding agent with strong repo analysis; supports vision switching for multimodal prompts. | Terminal-native assistant with larger context windows for long prompts and scripts. | Forked from VS Code with built-in AI; full IDE with seamless UI integration for autocomplete and inline edits. | Cloud agent optimized for agentic coding; runs tasks in parallel via ChatGPT or CLI, focusing on automation rather than editing. |
+| **User Interaction**| CLI prompts; quick tasks, codebase queries, git utilities; runs locally with OAuth/API. | CLI prompts; straightforward auth via Google; great for scripting and long, single-flow sessions. | Highly interactive and local; inline suggestions, previews, and chat directly with files/projects. | More autonomous and conversational; describe tasks in ChatGPT, Codex executes agentically with less supervision. |
+| **Strengths**       | 2K req/day free, codebase exploration, vision support, git automation. | Larger context, fast setup, educational workflows, stable CLI UX. | Speed for daily coding, multi-file edits, Agent Mode and parallel agents, exclusive tab completion. | Complex, parallel, repo-wide changes; PRs with tests/docs; strong in automation and scale. |
+| **Limitations**     | CLI-only UX; complex edits need editor integration; quotas apply. | CLI-only; fewer repo-wide automation features than Codex/Cursor. | Review needed for refactors; fewer autonomous long-running tasks than Codex. | Slower for simple edits; cloud latency; less interactive in-editor without extensions. |
+| **Integration & Extensibility** | OpenAI-compatible APIs; works with OpenRouter/Alibaba endpoints; easy env-var config. | Simple Google auth; good for shell-based workflows and teaching. | Native VS Code extensions; integrates multiple LLMs; works well with Git and Docker. | Available in ChatGPT, CLI, and IDE extension; integrates with GitHub for PRs; cloud sandbox. |
+| **Use Cases**       | Learning, architecture review, repo audits, quick refactors via CLI. | Long prompts, scripting, homework, terminal workflows. | Individual devs/teams for daily coding, prototyping, and quick iterations. | Automating large-scale changes, building from scratch, cross-repo tasks hands-off. |
+| **Pricing & Access**| Free tier ($0/mo). | Free tier ($0/mo). | Pro plan (~$20/mo) with free tier. | Plus/Enterprise or API usage ($40+/mo typical). |
+| **Performance Feedback** | Strong for codebase understanding and utilities; good reliability for CLI sessions. | Reliable for long-context prompts; great onboarding speed. | Often faster and more reliable for in-editor tasks; praised for seamless integration. | Tenacious on complex problems; excels at agentic capabilities but slower for interactive edits. |
 
 ### Conclusion
 Cursor shines as an intuitive, AI-enhanced IDE for developers who want AI woven into their existing editor experience, making it great for interactive and iterative work. In contrast, GPT-5-Codex is more of an autonomous coding agent, better suited for high-level task delegation and large-scale automation through ChatGPT. If you're embedded in a VS Code workflow, Cursor might feel more natural; for cloud-powered, hands-off coding, GPT-5-Codex could be the edge. Ultimately, many developers use them complementarily—Cursor for editing and GPT-5-Codex for broader agentic support—depending on the project's needs.
