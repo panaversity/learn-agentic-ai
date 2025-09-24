@@ -34,6 +34,8 @@ Below is a comparison of the four PDD tool options, tailored to different budget
 
 ## Latest SWE-bench Verified
 
+In short: SWE-bench Verified is the most commonly cited, cleaner benchmark for end-to-end, agentic code fixing on real repositories, scored by passing the project’s tests after your patch.
+
 * **Qwen Code** (Qwen3-Coder): **69.6%** on SWE-bench Verified in a 500-turn setting (repo tools + OpenHands harness). Some summaries also list **\~67%** under “standard” settings; scores vary with the agent/harness.
 * **Gemini CLI** (uses **Gemini 2.5 Pro**): **63.8%** on SWE-bench Verified with Google’s custom agent setup.
 * **Cursor Pro**: **N/A** — Cursor is an IDE; SWE-bench is reported for models/agents, not editors. Its performance depends on the model you run inside. (No official SWE-bench score for Cursor itself.)
