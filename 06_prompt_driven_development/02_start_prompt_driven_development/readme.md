@@ -107,7 +107,7 @@ Here’s a **price-ranked** comparison (cheapest → most expensive) using curre
 
 ---
 
-Note for Gemini CLI: 
+## Notes for Gemini CLI
 
 **Gemini CLI does have a VS Code plugin.** It’s the official **“Gemini CLI Companion”** extension that pairs directly with the Gemini CLI:
 
