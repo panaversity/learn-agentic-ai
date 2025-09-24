@@ -57,6 +57,32 @@ Here’s an apples-to-apples snapshot of **SWE-bench Verified** results for the 
 * **Cursor Pro** – Big productivity win (indexing, apply-diffs, background agents). Quality maps to the model you choose (GPT-5 Codex, Gemini, Claude, etc.). Pricing is transparent and reasonable for daily use.
 
 ---
+## Pricing
+
+Here’s a **price-ranked** comparison (cheapest → most expensive) using current list prices for coding-capable models. We’ve split **API token pricing** (per 1M tokens) from **subscription seats** like Cursor.
+
+### API pricing (per 1M tokens)
+
+|    Rank | Model / Tool                          |       Input |      Output | Notes                                                                |
+| ------: | ------------------------------------- | ----------: | ----------: | -------------------------------------------------------------------- |
+|       1 | **Qwen3-Coder-Flash** (Alibaba Cloud) | **\$0.144** | **\$0.574** | Tiered by prompt size (0–32k bucket shown). ([AlibabaCloud][1])      |
+|       2 | **Qwen3-Coder-Plus** (Alibaba Cloud)  |  **\$1.00** |  **\$5.00** | Also tiered by prompt size (0–32k bucket). ([AlibabaCloud][1])       |
+| 3 (tie) | **OpenAI GPT-5 / GPT-5-Codex**        |  **\$1.25** | **\$10.00** | OpenAI states Codex is **same price as GPT-5**. ([OpenAI][2])        |
+| 3 (tie) | **Google Gemini 2.5 Pro**             |  **\$1.25** | **\$10.00** | Higher tier for >200k-token prompts. ([Google AI for Developers][3]) |
+|       5 | **Anthropic Claude Sonnet 4**         |  **\$3.00** | **\$15.00** | Standard (short-context) rates. ([Anthropic][4])                     |
+|       6 | **Anthropic Claude Opus 4.1**         | **\$15.00** | **\$75.00** | Flagship Claude tier. ([Anthropic][5])                               |
+
+> **Note:** Qwen open-weights can be run **locally** (no API fee; you still pay infra). The Alibaba Cloud prices above apply when you use their hosted API. ([AlibabaCloud][1])
+
+### Subscription / seat pricing (not per token)
+
+| Product              |                                                                     Price | What it covers                                                                      |
+| -------------------- | ------------------------------------------------------------------------: | ----------------------------------------------------------------------------------- |
+| **Cursor Pro (IDE)** | **\$20 / user / month** (individual). Teams from **\$40 / user / month**. | Editor features; LLM usage billed at provider’s API rates you choose. ([Cursor][6]) |
+
+
+
+---
 
 Note for Gemini CLI: 
 
