@@ -30,3 +30,36 @@ Below is a comparison of the four PDD tool options, tailored to different budget
 2. **Pro Tier ($20/mo)**: Upgrade to **Cursor Pro** for an AI-native IDE with fast tab completion, Agent Mode, and multi-file editing, perfect for solo developers or small teams.
 3. **Premium Tier ($40+/mo)**: Combine **GPT-5 Codex** with **Cursor Pro** for autonomous, repo-wide automation and PR generation, suited for complex projects or teams needing scalability.
 4. Start with the free tier and upgrade as your workflow evolves, keeping the PDD method consistent.
+
+                                                          
+## Practical performance (what you’ll feel day-to-day)
+
+* **GPT-5 Codex** – shows the best *agentic coding* results on public leaderboards; Best at large, multi-file changes and autonomous bug-fix PRs; strongest *SWE-bench Verified* **74.5%**, showing among public numbers right now. Expect better planning + code review abilities.
+
+* **Gemini CLI (2.5 Pro)** – Very capable agentic runs with generous free limits; excels in terminal-centric workflows, huge context, and easy pairing with Google’s Code Assist/MCP. **SWE-bench Verified** \~**63.8%** 
+
+* **Qwen Code (Qwen2.5-Coder)** – Excellent free/open models for local/offline and repo-friendly code gen & repair; top open-source results on classic code benchmarks; for agentic repo-wide tasks you’ll likely pair it with a framework and careful tooling.
+* **Cursor Pro** – Big productivity win (indexing, apply-diffs, background agents). Quality maps to the model you choose (GPT-5 Codex, Gemini, Claude, etc.). Pricing is transparent and reasonable for daily use.
+
+---
+
+Note for Gemini CLI: 
+
+**Gemini CLI does have a VS Code plugin.** It’s the official **“Gemini CLI Companion”** extension that pairs directly with the Gemini CLI:
+
+https://marketplace.visualstudio.com/items?itemName=Google.gemini-cli-vscode-ide-companion
+
+You can also set it up:
+
+**From VS Code (Marketplace)**
+
+* Open VS Code → Extensions → search **“Gemini CLI Companion”** → Install. 
+
+* The extension is meant to work *with* the CLI (you’ll run prompts in the integrated terminal; the companion adds editor-aware goodies like diffing and context):
+
+https://developers.googleblog.com/en/gemini-cli-vs-code-native-diffing-context-aware-workflows/
+
+* If you’re using **Gemini Code Assist** in VS Code, that’s a separate (but related) extension for completions/transformations—and Cloud Code will even install it for you. It’s not the same as the CLI companion, but many folks use both:
+
+https://marketplace.visualstudio.com/items?itemName=Google.geminicodeassist
+
