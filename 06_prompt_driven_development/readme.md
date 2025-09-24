@@ -6,6 +6,8 @@ Summer 2025 is a structural break in software development. Frontier LLMs (e.g., 
 
 **[Watch: According to Anthropic's CEO, Claude is already writing 90% of the code](https://www.facebook.com/share/v/1GiTbVdxfs/)**
 
+---
+
 **[Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)**
 
 Here is a concise, summary of the article:
@@ -22,6 +24,7 @@ Here is a concise, summary of the article:
 
 * **Publication details.** Business Insider; **September 23, 2025**. The article draws on **Google Cloud’s DORA research** and interviews with Google leaders. *(Business Insider)*
 
+---
 
 **[2025 DORA State of AI-assisted Software Development Report](https://cloud.google.com/resources/content/2025-dora-ai-assisted-software-development-report?hl=en)**
 
@@ -54,6 +57,8 @@ Here’s a crisp summary of **DORA – State of AI-assisted Software Development
 * **Platforms & VSM as multipliers:** **\~90%** report platform engineering; high-quality internal platforms correlate with better ability to unlock AI value. **Value Stream Management (VSM)** further *amplifies* AI’s impact by turning local gains into org-level outcomes. 
 
 * **Practical stance:** Don’t rush AI adoption blindly. Treat it as an **organizational transformation**—invest in platform quality, data, and user-centric practices; train teams to guide and validate AI outputs.
+
+---
 
 Here’s a beginner-friendly take on the **DORA – State of AI-Assisted Software Development (2025)**—plain English, no buzzword bingo:
 
@@ -94,7 +99,7 @@ Here’s a beginner-friendly take on the **DORA – State of AI-Assisted Softwar
 
 
 > ## 🚀 **AI Pair Programming or Prompt-First Agent Development (PFAD) is the New Paradigm**  
-> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [GPT-5-Codex](https://openai.com/index/introducing-upgrades-to-codex/), rather than writing code manually.*
+> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [GPT-5-Codex](https://openai.com/index/introducing-upgrades-to-codex/), rather than writing code manually. Other options are Gemini CLI and Qwen Code.*
 
 You are a **Prompt Architect**.  
 Cursor and GPT-5-Codex is your **AI Compiler**.  
@@ -143,35 +148,6 @@ Adopt PDD across teams, tools, and governance. Automate the repeatable, elevate 
 * **Governance you’ll actually use.** Lightweight **ADRs** to record “why,” a **PR policy** (“no green, no merge”), coverage targets, contract tests, and tracing—turning velocity into maintainability.
 * **Operator’s handbook.** Repo-ready prompt templates (architect, tests-only, minimal-diff, refactor, ADR, PR), uv/Docker patterns, and CI checklists that scale from solo to enterprise.
 
-## Setting Up AI-Enhanced Dev Environments: **Dual Setup PDD**
-
-To make PDD practical day-to-day, we recommend a **dual environment** for Python Agentic projects:
-
-### VS Code + GPT-5 Codex (Agentic, Cloud-First)
-
-* **What it is:** A coding-optimized GPT-5 agent (often called **GPT-5-Codex**) that executes multi-file, parallel tasks via ChatGPT/CLI/extension.
-* **Best at:** Large refactors, cross-repo edits, autonomous chores (tests/docs), PR prep/review.
-* **Trade-offs:** Cloud-latency for small tweaks; interactive “inline” edits depend on extension support.
-
-### Standalone Cursor (AI-First IDE, Editor-Centric)
-
-* **What it is:** A VS Code–derived IDE with native AI **tab completion** and repo-aware chat/composer.
-* **Best at:** Rapid, in-editor iteration, predictive multi-line edits, “flow-state” coding and local refactors.
-* **Trade-offs:** You still review diffs; massive, fully autonomous changes are better delegated to an agent.
-
-#### Similarities (Why both shine)
-
-* Modern LLMs for generation, edits, and debugging; multi-file awareness; codebase chat; measurable time savings when paired with good prompts and tests.
-
-#### Differences (Why you want both)
-
-| Aspect      | Cursor (Editor-centric)                                     | GPT-5-Codex (Agent-centric)                           |
-| ----------- | ----------------------------------------------------------- | ----------------------------------------------------- |
-| Interaction | Inline/tab completion; real-time previews                   | Natural-language tasks; parallel autonomous runs      |
-| Sweet spot  | Quick edits, tight loops, local refactors                   | Repo-wide changes, scaffolding, PRs/tests/docs        |
-| Ecosystem   | Feels like VS Code; supports models from multiple providers | Deep OpenAI integration; strongest in agent workflows |
-
-**Bottom line:** Use **GPT-5-Codex in VS Code** to *initiate projects, run broad refactors, and prepare PRs*, then **Cursor** to *iterate quickly with inline edits and predictive suggestions*. Git-sync lets you hop between them seamlessly—Swiss-army knife + laser scalpel.
 
 ## How We’ll Apply PDD × TDD in the Tutorials
 
@@ -300,13 +276,6 @@ Track:
 * **Trace everything** (PHR + ADR).
 * **Model-agnostic**; tools are pluggable (Codex/Cursor/others).
 
----
-
-## 6) Quality-of-Life Packs (ready to use)
-
-* **Cursor Composer / Codex prompts** for each phase (Architect/Red/Green/Refactor/Explainer/Fix-only).
-* **Nano Banana** copy-paste diagram prompts (system context, sequences, SSE, PR lifecycle, traceability, KPIs, roadmap).
-* Keep them in `docs/prompts/` and `docs/diagrams/` so every repo stays aligned.
 
 ---
 
