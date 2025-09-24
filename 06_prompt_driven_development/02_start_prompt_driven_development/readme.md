@@ -31,6 +31,13 @@ Below is a comparison of the four PDD tool options, tailored to different budget
 3. **Premium Tier ($40+/mo)**: Combine **GPT-5 Codex** with **Cursor Pro** for autonomous, repo-wide automation and PR generation, suited for complex projects or teams needing scalability.
 4. Start with the free tier and upgrade as your workflow evolves, keeping the PDD method consistent.
 
+
+## Latest SWE-bench Verified
+
+* **Qwen Code** (Qwen3-Coder): **69.6%** on SWE-bench Verified in a 500-turn setting (repo tools + OpenHands harness). Some summaries also list **\~67%** under “standard” settings; scores vary with the agent/harness.
+* **Gemini CLI** (uses **Gemini 2.5 Pro**): **63.8%** on SWE-bench Verified with Google’s custom agent setup.
+* **Cursor Pro**: **N/A** — Cursor is an IDE; SWE-bench is reported for models/agents, not editors. Its performance depends on the model you run inside. (No official SWE-bench score for Cursor itself.)
+* **GPT-5 Codex**: **\~74.9%** on SWE-bench Verified per OpenAI’s GPT-5 launch page; tech trade coverage reports **\~74.5%** for the Codex variant.
                                                           
 ## Practical performance (what you’ll feel day-to-day)
 
