@@ -61,12 +61,12 @@ Here’s an apples-to-apples snapshot of **SWE-bench Verified** results for the 
 
 Here’s a **free-tier ranking** (most to least generous), across the five you’re tracking:
 
-|  Rank | Tool / Model                    | What you get for free                                                                                                                                                       | Source              |
+|  Rank | Tool / Model                    | What you get for free                                                                                                                                                       |              |
 | ----: | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| **1** | **Qwen Code (open-weights)**    | Run locally = **no API fees** (you only pay your own compute). If you use Alibaba’s hosted API, **new users get free token quotas** (e.g., 1M tokens on select Qwen tiers). 2,000 requests/day at no charge for Code| ([AlibabaCloud][1]) |
-| **2** | **Gemini CLI (Gemini 2.5 Pro)** | Official blog: **up to 60 requests/min and 1,000 requests/day at no charge** for CLI usage.                                                                                 | ([blog.google][2])  |
+| **1** | **Qwen Code (open-weights)**    | Run locally = **no API fees** (you only pay your own compute). If you use Alibaba’s hosted API, **new users get free token quotas** (e.g., 1M tokens on select Qwen tiers). 2,000 requests/day at no charge for Code|  |
+| **2** | **Gemini CLI (Gemini 2.5 Pro)** | Official blog: **up to 60 requests/min and 1,000 requests/day at no charge** for CLI usage.                                                                                 |   |
 | **3** | **Claude Code**                 | **Claude Free** tier includes coding features, but with **daily usage limits** (no precise numbers published; resets daily).                                                |   |
-| **4** | **Cursor (Hobby)**              | **Free IDE plan** with **limited Agent requests** and **limited tab completions**.                                                                                          | (      |
+| **4** | **Cursor (Hobby)**              | **Free IDE plan** with **limited Agent requests** and **limited tab completions**.                                                                                          |       |
 | **5** | **GPT-5 Codex**                 | **No meaningful free tier**: access is via **ChatGPT paid plans** or **paid API**; free ChatGPT doesn’t include GPT-5/Codex.                                                |       |
 
 **Notes**
