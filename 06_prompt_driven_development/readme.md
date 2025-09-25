@@ -148,7 +148,7 @@ Here’s a tight summary of the piece:
 * **Historical rhyme:** Wang compares this moment to the early PC era that produced Bill Gates and Mark Zuckerberg; he suggests the “next Bill Gates” is likely a teen who’s vibe-coding now.
 * **What to skip:** He tells teens to prioritize building with AI over gaming, sports, or small side hustles—optimize for hours of experimentation.
 * **Hardware angle:** He’s bullish on smart glasses as the “natural delivery mechanism for superintelligence,” putting AI next to human senses.
-* **His current work:** Wang says he’s built a small, talent-dense AI lab focused on three tracks— frontier research toward superintelligence, shipping products to billions, and running massive compute infrastructure.
+* **The best time yet to learn to code:** The workers with strong coding skills will be able to use AI coding tools more effectively than anyone else, making them desirable to employers who are already seeking out employees with AI skills. And, while anyone can use AI tools to generate code and create new apps and startups, entrepreneurs “who understand the language of software through their knowledge of coding” are able to communicate what they want AI to build “much more precisely” than anyone else can,
 
 
 ---
