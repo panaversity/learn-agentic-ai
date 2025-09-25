@@ -4,13 +4,10 @@
 
 ## Inputs
 
-- macOS, Linux, or Windows with WSL2
-- Node.js ≥ 18 (confirm with `node --version`)
 - Git installed and configured with your preferred editor
 - Python 3.10+ _or_ the latest [Astral `uv`](https://docs.astral.sh/uv/getting-started/installation/) runtime (used by `uvx`)
 
 ## Actions
-
 
 ## Quick start with Specify CLI
 
@@ -29,7 +26,7 @@
   ```
 3. **Bootstrap your project**
   ```bash
-  specify init <PROJECT_NAME> --ai copilot --script sh
+  specify init <PROJECT_NAME>
   ```
 4. **Follow the slash-command sequence** inside your coding agent (Copilot, Claude Code, Cursor, Gemini CLI, etc.).
 
@@ -46,7 +43,6 @@ Inspect the generated `.github/` and `.specify/` folders, then delete the sandbo
 | `/tasks` | Break the plan into actionable units of work. |
 | `/analyze` | Check cross-artifact coverage and highlight gaps after `/tasks`. |
 | `/implement` | Execute tasks in sequence with automated guardrails. |
-
 
 ## Deliverables
 

@@ -1,54 +1,73 @@
-# Step 2: Define Constitution
+# **Step 2: Create the Project Rulebook (The Constitution!)**
 
 **Goal:** document the non-negotiable principles that every spec, plan, and task must honor.
 
-## Inputs
+## **Purpose: What is a Constitution?**
+
+Imagine you and your computer helper are a team building a giant LEGO castle. Before you start, you need to agree on some rules so you don't mess things up.
+
+*   What if you want all the towers to be **square**, but your helper starts building **round** ones?
+*   What if you decide the roof must be **blue**, but your helper builds a **red** one?
+
+That would be a mess!
+
+The **Constitution** is your team's **Rulebook**. It lists the most important rules that both you and your computer helper **MUST** follow, no matter what. It makes sure you both build the project the exact same way, every single time.
+
+## **Best Practices: What Rules Go in the Rulebook?**
+
+Your rulebook shouldn't be a thousand pages long. It should only have the most important, "non-negotiable" rules. Think about these questions:
+
+*   **How will we know it works?**
+    *   *Good Rule:* "Every part we build must have a special check (a test) to make sure it's not broken."
+    *   *Bad Rule:* "Try to make it good." (This is too vague!)
+
+*   **What should it look like?**
+    *   *Good Rule:* "We will always use bright, happy colors and the 'Comic Sans' font."
+    *   *Good Rule:* "We will build it with these special 'NextJS' LEGO bricks."
+
+*   **How will we keep it safe?**
+    *   *Good Rule:* "We will never write down secret passwords inside our project."
+
+*   **How will we work together?**
+    *   *Good Rule:* "We will only build in small pieces at a time, not one giant chunk."
+
+You write these rules down so your computer helper can read them and never forget them. It helps the AI build exactly what you want, in the style you want, and keeps your project strong and safe.
+
+## Your Hands-On Plan
+
+1.  **Ask your helper to write the first draft.**
+    *   In your agent chat, running `/constitution` is like asking your helper, "Can you start a new rulebook for us?"
+
+2.  **Tell your helper what kind of project you're making.**
+    *   When you run the prompt: `/constitution Fill the constitution with the bare minimum requirements for a static web app based on the template. We use NextJS15...`, you're telling the AI, "Okay, the game we're playing is 'Website Building'. Let's write down the basic rules for that game, using these specific LEGO pieces."
+
+3.  **Be the Boss: Check the Rules.**
+    *   Your computer helper is smart, but you're the boss. Open the `constitution.md` file and read the rules it wrote. Do they make sense? Is anything missing? You can change, add, or remove any rule you want.
+
+4.  **Save Your Rulebook.**
+    *   "Committing the first version as v1.0" is like taking a picture of your finished rulebook and labeling it "Version 1." This way, your whole team knows which rules to follow, and you can always look back to see how the rules have changed over time.
+
+### Inputs
 
 - The generated `.specify/memory/constitution.md`
 - Any existing engineering guardrails (testing policy, security requirements, coding standards)
 - Stakeholder alignment on mandatory practices
 
-## Actions
+### Actions
 
 1. In your agent chat, run `/constitution` to generate or update the baseline document.
-2. Open `.specify/memory/constitution.md` and replace placeholders with concise, testable rules.
-3. Group rules by theme (e.g., Quality, Security, Delivery).
-4. For each rule, add an enforcement note: where will it be checked (CI, PR template, manual review)?
-5. Commit the first version as `v1.0` and create an ADR if the rules encode significant organizational policy.
-6. Schedule a recurring review (e.g., once per quarter) to keep the constitution current.
 
-### Sample Structure
-
-```markdown
-# Constitution v1.0
-
-## Quality
-- Specs must contain acceptance tests before implementation starts.
-- Every PR references the spec section and links to passing contract tests.
-
-## Delivery
-- Tasks are limited to < 4 hours of focused work and ship with tests.
-- Feature branches require small, reviewable diffs (< 400 LOC).
-
-## Security & Compliance
-- No secrets committed; use environment variables and secret managers.
-- Personal data must remain in-region; see Compliance ADR-001.
-
-## Enforcement
-- GitHub Action `constitution-check.yml` blocks merges lacking spec/task links.
-- Weekly review ensures constitution revisions follow ADR process.
+2. Now we have to update the constitution.md file. You can use AI Agent Tool; Prompt:
+```
+/constitution Fill the constitution with the bare minimum requirements for a static web app based on the template. We use NextJS15 React19, Tailwind CSS and ShadCN components. 
 ```
 
-## Deliverables
+3. Open `.specify/memory/constitution.md` and review generated rules.
+4. Commit the first version as `v1.0`.
+
+### Deliverables
 
 - Canonical constitution stored in Git and referenced by every downstream artifact
-- Change-management notes (ADR or PR description) capturing the reasoning for initial rules
-
-## Quality Gates ✅
-
-- Every rule is binary (pass/fail) and has an enforcement mechanism
-- Specs/Plans created afterward explicitly link back to relevant constitution clauses
-- Constitution updates require PR review (no direct pushes)
 
 ## Common Pitfalls
 
@@ -60,3 +79,4 @@
 
 - GitHub Spec Kit repo: https://github.com/github/spec-kit
 - Microsoft Dev Blog (Spec Kit intro): https://developer.microsoft.com/blog/spec-driven-development-spec-kit
+- The ONLY guide you'll need for GitHub Spec Kit: https://www.youtube.com/watch?v=a9eR1xsfvHg
