@@ -3,7 +3,7 @@
 ## 🏷️ Official Name (Coined Right Here):
 
 > ### 🚀 **AI Pair Programming or Prompt-First Agent Development (PFAD) is the New Paradigm**  
-> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [GPT-5-Codex](https://openai.com/index/introducing-upgrades-to-codex/), rather than writing code manually.*
+> *A methodology where developers architect, build, test, and deploy software — especially AI agents — by engineering prompts for AI-powered tools like [Cursor](https://cursor.com/) and/or [GPT-5-Codex](https://openai.com/index/introducing-upgrades-to-codex/), Gemini CLI and Qwen Code rather than writing code manually.*
 
 You are a **Prompt Architect**.  
 Cursor and GPT-5-Codex is your **AI Compiler**.  
