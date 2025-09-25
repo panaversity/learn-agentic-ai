@@ -1,50 +1,69 @@
-# Step 3: Specify & Clarify (What & Why)
+# **Step 3: Specify the Feature (The "What" and "Why")**
 
-**Goal:** articulate user value, behaviors, and acceptance checks before any technical commitments.
+**Goal:** Translate a high-level user need into a detailed, unambiguous, and reviewable specification. This artifact becomes the shared source of truth for the feature before any technical planning begins.
 
-## Inputs
+---
 
-- Constitution clauses that apply to the feature
-- Initial product intent brief or user story
-- `/specify` slash command available in your agent
+### **Inputs**
 
-## Actions
+- The approved `constitution.md` file.
+- A clear idea of the user problem you are solving (your "product intent brief").
+- The `/specify` slash command, which is now available in your agent's chat.
 
-1. Trigger the agent: `/specify <feature name + intent>` (e.g., `/specify tip calculator for restaurant staff`).
-2. Immediately follow up with `/clarify` to surface ambiguities and underspecified areas; answer or assign every question before continuing.
-3. Let the agent draft `spec.md`, then perform a human review:
-	- Resolve all `TODO`/`[NEEDS CLARIFICATION]` markers immediately.
-	- Tighten scope by adding explicit non-goals and success metrics.
-	- Ensure the spec references relevant constitution clauses.
-4. Add acceptance tests (Given/When/Then or contract examples) for every major scenario.
-5. Capture risks, open questions, and required follow-up research in a dedicated section.
-6. Version the spec (`Status: Draft`, `Version: 0.1`) and commit it before moving to planning.
+---
 
-### Spec Review Checklist
+### **Actions**
 
-- ✅ Problem statement explains who benefits and why
-- ✅ User journeys / flows describe the expected experience end-to-end
-- ✅ Acceptance criteria are concrete, measurable, and testable
-- ✅ Non-goals prevent accidental scope creep
-- ✅ Dependencies, risks, and stakeholders are documented
+1.  **Craft and Run the Specify Prompt:** In your agent chat, run the `/specify` command. Provide a clear, user-focused description of the feature. **Crucially, include a reference to your `constitution.md` file** to ensure the AI's output adheres to your project's rules.
+    *   **Your Prompt Example (Perfect):**
+        ```
+        /specify @constitution.md I am building a modern podcast website. I want it to look sleek, something that would stand out. Should have a landing page with one featured episode, an about page, and a FAQ page. Should have 20 episodes, and the data is mocked - you do not need to pull anything from any real feed.
+        ```
 
-## Deliverables
+2.  **Observe the Agent's Automated Scaffolding:** The AI agent will now execute its `specify` script. It will perform several actions automatically:
+    *   It creates a new, isolated Git branch for the feature (e.g., `001-i-am-building`).
+    *   It generates a new folder inside `specs/` for all of this feature's artifacts.
+    *   It creates a `spec/**.md` file inside that folder, populating it based on your prompt and a template.
+    *   It performs an initial validation of the spec against your constitution.
+    *   You must Verify and Approve the Generated .md file. You can further iterate manualy or using your AI Companion as well.
+    ```
+    For things you need clarification use the best guess you think is reasonable. Update acceptance checklist after.
+    ```
 
-- `spec.md` in your workspace with reviewed content
-- Backlog of clarifications or follow-up tasks captured separately (e.g., `/tasks backlog` or issue tracker)
+3.  **Human Review & Clarification Loop (The Most Important Part):** The agent has provided a first draft. Now, your role as the developer is to refine it into a final, complete specification.
+    *   Open the newly generated `spec.md` file.
+    *   **Resolve Ambiguities:** Search the document for any `[NEEDS CLARIFICATION]` markers. For each one, have a conversation with your agent to resolve it.
+        *   **Example Prompt:** `In @spec.md, it asks about episode ordering. Let's make it reverse chronological (newest first). Please update the document and remove the clarification marker.`
+    *   **Tighten Scope:** Review the generated user stories and functional requirements. Are they accurate? Add explicit non-goals to prevent scope creep.
+        *   **Example Prompt:** `In @spec.md, under non-goals, please add that this feature will not include user comments or real-time playback analytics.`
+    *   **Ensure Testability:** Read the Acceptance Scenarios. Are they clear, measurable, and written in a way that can be easily turned into automated tests (like Given/When/Then)?
+        *   **Example Prompt:** `The acceptance scenario for the landing page is good, but please add a new scenario: "Given I am on the landing page, When I click the 'View All Episodes' button, Then I am taken to the '/episodes' page."`
 
-## Quality Gates ✅
+4.  **Version and Commit the Spec:** Once the `spec.md` is clear, complete, and agreed upon, update its status.
+    *   Manually edit the `spec.md` header from `Status: Draft` to `Status: Ready for Planning`.
+    *   Commit the finalized `spec.md` to its feature branch.
 
-- Team sign-off (async review or short design-review meeting)
-- `/clarify` output resolved with no unanswered prompts
-- All acceptance criteria map to future tests or evaluation harnesses
-- Spec links back to constitution clauses and any relevant ADRs
+---
 
-## Common Pitfalls
+### **Deliverables**
 
-- Mixing technical implementation details into the spec (save those for the plan)
-- Allowing ambiguous language (“fast”, “secure”) without quantitative targets
-- Proceeding while `[NEEDS CLARIFICATION]` items remain unresolved
+- A new Git branch dedicated to the feature.
+- A final, reviewed, and committed `spec.md` file that serves as the unambiguous source of truth for what you are building.
+
+**Next step: run the /plan command when ready.**
+
+### **Quality Gates ✅**
+
+- ✅ All `[NEEDS CLARIFICATION]` markers have been resolved.
+- ✅ The spec includes clear, testable Acceptance Scenarios for all primary user flows.
+- ✅ The spec aligns with the project rules defined in `constitution.md`.
+- ✅ (For teams) The spec has been reviewed and approved by relevant stakeholders (e.g., in a Pull Request).
+
+### **Common Pitfalls**
+
+- **Moving to the `/plan` step too early**, before all ambiguities in the spec are resolved. This is the #1 mistake to avoid.
+- Writing a `/specify` prompt that describes *how* to build it, not *what* to build (e.g., "create a React component" vs. "show the user a list of episodes").
+- Forgetting to `@mention` the constitution in your prompt, which can lead to the AI ignoring your core rules.
 
 ## References
 
