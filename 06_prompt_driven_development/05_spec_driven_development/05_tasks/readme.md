@@ -1,48 +1,57 @@
-# Step 5: Generate Task List
+# **Step 5: Generate the Actionable Task List**
 
-**Goal:** turn the spec and plan into sequenced, testable work items that an agent (or human) can deliver incrementally.
+**Goal:** Deconstruct the technical plan into a sequence of small, verifiable, and testable tasks. This `tasks.md` file is the final blueprint that the AI agent will follow to build the feature, turning the strategic "how" into a tactical "how-to."
 
-## Inputs
+---
 
-- Approved `spec.md`
-- Approved `plan.md`
-- Constitution rules on task sizing and branching
+## **Inputs**
 
-## Actions
+-   The approved `spec.md`.
+-   The approved `plan.md` and all its supporting artifacts (`data-model.md`, etc.).
+-   Your `constitution.md` (specifically, any rules on task sizing).
+-   The `/tasks` slash command in your agent chat.
 
-1. Invoke `/tasks` to have the agent draft `tasks.md`.
-2. Follow up with `/analyze` to validate coverage across constitution, spec, plan, and tasks; address every flagged gap before proceeding.
-3. Review each task and ensure it includes:
-	- A clear objective tied back to a spec section
-	- Acceptance criteria / tests to run when complete
-	- Dependencies or prerequisites
-	- Suggested file touchpoints and guardrails (e.g., “limit diff to X files”)
-4. Re-order tasks into phases or milestones; keep early tasks focused on scaffolding and validation.
-5. Split tasks that exceed the constitution’s workload limits.
-6. Tag tasks with owners and expected effort (story points or ideal hours).
-7. Commit `tasks.md` and, if needed, create corresponding issues in your tracker.
+## **Actions**
 
-### Task Review Checklist
+1.  **Generate the Initial Task Breakdown:** In your agent chat, run the `/tasks` command. You can give it the context of the entire feature directory to ensure it has all the necessary information.
+    *   **Your Prompt Example (Perfect):**
+        ```
+        /tasks Follow and break this down into tasks@specs/001-i-am-building/
+        ```
 
-- ✅ Every task references the spec and/or plan section it fulfills
-- ✅ Tasks are independent wherever possible and list dependencies when not
-- ✅ Acceptance criteria mention automated checks (unit, E2E, evaluation harness)
-- ✅ “Definition of Done” includes documentation and PR expectations
+2.  **Observe the Agent's Task Generation:** The AI will now process the spec, plan, and constitution. It will generate a single, comprehensive `tasks.md` file inside the feature's directory. As your output shows, it will:
+    *   **Structure the Work:** Break down the project into logical phases (e.g., Phase 3.1: Setup, Phase 3.2: Tests First, Phase 3.3: Core Implementation).
+    *   **Define Individual Tasks:** Create specific, actionable tasks with unique IDs (e.g., `T001`, `T002`). Each task will map to a concrete action, like "Initialize Next.js app skeleton" or "Create contract validation script."
+    *   **Suggest an Execution Strategy:** It may provide guidance on which tasks can be run in parallel `[P]` versus those that must be run sequentially.
 
-## Deliverables
+3.  **Human Review and Refinement:** This is your final chance to review the construction plan before the "building" starts.
+    *   Open the newly generated `tasks.md` file.
+    *   **Check for Completeness:** Read through the task list. Does it cover every functional requirement from the spec and every technical component from the plan? Did the agent forget anything (like documentation or final cleanup)?
+    *   **Validate the Order:** Does the sequence of tasks make sense? For a TDD project, the "Tests First" tasks should come before the "Core Implementation" tasks.
+    *   **Check Task Size:** Is any single task too large? For instance, if you see a task like `T015: Implement entire frontend`, that's a red flag. You should instruct the agent to break it down further.
+        *   **Example Prompt:** `"The task T015 is too large. Break it down into separate tasks for creating the header, the footer, the hero component, and the episode list component. Update tasks.md."`
+    *   **Add Non-Code Tasks:** The agent might forget process-oriented tasks. Manually add them to the list if needed:
+        ```markdown
+        - [ ] T0XX: Create a PR for review once all coding tasks are complete.
+        ```
 
-- Curated `tasks.md` grouped by phase/milestone
-- Backlog entries or tickets linked to each task (optional but recommended)
+4.  **Commit the Final Task List:** Once you are confident the `tasks.md` is complete and actionable, commit it to the feature branch. This document now becomes the locked-down "script" for the implementation phase.
 
-## Quality Gates ✅
+---
 
-- Team agrees the tasks cover 100% of the spec scope
-- `/analyze` report shows no open coverage gaps
-- No single task is larger than one iteration (≤ 0.5–1 day for a single contributor)
-- Each task can be verified through tests or observable outputs
+## **Deliverables**
 
-## Common Pitfalls
+-   A final, reviewed, and committed `tasks.md` file that provides a clear, step-by-step implementation checklist.
 
-- Dumping the agent-generated list without review (often contains vague or overlapping tasks)
-- Forgetting to include tasks for tests, docs, and release work
-- Allowing tasks that require touching unrelated code paths (increases risk)
+## **Quality Gates ✅**
+
+-   ✅ The task list completely covers all requirements from the `spec.md` and `plan.md`.
+-   ✅ Each task is small, well-defined, and has a clear "definition of done" (often, passing a specific test).
+-   ✅ The task sequence is logical and respects dependencies.
+-   ✅ (For teams) The `tasks.md` file has been approved by the tech lead or relevant team members.
+
+## **Common Pitfalls**
+
+-   **Accepting the agent-generated list without review.** AI agents can sometimes create vague ("polish the UI") or overlapping tasks.
+-   **Forgetting to include tasks for crucial non-feature work,** such as running tests, creating documentation (`README.md`), and setting up CI/CD.
+-   **Creating tasks that are too large**, which makes them difficult to review and validate, defeating the purpose of the incremental loop.
