@@ -80,3 +80,25 @@ uv run pytest
 ## References
 - Gemini CLI repo: https://github.com/google-gemini/gemini-cli
 - Docs: https://github.com/google-gemini/gemini-cli?tab=readme-ov-file#-documentation
+
+## Add-ons for Gemini CLI
+
+**Gemini CLI does have a VS Code plugin.** It’s the official **“Gemini CLI Companion”** extension that pairs directly with the Gemini CLI:
+
+https://marketplace.visualstudio.com/items?itemName=Google.gemini-cli-vscode-ide-companion
+
+You can also set it up:
+
+**From VS Code (Marketplace)**
+
+* Open VS Code → Extensions → search **“Gemini CLI Companion”** → Install. 
+
+* The extension is meant to work *with* the CLI (you’ll run prompts in the integrated terminal; the companion adds editor-aware goodies like diffing and context):
+
+https://developers.googleblog.com/en/gemini-cli-vs-code-native-diffing-context-aware-workflows/
+
+* If you’re using **Gemini Code Assist** in VS Code, that’s a separate (but related) extension for completions/transformations—and Cloud Code will even install it for you. It’s not the same as the CLI companion, but many folks use both:
+
+https://marketplace.visualstudio.com/items?itemName=Google.geminicodeassist
+
+
