@@ -4,11 +4,11 @@ Summer 2025 is a structural break in software development. Frontier LLMs (e.g., 
 
 ## State of AI-Assisted Software Development: The Evidence
 
-## [Watch: According to Anthropic's CEO, Claude is already writing 90% of the code](https://www.facebook.com/share/v/1GiTbVdxfs/)**
+## [Watch: According to Anthropic's CEO, Claude is already writing 90% of the code](https://www.facebook.com/share/v/1GiTbVdxfs/)
 
 ---
 
-## [Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)**
+## [Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)
 
 Here is a concise, summary of the article:
 
@@ -26,7 +26,7 @@ Here is a concise, summary of the article:
 
 ---
 
-## [2025 DORA State of AI-assisted Software Development Report](https://cloud.google.com/resources/content/2025-dora-ai-assisted-software-development-report?hl=en)**
+## [2025 DORA State of AI-assisted Software Development Report](https://cloud.google.com/resources/content/2025-dora-ai-assisted-software-development-report?hl=en)
 
 Note: The report is also available in the dora_report directory.
 
