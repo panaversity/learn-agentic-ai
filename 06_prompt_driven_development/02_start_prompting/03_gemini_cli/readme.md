@@ -101,4 +101,10 @@ https://developers.googleblog.com/en/gemini-cli-vs-code-native-diffing-context-a
 
 https://marketplace.visualstudio.com/items?itemName=Google.geminicodeassist
 
+Also checkout:
+
+https://marketplace.visualstudio.com/items?itemName=BoonBoonsiri.gemini-autocomplete
+
+
+
 
