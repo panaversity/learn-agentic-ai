@@ -103,6 +103,23 @@ Here’s a **price-ranked** comparison (cheapest → most expensive) using curre
 | -------------------- | ------------------------------------------------------------------------: | ----------------------------------------------------------------------------------- |
 | **Cursor Pro (IDE)** | **\$20 / user / month** (individual). Teams from **\$40 / user / month**. | Editor features; LLM usage billed at provider’s API rates you choose. |
 
+---
+
+## Install Qwen Coder
+
+[Watch: QWEN CLI Coding Agent Just Got a HUGE Upgrade (Qwen3-Coder-Plus)](https://www.youtube.com/watch?v=Dk7ZRUwsJdk)
+
+#### With Node.js:
+
+https://nodejs.org/en/download
+
+Install from npm:
+
+npm install -g @qwen-code/qwen-code@latest
+qwen --version
+
+#### Install Globally with Homebrew (macOS/Linux)
+
 
 
 ---

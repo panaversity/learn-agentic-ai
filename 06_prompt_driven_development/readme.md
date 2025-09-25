@@ -4,11 +4,11 @@ Summer 2025 is a structural break in software development. Frontier LLMs (e.g., 
 
 ## State of AI-Assisted Software Development: The Evidence
 
-**[Watch: According to Anthropic's CEO, Claude is already writing 90% of the code](https://www.facebook.com/share/v/1GiTbVdxfs/)**
+## [Watch: According to Anthropic's CEO, Claude is already writing 90% of the code](https://www.facebook.com/share/v/1GiTbVdxfs/)**
 
 ---
 
-**[Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)**
+## [Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)**
 
 Here is a concise, summary of the article:
 
@@ -26,7 +26,7 @@ Here is a concise, summary of the article:
 
 ---
 
-**[2025 DORA State of AI-assisted Software Development Report](https://cloud.google.com/resources/content/2025-dora-ai-assisted-software-development-report?hl=en)**
+## [2025 DORA State of AI-assisted Software Development Report](https://cloud.google.com/resources/content/2025-dora-ai-assisted-software-development-report?hl=en)**
 
 Note: The report is also available in the dora_report directory.
 
@@ -93,6 +93,53 @@ Here’s a beginner-friendly take on the **DORA – State of AI-Assisted Softwar
   * Improve **docs and data hygiene** so AI has good info to work with.
   * Teach teams **how to prompt and verify** AI results.
     (Measure twice, cut once—then let AI sand the edges 🪚)
+
+
+---
+
+## [Watch: Spec-Driven Development in the Real World](https://www.youtube.com/watch?v=3le-v1Pme44)
+
+Here’s a crisp summary of the video “Watch: Spec-Driven Development in the Real World”:
+
+### What the talk argues
+
+The speaker says the industry is converging on **spec-driven development (SDD)**—writing a durable, reviewable **spec** (intent, behavior, constraints, and success criteria) first, then using AI/tools to implement against it. This moves teams away from “vibe coding” and toward predictable delivery, especially on multi-person, multi-repo work. ([YouTube][1])
+
+### The 3 things you need for SDD to actually work
+
+1. **Alignment first.** Hash out the problem, scope, user journeys, non-goals, risks, and acceptance criteria so everyone (PM, Eng, Design, QA, stakeholders) agrees before code is generated. ([YouTube][1])
+2. **Durable artifacts.** Keep the spec, plan, and acceptance tests as living files in the repo (PR-reviewed), not in ephemeral chats. Treat them as the source of truth that survives code churn. ([The New Stack][2])
+3. **Integrated enforcement.** Tie the spec to verification: executable examples/tests, CI checks, and traceable tasks so regressions or spec drift are caught automatically. ([apideck.com][3])
+
+### A practical SDD workflow (as shown/discussed)
+
+* **Intent brief → AI-drafted spec → human review loop.** Start from a high-level product brief; let AI expand to a detailed spec; iterate with the team until acceptance criteria are unambiguous.
+* **Plan → tasks → implementation.** Break the spec into verifiable tasks; let AI/agents implement; keep the spec and tests side-by-side with the code.
+* **Continuous verification.** PRs must cite the spec sections they fulfill and include tests/examples that prove the behavior. ([YouTube][1])
+
+### Why it beats “vibe coding”
+
+* Captures decisions in a **reviewable artifact** instead of buried chat threads.
+* **Speeds onboarding** and cross-team collaboration.
+* Reduces **rework and drift** because tests/examples anchor behavior. ([The New Stack][2])
+
+### Tools & patterns mentioned/adjacent in the ecosystem
+
+* **Spec-Kit** (GitHub’s open-source toolkit) — templates and helpers for running an SDD loop with your AI tool of choice. ([The GitHub Blog][4])
+* Broader coverage in recent articles summarizing SDD’s rise and best practices. ([The New Stack][2])
+
+### Take-home checklist
+
+* Start every feature with a **one-page intent brief** and **acceptance criteria**.
+* Store **spec.md**, **plan.md**, and **examples/tests** in the repo; review them like code.
+* Make every PR link to the spec section it implements; **fail CI** if required examples/tests are missing.
+* Periodically **refactor the spec** (not just the code) as understanding evolves. ([The New Stack][2])
+
+
+[1]: https://www.youtube.com/watch?v=3le-v1Pme44&utm_source=chatgpt.com "Spec-Driven Development in the Real World"
+[2]: https://thenewstack.io/spec-driven-development-the-key-to-scalable-ai-agents/?utm_source=chatgpt.com "Spec-Driven Development: The Key to Scalable AI Agents"
+[3]: https://www.apideck.com/blog/spec-driven-development-part-1?utm_source=chatgpt.com "An introduction to spec-driven API development"
+[4]: https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/?utm_source=chatgpt.com "Spec-driven development with AI: Get started with a new ..."
 
 
 ---
