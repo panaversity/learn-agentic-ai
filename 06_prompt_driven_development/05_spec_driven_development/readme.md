@@ -68,9 +68,9 @@ Ready to practice? Follow the step folders in this directory:
 5. [Step 5 – Generate Task List](05_tasks/readme.md)
 6. [Step 6 – Implement](06_implementation/readme.md)
 7. [Step 7 – Capstone Chatbot](07_chatbot_project/readme.md)
-8. [Step 8 – Agile Spec Integration](08_agile_spec_combination/readme.md)
+8. [Step 8 – Operationalize the Nine Articles](08_agile_spec_combination/readme.md)
 9. [Step 9 – Clarify & Analyze Deep Dive](09_spec_analyze_clarify/readme.md)
-10. [Step 10 – Evaluate & Govern](10_eval_governance/readme.md)
+10. [Step 10 – Practice Projects (SDD in the Wild)](10_eval_governance/readme.md)
 
 Each guide includes inputs, actions, quality gates, and common pitfalls so you can build muscle memory for spec-driven development.
 

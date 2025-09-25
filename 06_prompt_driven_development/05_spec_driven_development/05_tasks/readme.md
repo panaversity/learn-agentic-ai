@@ -1,4 +1,4 @@
-# **Step 5: Generate the Actionable Task List**
+# **Step 5: Generate the Actionable [Task](https://github.com/github/spec-kit/blob/main/spec-driven.md#the-tasks-command) List**
 
 **Goal:** Deconstruct the technical plan into a sequence of small, verifiable, and testable tasks. This `tasks.md` file is the final blueprint that the AI agent will follow to build the feature, turning the strategic "how" into a tactical "how-to."
 
@@ -10,6 +10,14 @@
 -   The approved `plan.md` and all its supporting artifacts (`data-model.md`, etc.).
 -   Your `constitution.md` (specifically, any rules on task sizing).
 -   The `/tasks` slash command in your agent chat.
+
+## The /tasks Command
+After a plan is created, this command analyzes the plan and related design documents to generate an executable task list:
+
+- Inputs: Reads plan.md (required) and, if present, data-model.md, contracts/, and research.md
+- Task Derivation: Converts contracts, entities, and scenarios into specific tasks
+- Parallelization: Marks independent tasks [P] and outlines safe parallel groups
+- Output: Writes tasks.md in the feature directory, ready for execution by a Task agent
 
 ## **Actions**
 
