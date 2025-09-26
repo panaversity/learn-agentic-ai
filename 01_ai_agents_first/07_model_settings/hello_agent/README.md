@@ -60,7 +60,7 @@ This module teaches you how to fine-tune your AI agents using **Model Settings**
 
 ## 🔗 Related Modules
 
-- **Previous**: [Basic Tools](../06_basic_tools/) - Learn about tools
+- **Previous**: [Basic Tools](../../06_basic_tools/) - Learn about tools
 - **Next**: [Advanced Tools](../08_advanced_tools/) - Master tool usage
 
 ## 🎓 Tips for Success
