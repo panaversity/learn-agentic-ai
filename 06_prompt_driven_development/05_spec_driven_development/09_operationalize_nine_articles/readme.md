@@ -1,4 +1,4 @@
-# Step 8: Operationalize the Nine Articles 🧭
+# Step 9: Operationalize the Nine Articles 🧭
 
 **Goal:** embed the [Nine Articles of Development](https://github.com/github/spec-kit/blob/main/spec-driven.md#the-nine-articles-of-development) into your day-to-day loops so SDD stays simple, observable, and test-first as work scales.
 

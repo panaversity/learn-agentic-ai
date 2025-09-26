@@ -1,4 +1,4 @@
-# Step 9: [Clarify & Analyze Spec](https://www.youtube.com/watch?v=YD66SBpJY2M) Deep Dive
+# Step 7: [Clarify & Analyze Spec](https://www.youtube.com/watch?v=YD66SBpJY2M) Deep Dive
 
 Two key commands that enhance the Spec Kit workflow are /clarify and /analyze. These commands help to mitigate the risk of "underspecification," where a lack of detail can lead to incorrect assumptions and rework.
 
