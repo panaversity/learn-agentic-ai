@@ -1,5 +1,7 @@
 # Step 8: Capstone – SDD Chatbot Project
 
+**Part1: Spec 1, Branch 1, PR 1** - OpenAI Agents SDK + FastAPI + Chainlit Implementation
+
 **Goal:** demonstrate end-to-end mastery by shipping a working chatbot experience using the full SDD workflow.
 
 ## Inputs
