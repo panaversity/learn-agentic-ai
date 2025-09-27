@@ -1,45 +1,67 @@
-# Step 6: Implement (The Review Loop)
+# **Step 6: Implement, Test, and Validate**
 
-**Goal:** execute tasks through tight, test-driven loops that reference the spec and plan at every change.
+**Goal:** Direct the AI agent to execute the entire task list, turning the specification and plan into a fully functional, tested, and verifiable piece of software. In this phase, your role shifts from writer to director and quality assurance.
 
-## Inputs
+---
 
-- Prioritized items from `tasks.md`
-- Relevant spec sections, plan excerpts, and constitution rules
-- Agent prompts or PHR scripts for RED → GREEN → REFACTOR → EXPLAIN
+## **Inputs**
 
-## Actions
+-   The complete and finalized `tasks.md` checklist from the previous step.
+-   The full context of the feature directory (`spec.md`, `plan.md`, `constitution.md`).
+-   Your agent chat (Cursor, Gemini CLI, etc.) with a running terminal.
 
-1. Select the next ready task and restate its acceptance criteria.
-2. Run `/implement` with the specific task context when using Spec Kit defaults, or drive the agent manually through a Prompt-Driven Development loop:
-	- **Architect:** restate task context, allowed files, and constraints.
-	- **Red:** generate failing tests or evaluations first.
-	- **Green:** implement the minimum code to satisfy the new tests.
-	- **Refactor:** clean up while keeping tests green.
-	- **Explain:** summarize changes for future reviewers.
-3. Run automated checks locally (`uv run pytest -q`, linters, evaluation harnesses) after each GREEN/refactor step.
-4. Review diffs yourself—reject anything not aligned with the spec/plan/constitution.
-5. Update documentation (README, changelog) and link the task ID in the commit message.
-6. Open a PR referencing:
-	- Spec section(s)
-	- Plan decisions or ADRs
-	- Task identifier
-	- Test evidence (logs, screenshots)
+## **Actions**
 
-## Deliverables
+1.  **Initiate the Implementation:** Give the AI agent a single, clear command to begin the work. You are handing it the entire checklist and authorizing it to proceed.
+    *   **Your Prompt Example (Perfect):**
+        ```
+        /implement Implement the tasks for this project and update the task list as you go. @tasks.md
+        ```
 
-- Small, traceable commits with passing tests
-- PRs that link back to spec, plan, tasks, and constitution rules
-- Updated automation (CI, evaluations) as needed to enforce new behavior
+2.  **Monitor the Agent's Execution:** Your primary role now is to observe. The AI will announce what it's doing, following the `tasks.md` file as its script. You will see a flurry of activity in the terminal and in your file tree as the agent:
+    *   **Sets up the environment** (e.g., runs `npm install`, configures `tsconfig.json`).
+    *   **Writes failing tests first** (adhering to the TDD principle in your constitution).
+    *   **Implements the core logic** to make the tests pass.
+    *   **Creates all necessary files:** components, pages, utility functions, data files, and stylesheets.
+    *   **Refines and polishes** the code based on instructions in the task list.
 
-## Quality Gates ✅
+3.  **Perform the Interactive Review Loop:** The agent will not run completely on its own. It will periodically stop and present you with a set of file changes. This is your critical review checkpoint.
+    *   For each set of changes, review the code diff.
+    *   **Ask yourself:** Does this code correctly implement the specific task? Does it adhere to our Constitution? Is it clean and maintainable?
+    *   Click **"Keep"** to approve the changes and let the agent continue to the next task. If something is wrong, click "Undo" and provide a corrective prompt.
 
-- Unit/contract tests and evaluation suites pass locally and in CI
-- PR template’s “Spec compliance” checkbox references exact sections
-- Reviewer sign-off confirms acceptance criteria and tests are sufficient
+4.  **Final Validation (The Human's Turn):** After the agent reports that all tasks are complete (as seen in your example output), you perform the final verification. Do not blindly trust the AI's summary.
+    *   **Run the Tests Yourself:** In the terminal, run the test suite to get an objective confirmation that everything works as specified.
+        ```bash
+        npm test
+        ```
+    *   **Run the Application:** Start the development server and interact with the feature yourself.
+        ```bash
+        npm run dev
+        ```
+        Open the browser and click around. Does it look and feel like the experience you envisioned in your `spec.md`? This is the ultimate test.
 
-## Common Pitfalls
+5.  **Commit the Working Software:** Once you are fully satisfied, commit all the work to the feature branch.
+    *   **Example Commit Message (from your output):**
+        ```
+        git commit -m "feat(podcast): implement modern podcast website"
+        ```
 
-- Skipping the RED step and relying on ad-hoc manual testing
-- Allowing the agent to modify unrelated files or refactor outside task scope
-- Merging without updating documentation or leaving TODOs unresolved
+---
+
+## **Deliverables**
+
+-   A complete, working, and tested implementation of the feature on its own Git branch.
+-   An updated `tasks.md` file where all tasks are checked off, providing a clear audit trail of the work performed.
+
+## **Quality Gates ✅**
+
+-   ✅ All automated tests created during the process pass successfully in CI and locally.
+-   ✅ You have manually reviewed the agent's code at each step of the implementation loop.
+-   ✅ You have manually run and interacted with the final application, confirming it meets the user experience outlined in the `spec.md`.
+
+## **Common Pitfalls**
+
+-   **"Fire and Forget":** Giving the `/implement` command and not actively monitoring and reviewing the agent's progress. This can lead to the agent going down the wrong path.
+-   **Ignoring Failing Tests:** If the agent's implementation fails a test and it can't fix it, it's your job to intervene, diagnose the problem, and provide guidance.
+-   **Skipping the Final Manual Review:** Relying solely on automated tests might miss visual bugs, awkward user flows, or other user experience issues. Always look at the final product.

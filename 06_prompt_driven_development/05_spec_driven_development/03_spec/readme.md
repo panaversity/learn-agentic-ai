@@ -1,4 +1,4 @@
-# **Step 3: Specify the Feature (The "What" and "Why")**
+# **Step 3: [Specify](https://github.com/github/spec-kit/blob/main/spec-driven.md#the-specify-command) the Feature (The "What" and "Why")**
 
 **Goal:** Translate a high-level user need into a detailed, unambiguous, and reviewable specification. This artifact becomes the shared source of truth for the feature before any technical planning begins.
 
@@ -11,6 +11,14 @@
 - The `/specify` slash command, which is now available in your agent's chat.
 
 ---
+
+### The /specify Command
+
+This command transforms a simple feature description (the user-prompt) into a complete, structured specification with automatic repository management:
+- Automatic Feature Numbering: Scans existing specs to determine the next feature number (e.g., 001, 002, 003)
+- Branch Creation: Generates a semantic branch name from your description and creates it automatically
+- Template-Based Generation: Copies and customizes the feature specification template with your requirements
+- Directory Structure: Creates the proper specs/[branch-name]/ structure for all related documents
 
 ### **Actions**
 

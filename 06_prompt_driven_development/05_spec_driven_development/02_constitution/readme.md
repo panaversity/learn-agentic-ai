@@ -1,4 +1,4 @@
-# **Step 2: Create the Project Rulebook (The Constitution!)**
+# **Step 2: Create the Project Rulebook - The [Constitution](https://github.com/github/spec-kit/blob/main/spec-driven.md#the-constitutional-foundation-enforcing-architectural-discipline)!**
 
 **Goal:** document the non-negotiable principles that every spec, plan, and task must honor.
 

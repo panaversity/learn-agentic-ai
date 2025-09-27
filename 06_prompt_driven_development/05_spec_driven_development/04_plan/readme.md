@@ -1,4 +1,4 @@
-# **Step 4: Define the Technical Plan (The "How")**
+# **Step 4: Define the Technical [Plan](https://github.com/github/spec-kit/blob/main/spec-driven.md#the-plan-command) (The "How")**
 
 **Goal:** Translate the "what" and "why" from the approved spec into a concrete technical strategy. This phase generates the high-level engineering blueprint, including architecture, data structures, and setup instructions, all while respecting the Constitution.
 
@@ -9,6 +9,15 @@
 -   The **approved and clarified** `spec.md` from the previous step.
 -   Your `constitution.md` file.
 -   The `/plan` command available in your agent chat.
+
+## The /plan Command
+Once a feature specification exists, this command creates a comprehensive implementation plan:
+
+- Specification Analysis: Reads and understands the feature requirements, user stories, and acceptance criteria
+- Constitutional Compliance: Ensures alignment with project constitution and architectural principles
+- Technical Translation: Converts business requirements into technical architecture and implementation details
+- Detailed Documentation: Generates supporting documents for data models, API contracts, and test scenarios
+- Quickstart Validation: Produces a quickstart guide capturing key validation scenarios
 
 ## **Actions**
 
