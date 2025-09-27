@@ -61,5 +61,5 @@ Outstanding contributors will be **immediately considered for our core team** as
 
 ## Closing
 
-**Get ready—Daniyal, Zeeshan Hanif, Imran, and I are coming to learn from you.** Bring your best prompts, sharp explanations, and production-worthy demos (and maybe a victory selfie backdrop 📸).
+**Get ready—Daniyal, Zeeshan Hanif, Imran, and I am coming to learn from you.** Bring your best prompts, sharp explanations, and production-worthy demos (and maybe a victory selfie backdrop 📸).
 
