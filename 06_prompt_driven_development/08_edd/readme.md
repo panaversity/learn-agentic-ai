@@ -85,31 +85,80 @@ def test_agent_response():
 
 ## 🛠️ **How to Actually Do EDD**
 
-### **The Simple Approach**
+### **The 5-Step Learning Path**
 
-**1. Choose Your Evaluation Tool**
-- PromptFoo (most popular)
-- OpenAI Evals
-- Custom evaluation scripts
-- Manual testing
+**Step 1: Basic Prompt Testing**
+```bash
+# Install DeepEval
+pip install deepeval pytest pytest-asyncio
 
-**2. Define What to Test**
-- Core agent prompts
-- Tool calling behavior
-- Conversation flow
-- Safety and boundaries
+# Create your first test
+./edd-setup.sh create-test basic
 
-**3. Set Up Tests**
-- Write test cases
-- Define success criteria
-- Choose models to compare
-- Run evaluations
+# Run tests
+./edd-setup.sh run-evals
+```
 
-**4. Optimize Based on Results**
-- Fix failing tests
-- Improve prompts
-- Choose better models
-- Iterate and improve
+**Step 2: Agent Behavior Testing**
+```bash
+# Test reasoning and decision making
+./edd-setup.sh create-test agent
+
+# Run agent behavior tests
+./edd-setup.sh run-evals
+```
+
+**Step 3: Tool Integration Testing**
+```bash
+# Test tool calling behavior
+./edd-setup.sh create-test tool
+
+# Run tool integration tests
+./edd-setup.sh run-evals
+```
+
+**Step 4: Safety and Boundaries Testing**
+```bash
+# Test safety and security
+./edd-setup.sh create-test safety
+
+# Run safety tests
+./edd-setup.sh run-evals
+```
+
+**Step 5: Model Comparison and Optimization**
+```bash
+# Compare different models
+./edd-setup.sh compare-models
+
+# Analyze results
+./edd-setup.sh analyze
+
+# Update prompts based on results
+./edd-setup.sh update-prompts
+```
+
+### **Quick Start with Spec Kit**
+
+**1. Initialize EDD for Your Project**
+```bash
+./edd-setup.sh init --project "ai-tutor" --feature "tutoring"
+```
+
+**2. Use EDD Command in Spec Workflow**
+```bash
+# In your spec workflow
+/spec --feature tutoring
+/plan --feature tutoring
+/tasks --feature tutoring
+/edd --feature tutoring  # New EDD step
+/phr --feature tutoring
+```
+
+**3. Follow the Learning Path**
+- Complete the 5 steps in order
+- Practice with real projects
+- Integrate with your SDD workflow
 
 ### **Example: Testing an AI Tutor Agent**
 
@@ -183,45 +232,39 @@ your-agent-project/
 
 ### **How to Get Started**
 
-**1. Start Simple**
+**1. Follow the Learning Path**
+- Complete the 5 steps in order
+- Use the provided examples and exercises
+- Practice with your own projects
+
+**2. Use the EDD Setup Script**
 ```bash
-# Install PromptFoo
-npm install -g promptfoo
+# Initialize EDD for your project
+./edd-setup.sh init --project "your-project" --feature "your-feature"
 
-# Create your first test
-cat > test.yaml << 'EOF'
-prompts:
-  - 'You are a helpful assistant. User: {{query}}'
-providers:
-  - openai:gpt-4.1-mini
-tests:
-  - vars:
-      query: 'Hello'
-    assert:
-      - type: contains
-        value: 'hello'
-EOF
+# Create specific test types
+./edd-setup.sh create-test basic
+./edd-setup.sh create-test agent
+./edd-setup.sh create-test tool
+./edd-setup.sh create-test safety
 
-# Run the test
-promptfoo eval -c test.yaml
+# Run all evaluations
+./edd-setup.sh run-evals
+
+# Analyze results and optimize
+./edd-setup.sh analyze
+./edd-setup.sh update-prompts
 ```
 
-**2. Test Your Agent Prompts**
-- Test core agent behavior
-- Test tool calling
-- Test conversation flow
-- Test safety and boundaries
+**3. Integrate with Spec Kit**
+- Use `/edd` command in your spec workflow
+- Add eval requirements to your specs
+- Document results in PHRs
 
-**3. Compare Models**
-- Test the same prompts across different models
-- Compare cost, speed, and quality
-- Choose the best model for your use case
-
-**4. Iterate and Improve**
-- Fix failing tests
-- Improve prompts based on results
-- Add more test cases
-- Set up automated testing
+**4. Scale to Production**
+- Set up continuous monitoring
+- Collect real user feedback
+- Iterate based on data
 
 ### **The Key Principle**
 
@@ -244,10 +287,17 @@ promptfoo eval -c test.yaml
 - Use EDD for the "intelligence" (prompts, models, agent behavior)
 - Both disciplines work together in the SDD workflow
 
-**The simple approach:**
-1. Choose an evaluation tool (PromptFoo is popular)
-2. Write test cases for your prompts
-3. Run evaluations and analyze results
-4. Fix problems and iterate
+**The 5-step approach:**
+1. **Basic Prompt Testing** - Test simple prompt responses
+2. **Agent Behavior Testing** - Test reasoning and decision making
+3. **Tool Integration Testing** - Test tool calling behavior
+4. **Safety and Boundaries Testing** - Test safety and security
+5. **Model Comparison and Optimization** - Compare models and optimize
+
+**Integration with SDD:**
+- Use `/edd` command in your spec workflow
+- Add eval requirements to your specs
+- Document results in PHRs
+- Scale to production monitoring
 
 **Remember: TDD and EDD are parallel testing disciplines - you need both for agentic applications.**
