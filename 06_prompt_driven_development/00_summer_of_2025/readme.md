@@ -1,5 +1,18 @@
 # The Summer 2025 Inflection Point in Software Development
 
+[OpenAI says GPT-5 stacks up to humans in a wide range of jobs](https://techcrunch.com/2025/09/25/openai-says-gpt-5-stacks-up-to-humans-in-a-wide-range-of-jobs/)
+
+Here’s a crisp summary of the TechCrunch piece (Sept 25, 2025):
+
+* **What’s new:** OpenAI unveiled **GDPval-v0**, a benchmark comparing AI output to human professionals across **9 industries** and **44 occupations** using real “work deliverables.” GDPval is based on industries that contribute the most to America’s gross domestic product, including domains such as healthcare, finance, manufacturing, and government. The benchmark tests an AI model’s performance in 44 occupations among those industries, ranging from software engineers to nurses to journalists.
+* **Headlines:** On GDPval-v0, **GPT-5-high** (a beefier GPT-5) was judged **better than or on par with experts 40.6%** of the time. Anthropic’s **Claude Opus 4.1** scored **49%**; OpenAI suggests Claude’s higher score may reflect “pleasing graphics” as much as substance.
+* **Progress vs. GPT-4o:** OpenAI’s **GPT-4o** (≈15 months earlier) managed **13.7%** on the same setup—so GPT-5 shows a large jump.
+* **How the test works:** Experienced pros produced reports (e.g., an investment-banking competitive landscape). Judges then **chose between the human report and the model’s**; OpenAI averaged the AI “win/tie” rate across all jobs.
+* **Why it matters:** OpenAI’s chief economist **Aaron Chatterji** says the results imply workers can offload more tasks to AI and focus on higher-value work; evaluations lead **Tejal Patwardhan** notes the **rapid improvement trajectory** from GPT-4o to GPT-5. 
+
+
+---
+
 **From Vibe Coding to Prompt-Driven, Test-Guarded Engineering (a.k.a. “creativity, but with a suit on”)**
 
 ## Abstract

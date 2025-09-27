@@ -8,6 +8,7 @@ Summer 2025 is a structural break in software development. Frontier LLMs (e.g., 
 
 ---
 
+
 ## [Google's senior director of product explains how software engineering jobs are changing in the AI era](https://www.businessinsider.com/google-study-software-engineering-changing-ai-2025-9)
 
 Here is a concise, summary of the article:
@@ -135,6 +136,13 @@ The speaker says the industry is converging on **spec-driven development (SDD)**
 * Make every PR link to the spec section it implements; **fail CI** if required examples/tests are missing.
 * Periodically **refactor the spec** (not just the code) as understanding evolves. 
 
+---
+
+![](jobs.jpg)
+OpenAI just introduced GDPval, a new benchmark that measures whether AI models can match professional work quality across 44 occupations — testing top models like GPT-5, Claude Opus 4.1, Gemini 2.5, and Grok 4 against industry experts.
+GDPval evaluated 1,320 tasks created by professionals averaging 14 years of experience across 9 economic sectors like healthcare and finance.
+Opus 4.1 achieved the highest scores with a 47.6% win rate and excelled at visual presentation tasks, while GPT-5 led in technical accuracy.
+OpenAI also found that performance tripled from GPT-4o to GPT-5 over 15 months, showing rapid improvement in workplace task capabilities.
 
 
 ---
