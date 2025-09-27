@@ -1,6 +1,6 @@
 # All-Pakistan Learning Trip — Weekly Schedule & Call for Participation
 
-We’re launching a national, hands-on learning tour focused on **Prompt-Driven Development (PDD)**—also known as **AI Pair Programming**, **Prompt-First Agent Development (PFAD)**, or “**Vibe Coding in a Suit**” if you like your buzzwords with a tie 😄.
+We’re launching a national, hands-on learning tour focused on **Spec-Driven Development (SDD)**—also known as **AI Pair Programming**, **Prompt-First Agent Development (PFAD)**, or “**Vibe Coding in a Suit**” if you like your buzzwords with a tie 😄.
 
 ### Reference materials:
 

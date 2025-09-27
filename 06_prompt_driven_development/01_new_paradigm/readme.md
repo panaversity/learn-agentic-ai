@@ -20,9 +20,9 @@ By mid-2025, large language models cleared key bars in reasoning, tool use, and 
 
 ---
 
-## 4. Prompt-Driven Development (PDD): The Discipline
+## 4. Spec-Driven Development (SDD): The Discipline
 
-**Definition.** PDD builds primarily through **ordered prompts** that capture intent, constraints, and acceptance criteria—the AI types; engineers decide.
+**Definition.** SDD builds primarily through **ordered prompts** that capture intent, constraints, and acceptance criteria—the AI types; engineers decide.
 **Core loop (“suit + tie”):**
 
 1. **Plan** via an *Architect Prompt* (micro-spec).
@@ -60,7 +60,7 @@ By mid-2025, large language models cleared key bars in reasoning, tool use, and 
 **Feature:** `/summarize` for PDFs.
 
 * **Team A (vibes):** “Add summarize”; ships quickly; lacks size limits, clear errors, and docs; breaks in staging.
-* **Team B (PDD + TDD):** Micro-spec with 10-MB cap, PDF MIME checks, SSE streaming, explicit 200/400/415, tests first, minimal diff, ADR for streaming choice, PR with passing CI; smooth release.
+* **Team B (SDD + TDD):** Micro-spec with 10-MB cap, PDF MIME checks, SSE streaming, explicit 200/400/415, tests first, minimal diff, ADR for streaming choice, PR with passing CI; smooth release.
   **Result:** Team A burns time fixing regressions; Team B ships enhancements the same day.
 
 ---
@@ -79,7 +79,7 @@ By mid-2025, large language models cleared key bars in reasoning, tool use, and 
 ## 9. Ninety-Day Migration Plan
 
 * **Days 0–10 — Foundations:** PR template, CI gates, ADR folder, Makefile, coverage target.
-* **Days 10–30 — Pilot:** Apply PDD×TDD on a non-critical service; produce 5–8 ADRs; ship 10–20 small PRs.
+* **Days 10–30 — Pilot:** Apply SDD×TDD on a non-critical service; produce 5–8 ADRs; ship 10–20 small PRs.
 * **Days 30–60 — Scale:** Extend to three repos; add tracing, contract tests, and “no green, no merge”; run a blameless retro.
 * **Days 60–90 — Institutionalize:** Formalize policies, onboard wider org, publish playbooks and prompt libraries.
 
@@ -93,7 +93,7 @@ By mid-2025, large language models cleared key bars in reasoning, tool use, and 
 **TDD: Red (tests only).**
 “Add failing tests for `<behavior>` (edge/negative included). No production code. Minimal diff; offline.”
 
-**PDD: Green (smallest change).**
+**SDD: Green (smallest change).**
 “Make the least change to pass `tests/<path>::<test>`; no new deps; no unrelated refactors; diff-only.”
 
 **Refactor (safe).**
@@ -127,7 +127,7 @@ By mid-2025, large language models cleared key bars in reasoning, tool use, and 
 
 ## 13. Conclusion: From Novelty to Norm
 
-Summer 2025 turned AI assistance into table stakes. The teams that win aren’t merely “using AI”—they’re **operationalizing** it with **PDD + TDD + ADR + PR**. Keep the inventiveness of vibe coding, but put structure around it: small, test-guarded prompts; documented decisions; PR-gated integration. That’s how you move faster—and sleep better.
+Summer 2025 turned AI assistance into table stakes. The teams that win aren’t merely “using AI”—they’re **operationalizing** it with **SDD + TDD + ADR + PR**. Keep the inventiveness of vibe coding, but put structure around it: small, test-guarded prompts; documented decisions; PR-gated integration. That’s how you move faster—and sleep better.
 
 ---
 

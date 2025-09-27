@@ -438,7 +438,7 @@ print("AGENT RESPONSE: " , result.final_output)
 Chainlit can connect and call these endpoints at start of session we can generate id and use it
 ```
 
-### 7. Execute tasks sequentially: lean on `/implement` for automated execution or drive the PDD loop manually (RED → GREEN → REFACTOR → EXPLAIN).
+### 7. Execute tasks sequentially: lean on `/implement` for automated execution or drive the SDD loop manually (RED → GREEN → REFACTOR → EXPLAIN).
 
 We can just ask it to implement - here we will expirement by giving agent escalation options to reach out to use when implementing
 

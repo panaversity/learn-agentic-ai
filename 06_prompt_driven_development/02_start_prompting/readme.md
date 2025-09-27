@@ -1,5 +1,5 @@
-# Starting Prompt Driven Development (PDD)
-This guide helps you choose and try AI coding tools based on your budget while maintaining the same Prompt-Driven Development (PDD) methodology across all tiers.
+# Starting Spec Driven Development (SDD)
+This guide helps you choose and try AI coding tools based on your budget while maintaining the same Spec-Driven Development (SDD) methodology across all tiers.
 
 Choose the option that fits your budget; the disciplined loop remains the same: Spec → Plan → Prompt → Test/Evaluate → Refactor → Record → Review.
 
@@ -13,7 +13,7 @@ Choose the option that fits your budget; the disciplined loop remains the same: 
 
 ## Tool Comparison
 
-Below is a comparison of the four PDD tool options, tailored to different budgets, with consistent formatting and focus on their features, strengths, and use cases.
+Below is a comparison of the four SDD tool options, tailored to different budgets, with consistent formatting and focus on their features, strengths, and use cases.
 
 
 | Aspect              | Qwen Code (CLI) | Gemini CLI | Cursor Pro (AI-First IDE) | GPT-5 Codex (Cloud Agent) |
@@ -29,7 +29,7 @@ Below is a comparison of the four PDD tool options, tailored to different budget
 1. **Free Tier ($0/mo)**: Use **Qwen Code CLI** for codebase exploration and git automation, paired with **Gemini CLI** for long-context scripting. Ideal for beginners or lightweight projects.
 2. **Pro Tier ($20/mo)**: Upgrade to **Cursor Pro** for an AI-native IDE with fast tab completion, Agent Mode, and multi-file editing, perfect for solo developers or small teams.
 3. **Premium Tier ($40+/mo)**: Combine **GPT-5 Codex** with **Cursor Pro** for autonomous, repo-wide automation and PR generation, suited for complex projects or teams needing scalability.
-4. Start with the free tier and upgrade as your workflow evolves, keeping the PDD method consistent.
+4. Start with the free tier and upgrade as your workflow evolves, keeping the SDD method consistent.
 
 
 ## Latest SWE-bench Verified

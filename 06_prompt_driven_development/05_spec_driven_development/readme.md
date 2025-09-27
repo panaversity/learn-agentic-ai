@@ -48,15 +48,6 @@ The speaker says the industry is converging on **spec-driven development (SDD)**
 
 ---
 
-# SDD vs. PDD (and why they pair well)
-
-* **PDD (Prompt-Driven Development)**: You develop by **sequencing prompts** (architect → red → green → refactor → explain), letting the AI generate diffs/tests/docs in **small, verified steps**. Great for velocity and tight feedback.
-* **SDD (Spec-Driven Development)**: You develop by **writing the spec first**—API contracts, behaviors, constraints, and acceptance checks—then prompting the AI to implement *to the spec*. Great for **consistency, scaling, and team alignment**.
-
-Think of SDD as **PDD’s backbone**: you still drive with prompts, but every prompt anchors to a **single source-of-truth spec**. That’s how you avoid “prompt drift.”
-
----
-
 ## Walk the [Spec-Kit](https://developer.microsoft.com/blog/spec-driven-development-spec-kit) SDD Cycle
 
 Ready to practice? Follow the step folders in this directory:

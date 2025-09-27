@@ -81,7 +81,7 @@ uv run pytest
 ```
 
 ## Tips
-- Keep prompts in `prompts/` for PDD history
+- Keep prompts in `prompts/` for SDD history
 - Pair with Gemini CLI (free) for long‑context scripting if desired
 - Create Specialized SubAgents for different parts of your stack.
 

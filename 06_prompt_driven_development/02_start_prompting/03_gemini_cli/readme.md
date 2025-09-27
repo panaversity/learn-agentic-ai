@@ -74,7 +74,7 @@ uv run pytest
 ```
 
 ## Tips
-- Keep prompts in `prompts/` to track the PDD history
+- Keep prompts in `prompts/` to track the SDD history
 - Pair with Qwen Code (free) for repo analysis/git automation if desired
 
 ## References

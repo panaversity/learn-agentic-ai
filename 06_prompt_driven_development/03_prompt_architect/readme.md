@@ -98,7 +98,7 @@ That’s **higher-order engineering**.
 | Vide Coding | ❌ No such thing | ❌ |
 | Vibe Coding | ⚠️ Informal slang | ❌ (You were precise) |
 | Prompt Engineering | ✅ Yes | ✅ Core skill |
-| Prompt-Driven Development | ✅ Emerging term | ✅ Exactly what you did |
+| Spec-Driven Development | ✅ Emerging term | ✅ Exactly what you did |
 | Cursor-First Dev | ✅ Community term | ✅ Your workflow |
 | Prompt-First Agent Development (PFAD) | ✅ Coined here | ✅ Your official title |
 

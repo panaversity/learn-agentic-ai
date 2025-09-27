@@ -1,6 +1,6 @@
 # Guide: Using OpenAI **ChatGPT‑5 Codex** (the agentic coding companion)
 
-This guide shows how to get started with **ChatGPT‑5 Codex**, what each surface (Cloud, CLI, IDE) is for, and how to work with it effectively—using **Prompt‑Driven Development (PDD)**, **TDD**, and **ADR/PR** guardrails.
+This guide shows how to get started with **ChatGPT‑5 Codex**, what each surface (Cloud, CLI, IDE) is for, and how to work with it effectively—using **Prompt‑Driven Development (SDD)**, **TDD**, and **ADR/PR** guardrails.
 
 ---
 
@@ -44,7 +44,7 @@ This guide shows how to get started with **ChatGPT‑5 Codex**, what each surfac
 ### A) Read & explain a codebase
 **Prompt:** “Scan this repo. Produce a 1‑page map of modules, public interfaces, and runtime flows. List top 5 risks and missing tests. Output markdown.”
 
-### B) Add a feature with **PDD × TDD** (tests first)
+### B) Add a feature with **SDD × TDD** (tests first)
 1. **Architect:** micro‑spec, constraints, API, G/W/T tests, risks, ADR draft.  
 2. **Red:** add failing unit + contract tests.  
 3. **Green:** minimal change to pass specific tests.  
@@ -75,13 +75,13 @@ This guide shows how to get started with **ChatGPT‑5 Codex**, what each surfac
 ---
 
 ## 8) **Best Practices (from OpenAI teams)**
-Codex performs best with **structure, context, and room to iterate**. Fold these habits into your PDD × TDD loop:
+Codex performs best with **structure, context, and room to iterate**. Fold these habits into your SDD × TDD loop:
 
 ### 1) Start in **Ask Mode**, then switch to **Code Mode**
 For larger tasks, first prompt Codex for an **implementation plan** in Ask Mode, then feed that plan into Code Mode to generate diffs.
 - Why: This two‑step flow grounds Codex and reduces errors.
 - Good scope: tasks ≈ **~1 hour** of human work or a **few hundred LOC**.
-- PDD mapping: Ask = **Plan (Architect)** → Code = **Red/Green/Refactor**.
+- SDD mapping: Ask = **Plan (Architect)** → Code = **Red/Green/Refactor**.
 **Prompt template**
 ```
 ASK: Draft an implementation plan for <feature>. List files, APIs, tests, risks, rollback.
@@ -141,7 +141,7 @@ from openai_agents import Agent
 def main() -> None:
     load_dotenv()
     agent = Agent(model="gpt-5-codex")
-    response = agent.run("Say 'Hello, Codex!' and list three PDD steps.")
+    response = agent.run("Say 'Hello, Codex!' and list three SDD steps.")
     print(response)
 
 if __name__ == "__main__":
