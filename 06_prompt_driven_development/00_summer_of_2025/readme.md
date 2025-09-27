@@ -13,11 +13,11 @@ Here’s a crisp summary of the TechCrunch piece (Sept 25, 2025):
 
 ---
 
-**From Vibe Coding to Prompt-Driven, Test-Guarded Engineering (a.k.a. “creativity, but with a suit on”)**
+**From Vibe Coding to Spec-Driven, Test-Guarded Engineering (a.k.a. “creativity, but with a suit on”)**
 
 ## Abstract
 
-The summer of 2025 marks a structural break in software practice driven by frontier LLMs (e.g., ChatGPT-5, Claude 4.1, Gemini Pro 2.5), AI-first IDEs (e.g., Cursor), and production-grade software development agents (e.g., Codex-class ChatGPT-5 Agents)—and yes, that sentence has more power words than a startup pitch deck on demo day. This paper argues that AI-assisted development is now the dominant mode of professional software creation, but that **how** we use AI determines whether we ship maintainable systems or compile chaos (think rocket vs. confetti cannon). We contrast **vibe coding** (exploratory, fast, and often brittle) with **Spec-Driven Development (SDD)** integrated with **Test-Driven Development (TDD)**, **Architecture Decision Records (ADR)**, and **Pull Requests (PR)**—the “suit” that keeps creativity presentable (and the coffee off your shirt). We present an operating model, governance patterns, metrics, and a migration roadmap for teams adopting AI-first engineering at scale, with practical examples and prompts (because even experts appreciate good copy-paste magic).
+The summer of 2025 marks a structural break in software practice driven by frontier LLMs (e.g., ChatGPT-5, Claude 4.1, Gemini Pro 2.5), AI-first IDEs (e.g., Cursor), and production-grade software development agents (e.g., Codex-class ChatGPT-5 Agents)—and yes, that sentence has more power words than a startup pitch deck on demo day. This paper argues that AI-assisted development is now the dominant mode of professional software creation, but that **how** we use AI determines whether we ship maintainable systems or compile chaos (think rocket vs. confetti cannon). We contrast **vibe coding** (exploratory, fast, and often brittle) with **Spec-Driven Development (SDD)** integrated with **Test-Driven Development (TDD)**, **Prompt History Records (PHR)**, and **Pull Requests (PR)**—the “suit” that keeps creativity presentable (and the coffee off your shirt). We present an operating model, governance patterns, metrics, and a migration roadmap for teams adopting AI-first engineering at scale, with practical examples and prompts (because even experts appreciate good copy-paste magic).
 
 ---
 
@@ -26,7 +26,6 @@ The summer of 2025 marks a structural break in software practice driven by front
 In 2025, LLMs crossed thresholds of reasoning, tool-use reliability, and latency that made human-AI pair programming not just viable but preferable (finally, your “pair” doesn’t hog the keyboard). AI-first IDEs integrated model context, code navigation, refactor tools, and repo-aware prompting; agents learned to read issues, implement changes, and open PRs with tests (and fewer cat pictures in commit messages). Yet results are bimodal: some teams report “many-fold” productivity gains, while others drown in rework from undisciplined prompting—proof that speed without method is just a faster route to bugs (like turbo mode on a lawnmower in your living room).
 
 ---
-
 
 Here are recent, credible references that (taken together) make a strong case that **Summer 2025** is a real turning point for software development:
 
