@@ -1,39 +1,73 @@
 # Module 08 – Evaluation-Driven Development (EDD)
 
-> **The evaluation layer for SDD: How to systematically test and optimize your AI prompts and models.**
+> **The AI testing discipline: How to systematically test and optimize your AI prompts and models in agentic applications.**
 
 ## 🎯 **What EDD Actually Is**
 
-**EDD is the practice of:**
-- Testing your AI prompts systematically
-- Comparing different models for your use case
-- Measuring prompt performance with data
-- Optimizing based on real results, not guesswork
+**EDD is the AI-specific testing discipline that works alongside TDD:**
+
+- **TDD**: Tests traditional code (functions, APIs, business logic)
+- **EDD**: Tests AI components (prompts, models, agent behavior)
 
 **EDD is NOT:**
-- A specific tool or framework
+- A replacement for TDD
 - A single learning path
-- A replacement for good prompt engineering
 - A magic solution for all AI problems
+- A replacement for good prompt engineering
 
-## 🤔 **The Real Problem**
+## 🔄 **TDD vs EDD: Parallel Testing Disciplines**
 
-**In agentic applications, you need to know:**
-- Do your prompts work consistently?
-- Which model performs best for your task?
-- Are your prompts safe and reliable?
-- How do you measure prompt quality?
+### **TDD (Test-Driven Development)**
+**For:** Traditional code and functions
+**Tests:** Code logic, APIs, database operations, business logic
+**Focus:** "Does my code work correctly?"
 
-**EDD provides answers through systematic evaluation.**
+**Example:**
+```python
+def test_user_creation():
+    user = create_user("john@example.com", "password123")
+    assert user.email == "john@example.com"
+    assert user.is_active == True
+```
+
+### **EDD (Evaluation-Driven Development)**
+**For:** AI agents and LLM applications
+**Tests:** Prompt quality, agent behavior, model performance, reasoning chains
+**Focus:** "Does my AI agent work correctly?"
+
+**Example:**
+```python
+def test_agent_response():
+    response = agent.run("Help me book a flight")
+    assert response.contains("flight")
+    assert response.is_helpful()
+    assert response.cost < 0.01
+```
+
+## 🤖 **For Agentic Applications, You Need Both**
+
+**TDD for the "plumbing":**
+- Database connections
+- API integrations
+- Business logic
+- Error handling
+- Authentication
+
+**EDD for the "intelligence":**
+- Agent prompts
+- Reasoning chains
+- Tool selection
+- Conversation flow
+- Model performance
 
 ## 🔄 **How EDD Fits in SDD Workflow**
 
 **SDD → TDD → EDD → PHR**
 
 **1. SDD Design**: Plan your AI agent's capabilities and user interactions
-**2. TDD Implementation**: Build agent loops, tool calling, and response generation  
-**3. EDD Evaluation**: Test and optimize agent prompts and model performance
-**4. PHR Learning**: Capture insights and document successful patterns
+**2. TDD Implementation**: Build the traditional code that supports the agent
+**3. EDD Implementation**: Build and test the AI components that make the agent intelligent
+**4. PHR Learning**: Capture insights from both TDD and EDD
 
 ### **Why EDD Matters for Agentic Applications**
 
@@ -195,19 +229,20 @@ promptfoo eval -c test.yaml
 
 ## 🎯 **Summary**
 
-**EDD is about testing your AI prompts systematically, not hoping they work.**
+**EDD is the AI-specific testing discipline that works alongside TDD in agentic applications.**
 
 **Key points:**
+- TDD tests traditional code, EDD tests AI components
+- Both are essential for reliable agentic applications
 - Test your prompts like you test your code
 - Compare different models for your use case
 - Measure performance with real data
 - Optimize based on results, not guesswork
 
 **For agentic applications:**
-- Test core agent behavior
-- Test tool calling and integration
-- Test conversation flow and context
-- Test safety and boundaries
+- Use TDD for the "plumbing" (APIs, databases, business logic)
+- Use EDD for the "intelligence" (prompts, models, agent behavior)
+- Both disciplines work together in the SDD workflow
 
 **The simple approach:**
 1. Choose an evaluation tool (PromptFoo is popular)
@@ -215,4 +250,4 @@ promptfoo eval -c test.yaml
 3. Run evaluations and analyze results
 4. Fix problems and iterate
 
-**Remember: Test your AI prompts like you test your code.**
+**Remember: TDD and EDD are parallel testing disciplines - you need both for agentic applications.**
