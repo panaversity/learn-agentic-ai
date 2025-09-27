@@ -1,128 +1,342 @@
-# Prompt History Records
+# Module 06 – Prompt History Records (PHR)
 
-**PHRs = Prompt History Records.**
+> **Turn every AI exchange into a first-class artifact that compounds your learning and accelerates your team.**
 
-They’re short, versioned markdown files that capture each meaningful **prompt you gave to the AI** (and its intended outcome) during development. Think of them as *commit messages for prompts*—a paper trail that lets you (and reviewers) see **what you asked, why, what changed, and how it was verified**.
+## The Problem: Lost Knowledge
 
-### Why use PHRs?
+Every day, developers have hundreds of AI conversations that produce valuable code, insights, and decisions. But this knowledge disappears into chat history, leaving you to:
 
-* **Traceability:** Reproduce a change by replaying the exact prompt(s).
-* **Reviewability:** PR reviewers can judge intent vs. diff quickly.
-* **Team learning:** Good prompts become reusable patterns.
-* **Risk control:** Avoids “mystery code” from undocumented AI edits.
+- **Reinvent solutions** you already figured out
+- **Debug without context** of why code was written that way  
+- **Miss patterns** in what prompts actually work
+- **Lose traceability** for compliance and code reviews
 
-### What’s inside a PHR?
+## The Solution: Prompt History Records
 
-* **Metadata:** id, title, date, stage (architect/red/green/refactor/explainer/adr-draft/pr-draft), model used.
-* **Scope & constraints:** files to touch, acceptance criteria, out-of-scope, “minimal diff.”
-* **The exact prompt text** you pasted into Cursor/Codex.
-* **Outcome notes:** files changed, tests added, follow-ups.
+**PHRs capture every meaningful AI exchange as a structured artifact** that lives alongside your code, creating a searchable, reviewable history of your AI-assisted development.
 
-### Typical filename
+### Core Learning Science Principles
 
-```
-docs/prompts/0007-chat-endpoint-green.prompt.md
-```
+| Principle | How PHRs Apply | Daily Benefit |
+|-----------|----------------|---------------|
+| **Spaced Repetition** | Revisit PHRs weekly to reinforce successful strategies | Build muscle memory for effective prompting |
+| **Metacognition** | Reflect on what worked/didn't work in each exchange | Develop better prompting intuition |
+| **Retrieval Practice** | Search PHRs when facing similar problems | Access proven solutions instantly |
+| **Interleaving** | Mix different types of prompts (architect/red/green) | Strengthen transfer across contexts |
 
-### Minimal template (what we put in your repo)
+## 3-File Drop-In Kit
 
-```markdown
----
-id: 0007
-title: Chat Endpoint
-stage: green            # architect | red | green | refactor | explainer | adr-draft | pr-draft
-date: 2025-09-21
-surface: cursor-composer
-model: gpt-5-codex
-repo_ref: <branch-or-commit>
-scope_files:
-  - app/main.py
-  - tests/test_chat_contract.py
-links:
-  adr: docs/adr/0002-streaming-protocol.md
-  issue: null
-  pr: null
-acceptance:
-  - Given POST /chat with user_message -> Then 200 and ChatReply shape
-constraints:
-  - minimal diff, no new deps
-  - offline tests (mocks)
-out_of_scope:
-  - auth, db, tracing
-secrets_policy: "No secrets; use .env"
-labels: [api, contract]
----
+**Copy these 3 files into any project and start capturing AI knowledge immediately:**
 
-<PASTE THE EXACT PROMPT YOU USED>
+| File | Purpose | Location |
+|------|---------|----------|
+| `create-phr.sh` | Creates numbered PHR files with metadata | `scripts/` |
+| `phr.toml` | Universal slash command for all IDEs | `.<YOUR_AI_CODE>/commands/` |
+| `phr-template.prompt.md` | Defines PHR structure | `.specify/templates/` (with Spec Kit) or `prompts/` (without) |
 
-### Outcome
-- Files changed: app/main.py
-- Tests added: tests/test_chat_contract.py::test_chat_happy_path_returns_chatreply_shape
-- Next prompts: add SSE streaming (architect)
-- Notes: kept diff minimal
-```
+## Quick Start (5 Minutes)
 
-### How PHRs fit the workflow
+### Step 1: Drop in the 3 PHR Files
 
-* **PDD + TDD loop:**
-
-  * **Architect PHR** (micro-spec) → **Red PHR** (tests only) → **Green PHR** (smallest diff to pass) → **Refactor PHR** (keep tests green) → **Explainer PHR** (bullets)
-* **PRs:** Link relevant PHR ids so reviewers can see the prompts behind the diff.
-* **ADRs:** When you make a consequential decision, create an ADR and link the related PHR(s).
-
-### Using the helper scripts we shipped
-
-From the repo root:
-
+**With Spec Kit (Recommended):**
 ```bash
-# Create a new PHR file with next sequence number
-make prompt-new SLUG=chat-endpoint STAGE=architect
-
-# Rebuild the index of PHRs
-make prompt-index
+# Copy the PHR kit to your Spec Kit project
+mkdir -p scripts .gemini/commands .specify/templates
+cp 06_prompt_driven_development/06_phr/kit/create-phr.sh scripts/
+cp 06_prompt_driven_development/06_phr/kit/commands/phr.toml .gemini/commands/
+cp 06_prompt_driven_development/06_phr/kit/phr-template.prompt.md .specify/templates/
+chmod +x scripts/create-phr.sh
 ```
 
-Git hooks will nudge you to include a PHR whenever you stage code changes.
+**Without Spec Kit (Fallback):**
+```bash
+# Copy the PHR kit to any project
+mkdir -p scripts prompts docs/prompts .gemini/commands
+cp 06_prompt_driven_development/06_phr/kit/create-phr.sh scripts/
+cp 06_prompt_driven_development/06_phr/kit/commands/phr.toml .gemini/commands/
+cp 06_prompt_driven_development/06_phr/kit/phr-template.prompt.md prompts/
+chmod +x scripts/create-phr.sh
+```
 
-### Do / Don’t
+**For Other IDEs:**
+```bash
+# Cursor IDE
+cp 06_prompt_driven_development/06_phr/kit/commands/phr.toml .cursor/commands/
 
-**Do**
+# VS Code
+cp 06_prompt_driven_development/06_phr/kit/commands/phr.toml .vscode/commands/
+```
 
-* Write PHRs for *every meaningful step* (architect/red/green/refactor…).
-* Keep prompts specific, testable, and scoped to a tiny change.
-* Record outcomes right after accepting the diff.
+### Step 2: Use /phr for Everything
+```bash
+# Instead of separate commands, use /phr for everything:
+/phr Create a user authentication system
+/phr Fix the login bug in auth.py
+/phr Plan the database schema for user management
+/phr Write tests for the payment module
 
-**Don’t**
+# The agent will:
+# 1. Execute your request (do the actual work)
+# 2. Record the exchange as a PHR automatically
+# 3. Provide both the solution AND the learning record
+```
 
-* Paste secrets into prompts (use `.env`).
-* Bundle multiple unrelated changes in one PHR.
-* Skip the PHR when you hot-edit code—capture *how* you asked the AI.
+### Feature Detection Strategy
 
-## Examples
+**With Spec Kit, the script intelligently finds the right feature:**
 
-Added four concrete PHR example files to your repo and packaged an updated zip:
+1. **Branch Matching**: If you're on branch `001-user-auth`, it looks for `specs/001-user-auth/`
+2. **Latest Numbered**: Falls back to the highest numbered feature (e.g., `specs/003-payment/`)
+3. **Manual Override**: Use `--feature` to specify exactly which feature
 
-docs/prompts/0001-healthz-architect.prompt.md
+**Examples:**
+```bash
+# Auto-detects based on current branch
+git checkout 001-user-auth
+./scripts/create-phr.sh --prompt "Fix login bug"
+# → Creates: specs/001-user-auth/prompts/0001-fix-login-bug.red.prompt.md
 
-docs/prompts/0002-healthz-green.prompt.md
+# Manual override
+./scripts/create-phr.sh --feature 002-payment --prompt "Add Stripe integration"
+# → Creates: specs/002-payment/prompts/0001-add-stripe-integration.green.prompt.md
+```
 
-docs/prompts/0003-chat-architect.prompt.md
+**That's it!** Every AI exchange is now captured, searchable, and reviewable.
 
-docs/prompts/0004-chat-green.prompt.md
+## Daily Workflow
 
-Download the updated repo here:
+### Morning: Context Loading (2 minutes)
 
-ai-agent-playbook-starter-with-phr-examples.zip
+**With Spec Kit:**
+```bash
+# Read yesterday's PHRs to rehydrate context
+ls specs/*/prompts/*.prompt.md | tail -5 | xargs cat
+```
 
-Want want to also have a example PR description that references these PHRs and an ADR stub for the upcoming streaming choice (SSE vs WebSocket) so you can open your first PR immediately?
+**Without Spec Kit:**
+```bash
+# Read yesterday's PHRs to rehydrate context
+ls docs/prompts/*.prompt.md | tail -5 | xargs cat
+```
 
-Ready-to-paste PR description:
-docs/pr/0001-bootstrap-and-chat-contract.md
+### During Work: Capture Everything (automatic)
+```bash
+# After any meaningful AI interaction, the agent automatically runs:
+# /phr --stage red --title "Fix login bug" --files "auth.py,test_auth.py"
+# (No manual intervention needed)
+```
 
-ADR stub for streaming choice:
-docs/adr/0002-streaming-protocol-choice.md (Status: Draft)
+### Evening: Reflect & Learn (3 minutes)
 
-Grab the updated bundle here:
+**With Spec Kit:**
+```bash
+# Review today's PHRs and note what worked
+grep -r "Reflection:" specs/*/prompts/ | tail -3
+```
 
-ai-agent-playbook-starter-with-pr-and-adr.zip
+**Without Spec Kit:**
+```bash
+# Review today's PHRs and note what worked
+grep -r "Reflection:" docs/prompts/ | tail -3
+```
 
+## What You Get
+
+### PHR Files Live in Your Project
+
+**With Spec Kit (Recommended):**
+```
+your-project/
+├── .specify/templates/
+│   └── phr-template.prompt.md        ← Template
+├── specs/
+│   └── 001-user-auth/
+│       ├── spec.md
+│       ├── plan.md
+│       └── prompts/                  ← Feature-specific PHRs
+│           ├── 0001-plan-auth.architect.prompt.md
+│           ├── 0002-implement-login.green.prompt.md
+│           └── 0003-fix-bug.red.prompt.md
+├── scripts/
+│   └── create-phr.sh
+└── .gemini/commands/
+    └── phr.toml
+```
+
+**Without Spec Kit (Fallback):**
+```
+your-project/
+├── prompts/
+│   ├── phr-template.prompt.md        ← Template
+│   ├── 0001-plan-auth.architect.prompt.md
+│   ├── 0002-implement-login.green.prompt.md
+│   └── 0003-fix-bug.red.prompt.md
+├── scripts/
+│   └── create-phr.sh
+└── .gemini/commands/
+    └── phr.toml
+```
+
+### Each PHR Contains
+- **What you asked** (the prompt)
+- **What AI responded** (the response)  
+- **What you built** (files changed, tests run)
+- **What you learned** (reflection notes)
+- **What's next** (follow-up prompts)
+
+### Searchable Knowledge Base
+
+**With Spec Kit:**
+   ```bash
+# Find all prompts about authentication
+grep -r "auth" specs/*/prompts/
+
+# Find all red-stage prompts (debugging)
+find specs -name "*.red.prompt.md"
+
+# Find prompts that touched specific files
+grep -r "auth.py" specs/*/prompts/
+```
+
+**Without Spec Kit:**
+   ```bash
+# Find all prompts about authentication
+grep -r "auth" docs/prompts/
+
+# Find all red-stage prompts (debugging)
+find docs/prompts -name "*.red.prompt.md"
+
+# Find prompts that touched specific files
+grep -r "auth.py" docs/prompts/
+```
+
+## Why This Works (Learning Science)
+
+### Spaced Repetition
+- **Weekly PHR reviews** reinforce successful prompting patterns
+- **Searching past PHRs** when facing similar problems builds retrieval strength
+- **Pattern recognition** emerges from reviewing your own prompt history
+
+### Metacognition  
+- **Reflection prompts** in each PHR force you to think about what worked
+- **"Next prompts"** section helps you plan follow-up actions
+- **Outcome tracking** shows the connection between prompts and results
+
+### Interleaving
+- **Stage tagging** (architect/red/green) mixes different types of thinking
+- **Context switching** between planning, coding, and debugging strengthens transfer
+- **Cross-domain learning** happens when you apply patterns from one area to another
+
+## Advanced Usage
+
+### Team Knowledge Sharing
+
+**With Spec Kit:**
+```bash
+# Share PHRs in code reviews
+git add specs/*/prompts/ && git commit -m "Add PHR-0001: auth implementation"
+
+# Create team prompt library
+mkdir team-prompts && cp specs/*/prompts/*.prompt.md team-prompts/
+```
+
+**Without Spec Kit:**
+```bash
+# Share PHRs in code reviews
+git add docs/prompts/ && git commit -m "Add PHR-0001: auth implementation"
+
+# Create team prompt library
+mkdir team-prompts && cp docs/prompts/*.prompt.md team-prompts/
+```
+
+### Compliance & Auditing
+
+**With Spec Kit:**
+```bash
+# Generate audit trail
+find specs -name "*.prompt.md" -exec grep -l "security\|auth\|payment" {} \;
+
+# Track decision rationale
+grep -r "Decision:" specs/*/prompts/
+```
+
+**Without Spec Kit:**
+```bash
+# Generate audit trail
+find docs/prompts -name "*.prompt.md" -exec grep -l "security\|auth\|payment" {} \;
+
+# Track decision rationale
+grep -r "Decision:" docs/prompts/
+```
+
+### Performance Optimization
+
+**With Spec Kit:**
+```bash
+# Find your most effective prompts
+grep -r "✅ Impact:" specs/*/prompts/ | grep -v "recorded for traceability"
+
+# Identify patterns in failed prompts
+grep -r "❌" specs/*/prompts/
+```
+
+**Without Spec Kit:**
+```bash
+# Find your most effective prompts
+grep -r "✅ Impact:" docs/prompts/ | grep -v "recorded for traceability"
+
+# Identify patterns in failed prompts
+grep -r "❌" docs/prompts/
+```
+
+## Success Metrics
+
+After 1 week of using PHRs, you should have:
+- [ ] 20+ PHRs capturing your AI interactions
+- [ ] 3+ successful prompt patterns you can reuse
+- [ ] 1+ debugging session where PHRs saved you time
+- [ ] Clear understanding of what prompts work for your domain
+
+**The goal:** Turn AI assistance from ad-hoc to systematic, building a compounding knowledge base that makes you more effective every day.
+
+## Troubleshooting
+
+### Common Issues
+
+**"No feature specified and no existing feature directories found"**
+- **Cause**: You're in a Spec Kit project but no features exist yet
+- **Solution**: Create a feature first using your Spec Kit workflow, or use `--feature general` for standalone mode
+
+**"Template not found"**
+- **Cause**: Template file is missing or in wrong location
+- **Solution**: Ensure `phr-template.prompt.md` is in `.specify/templates/` (Spec Kit) or `prompts/` (standalone)
+
+**"Feature directory not found"**
+- **Cause**: Specified feature doesn't exist in `specs/`
+- **Solution**: Check available features with `ls specs/` or create the feature first
+
+**PHRs not being created automatically**
+- **Cause**: Agent not configured to use `/phr` command
+- **Solution**: Copy `phr.toml` to your IDE's commands directory:
+  - **Gemini CLI**: `.gemini/commands/phr.toml`
+  - **Cursor IDE**: `.cursor/commands/phr.toml`
+  - **VS Code**: `.vscode/commands/phr.toml`
+
+**Command Not Executing (Most Common Issue)**
+- **Cause**: AI agent generates command content instead of executing the script
+- **Solution**: The universal command now includes explicit execution instructions:
+  - Commands must include "You MUST do BOTH - execute the work AND create the PHR record"
+  - Commands follow the execution flow: Execute Request → Extract Info → Create PHR → Validate
+  - Commands use `$ARGUMENTS` placeholder for user input handling
+
+**Work Not Being Done**
+- **Cause**: Agent only records but doesn't execute the actual request
+- **Solution**: The command explicitly requires BOTH actions:
+  - First: Execute the user's actual request (do the work)
+  - Second: Record the exchange as a PHR (capture for learning)
+
+### Getting Help
+
+- Check the script output for specific error messages
+- Verify file permissions: `chmod +x scripts/create-phr.sh`
+- Test manually: `./scripts/create-phr.sh --help`
