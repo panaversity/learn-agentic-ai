@@ -46,6 +46,166 @@
 - **Implementation:** Use FastAPI + WebSockets per ADR-0001
 ```
 
+## 🏛️ **Constitution vs ADR: The Key Difference**
+
+### **Constitution = HOW you work (Process & Standards)**
+- **Quality standards** (80% test coverage, TypeScript strict mode)
+- **Development practices** (TDD, minimal dependencies)
+- **UX principles** (clear error messages, consistent design)
+- **Team behaviors** (code review requirements, documentation standards)
+
+### **ADR = WHAT you choose (Technical Decisions)**
+- **Technology choices** (FastAPI vs Flask, PostgreSQL vs MongoDB)
+- **Architecture patterns** (microservices vs monolith, REST vs GraphQL)
+- **Infrastructure decisions** (AWS vs Azure, Docker vs Kubernetes)
+- **Integration choices** (OpenAI vs Anthropic, payment processors)
+
+## 🔄 **How They Work Together in Enhanced SDD**
+
+```
+Constitution (Standards) → ADR (Decisions) → Spec (Requirements) → Plan (Implementation)
+```
+
+### **Example Workflow:**
+
+**1. Constitution Sets the Standards:**
+```markdown
+# Constitution
+- All APIs must have 80% test coverage
+- Use TypeScript strict mode
+- Implement comprehensive error handling
+- Document all public interfaces
+```
+
+**2. ADR Makes the Decisions:**
+```markdown
+# ADR-0001: Choose FastAPI for API Development
+Context: Need modern Python API with async support
+Decision: FastAPI over Flask
+Consequences: Better performance, auto-docs, type safety
+```
+
+**3. Spec References Both:**
+```markdown
+# Feature Spec: User Authentication
+## Architecture References
+- ADR-0001: FastAPI framework choice
+- Constitution: 80% test coverage requirement
+
+## Requirements
+- User registration/login endpoint
+- JWT token management
+- Comprehensive error handling (per Constitution)
+```
+
+## 🎯 **Why You Need Both**
+
+### **Constitution Without ADR = Vague Standards**
+```markdown
+# Constitution only
+- "Use modern frameworks"
+- "Implement good error handling"
+- "Choose reliable databases"
+```
+**Problem:** No specific guidance on which technologies to use.
+
+### **ADR Without Constitution = Inconsistent Quality**
+```markdown
+# ADR only
+- "Choose FastAPI"
+- "Use PostgreSQL"
+- "Implement Redis caching"
+```
+**Problem:** No quality standards for how to implement these choices.
+
+### **Constitution + ADR = Complete Guidance**
+```markdown
+# Constitution
+- 80% test coverage required
+- TypeScript strict mode
+- Comprehensive error handling
+
+# ADR-0001
+- Choose FastAPI (with Constitution's quality standards)
+- Choose PostgreSQL (with Constitution's testing requirements)
+- Choose Redis (with Constitution's error handling standards)
+```
+
+## 🛠️ **Practical Example: AI Tutor Application**
+
+### **Constitution (Process Standards):**
+```markdown
+# Project Constitution
+- All code must have 80% test coverage
+- Use Python type hints everywhere
+- Implement comprehensive error handling
+- Document all API endpoints
+- Use async/await patterns
+- Follow RESTful API design
+```
+
+### **ADRs (Technical Decisions):**
+```markdown
+# ADR-0001: FastAPI for API Development
+Context: Need modern Python API with async support
+Decision: FastAPI over Flask
+Consequences: Better performance, auto-docs, type safety
+
+# ADR-0002: PostgreSQL for Data Storage
+Context: Need reliable database for user data
+Decision: PostgreSQL over MongoDB
+Consequences: ACID compliance, mature ecosystem
+
+# ADR-0003: OpenAI Agents for AI Features
+Context: Need sophisticated AI tutoring capabilities
+Decision: OpenAI Agents SDK over custom implementation
+Consequences: Advanced AI features, vendor lock-in
+```
+
+### **Spec References Both:**
+```markdown
+# AI Tutor Chat System Spec
+## Architecture References
+- ADR-0001: FastAPI framework choice
+- ADR-0002: PostgreSQL database choice
+- ADR-0003: OpenAI Agents for AI features
+
+## Quality Requirements (from Constitution)
+- 80% test coverage for all endpoints
+- Comprehensive error handling
+- Type hints for all functions
+- Async/await patterns throughout
+
+## Implementation Requirements
+- Real-time chat with AI tutor
+- User authentication and session management
+- Chat history storage and retrieval
+```
+
+## 🔄 **The Complete Enhanced SDD Flow**
+
+```
+1. Constitution → Sets quality standards and development practices
+2. ADR → Makes specific technology and architecture decisions
+3. Spec → Defines requirements referencing both Constitution and ADRs
+4. Plan → Creates implementation plan following Constitution standards
+5. Tasks → Breaks down into actionable items
+6. TDD/EDD → Implements with Constitution's testing requirements
+7. PHR → Documents the process
+```
+
+## 💡 **Key Insight**
+
+**Constitution is your "quality DNA" - it defines HOW you build everything.**
+**ADR is your "decision history" - it defines WHAT you chose and why.**
+
+Without Constitution, your ADRs might lead to inconsistent quality.
+Without ADRs, your Constitution has no specific technical direction.
+
+**Together, they create a complete framework for building high-quality, well-architected applications.**
+
+The Constitution ensures every implementation follows your quality standards, while ADRs ensure you make informed, documented technology choices that align with those standards.
+
 ## 🤝 **How ADR and SDD Work Together**
 
 **The Complete Workflow:**
