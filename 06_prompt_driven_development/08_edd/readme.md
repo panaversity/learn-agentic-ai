@@ -1,310 +1,303 @@
-# The Definitive Guide to Evaluation-Driven Development (EDD)
+# Module 08 – Evaluation-Driven Development (EDD)
 
-**[Must Read: From TDD to EDD: Why Evaluation-Driven Development Is the Future of AI Engineering](https://medium.com/@nimrodbusany_9074/from-tdd-to-edd-why-evaluation-driven-development-is-the-future-of-ai-engineering-a5e5796b2af4)**
+> **The AI testing discipline: How to systematically test and optimize your AI prompts and models in agentic applications.**
 
-**[From TDD to EDD: A New Paradigm for AI Development](https://www.linkedin.com/pulse/from-tdd-edd-new-paradigm-ai-development-piyush-m-agarwal-xqqgf/)**
+## 🎯 **What EDD Actually Is**
 
-# What we’d recommend for EDD (our stack)
+**EDD is the AI-specific testing discipline that works alongside TDD:**
 
-1. **Use [promptfoo](https://www.promptfoo.dev/) for day-to-day EDD gates** (on every PR): run matrix tests across prompts/models, post pass/fail & diffs on PRs.
-2. **Add [OpenAI Evals](https://github.com/openai/evals) for deeper, model-graded checks** on golden sets (faithfulness, task success) and optionally call the **Evaluation API** as part of nightly jobs or release candidates.
+- **TDD**: Tests traditional code (functions, APIs, business logic)
+- **EDD**: Tests AI components (prompts, models, agent behavior)
 
-## Can we use OpenAI Evals with Google Gemini Flash
+**EDD is NOT:**
+- A replacement for TDD
+- A single learning path
+- A magic solution for all AI problems
+- A replacement for good prompt engineering
 
-Short answer: **Yes for the open-source repo, no for the hosted Evaluation API.**
+## 🔄 **TDD vs EDD: Parallel Testing Disciplines**
 
-* **Open-source “OpenAI Evals” (the GitHub framework):** it uses the OpenAI Python SDK under the hood. Because Google provides an **OpenAI-compatible endpoint**, you can point Evals at **Gemini (e.g., gemini-2.5-flash)** by setting an OpenAI client with `base_url` and a Gemini API key. In other words, the eval *runner* can call Gemini via the OpenAI library. ([Google AI for Developers][1])
-* **OpenAI’s managed Evaluation/Evals API & UI:** these run *on OpenAI’s platform* and don’t evaluate third-party models like Gemini. Use the OSS repo if you want Gemini.
+### **TDD (Test-Driven Development)**
+**For:** Traditional code and functions
+**Tests:** Code logic, APIs, database operations, business logic
+**Focus:** "Does my code work correctly?"
 
-# How to wire it up (OSS Evals → Gemini Flash)
-
-1. Get a Gemini API key; install the latest `openai` Python SDK.
-2. Set the client to Google’s OpenAI-compatible endpoint and choose a Gemini model:
-
+**Example:**
 ```python
-from openai import OpenAI
-
-client = OpenAI(
-    api_key="GEMINI_API_KEY",
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-)
-# Example model: "gemini-2.5-flash" (or "gemini-1.5-flash")
+def test_user_creation():
+    user = create_user("john@example.com", "password123")
+    assert user.email == "john@example.com"
+    assert user.is_active == True
 ```
 
-Google’s docs show this exact “update three lines” approach and list supported models (Flash, Pro, etc.). ([Google AI for Developers][1])
+### **EDD (Evaluation-Driven Development)**
+**For:** AI agents and LLM applications
+**Tests:** Prompt quality, agent behavior, model performance, reasoning chains
+**Focus:** "Does my AI agent work correctly?"
 
-3. In your evals where the code creates an OpenAI client (or reads env vars), ensure it uses that client / base URL. Many setups also work by exporting:
+**Example:**
+```python
+def test_agent_response():
+    response = agent.run("Help me book a flight")
+    assert response.contains("flight")
+    assert response.is_helpful()
+    assert response.cost < 0.01
+```
 
+## 🤖 **For Agentic Applications, You Need Both**
+
+**TDD for the "plumbing":**
+- Database connections
+- API integrations
+- Business logic
+- Error handling
+- Authentication
+
+**EDD for the "intelligence":**
+- Agent prompts
+- Reasoning chains
+- Tool selection
+- Conversation flow
+- Model performance
+
+## 🔄 **How EDD Fits in SDD Workflow**
+
+**SDD → TDD → EDD → PHR**
+
+**1. SDD Design**: Plan your AI agent's capabilities and user interactions
+**2. TDD Implementation**: Build the traditional code that supports the agent
+**3. EDD Implementation**: Build and test the AI components that make the agent intelligent
+**4. PHR Learning**: Capture insights from both TDD and EDD
+
+### **Why EDD Matters for Agentic Applications**
+
+**Agentic applications are complex because:**
+- Agents make multiple decisions in sequence
+- Each decision depends on previous context
+- Agent behavior is emergent and hard to predict
+- Prompt quality directly determines agent performance
+
+**EDD helps by:**
+- Testing agent prompts systematically
+- Comparing models for agent tasks
+- Measuring agent performance with data
+- Optimizing based on real results
+
+## 🛠️ **How to Actually Do EDD**
+
+### **The 5-Step Learning Path**
+
+**Step 1: Basic Prompt Testing**
 ```bash
-export OPENAI_API_KEY="GEMINI_API_KEY"
-export OPENAI_BASE_URL="https://generativelanguage.googleapis.com/v1beta/openai/"
+# Install DeepEval
+pip install deepeval pytest pytest-asyncio
+
+# Create your first test
+./edd-setup.sh create-test basic
+
+# Run tests
+./edd-setup.sh run-evals
 ```
 
-(If your eval harness instantiates its own `OpenAI()` internally, these env vars usually take effect.)
-
-[Getting Started with OpenAI Evals](https://cookbook.openai.com/examples/evaluation/getting_started_with_openai_evals)
-
-[OpenAI Evals Guide](https://platform.openai.com/docs/guides/evals)
-
-### Notes & gotchas
-
-* **Feature coverage:** Google’s compatibility layer is **beta**; most common endpoints like `chat.completions` are supported, including **function calling** and “thinking” controls via params, but some features/params may differ. Test your specific evaluators (tools, JSON mode, batch) before relying on them in CI. ([Google AI for Developers][1])
-* **Hosted OpenAI Evaluation API:** keeps requiring an OpenAI key and runs on OpenAI models—**not** Gemini. For Gemini you must stay with the OSS runner (or a vendor-neutral tool like promptfoo). ([OpenAI Platform][2])
-
-
-Here is a detailed, step-by-step tutorial for implementing Evaluation-Driven Development (EDD). This guide is designed to slot directly into your AI-First Engineering Playbook, enhancing it with a robust layer of behavioral quality assurance.
-
-
-## A tutorial for guaranteeing AI agent quality and preventing behavioral regressions.
-
-Welcome to the next evolution of your AI engineering practice. You have mastered Test-Driven Development (TDD) to ensure your code is functionally correct—the engine runs, the wheels turn. But in the world of AI agents, that's only half the battle. **Evaluation-Driven Development (EDD) is the driving test.** It puts your agent on a simulated road with real-world challenges to ensure its *behavior* is safe, reliable, and aligned with its purpose.
-
-This tutorial will show you, with many examples, how to weave EDD into your daily workflow.
-
-### The Core Philosophy: Behavior First
-
-The fundamental shift with EDD is this:
-
-  * **TDD asks:** "Does my code execute correctly?" (e.g., Does the `get_runner()` function return a valid agent runner?)
-  * **EDD asks:** "Does my agent behave correctly?" (e.g., Does the agent *actually use* the tool to calculate a tip when asked?)
-
-You will now design and test the desired *behavior* first, and then use TDD to implement the code that supports it.
-
------
-
-### Part 1: Setting Up Your EDD Environment
-
-First, let's get the tools ready. This is a one-time setup per project. We'll use `promptfoo`, a powerful open-source framework for testing and evaluating LLM outputs.
-
-**Step 1: Install `promptfoo`**
-Open your terminal and install it globally. It's a command-line tool that makes running evaluations simple.
-
+**Step 2: Agent Behavior Testing**
 ```bash
-npm install -g promptfoo
+# Test reasoning and decision making
+./edd-setup.sh create-test agent
+
+# Run agent behavior tests
+./edd-setup.sh run-evals
 ```
 
-**Step 2: Initialize in Your Project**
-Navigate to the root of your agent repository and run the init command.
-
+**Step 3: Tool Integration Testing**
 ```bash
-promptfoo init
+# Test tool calling behavior
+./edd-setup.sh create-test tool
+
+# Run tool integration tests
+./edd-setup.sh run-evals
 ```
 
-This command will create two essential things:
+**Step 4: Safety and Boundaries Testing**
+```bash
+# Test safety and security
+./edd-setup.sh create-test safety
 
-1.  **`promptfoo.config.yaml`:** The main configuration file. This is where you tell `promptfoo` how to test your agent.
-2.  **An `evals/` directory:** A new folder, sitting right next to your `tests/` directory, which will hold all your behavioral test cases.
+# Run safety tests
+./edd-setup.sh run-evals
+```
 
-**Step 3: Configure `promptfoo` to Test Your FastAPI Agent**
-Open `promptfoo.config.yaml` and configure it to send prompts to your locally running FastAPI service.
+**Step 5: Model Comparison and Optimization**
+```bash
+# Compare different models
+./edd-setup.sh compare-models
+
+# Analyze results
+./edd-setup.sh analyze
+
+# Update prompts based on results
+./edd-setup.sh update-prompts
+```
+
+### **Quick Start with Spec Kit**
+
+**1. Initialize EDD for Your Project**
+```bash
+./edd-setup.sh init --project "ai-tutor" --feature "tutoring"
+```
+
+**2. Use EDD Command in Spec Workflow**
+```bash
+# In your spec workflow
+/spec --feature tutoring
+/plan --feature tutoring
+/tasks --feature tutoring
+/edd --feature tutoring  # New EDD step
+/phr --feature tutoring
+```
+
+**3. Follow the Learning Path**
+- Complete the 5 steps in order
+- Practice with real projects
+- Integrate with your SDD workflow
+
+### **Example: Testing an AI Tutor Agent**
 
 ```yaml
-# promptfoo.config.yaml
-
+# Basic agent evaluation
 prompts:
-  # This tells promptfoo to read prompts from your eval files, not here.
-  - file://evals/*.yaml
+  - |
+    You are an AI tutor. Help the student learn {{topic}}.
+    Student: {{student_input}}
+    
+    Ask one helpful question.
 
 providers:
-  # This defines HOW to test your agent. We'll define one provider: your local API.
-  - id: 'api:fastapi-agent'
-    config:
-      # The command to start your local server. Promptfoo will run this for you!
-      command: 'uvicorn app.main:app --port 8000'
-      # The URL of your chat endpoint.
-      url: 'http://localhost:8000/chat'
-      method: 'POST'
-      headers:
-        Content-Type: 'application/json'
-      # Defines how to format the request body. {{prompt}} is the variable for the user's message.
-      body: |
-        {
-          "session_id": "eval-session-{{ N }}",
-          "user_message": "{{prompt}}"
-        }
-      # Defines how to extract the agent's reply from the JSON response.
-      response: '{{ output.text }}'
+  - openai:gpt-4.1-mini
+  - openai:gpt-4.1
 
-# Default assertion rules can go here, but we'll define them in our eval files.
-# tests: []
-```
-
-Your environment is now ready.
-
------
-
-### Part 2: The EDD Development Loop in Action
-
-Let's build a new feature using the enhanced PDD x EDD x TDD loop.
-
-**Scenario:** We are building a **Travel Agent Bot**. The first feature is to correctly identify when a user wants to book a flight and respond with a confirmation, even though the actual flight booking tool doesn't exist yet.
-
-#### Step 1: RED (Write a Failing Behavioral Eval)
-
-Before writing any code or prompts, define the desired behavior. Create a new file: `evals/flight_booking_intent.yaml`.
-
-```yaml
-# evals/flight_booking_intent.yaml
-
-tests:
-  - name: "Identifies explicit flight booking request"
-    description: "When the user explicitly asks to book a flight, the agent should confirm the intent."
-    # The prompt we will send to the agent
-    vars:
-      prompt: "Hi, I'd like to book a flight from Karachi to Lahore for next Tuesday."
-    # The assertions that define "good behavior"
-    assert:
-      - type: "contains"
-        value: "Okay, I can help you with booking a flight."
-      - type: "not-contains"
-        value: "I cannot book flights." # Make sure it doesn't give a wrong refusal.
-
-  - name: "Ignores requests for hotel bookings"
-    description: "When the user asks for a hotel, the agent should state that it's out of scope."
-    vars:
-      prompt: "Can you help me find a hotel in Islamabad?"
-    assert:
-      - type: "contains"
-        value: "I can only assist with flight bookings at the moment."
-```
-
-Now, run the evaluation. Since we haven't taught our agent this logic yet, **it will fail.**
-
-```bash
-promptfoo eval
-
-# Expected Output:
-# Результаты
-# ╔════════════════════════════════════════════╤═══════╗
-# ║ ✓ Identifies explicit flight booking request │ FAIL  ║
-# ╟────────────────────────────────────────┼───────╢
-# ║ ✓ Ignores requests for hotel bookings      │ FAIL  ║
-# ╚════════════════════════════════════════════╧═══════╝
-```
-
-**You are now in a "RED" state for behavior.**
-
-#### Step 2: GREEN (Write a Prompt to Pass the Eval)
-
-Now, open your agent's instruction file (e.g., `app/agents/customer.py`). Your goal is to write the simplest prompt possible to make the failing evals pass.
-
-**Use Cursor/Your IDE (This is your PDD step):**
-
-> "Update the agent's instructions. The agent is a travel assistant specializing *only* in booking flights. If a user asks to book a flight, confirm that you can help. If they ask for anything else, like hotels or rental cars, politely state that you can only handle flights."
-
-The AI generates the updated instructions:
-
-```python
-# app/agents/customer.py
-
-INSTRUCTIONS = """
-You are a friendly and helpful travel assistant. Your primary and ONLY capability is to help users book flights.
-
-When a user asks to book a flight, your first step is to confirm their request. For example, say: "Okay, I can help you with booking a flight."
-
-If the user asks for anything other than flights (e.g., hotels, rental cars, tourist attractions), you MUST politely decline and state your specialization. For example, say: "I can only assist with flight bookings at the moment."
-"""
-```
-
-#### Step 3: VERIFY (Run the Evals Again)
-
-Now that you've updated the agent's core logic (its prompt), run the evaluation again.
-
-```bash
-promptfoo eval
-
-# Expected Output:
-# Результаты
-# ╔════════════════════════════════════════════╤═══════╗
-# ║ ✓ Identifies explicit flight booking request │ PASS  ║
-# ╟────────────────────────────────────────┼───────╢
-# ║ ✓ Ignores requests for hotel bookings      │ PASS  ║
-# ╚════════════════════════════════════════════╧═══════╝
-```
-
-**Congratulations\! You are now in a "GREEN" state for behavior.** The agent *behaves* correctly, even though the backend tools aren't built yet.
-
-#### Step 4: IMPLEMENT (Use TDD for the Code)
-
-Now that the agent's behavior is locked in by the EDD tests, you can proceed with your familiar TDD loop to build the actual `book_flight` tool and the API logic, confident that the agent knows when and how to use it.
-
------
-
-### Part 3: Advanced EDD Techniques (Improving Further)
-
-Basic EDD is powerful, but you can make it even more robust.
-
-#### Technique 1: Using AI to Generate Your Test Cases
-
-Struggling to think of edge cases? Use an AI to help.
-
-**The Prompt (to ChatGPT, Cursor, etc.):**
-
-> "I am building an evaluation set for a travel agent bot. The bot's only capability is booking flights. Generate 15 diverse test prompts for me in YAML format. Include tricky edge cases like ambiguous requests, requests with missing information, and users trying to trick the bot. For each, specify the expected behavior (e.g., 'should ask for clarification' or 'should politely decline')."
-
-This technique helps you build a comprehensive test suite much faster.
-
-#### Technique 2: Semantic Similarity Assertions (Beyond `contains`)
-
-Sometimes, the exact wording doesn't matter, but the *meaning* does.
-
-  * **Problem:** Your eval asserts `contains: "Okay, I can help"`. But what if the agent says, `"Certainly, I can assist with that"`? Your test would fail, even though the behavior is correct.
-  * **Solution:** Use a semantic similarity check.
-
-<!-- end list -->
-
-```yaml
-# evals/flight_booking_intent.yaml
-
-tests:
-  - name: "Identifies explicit flight booking request"
-    vars:
-      prompt: "Hi, I'd like to book a flight from Karachi to Lahore for next Tuesday."
-    assert:
-      - type: "similar" # Checks for semantic similarity, not exact words
-        value: "Okay, I can help you book a flight"
-        threshold: 0.85 # On a scale of 0 to 1, how similar the meaning must be
-```
-
-This makes your tests far more resilient to minor, harmless changes in the agent's wording.
-
-#### Technique 3: Scaling Your Evals with Test Providers
-
-If you have hundreds of test cases, putting them all in one YAML file is messy. You can separate your data from your tests.
-
-**Step A:** Create a CSV file with your test data: `evals/flight_scenarios.csv`
-
-```csv
-user_prompt,expected_outcome
-"Book a flight to Dubai",flight_intent
-"Find me a cheap hotel",out_of_scope
-"What's the weather like in Hunza?",out_of_scope
-"I need a ticket to Islamabad for tomorrow",flight_intent
-```
-
-**Step B:** Update your `promptfoo.config.yaml` to use this file as a "provider".
-
-```yaml
-# promptfoo.config.yaml
-
-providers:
-  # ... (your FastAPI provider)
-
-# NEW SECTION
-testProviders:
-  - id: 'file:evals/flight_scenarios.csv'
-
-# Define one set of tests that runs against all the data
 tests:
   - vars:
-      # This variable will be filled by the 'expected_outcome' column in the CSV
-      expected: '{{expected_outcome}}'
+      topic: "machine learning"
+      student_input: "I want to learn ML"
     assert:
-      # A custom script that checks if the agent's response matches the expected outcome
-      - type: 'javascript'
-        value: 'output.includes(expected)'
+      - type: contains
+        value: "?"
+      - type: llm-rubric
+        value: "Asks a helpful learning question"
 ```
 
-This is a highly scalable way to manage large sets of behavioral tests.
+## 📁 **Organizing EDD for Agentic Applications**
 
-By embracing EDD, you are adding the most critical layer of quality control for AI systems. You are ensuring that what you build is not just functionally sound, but behaviorally reliable, safe, and trustworthy.
+### **Simple Directory Structure**
+
+```
+your-agent-project/
+├── prompts/                 # Your agent prompts
+│   ├── system_prompts/     # Main agent instructions
+│   ├── tool_prompts/       # Tool calling prompts
+│   └── conversation/       # Multi-turn conversation prompts
+├── evaluations/            # EDD test files
+│   ├── basic_tests.yaml   # Core functionality tests
+│   ├── tool_tests.yaml    # Tool usage tests
+│   └── safety_tests.yaml  # Safety and boundary tests
+└── results/               # Evaluation results and reports
+```
+
+### **What to Test in Each Area**
+
+**Core Agent Behavior:**
+- Does the agent understand user intent?
+- Does it respond appropriately?
+- Does it maintain conversation context?
+
+**Tool Integration:**
+- Does the agent choose the right tools?
+- Does it use tools correctly?
+- Does it handle tool errors gracefully?
+
+**Safety and Boundaries:**
+- Does the agent refuse harmful requests?
+- Does it stay within its defined role?
+- Does it handle edge cases safely?
+
+## 🔄 **EDD in Your SDD Workflow**
+
+### **When to Use EDD**
+
+**Use EDD when you have:**
+- AI prompts that users interact with
+- Multiple AI models to choose from
+- Important AI responses that must be reliable
+- Time to invest in making AI work better
+
+### **How to Get Started**
+
+**1. Follow the Learning Path**
+- Complete the 5 steps in order
+- Use the provided examples and exercises
+- Practice with your own projects
+
+**2. Use the EDD Setup Script**
+```bash
+# Initialize EDD for your project
+./edd-setup.sh init --project "your-project" --feature "your-feature"
+
+# Create specific test types
+./edd-setup.sh create-test basic
+./edd-setup.sh create-test agent
+./edd-setup.sh create-test tool
+./edd-setup.sh create-test safety
+
+# Run all evaluations
+./edd-setup.sh run-evals
+
+# Analyze results and optimize
+./edd-setup.sh analyze
+./edd-setup.sh update-prompts
+```
+
+**3. Integrate with Spec Kit**
+- Use `/edd` command in your spec workflow
+- Add eval requirements to your specs
+- Document results in PHRs
+
+**4. Scale to Production**
+- Set up continuous monitoring
+- Collect real user feedback
+- Iterate based on data
+
+### **The Key Principle**
+
+**Test your AI prompts like you test your code.**
+
+## 🎯 **Summary**
+
+**EDD is the AI-specific testing discipline that works alongside TDD in agentic applications.**
+
+**Key points:**
+- TDD tests traditional code, EDD tests AI components
+- Both are essential for reliable agentic applications
+- Test your prompts like you test your code
+- Compare different models for your use case
+- Measure performance with real data
+- Optimize based on results, not guesswork
+
+**For agentic applications:**
+- Use TDD for the "plumbing" (APIs, databases, business logic)
+- Use EDD for the "intelligence" (prompts, models, agent behavior)
+- Both disciplines work together in the SDD workflow
+
+**The 5-step approach:**
+1. **Basic Prompt Testing** - Test simple prompt responses
+2. **Agent Behavior Testing** - Test reasoning and decision making
+3. **Tool Integration Testing** - Test tool calling behavior
+4. **Safety and Boundaries Testing** - Test safety and security
+5. **Model Comparison and Optimization** - Compare models and optimize
+
+**Integration with SDD:**
+- Use `/edd` command in your spec workflow
+- Add eval requirements to your specs
+- Document results in PHRs
+- Scale to production monitoring
+
+**Remember: TDD and EDD are parallel testing disciplines - you need both for agentic applications.**

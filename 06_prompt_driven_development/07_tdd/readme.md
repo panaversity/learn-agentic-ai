@@ -1,6 +1,10 @@
-# Test-Driven Development (TDD)
+# Module 07 – Test-Driven Development (TDD)
 
-[Test-Driven Development](https://www.geeksforgeeks.org/software-engineering/test-driven-development-tdd/) (TDD) is a software development practice where you write automated tests **before** writing the production code. The rhythm is tight and iterative: you specify behavior with a failing test, write the minimum code to pass it, then clean up the design—repeating until the feature is complete. This keeps you focused on behavior, produces a living safety net of tests, and naturally drives better design.
+> **The implementation discipline for SDD tasks: write tests first, implement minimal code, refactor safely.**
+
+You've learned **Spec-Driven Development (SDD)** for design thinking and **Prompt History Records (PHR)** for capturing learning. Now learn **Test-Driven Development (TDD)** - the implementation discipline that makes your SDD tasks executable with quality and safety.
+
+[Test-Driven Development](https://www.geeksforgeeks.org/software-engineering/test-driven-development-tdd/) (TDD) is a software development practice where you write automated tests **before** writing the production code. The rhythm is tight and iterative: you specify behavior with a failing test, write the minimum code to pass it, then clean up the design—repeating until the feature is complete.
 
 ## The core loop (red → green → refactor)
 
@@ -207,5 +211,118 @@ how to extend. Then add/append an ADR with context, options, decision, consequen
 
 ## Bottom line
 
-PDD is strongest **with** TDD: prompts define the “what,” tests enforce the “correct,” and tiny diffs keep the team fast and sane. It’s vibe coding’s creativity **but with a suit on**—and TDD is the tie clip that stops quality from flapping in the wind.
+PDD is strongest **with** TDD: prompts define the "what," tests enforce the "correct," and tiny diffs keep the team fast and sane. It's vibe coding's creativity **but with a suit on**—and TDD is the tie clip that stops quality from flapping in the wind.
+
+---
+
+## TDD: The Implementation Discipline for SDD Tasks
+
+**You've completed SDD and PHR - now learn TDD to implement your tasks with quality and safety.**
+
+### The Complete Workflow: SDD → TDD → PHR
+
+**Step 1: SDD Design Phase** (You've learned this)
+```bash
+/spec "Design user authentication system"
+/plan "Implement auth with technical architecture"  
+/tasks "Break auth into implementable tasks"
+```
+
+**Step 2: TDD Implementation Phase** (This module)
+```bash
+# For each task, use TDD cycles:
+
+# Task: User validation
+# Red: "Add failing tests for email validation. Include edge/negative cases and clear names. No production code changes."
+# Green: "Make the smallest change necessary to pass the email validation tests. No new dependencies. Output diff-only."
+# Refactor: "Refactor validation logic for clarity. Preserve public APIs and behavior. All tests must remain green."
+
+# Task: User creation  
+# Red: "Add failing tests for user creation. Test database save and user ID return."
+# Green: "Implement user creation to pass the tests. Minimal implementation only."
+# Refactor: "Extract user creation logic into service class. Keep tests green."
+
+# Task: Authentication
+# Red: "Add failing tests for login endpoint. Test credential validation and JWT return."
+# Green: "Implement login endpoint to pass the tests. No over-engineering."
+# Refactor: "Clean up authentication logic. All tests must remain green."
+```
+
+**Step 3: PHR Documentation Phase** (You've learned this)
+```bash
+/phr "Completed user authentication with TDD implementation"
+```
+
+### Why This Works
+
+- **SDD provides design thinking** (user journeys, architecture, planning)
+- **TDD provides implementation discipline** (tests first, incremental, quality)
+- **PHR captures learning** (what worked, what didn't, next steps)
+- **Together**: Well-designed, well-tested, well-documented features
+
+**Key Insight**: TDD is the **implementation discipline** that makes your SDD tasks executable with quality and safety.
+
+---
+
+## TDD Prompt Templates for SDD Tasks
+
+### Red Phase (Tests Only)
+```
+Add failing tests for <behavior>. Include edge/negative cases and clear names. 
+No production code changes. Keep the diff minimal and runnable offline.
+```
+
+### Green Phase (Minimal Implementation)
+```
+Make the smallest change necessary to pass tests/<path>::<test_name>. 
+Do not refactor unrelated code. No new dependencies. Output diff-only.
+```
+
+### Refactor Phase (Clean Up)
+```
+Refactor internals for clarity/performance. Preserve public APIs and behavior. 
+All tests must remain green. Provide a short refactor summary.
+```
+
+## How to Use TDD with Your SDD Tasks
+
+### Step 1: Get Your SDD Tasks
+```bash
+# After completing SDD workflow, you'll have tasks like:
+# - "Add user validation for email and password"
+# - "Implement user creation with database save"
+# - "Create login endpoint with JWT authentication"
+```
+
+### Step 2: Implement Each Task with TDD
+```bash
+# For each task, follow Red → Green → Refactor:
+
+# Example: "Add user validation for email and password"
+
+# Red: Write failing tests
+Add failing tests for email validation. Include edge/negative cases and clear names. 
+No production code changes. Keep the diff minimal and runnable offline.
+
+# Green: Implement minimal code
+Make the smallest change necessary to pass the email validation tests. 
+No new dependencies. Output diff-only.
+
+# Refactor: Clean up code
+Refactor validation logic for clarity. Preserve public APIs and behavior. 
+All tests must remain green. Provide a short refactor summary.
+```
+
+### Step 3: Record Your Learning
+```bash
+# After completing each task, capture the learning
+/phr "Completed user validation with TDD - learned about edge case testing"
+/phr "Completed user creation with TDD - learned about database integration patterns"
+/phr "Completed authentication with TDD - learned about JWT implementation"
+```
+
+### Step 4: Move to Next Task
+Repeat the Red → Green → Refactor cycle for each SDD task until your feature is complete.
+
+**That's it!** Use TDD to implement your SDD tasks with quality and safety, then capture your learning with PHRs.
 
