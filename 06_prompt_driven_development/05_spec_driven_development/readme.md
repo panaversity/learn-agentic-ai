@@ -8,6 +8,10 @@ In 2025, this matters because:
 * Agent platforms (e.g., **OpenAI Agents SDK**) make multi-tool, multi-agent orchestration cheap—but the **cost of weak specifications is amplified** at scale.
 * The broader ecosystem (e.g., GitHub’s recent “spec-driven” tooling push) is converging on **spec-first workflows** for AI software. 
 
+[Spec-driven AI coding with GitHub’s Spec Kit](https://www.infoworld.com/article/4062524/spec-driven-ai-coding-with-githubs-spec-kit.html)
+
+[From Spec to Deploy: Building an Expense Tracker with SpecKit](https://dev.to/manjushsh/from-spec-to-deploy-building-an-expense-tracker-with-speckit-1hg9)
+
 [Watch: Spec-Driven Development in the Real World](https://www.youtube.com/watch?v=3le-v1Pme44)
 
 Here’s a crisp summary of the video “Watch: Spec-Driven Development in the Real World”:
