@@ -6,7 +6,7 @@ This document summarizes three comprehensive papers on AI-assisted software deve
 
 ---
 
-## [Paper 1: AI Turning Point - The Summer of 2025]()
+## [Paper 1: AI Turning Point - The Summer of 2025](https://github.com/panaversity/learn-agentic-ai/tree/main/06_prompt_driven_development/00_ai_turning_point_2025)
 
 ### Core Thesis
 Summer 2025 marks a structural break in software development where AI assistance transitions from optional tool to foundational practice, driven by frontier LLMs (GPT-5, Claude 4.1x, Gemini 2.5+), AI-first IDEs (Cursor), and production-grade development agents.
@@ -69,7 +69,7 @@ Teams using SDD + TDD show:
 
 ---
 
-## [Paper 2: Spec-Driven Development - Engineering in the AI Era]()
+## [Paper 2: Spec-Driven Development - Engineering in the AI Era](https://github.com/panaversity/learn-agentic-ai/tree/main/06_prompt_driven_development/01a_sdd_concepts)
 
 ### Definition
 
@@ -178,8 +178,11 @@ From "Spec-Driven Development in the Real World" video:
 - ⚠️ Well-understood, repetitive tasks
 
 ---
+## [Paper 3: SDD++ — A Comprehensive Paper](https://github.com/panaversity/learn-agentic-ai/tree/main/06_prompt_driven_development/01b_sdd_plus_plus_concepts)
 
-## Our Implementation Strategy: Spec-Kit++ with Multi-Agent Architecture
+---
+
+## Our Implementation Strategy: Spec-Kit++ with Multi-Coding-Agent Architecture
 
 ### Foundation: GitHub Spec-Kit
 
@@ -203,7 +206,7 @@ For concepts and capabilities not yet implemented in Spec-Kit, we will fork the 
 
 #### Planned Spec-Kit++ Extensions
 
-1. **Multi-Agent Orchestration**:
+1. **Multi-Agent Coding Orchestration**:
    - Coordinated planning and coding agents
    - Agent handoff protocols
    - Context preservation across agent interactions
