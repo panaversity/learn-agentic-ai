@@ -1,6 +1,0 @@
-{
-  "name": "Cursor PDD House Rules",
-  "version": "1.0",
-  "rules": "# Cursor \u2014 Rules for AI\n\n- Python 3.12+, uv deps; pyproject + uv.lock\n- OpenAI Agents SDK for agents/tools/sessions/handoffs/guardrails\n- FastAPI with /healthz and /chat\n- Tests first (pytest), offline; minimal diffs\n- Pydantic structured outputs; reply length \u2264 1200\n- No secrets in code/prompts; use .env + .env.sample\n- Docker: uv multi-stage; non-root\n\nDocs & governance\n- PHRs in docs/prompts (architect/red/green/refactor/explainer)\n- ADRs in docs/adr for consequential choices\n- PRs link PHRs + ADRs; CI runs ruff + pytest; no green, no merge\n\nAgents\n- CustomerAgent primary; ResearchAgent via intent handoff\n- Tools: calculator(expression), now(tz?)\n- Sessions per session_id; SSE streaming with JSON fallback\n\nChange policy\n- Touch only files listed in prompt; minimal diff\n- If tests break, fix-only diff\n- Explain changes in \u22648 bullets per slice",
-  "notes": "Paste into Cursor \u2192 Settings \u2192 Rules for AI."
-}

@@ -1,6 +1,0 @@
-{
-  "name": "VS Code + Codex Prompting House Rules",
-  "version": "1.0",
-  "rules": "\n# VS Code + Codex \u2014 Prompting House Rules\n\nProject guardrails\n- Python 3.12+, uv for deps (pyproject + uv.lock)\n- Use OpenAI Agents SDK for agents/tools/sessions/handoffs/guardrails\n- FastAPI with /healthz and /chat\n- Tests first (pytest), offline by default; minimal diffs\n- Pydantic structured outputs; reply length \u2264 1200 chars\n- No secrets in code or prompts; use .env / .env.sample\n- Docker: uv multi-stage; non-root image\n\nDocumentation & governance\n- PHRs in docs/prompts (architect/red/green/refactor/explainer)\n- ADRs in docs/adr for consequential choices\n- PRs link PHRs + ADRs; CI runs ruff + pytest; \u201cno green, no merge\u201d\n\nAgent defaults\n- CustomerAgent primary; add ResearchAgent via intent handoff\n- Tools: calculator(expression), now(tz?)\n- Sessions per session_id; SSE streaming with JSON fallback\n\nChange policy\n- Touch only the files listed in each prompt; keep diffs minimal\n- If tests break, propose a fix-only diff\n- Explain changes in \u22648 bullets per slice\n",
-  "notes": "Paste relevant parts into your Codex prompts or maintain as README in the repo."
-}
