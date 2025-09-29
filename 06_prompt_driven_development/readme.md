@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document summarizes three comprehensive papers on AI-assisted software development and presents our practical implementation strategy using GitHub's Spec-Kit as the foundation, enhanced with our Spec-Kit++ extensions.
+This document summarizes four comprehensive papers on AI-assisted software development and presents our practical implementation strategy using GitHub's Spec-Kit as the foundation, enhanced with our Spec-Kit++ extensions.
 
 ---
 
@@ -179,6 +179,10 @@ From "Spec-Driven Development in the Real World" video:
 
 ---
 ## [Paper 3: SDD++ — A Comprehensive Paper](https://github.com/panaversity/learn-agentic-ai/tree/main/06_prompt_driven_development/01b_sdd_plus_plus_concepts)
+
+---
+
+## [Paper 4: Vibe Coding in Prod Responsibly: A Tutorial](https://github.com/panaversity/learn-agentic-ai/tree/main/06_prompt_driven_development/01c_vibe_coding_in_production)
 
 ---
 
