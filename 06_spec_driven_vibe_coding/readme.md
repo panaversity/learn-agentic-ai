@@ -1,4 +1,8 @@
-# [Spec Kit Plus Documentation](https://github.com/panaversity/spec-kit-plus/tree/main/docs-plus)
+# Spec-Driven Vibe-Coding
+
+Spec-driven Vibe-coding combines the rapid, conversational generation power of "vibe coding" with the structure and architectural coherence provided by the "spec-driven" methodology. It's seen as a way to use AI to speed up the implementation (the "vibe-coding" part) while maintaining quality, consistency, and alignment with a high-level plan (the "spec-driven" part).
+
+[Spec Kit Plus Documentation](https://github.com/panaversity/spec-kit-plus/tree/main/docs-plus)
 
 For the most current documentation, patterns, and templates for building scalable multi-agent AI systems, visit the [Spec Kit Plus repository](https://github.com/panaversity/spec-kit-plus/tree/main/docs-plus).
 
