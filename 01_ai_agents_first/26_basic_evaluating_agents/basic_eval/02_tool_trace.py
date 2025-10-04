@@ -58,7 +58,7 @@ def create_gemini_model():
     )
     
     llm_model = OpenAIChatCompletionsModel(
-        model="gemini-2.0-flash-exp",
+        model="gemini-2.5-flash",
         openai_client=external_client
     )
     

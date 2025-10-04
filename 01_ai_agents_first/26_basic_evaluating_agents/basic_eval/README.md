@@ -1,16 +1,26 @@
-# Agent Evaluation: Step-by-Step with Gemini
+# Basic Agent Evaluation: Learning the Fundamentals
 
-Learn agent evaluation through **progressive, hands-on Python scripts**. Each script teaches one core concept, building your understanding systematically.
+Learn the **core concepts** of agent evaluation through simple, hands-on Python scripts. This is a **learning-focused project** that demonstrates basic evaluation techniques using Gemini and Langfuse.
 
-## 🎯 Learning Philosophy
+> ⚠️ **Important**: This is a **learning project**, not a production system. The examples are simplified to teach concepts clearly.
 
-This project follows **learning science principles**:
+## 🎯 What This Project Actually Teaches
 
-- ✅ **One concept at a time** - No overwhelming complexity
-- ✅ **Progressive difficulty** - Each step builds on the previous
-- ✅ **Hands-on practice** - Learn by running real code
-- ✅ **Immediate feedback** - See results in Langfuse dashboard
-- ✅ **Clear explanations** - Every script is heavily documented
+**Core Concepts** (what you'll learn):
+
+- ✅ **Basic Tracing** - How to see what your agent is doing
+- ✅ **Tool Monitoring** - Tracking function calls and results  
+- ✅ **Metadata Addition** - Adding context to traces
+- ✅ **Score Creation** - Attaching ratings to traces
+- ✅ **Simple Evaluation** - Basic LLM-as-a-Judge implementation
+
+**What This Project Does NOT Cover** (production-level):
+
+- ❌ **Real Cost Tracking** - Actual token usage and pricing
+- ❌ **Performance Analysis** - Latency breakdowns and optimization
+- ❌ **Production Debugging** - Real issue resolution
+- ❌ **Comprehensive Testing** - Large-scale evaluation datasets
+- ❌ **Real User Feedback** - Actual user interface for feedback
 
 ## 📦 Prerequisites
 
@@ -105,15 +115,15 @@ uv run python 03_custom_metadata.py
 
 ---
 
-### Step 4: User Feedback 👍👎
+### Step 4: Simulated User Feedback 👍👎
 
 **File**: `04_user_feedback.py`
 
 **What You'll Learn**:
 
-- Collect user ratings
-- Attach scores to traces
-- Build feedback loops
+- Create scores programmatically (simulated feedback)
+- Attach different score types to traces
+- Use Langfuse scoring API
 
 **Run It**:
 
@@ -121,20 +131,20 @@ uv run python 03_custom_metadata.py
 uv run python 04_user_feedback.py
 ```
 
-**Real-World Use**: Identify what works and what doesn't
+**Note**: This simulates user feedback - real production would collect from actual users
 
 ---
 
-### Step 5: Dataset Evaluation 📊
+### Step 5: Basic Dataset Evaluation 📊
 
 **File**: `05_dataset_eval.py`
 
 **What You'll Learn**:
 
-- Create evaluation datasets
-- Run systematic tests
-- Compare configurations
-- Make data-driven decisions
+- Create simple evaluation datasets (8 basic questions)
+- Run LLM-as-a-Judge evaluation
+- Compare two configurations
+- Understand evaluation concepts
 
 **Run It**:
 
@@ -142,18 +152,20 @@ uv run python 04_user_feedback.py
 uv run python 05_dataset_eval.py
 ```
 
-**The Big Picture**: Test before deploying!
+**Note**: This uses 8 simple Q&A questions - production would use 100s of complex test cases
 
 ---
 
-## 📊 What Gets Tracked
+## 📊 What Gets Tracked (Basic Level)
 
 Each trace captures:
 
-- **LLM calls** - Model, tokens, latency
-- **Tool executions** - Inputs, outputs, timing
-- **Costs** - Token usage per request
-- **Custom data** - Your metadata, tags, scores
+- **LLM calls** - Model used, basic timing
+- **Tool executions** - Inputs, outputs, basic timing
+- **Custom metadata** - user_id, session_id, tags
+- **Scores** - Basic ratings attached to traces
+
+**Note**: This is basic tracking - production systems would include detailed cost analysis, performance metrics, and comprehensive monitoring.
 
 ## 🎓 Learning Tips
 
@@ -173,13 +185,24 @@ After running scripts, visit: [cloud.langfuse.com/traces](https://cloud.langfuse
 - [Langfuse Docs](https://langfuse.com/docs)
 - [Evaluation Best Practices](https://langfuse.com/blog/2025-03-04-llm-evaluation-101-best-practices-and-challenges)
 
-## 💡 Key Takeaways
+## 💡 Key Takeaways (Learning Level)
 
-✅ **Instrumentation is simple** - Just a few lines
-✅ **Visibility is powerful** - See everything your agent does
-✅ **Metrics guide improvement** - Track, analyze, optimize
-✅ **Testing prevents problems** - Catch issues before production
-✅ **Feedback drives quality** - User ratings are gold
+✅ **Basic instrumentation is simple** - Just a few lines of code
+✅ **Traces show agent behavior** - See what your agent is doing
+✅ **Scores provide feedback** - Attach ratings to traces
+✅ **Simple testing is possible** - Basic evaluation concepts
+✅ **Foundation for production** - Understanding the building blocks
+
+## 🚀 Next Steps for Production
+
+To build **real production evaluation systems**, you'd need to add:
+
+- **Comprehensive datasets** - 100+ complex test cases
+- **Real cost tracking** - Token usage, pricing, optimization
+- **Performance analysis** - Latency breakdowns, bottlenecks
+- **Production debugging** - Real issue resolution tools
+- **User feedback systems** - Actual UI for collecting feedback
+- **A/B testing frameworks** - Scientific configuration comparison
 
 ---
 

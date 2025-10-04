@@ -13,39 +13,22 @@ This is how you test agents BEFORE deploying to production!
 
 import asyncio
 import os
-import base64
 from dotenv import load_dotenv, find_dotenv
 
 from agents import Agent, Runner, OpenAIChatCompletionsModel, AsyncOpenAI
-from langfuse import get_client
-import logfire
+from langfuse import Langfuse  # Direct import, no get_client
 
 
 def setup_environment():
-    """Configure environment variables."""
     load_dotenv(find_dotenv())
     required_vars = ["GEMINI_API_KEY", "LANGFUSE_PUBLIC_KEY", "LANGFUSE_SECRET_KEY"]
     missing_vars = [var for var in required_vars if not os.getenv(var)]
     if missing_vars:
         raise ValueError(f"Missing: {', '.join(missing_vars)}")
-    
-    os.environ.setdefault("LANGFUSE_HOST", "https://cloud.langfuse.com")
-    LANGFUSE_AUTH = base64.b64encode(
-        f"{os.getenv('LANGFUSE_PUBLIC_KEY')}:{os.getenv('LANGFUSE_SECRET_KEY')}".encode()
-    ).decode()
-    os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = os.environ.get("LANGFUSE_HOST") + "/api/public/otel"
-    os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
     print("✅ Environment configured!")
 
 
-def setup_instrumentation():
-    """Configure instrumentation."""
-    logfire.configure(service_name='agent_evaluation_step5', send_to_logfire=False)
-    logfire.instrument_openai_agents()
-    print("✅ Instrumentation configured!")
-
-
-def create_gemini_model(model_name="gemini-2.0-flash-exp"):
+def create_gemini_model(model_name="gemini-2.0-flash-lite"):
     """Create Gemini model."""
     external_client = AsyncOpenAI(
         api_key=os.getenv("GEMINI_API_KEY"),
@@ -105,6 +88,68 @@ async def run_agent_on_question(agent: Agent, question: str) -> str:
     return result.final_output
 
 
+def create_evaluator_agent():
+    """Create an LLM-as-a-Judge evaluator agent."""
+    llm_model = create_gemini_model()
+    return Agent(
+        name="LLM-as-a-Judge",
+        instructions=(
+            "You are an expert evaluator using LLM-as-a-Judge methodology. "
+            "Score responses on a scale of 0-1 based on:\n"
+            "- Correctness (0.4): How factually correct is the answer?\n"
+            "- Relevance (0.3): How relevant is the answer to the question?\n"
+            "- Completeness (0.3): How complete is the answer?\n\n"
+            "Respond with ONLY a number between 0 and 1, nothing else."
+        ),
+        model=llm_model
+    )
+
+
+async def evaluate_with_llm_judge(question: str, expected: str, actual: str, evaluator: Agent) -> dict:
+    """Evaluate using LLM-as-a-Judge methodology."""
+    evaluation_prompt = f"""
+Question: {question}
+Expected Answer: {expected}
+Actual Answer: {actual}
+
+Please evaluate the actual answer on a scale of 0-1 based on:
+- Correctness (0.4): How factually correct is the answer?
+- Relevance (0.3): How relevant is the answer to the question?
+- Completeness (0.3): How complete is the answer?
+
+Respond with ONLY a number between 0 and 1, nothing else.
+"""
+    
+    try:
+        result = await Runner.run(evaluator, evaluation_prompt)
+        score = float(result.final_output.strip())
+        score = max(0.0, min(1.0, score))  # Clamp between 0 and 1
+        
+        # Calculate individual scores based on LLM judgment
+        correctness = 1.0 if expected.lower() in actual.lower() else score * 0.8
+        relevance = score
+        completeness = score
+        
+        return {
+            "overall_score": score,
+            "correctness": correctness,
+            "relevance": relevance,
+            "completeness": completeness,
+            "evaluation_method": "LLM-as-a-Judge"
+        }
+    except (ValueError, AttributeError) as e:
+        print(f"⚠️  LLM-as-a-Judge evaluation failed: {e}")
+        # Fallback to simple scoring
+        simple_score = 1.0 if expected.lower() in actual.lower() else 0.0
+        return {
+            "overall_score": simple_score,
+            "correctness": simple_score,
+            "relevance": simple_score,
+            "completeness": simple_score,
+            "evaluation_method": "Fallback"
+        }
+
+
 def create_dataset(langfuse, dataset_name: str):
     """Create or get a dataset in Langfuse."""
     try:
@@ -145,7 +190,7 @@ async def run_evaluation(
     agent_config: dict
 ):
     """
-    Run an evaluation on a dataset.
+    Run an evaluation on a dataset with AUTOMATED SCORING.
     
     Args:
         langfuse: Langfuse client
@@ -158,7 +203,7 @@ async def run_evaluation(
     print(f"{'='*60}")
     
     # Create Gemini model
-    llm_model = create_gemini_model(agent_config.get("model", "gemini-2.0-flash-exp"))
+    llm_model = create_gemini_model(agent_config.get("model", "gemini-2.0-flash-lite"))
     
     # Create agent with given configuration
     agent = Agent(
@@ -167,10 +212,14 @@ async def run_evaluation(
         model=llm_model,
     )
     
+    # Create LLM-as-a-Judge evaluator
+    evaluator = create_evaluator_agent()
+    
     # Get dataset
     dataset = langfuse.get_dataset(name=dataset_name)
     
     results = []
+    total_score = 0
     
     # Run agent on each dataset item
     for idx, item in enumerate(dataset.items, 1):
@@ -183,7 +232,7 @@ async def run_evaluation(
         with item.run(
             run_name=run_name,
             run_metadata={
-                "model": agent_config.get("model", "gemini-2.0-flash-exp"),
+                "model": agent_config.get("model", "gemini-2.0-flash-lite"),
                 "config": agent_config
             },
             run_description=f"Evaluation run: {run_name}"
@@ -191,35 +240,84 @@ async def run_evaluation(
             # Run the agent
             answer = await run_agent_on_question(agent, question)
             
-            print(f"   Answer: {answer}")
+            # AUTOMATED EVALUATION using LLM-as-a-Judge methodology
+            evaluation = await evaluate_with_llm_judge(question, expected, answer, evaluator)
+            
+            print(f"   Answer: {answer[:100]}...")
             print(f"   Expected: {expected}")
+            print(f"   🎯 Overall Score: {evaluation['overall_score']:.2f}")
+            print(f"   ✅ Correctness: {evaluation['correctness']:.2f}")
+            print(f"   📊 Relevance: {evaluation['relevance']:.2f}")
+            print(f"   📝 Completeness: {evaluation['completeness']:.2f}")
+            print(f"   🔧 Evaluator: {evaluation.get('evaluation_method', 'Unknown')}")
+            
+            # Add scores to Langfuse
+            try:
+                # Score the current run
+                langfuse.score_current_trace(
+                    name="overall_score",
+                    value=evaluation['overall_score'],
+                    data_type="NUMERIC",
+                    comment=f"Overall evaluation score for: {question[:50]}..."
+                )
+                
+                langfuse.score_current_trace(
+                    name="correctness",
+                    value=evaluation['correctness'],
+                    data_type="NUMERIC",
+                    comment="Factual correctness score"
+                )
+                
+                langfuse.score_current_trace(
+                    name="relevance",
+                    value=evaluation['relevance'],
+                    data_type="NUMERIC",
+                    comment="Relevance to question score"
+                )
+                
+                langfuse.score_current_trace(
+                    name="completeness",
+                    value=evaluation['completeness'],
+                    data_type="NUMERIC",
+                    comment="Answer completeness score"
+                )
+            except Exception as e:
+                print(f"   ⚠️  Error adding scores: {e}")
+            
+            total_score += evaluation['overall_score']
             
             results.append({
                 "question": question,
                 "answer": answer,
                 "expected": expected,
+                "evaluation": evaluation,
                 "item_id": item.id
             })
+    
+    # Calculate average score
+    avg_score = total_score / len(results) if results else 0
     
     langfuse.flush()
     
     print(f"\n✅ Completed evaluation: {run_name}")
     print(f"   Processed {len(results)} questions")
+    print(f"   🎯 Average Score: {avg_score:.2f}")
+    print(f"   📊 Performance: {'Excellent' if avg_score > 0.8 else 'Good' if avg_score > 0.6 else 'Needs Improvement'}")
     
-    return results
+    return results, avg_score
 
 
 async def compare_configurations(langfuse, dataset_name: str):
-    """Compare different agent configurations on the same dataset."""
+    """Compare different agent configurations on the same dataset with AUTOMATED SCORING."""
     print("\n" + "="*60)
-    print("COMPARING AGENT CONFIGURATIONS")
+    print("COMPARING AGENT CONFIGURATIONS (AUTOMATED EVALUATION)")
     print("="*60)
     
     # Configuration 1: Basic instructions
     config_1 = {
         "name": "BasicQA",
         "instructions": "You are a helpful assistant. Answer questions concisely.",
-        "model": "gemini-2.0-flash-exp"
+        "model": "gemini-2.0-flash-lite"
     }
     
     # Configuration 2: Detailed instructions
@@ -229,11 +327,12 @@ async def compare_configurations(langfuse, dataset_name: str):
             "You are a knowledgeable assistant with expertise across multiple domains. "
             "Answer questions accurately and concisely. If you're unsure, say so."
         ),
-        "model": "gemini-2.0-flash-exp"
+        "model": "gemini-2.0-flash-lite"
     }
     
-    # Run evaluations
-    await run_evaluation(
+    # Run evaluations with automated scoring
+    print("\n🔍 Running Basic Configuration...")
+    results_1, score_1 = await run_evaluation(
         langfuse,
         dataset_name,
         "basic-config-v1",
@@ -242,31 +341,57 @@ async def compare_configurations(langfuse, dataset_name: str):
     
     await asyncio.sleep(2)  # Brief pause between runs
     
-    await run_evaluation(
+    print("\n🔍 Running Detailed Configuration...")
+    results_2, score_2 = await run_evaluation(
         langfuse,
         dataset_name,
         "detailed-config-v1",
         config_2
     )
     
+    # AUTOMATED COMPARISON RESULTS
     print("\n" + "="*60)
-    print("EVALUATION COMPLETE")
+    print("🎯 AUTOMATED EVALUATION RESULTS")
     print("="*60)
-    print(f"\nCompared 2 configurations on {len(EVALUATION_DATASET)} questions")
-    print("\n📊 View detailed comparison in Langfuse:")
-    print(f"   {os.getenv('LANGFUSE_HOST')}/datasets/{dataset_name}")
+    print(f"\n📊 Configuration Comparison:")
+    print(f"   Basic QA:     {score_1:.2f} average score")
+    print(f"   Detailed QA:  {score_2:.2f} average score")
+    print(f"   Difference:   {abs(score_2 - score_1):.2f}")
+    
+    if score_2 > score_1:
+        improvement = ((score_2 - score_1) / score_1) * 100
+        print(f"   🏆 Winner: Detailed QA (+{improvement:.1f}% improvement)")
+    elif score_1 > score_2:
+        improvement = ((score_1 - score_2) / score_2) * 100
+        print(f"   🏆 Winner: Basic QA (+{improvement:.1f}% improvement)")
+    else:
+        print(f"   🤝 Tie: Both configurations performed equally")
+    
+    print(f"\n📈 Performance Analysis:")
+    print(f"   - Total questions evaluated: {len(EVALUATION_DATASET)}")
+    print(f"   - All evaluations automated (no manual review needed)")
+
+    print(f"\n📊 View detailed comparison in Langfuse:")
+    print(f"   {os.getenv('LANGFUSE_HOST', 'https://cloud.langfuse.com')}/datasets/{dataset_name}")
+    
+    return {"basic": score_1, "detailed": score_2}
 
 
 async def main():
     """Main function."""
     print("\n" + "="*60)
-    print("🚀 STEP 5: DATASET-BASED EVALUATION")
+    print("🚀 STEP 5: DATASET-BASED EVALUATION (AUTOMATED)")
     print("="*60)
-    
+
     setup_environment()
-    setup_instrumentation()
     
-    langfuse = get_client()
+    # Create Langfuse client directly (no OpenTelemetry)
+    langfuse = Langfuse(
+        public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+        secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+        host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+    )
+    
     if not langfuse.auth_check():
         raise ConnectionError("❌ Langfuse authentication failed")
     print("✅ Langfuse connected!")
@@ -283,29 +408,6 @@ async def main():
     print("\n" + "="*60)
     print("✅ STEP 5 COMPLETE!")
     print("="*60)
-    print("\n🎉 You've run a complete dataset evaluation!")
-    print("\n� What to check in Langfuse:")
-    print("   1. Go to Datasets section")
-    print(f"   2. Find: {dataset_name}")
-    print("   3. See all 8 test questions")
-    print("   4. View 2 different runs:")
-    print("      - basic-config-v1")
-    print("      - detailed-config-v1")
-    print("   5. Compare their performance")
-    print("\n💡 Key Learnings:")
-    print("   - Datasets let you test systematically")
-    print("   - Run same tests with different configs")
-    print("   - Track which configuration performs better")
-    print("   - Catch regressions before production")
-    print("   - Make data-driven optimization decisions")
-    print("\n💡 Next Steps:")
-    print("   - Try different Gemini models")
-    print("   - Modify instructions")
-    print("   - Add more test questions")
-    print("   - Set up LLM-as-a-Judge evaluators")
-    print(f"\n📊 Visit: {os.getenv('LANGFUSE_HOST')}/datasets")
-    print("\n🎓 You've completed all 5 steps of agent evaluation!")
-    print("="*60 + "\n")
 
 
 if __name__ == "__main__":
