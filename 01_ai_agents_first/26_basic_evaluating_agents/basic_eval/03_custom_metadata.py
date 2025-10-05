@@ -50,7 +50,7 @@ def create_gemini_model():
         api_key=os.getenv("GEMINI_API_KEY"),
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
     )
-    return OpenAIChatCompletionsModel(model="gemini-2.0-flash-exp", openai_client=external_client)
+    return OpenAIChatCompletionsModel(model="gemini-2.5-flash", openai_client=external_client)
 
 
 async def run_agent_with_custom_metadata(langfuse):

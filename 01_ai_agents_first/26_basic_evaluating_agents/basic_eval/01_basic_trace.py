@@ -100,7 +100,7 @@ def create_gemini_model():
     
     # 2. Wrap it in OpenAIChatCompletionsModel for use with Agents SDK
     llm_model = OpenAIChatCompletionsModel(
-        model="gemini-2.0-flash-exp",  # Fast and capable model
+        model="gemini-2.5-flash",  # Fast and capable model
         openai_client=external_client
     )
     

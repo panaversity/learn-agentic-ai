@@ -7,10 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "openai-agents>=0.1.0",
     "langfuse>=2.0.0",
-    "pydantic-ai[logfire]>=0.1.0",
     "python-dotenv>=1.0.0",
+    "pydantic-ai[logfire]>=1.0.15",
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"

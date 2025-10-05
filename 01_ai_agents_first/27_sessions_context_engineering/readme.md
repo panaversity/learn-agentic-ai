@@ -1,5 +1,17 @@
 # Lesson 27: Advanced Sessions & Context Engineering
 
+## [Evals x Content Engineering](https://cookbook.openai.com/examples/agents_sdk/session_memory#evals)
+
+Ultimately, evals is all you need for context engineering too. The key question to ask is: how do we know the model isn’t “losing context” or "confusing context"?
+
+While this full section around memory could stand on its own in the future, here are some lightweight evaluation harness ideas to start with:
+
+- **Baseline & Deltas:** Continue running your core eval sets and compare before/after experiments to measure memory improvements.
+- **LLM-as-Judge:** Use a model with a carefully designed grader prompt to evaluate summarization quality. Focus on whether it captures the most important details in the correct format.
+- **Transcript Replay:** Re-run long conversations and measure next-turn accuracy with and without context trimming. Metrics could include exact match on entities/IDs and rubric-based scoring on reasoning quality.
+- **Error Regression Tracking:** Watch for common failure modes—unanswered questions, dropped constraints, or unnecessary/repeated tool calls.
+- **Token Pressure Checks:** Flag cases where token limits force dropping protected context. Log before/after token counts to detect when critical details are being pruned.
+
 ## 🎯 Overview
 
 Learn advanced session management and context engineering techniques for building **production-grade, long-running agents**. This lesson teaches you how to maintain coherence, efficiency, and intelligence across extended multi-turn interactions.
