@@ -1,10 +1,9 @@
 import os
 import asyncio
 from dotenv import load_dotenv, find_dotenv
-from openai import AsyncOpenAI
-from openinference.instrumentation.openai_agents import OpenAIAgentsInstrumentor
 from langfuse import get_client
-from agents import Agent, Runner, function_tool, set_default_openai_api, set_default_openai_client,set_tracing_export_api_key
+from agents import Agent, Runner, set_default_openai_api, set_default_openai_client,set_tracing_export_api_key, trace, AsyncOpenAI
+from openinference.instrumentation.openai_agents import OpenAIAgentsInstrumentor
 
 
 # -----------------------------
@@ -46,26 +45,23 @@ if langfuse.auth_check():
 else:
     print("❌ Authentication failed. Please check your credentials and host.")
 
-# Example function tool.
-@function_tool
-def get_weather(city: str) -> str:
-    return f"The weather in {city} is sunny."
 
 # -----------------------------
 # Define async main function
 # -----------------------------
 async def main():
-
+    """Run an AI agent that replies in haikus."""
     agent = Agent(
-        name="Assistant",
-        instructions="You are a helpful agent.",
+        name="Joke generator",
+        instructions="Tell funny jokes.",
         model = "gemini-2.5-flash",
-        tools=[get_weather],
     )
 
-    result = await Runner.run(agent, "What's the weather in Tokyo?")
-    print("\n--- Agent Response ---")
-    print(result.final_output)
+    with trace("Joke workflow"):
+        first_result = await Runner.run(agent, "Tell me a joke")
+        second_result = await Runner.run(agent, f"Rate this joke: {first_result.final_output}")
+        print(f"Joke: {first_result.final_output}")
+        print(f"Rating: {second_result.final_output}")
 
 
 # -----------------------------

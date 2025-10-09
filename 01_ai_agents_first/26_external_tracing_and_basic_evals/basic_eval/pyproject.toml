@@ -1,12 +1,12 @@
 [project]
 name = "basic-eval"
-version = "0.1.0"
+version = "0.2.0"
 description = "Basic agent evaluation with Langfuse and OpenAI Agents SDK"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
-    "openai-agents>=0.1.0",
-    "langfuse>=2.0.0",
-    "python-dotenv>=1.0.0",
-    "pydantic-ai[logfire]>=1.0.15",
+    "langfuse>=3.6.1",
+    "openai-agents>=0.3.3",
+    "openinference-instrumentation-openai-agents>=1.3.0",
+    "python-dotenv>=1.1.1",
 ]
