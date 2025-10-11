@@ -4,7 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 from openai import AsyncOpenAI
 from openinference.instrumentation.openai_agents import OpenAIAgentsInstrumentor
 from langfuse import get_client
-from agents import Agent, Runner, function_tool, set_default_openai_api, set_default_openai_client,set_tracing_export_api_key
+from agents import Agent, Runner, function_tool, set_default_openai_api, set_default_openai_client,set_tracing_export_api_key, OpenAIChatCompletionsModel
 
 
 # -----------------------------
@@ -31,9 +31,9 @@ client = AsyncOpenAI(
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
-set_default_openai_client(client=client, use_for_tracing=False)
-set_default_openai_api("chat_completions")
-set_tracing_export_api_key(openai_api_key)
+# set_default_openai_client(client=client, use_for_tracing=False)
+# set_default_openai_api("chat_completions")
+# set_tracing_export_api_key(openai_api_key)
 
 # -----------------------------
 # Initialize Langfuse client
@@ -59,11 +59,11 @@ async def main():
     agent = Agent(
         name="Assistant",
         instructions="You are a helpful agent.",
-        model = "gemini-2.5-flash",
         tools=[get_weather],
+        model=OpenAIChatCompletionsModel(model="gemini-2.5-flash", openai_client=client),
     )
 
-    result = await Runner.run(agent, "What's the weather in Tokyo?")
+    result = await Runner.run(agent, "What's the weather in Lahore?")
     print("\n--- Agent Response ---")
     print(result.final_output)
 
