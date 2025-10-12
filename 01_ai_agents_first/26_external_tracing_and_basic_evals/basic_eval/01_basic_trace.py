@@ -2,9 +2,10 @@ import os
 import asyncio
 from dotenv import load_dotenv, find_dotenv
 from openai import AsyncOpenAI
+from agents import Agent, Runner, set_default_openai_api, set_default_openai_client,set_tracing_export_api_key
+
 from openinference.instrumentation.openai_agents import OpenAIAgentsInstrumentor
 from langfuse import get_client
-from agents import Agent, Runner, set_default_openai_api, set_default_openai_client,set_tracing_export_api_key
 
 
 # -----------------------------
@@ -23,7 +24,6 @@ os.getenv("LANGFUSE_HOST")
 # Set OpenAI API key
 # --- Environment setup
 gemini_api_key = os.getenv("GEMINI_API_KEY")
-openai_api_key = os.getenv("OPENAI_API_KEY")
 
 
 client = AsyncOpenAI(
@@ -33,7 +33,6 @@ client = AsyncOpenAI(
 
 set_default_openai_client(client=client, use_for_tracing=False)
 set_default_openai_api("chat_completions")
-set_tracing_export_api_key(openai_api_key)
 
 # -----------------------------
 # Initialize Langfuse client

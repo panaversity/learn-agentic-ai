@@ -31,9 +31,6 @@ client = AsyncOpenAI(
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
-# set_default_openai_client(client=client, use_for_tracing=False)
-# set_default_openai_api("chat_completions")
-# set_tracing_export_api_key(openai_api_key)
 
 # -----------------------------
 # Initialize Langfuse client
@@ -48,7 +45,7 @@ else:
 
 # Example function tool.
 @function_tool
-def get_weather(city: str) -> str:
+def get_city_weather(city: str) -> str:
     return f"The weather in {city} is sunny."
 
 # -----------------------------
@@ -59,11 +56,15 @@ async def main():
     agent = Agent(
         name="Assistant",
         instructions="You are a helpful agent.",
-        tools=[get_weather],
+        tools=[get_city_weather],
         model=OpenAIChatCompletionsModel(model="gemini-2.5-flash", openai_client=client),
     )
 
-    result = await Runner.run(agent, "What's the weather in Lahore?")
+    result = await Runner.run(agent, "What's the weather in Karachi?")
+    print("\n--- Agent Response ---")
+    print(result.final_output)
+
+    result = await Runner.run(agent, "What's the weather in Islamabad?")
     print("\n--- Agent Response ---")
     print(result.final_output)
 
