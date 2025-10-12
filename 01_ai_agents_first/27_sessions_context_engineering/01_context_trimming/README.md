@@ -17,6 +17,8 @@ As conversations grow longer:
 
 **Context Trimming**: Keep only the last N "turns" of conversation.
 
+![Trim](./image.png)
+
 - A **turn** = one user message + all responses (assistant, tool calls, tool results) until the next user message
 - When turn count > `max_turns`, drop the oldest turns
 - Keep turn boundaries intact (don't split mid-turn)
@@ -75,12 +77,23 @@ Turn 2:
 - Keep everything from that point forward
 - Drop everything before
 
-## 📝 Files in This Sub-Lesson
 
-- **`01_basic_trimming.py`** - Minimal TrimmingSession implementation
-- **`02_production_trimming.py`** - Production version with logging, metadata
-- **`03_evaluate_trimming.py`** - Evaluation framework with metrics
-- **`.env_backup`** - Environment template
+## What counts as a “turn”
+
+A turn = one user message plus everything that follows it (assistant replies, reasoning, tool calls, tool results) until the next user message.
+
+When trimming happens
+- On write: add_items(...) appends the new items, then immediately trims the stored history.
+- On read: get_items(...) returns a trimmed view (so even if you bypassed a write, reads won’t leak old turns).
+
+### How it decides what to keep?
+- Treat any item with role == "user" as a user message (via _is_user_msg).
+- Scan the history backwards and collect the indices of the last N user messages (max_turns).
+- Find the earliest index among those N user messages.
+- Keep everything from that index to the end; drop everything before it.
+
+That preserves each complete turn boundary: if the earliest kept user message is at index k, you also keep all assistant/tool items that came after k.
+
 
 ## 🚀 Getting Started
 
@@ -92,24 +105,6 @@ cp .env_backup .env
 
 # Edit .env and add your API key
 # GEMINI_API_KEY=your_key_here
-```
-
-### 2. Run basic example
-
-```bash
-python 01_basic_trimming.py
-```
-
-### 3. Try production version
-
-```bash
-python 02_production_trimming.py
-```
-
-### 4. Run evaluation
-
-```bash
-python 03_evaluate_trimming.py
 ```
 
 ## 🔧 Key Parameter: `max_turns`
@@ -132,15 +127,6 @@ python 03_evaluate_trimming.py
    - Begin with `max_turns=5-8` for most use cases
    - Monitor: Are agents "forgetting" recent context? Increase
    - Monitor: Are costs too high? Decrease
-
-### Examples by Use Case
-
-| Use Case                      | Estimated Tokens/Turn | Recommended `max_turns` |
-| ----------------------------- | --------------------- | ----------------------- |
-| Simple chatbot                | 200                   | 20-30                   |
-| Customer support (tool-heavy) | 1,500                 | 5-8                     |
-| Code analysis                 | 3,000                 | 3-5                     |
-| Research assistant            | 2,000                 | 8-12                    |
 
 ## 📊 Evaluation Metrics
 
@@ -185,4 +171,4 @@ After mastering context trimming:
 
 ---
 
-**Ready to code?** Open `01_basic_trimming.py` to see the implementation!
+**Ready to code?** Open `trimming.py` to see the implementation!

@@ -1,0 +1,10 @@
+[project]
+name = "01-context-trimming"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "openai-agents>=0.3.3",
+    "tiktoken>=0.12.0",
+]

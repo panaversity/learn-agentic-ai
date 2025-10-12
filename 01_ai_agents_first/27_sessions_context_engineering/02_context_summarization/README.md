@@ -16,6 +16,8 @@ In long conversations:
 
 Context summarization:
 
+![](./image.png)
+
 1. **Keep recent turns** verbatim (e.g., last 5-10 messages)
 2. **Summarize older turns** into a concise system message
 3. **Preserve key facts** (user preferences, entity names, decisions made)
@@ -74,9 +76,8 @@ Summary: User is planning trip to Japan in April (cherry blossom season).
 ### 1. LLM Summarizer
 
 ```python
-from openai_agents import Agent, LLMSummarizer
 
-summarizer = LLMSummarizer(
+summarizer = Agent(
     model=llm_model,
     system_message="Summarize the conversation, preserving key facts and decisions.",
     max_tokens=500  # Limit summary length
@@ -86,7 +87,6 @@ summarizer = LLMSummarizer(
 ### 2. Summarizing Session
 
 ```python
-from openai_agents import SummarizingSession
 
 session = SummarizingSession(
     summarizer=summarizer,

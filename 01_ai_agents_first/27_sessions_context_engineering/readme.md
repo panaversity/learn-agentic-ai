@@ -97,9 +97,14 @@ This means:
 - **Storing** session state efficiently
 - **Scaling** to multiple users and instances
 
-## 🔗 Key Resources
 
-### Primary Sources
+## 🚀 Getting Started
+
+Navigate to the first sub-lesson:
+
+Start with [01_context_trimming](./01_context_trimming/) to learn the simplest, most common context management pattern.
+
+🔗 Key Resources
 
 - [OpenAI Cookbook: Session Memory](https://cookbook.openai.com/examples/agents_sdk/session_memory) - Context patterns
 - [Anthropic: Context Engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) - Best practices
@@ -111,50 +116,3 @@ This means:
 - [How to Fix Your Context](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html)
 
 ![Context Engineering](./context_eng.jpeg)
-
-## 🎯 Learning Outcomes
-
-By the end of this lesson, you will:
-
-1. ✅ Implement custom session classes (trimming, summarization)
-2. ✅ Use AdvancedSQLiteSession for conversation branching and analytics
-3. ✅ Deploy PostgreSQL sessions for production databases
-4. ✅ Scale agents with Redis for distributed systems
-5. ✅ Evaluate context strategies with quantitative metrics
-6. ✅ Choose the right pattern for your use case
-
-## 🚀 Getting Started
-
-Navigate to the first sub-lesson:
-
-```bash
-cd 01_context_trimming
-# Read README.md and run the examples
-```
-
-Each sub-lesson includes:
-
-- **README.md**: Concepts and when to use
-- **Example scripts**: Working implementations
-- **Evaluation code**: Measure effectiveness
-
----
-
----
-
-**Ready?** Start with [01_context_trimming](./01_context_trimming/) to learn the foundational context management pattern.
-
----
-
----
-
-## 📖 Additional Resources
-
-- **[LEARNING_OUTCOMES.md](./LEARNING_OUTCOMES.md)** - Detailed breakdown of skills you'll master
-- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - Decision trees, pattern comparison, rules of thumb
-- **[IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)** - Detailed implementation roadmap for all 7 sub-lessons
-- **[LESSON_SUMMARY.md](./LESSON_SUMMARY.md)** - Complete lesson overview and pedagogical approach
-
----
-
-**Next Steps**: Start with [01_context_trimming](./01_context_trimming/) to learn the simplest, most common context management pattern.
