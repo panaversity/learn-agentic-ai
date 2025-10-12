@@ -51,6 +51,10 @@
          └─────────────────────────┘
 ```
 
+```bash
+uv add asyncpg sqlalchemy "psycopg[binary]"
+```
+
 ## Further Reading
 
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
