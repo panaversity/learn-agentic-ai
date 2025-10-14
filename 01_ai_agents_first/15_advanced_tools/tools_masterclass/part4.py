@@ -23,7 +23,7 @@ llm_model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
     openai_client=external_client
 )
 
-@function_tool(description_override="", failure_error_function=)
+@function_tool(description_override="", failure_error_function=None)
 def get_weather(city: str) -> str:
     try:
         # If Call Fails Call another service i.e get_weather_alternative
@@ -35,7 +35,7 @@ def get_weather(city: str) -> str:
     except Exception as e:
         raise Exception(f"An unexpected error occurred: {str(e)}")
 
-base_agent: Agent = Agent(name="WeatherAgent", instructions="" model=llm_model, tools=[get_weather])
+base_agent: Agent = Agent(name="WeatherAgent", instructions="", model=llm_model, tools=[get_weather])
 
 async def main():
     res = await Runner.run(base_agent, "What is weather in Lahore")
