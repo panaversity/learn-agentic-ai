@@ -1,4 +1,4 @@
-# Learn Agentic AI using Dapr Agentic Cloud Ascent (DACA) Design Pattern: From Start to Scale
+# Learn Agentic AI using Dapr Agentic Cloud Ascent (DACA) Design Pattern: From Start to Scale [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/panaversity/learn-agentic-ai)
 
 This repo is part of the [Panaversity Certified Agentic & Robotic AI Engineer](https://panaversity.org/) program. You can also review the certification and course details in the [program guide](https://docs.google.com/document/d/1BygAckkfc_NFQnTfEM6qqUvPdlIHpNItmRtvfRMGp38/edit?usp=sharing). This repo provides learning material for Agentic AI and Cloud courses.
 
