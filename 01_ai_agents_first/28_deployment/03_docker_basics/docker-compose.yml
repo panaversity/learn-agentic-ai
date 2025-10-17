@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  chainlit:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    command: chainlit run main.py --host 0.0.0.0 --port 8000 --watch

@@ -1,1 +1,0 @@
-# MCP Servers - 10x Your Coding 

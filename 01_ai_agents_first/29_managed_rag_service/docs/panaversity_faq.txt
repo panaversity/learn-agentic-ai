@@ -1,0 +1,19 @@
+Panaversity Program FAQ
+
+Q: What is the goal of the Panaversity Agentic AI course?
+A: To help students learn how to build helpful AI agents with Python, deploy them, and keep them safe.
+
+Q: How much time should I spend each week?
+A: Plan for five to seven focused hours. Short daily practice beats a long weekend cram.
+
+Q: Do I need a paid OpenAI plan?
+A: A paid plan is useful for steady access, but you can follow along with a free trial as long as you watch your usage.
+
+Q: What if an API call fails because of missing credits?
+A: The agent will point it out. Add more credits or switch to a smaller model like `gpt-4o-mini`.
+
+Q: How do I keep my API key safe?
+A: Store it in your `.env` file locally and as a secret in any cloud host. Never paste it in public repos or screenshots.
+
+Q: Can I use these lessons with other LLM providers?
+A: Yes. The ideas are portable. You will just swap the SDK and update the config files.

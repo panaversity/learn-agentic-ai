@@ -1,5 +1,0 @@
-chainlit==0.7.700
-openai==1.12.0
-python-dotenv==1.0.0
-pydantic==2.6.1
-sqlalchemy==2.0.27  # For chat history persistence 
