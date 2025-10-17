@@ -4,12 +4,10 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Dict, List
 
 import chainlit as cl
-from agents import Agent, FileSearchTool, OpenAIResponsesModel, Runner
+from agents import Agent, FileSearchTool, Runner
 from dotenv import load_dotenv
-from fastapi.responses import PlainTextResponse
 
 # Load secrets once at start-up.
 load_dotenv()
@@ -21,10 +19,9 @@ logging.basicConfig(
 logger = logging.getLogger("managed_rag_chainlit")
 
 MODEL_NAME = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-API_KEY = os.getenv("OPENAI_API_KEY")
 VECTOR_STORE_ID = os.getenv("OPENAI_VECTOR_STORE_ID")
 
-if not API_KEY:
+if not os.getenv("OPENAI_API_KEY"):
     raise RuntimeError("OPENAI_API_KEY is missing. Set it in .env before starting Chainlit.")
 
 if not VECTOR_STORE_ID:
@@ -32,23 +29,17 @@ if not VECTOR_STORE_ID:
         "OPENAI_VECTOR_STORE_ID is missing. Run prepare_vector_store.py or add it to .env."
     )
 
-model = OpenAIResponsesModel(model=MODEL_NAME, api_key=API_KEY)
 file_tool = FileSearchTool(vector_store_ids=[VECTOR_STORE_ID], max_num_results=3, include_search_results=True)
 
 assistant = Agent(
     name="LibraryGuide",
     instructions=(
-        "You answer questions using the uploaded study notes. "
+        "You answer questions using the uploaded study notes. Use file_search to look for relevant notes and then answer. Do not self-invent facts."
         "Explain answers in short friendly sentences. If the notes do not contain the info, say that."
     ),
-    model=model,
+    model=MODEL_NAME,
     tools=[file_tool],
 )
-
-@cl.http_router.get("/health", response_class=PlainTextResponse)
-async def health_check() -> str:
-    """For deployment platforms to confirm the app is alive."""
-    return "ready"
 
 @cl.on_chat_start
 async def start_chat() -> None:
@@ -61,7 +52,7 @@ async def start_chat() -> None:
 @cl.on_message
 async def handle_message(message: cl.Message) -> None:
     """Send the question to the Agent SDK and stream back the answer."""
-    history: List[Dict[str, str]] = cl.user_session.get("history", [])
+    history: list[dict[str, str]] = cl.user_session.get("history", [])
     history.append({"role": "user", "content": message.content})
     cl.user_session.set("history", history)
 

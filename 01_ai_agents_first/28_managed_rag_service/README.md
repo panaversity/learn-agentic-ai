@@ -1,8 +1,8 @@
 # Stage 29 – Managed (Agentic) RAG with OpenAI Vector Stores
 
-This lesson teaches the Retrieval-Augmented Generation (RAG) basics and then shows how to skip running your own database by using OpenAI’s hosted vector stores. We use the Agent SDK’s `FileSearchTool`, which turns retrieval into a tool the agent can call on demand. Think of it as “Agentic RAG”: the agent decides when to fetch facts, then blends them into its answer.
+This lesson teaches the Retrieval-Augmented Generation (RAG) basics and then shows how to skip running your own database by using OpenAI’s hosted vector stores. We use the Agent SDK’s `FileSearchTool`, which turns retrieval into a tool the agent can call on demand. 
 
-The whole lesson stays in Python and Chainlit, written in grade 7 English.
+Think of it as “Agentic RAG”: the agent decides when to fetch facts, then blends them into its answer. The whole lesson stays in Python and Chainlit.
 
 ## Quick Concept Check
 
@@ -24,6 +24,8 @@ The whole lesson stays in Python and Chainlit, written in grade 7 English.
 - A managed vector store created in the OpenAI dashboard.
 - A Chainlit agent that can search that store with the `FileSearchTool`.
 - A friendly chat that relies on the stored notes for answers.
+
+![Trace](./trace.png)
 
 ## Folders and Files
 
@@ -84,19 +86,6 @@ OPENAI_VECTOR_STORE_ID=vs_...
 ```
 
 Keep the ID safe. You will use the same store for every agent that needs these notes.
-
-## Optional – Use the Helper Script to Sync Files
-
-If you prefer automation, the `prepare_vector_store.py` script can upload or refresh all `.txt` files in `docs/`.
-
-```bash
-python prepare_vector_store.py
-```
-
-What it does:
-
-- If `OPENAI_VECTOR_STORE_ID` is set, it uploads the files to that existing store.
-- If the ID is blank, it creates a new store, uploads the files, and writes the new ID to `.env` and `vector_store_id.txt` for you.
 
 ## Step 4 – Start the Chainlit App
 
