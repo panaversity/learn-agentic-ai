@@ -1,64 +1,69 @@
-"""Simple Chainlit app made ready for sharing."""
+"""Chainlit agent that uses OpenAI's managed vector store via FileSearchTool."""
+
+from __future__ import annotations
 
 import logging
 import os
-from typing import List, Dict
 
 import chainlit as cl
-from fastapi.responses import PlainTextResponse
-from openai import OpenAI
+from agents import Agent, FileSearchTool, Runner
 from dotenv import load_dotenv
 
-# Load keys from .env at start so the app fails fast if the file is missing.
+# Load secrets once at start-up.
 load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
 )
-logger = logging.getLogger("chainlit_deploy_demo")
+logger = logging.getLogger("managed_rag_chainlit")
 
 MODEL_NAME = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-API_KEY = os.getenv("OPENAI_API_KEY")
+VECTOR_STORE_ID = os.getenv("OPENAI_VECTOR_STORE_ID")
 
-if not API_KEY:
+if not os.getenv("OPENAI_API_KEY"):
+    raise RuntimeError("OPENAI_API_KEY is missing. Set it in .env before starting Chainlit.")
+
+if not VECTOR_STORE_ID:
     raise RuntimeError(
-        "OPENAI_API_KEY is missing. Set it in a .env file before starting Chainlit."
+        "OPENAI_VECTOR_STORE_ID is missing. Run prepare_vector_store.py or add it to .env."
     )
 
-client = OpenAI(api_key=API_KEY)
-async_openai = cl.make_async(client.responses.create)
+file_tool = FileSearchTool(vector_store_ids=[VECTOR_STORE_ID], max_num_results=3, include_search_results=True)
 
-@cl.http_router.get("/health", response_class=PlainTextResponse)
-async def health_check() -> str:
-    """Used by hosts to see if the app is alive."""
-    return "ready"
+assistant = Agent(
+    name="LibraryGuide",
+    instructions=(
+        "You answer questions using the uploaded study notes. Use file_search to look for relevant notes and then answer. Do not self-invent facts."
+        "Explain answers in short friendly sentences. If the notes do not contain the info, say that."
+    ),
+    model=MODEL_NAME,
+    tools=[file_tool],
+)
 
 @cl.on_chat_start
 async def start_chat() -> None:
-    """Say hello and prepare a place to store the chat history."""
+    """Warm welcome plus a place to store the conversation history."""
     cl.user_session.set("history", [])
-    await cl.Message(content="Hi there! I am ready to answer your questions.").send()
+    await cl.Message(
+        content="Hi! I can read our Panaversity notes using OpenAI's managed vector store. Ask anything!"
+    ).send()
 
 @cl.on_message
 async def handle_message(message: cl.Message) -> None:
-    """Send the user message plus chat history to the model and stream the reply."""
-    history: List[Dict[str, str]] = cl.user_session.get("history", [])
+    """Send the question to the Agent SDK and stream back the answer."""
+    history: list[dict[str, str]] = cl.user_session.get("history", [])
     history.append({"role": "user", "content": message.content})
     cl.user_session.set("history", history)
 
     logger.info("User: %s", message.content)
 
-    thinking = cl.Message(content="Thinking...")
+    thinking = cl.Message(content="Let me search our notes...")
     await thinking.send()
 
     try:
-        response = await async_openai(
-            model=MODEL_NAME,
-            input=[{"role": "system", "content": "You help kindly and clearly."}, *history],
-        )
-        answer = (response.output_text or "I do not have an answer yet.").strip()
-
+        result = await Runner.run(assistant, message.content)
+        answer = (result.final_output or "I did not find anything useful in the notes.").strip()
         history.append({"role": "assistant", "content": answer})
         cl.user_session.set("history", history)
 
@@ -66,7 +71,10 @@ async def handle_message(message: cl.Message) -> None:
         await thinking.update()
 
         logger.info("Assistant: %s", answer)
-    except Exception as error:  # noqa: BLE001 broad to keep lesson simple
-        logger.error("Failed to fetch reply", exc_info=error)
-        thinking.content = "Oops! Something went wrong. Check the server log."
+    except Exception as error:  # noqa: BLE001 keep broad so learners see any issue quickly
+        logger.error("Agent run failed", exc_info=error)
+        thinking.content = (
+            "Something went wrong while calling the managed store. "
+            "Check the server log for more details."
+        )
         await thinking.update()
