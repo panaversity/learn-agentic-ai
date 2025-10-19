@@ -1,77 +1,120 @@
-# Stage 1 – Get the App Ready
+# Deployment using Render
 
-This is where we make our Chainlit agent safe to share. We keep the code simple so you can finish this step in one study session.
+[Render Docs](https://render.com/docs/your-first-deploy)
 
-## What You Will Do
+## **Render Deployment Guide (Baby Steps)**
 
-1. Make a fresh virtual environment with `uv`.
-2. Store secrets in a `.env` file.
-3. Add quick logging and a health check.
-4. Test the Chainlit chat one more time.
+### 🧩 Prerequisites
 
-You already know Python and Chainlit. We are just cleaning things up for other people to use.
+Before starting, make sure you have:
 
----
+* A **GitHub account**
+* Your project code pushed to **a public GitHub repo**
+* A file like `main.py` (entry point)
+* A `pyproject.toml` listing dependencies
+* A working local start command like:
 
-## Step 1 – Create the Environment
-
-```bash
-cd your-agent-folder
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-```
-
-The `requirements.txt` file in this folder locks the versions we trust.
+  ```bash
+  uv run chainlit run main.py
+  ```
 
 ---
 
-## Step 2 – Add Your Secrets
+## Step 1: Sign Up or Log In
 
-Copy the example file and place your own keys inside.
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and add:
-
-```
-OPENAI_API_KEY=sk-...
-```
-
-Never push `.env` to GitHub. It stays on your machine only.
+1. Go to [Render.com](https://render.com)
+2. Click **Sign Up** (or **Log In**)
+3. Sign in with **GitHub** (recommended)
 
 ---
 
-## Step 3 – Meet the Code
+## Step 2: Create a New Web Service
 
-Read `main.py`. The file now has:
-
-- a helper that logs the start and end of each answer
-- a health check route at `/health`
-- clear error messages when something goes wrong
-
-Feel free to reuse this file in your own app.
+1. On your dashboard, click **“+ New” → “Web Service”**
+2. Choose **Git Provider** tab
+3. If you don’t see your repos, click **Reconnect GitHub → Grant full repo access**
+4. Pick the repo you want to deploy
+   *(Example: `panaversity/learn-agentic-ai`)*
 
 ---
 
-## Step 4 – Test Locally
+## Step 3: Fill in Basic Info
 
-```bash
-chainlit run main.py -w
+Render will now ask for setup info 👇
+
+| Field              | What to put                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| **Branch**         | `main`                                                                               |
+| **Root Directory** | Leave empty *(unless your app lives inside a subfolder like `/app`)*                 |
+| **Build Command**  | `pip install uv && uv sync` |
+| **Start Command**  | `uv run chainlit run main.py --host 0.0.0.0 --port $PORT`                            |
+| **Instance Type**  | Choose **Free (512 MB RAM)**                                                         |
+
+---
+
+## Step 4: Set Environment Variables (if needed)
+
+If your app uses API keys or secrets:
+
+1. Scroll to the **Environment Variables** section
+2. Add variables like:
+
+   ```
+   OPENAI_API_KEY = your_api_key_here
+   OPENAI_VECTOR_STORE_ID = your_api_key_here
+   ```
+3. You can edit or add more later anytime.
+
+---
+
+## Step 5: Click “Deploy Web Service”
+
+Render will:
+
+* Clone your GitHub repo
+* Install dependencies (`uv sync` or `pip install`)
+* Start your app with your start command
+
+You’ll see live logs during deployment.
+
+---
+
+## Step 6: Watch Logs
+
+* Wait for logs like:
+
+  ```
+  ==> Running 'uv run chainlit run main.py --host 0.0.0.0 --port $PORT'
+  ==> Your service is live 🎉
+  ```
+* If something fails, Render shows the full error log for debugging.
+
+---
+
+## Step 7: Visit Your App
+
+Once you see **✅ Live**, click the generated Render URL, e.g.
+
+```
+https://your-app-name.onrender.com
 ```
 
-Open the link in your browser. Ask a question. Check your terminal to see the log lines. Visit [http://localhost:8000/health](http://localhost:8000/health) to see the health text.
-
-If everything works, you are ready to deploy in Stage 2.
+🎉 Your Chainlit or Python app is now running online!
 
 ---
 
-## Helpful Notes
+## Step 8: Redeploy When You Update
 
-- You can change the model name in one place near the top of `main.py`.
-- Errors will print both in the chat window and in the terminal log.
-- If you get an auth error, double-check the API key in `.env`.
+Any time you push new code to the same GitHub branch (`main`),
+Render automatically detects it and redeploys your app.
 
-Nice work! Move to Stage 2 when you feel confident with this setup.
+---
+
+## Optional Step 9: Troubleshooting Tips
+
+| Problem                   | Fix                                                                  |
+| ------------------------- | -------------------------------------------------------------------- |
+| “No pyproject.toml found” | Make sure your repo root has it, or set **Root Directory** correctly |
+| Repo not visible          | Reconnect GitHub and grant full access                               |
+| App won’t start           | Ensure start command uses `$PORT` and `--host 0.0.0.0`               |
+| Slow spin-up              | Free tier apps sleep after 15 minutes idle; they wake automatically  |
