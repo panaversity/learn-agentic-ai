@@ -1,0 +1,9 @@
+[project]
+name = "redis-session-implementation"
+version = "0.1.0"
+description = "An example of implementing Redis sessions with OpenAI Agents"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "openai-agents[redis]>=0.3.3",
+]
